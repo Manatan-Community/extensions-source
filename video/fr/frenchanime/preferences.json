@@ -1,0 +1,16 @@
+[
+  {
+    "key": "preferred_server",
+    "title": "Serveur prefere",
+    "type": "select",
+    "default": "",
+    "values": ["", "Dood", "Upstream", "Vudeo", "Uqload", "VidHide", "Vido", "Sibnet", "Okru", "StreamHub", "Vidmoly", "Voe"]
+  },
+  {
+    "key": "preferred_quality",
+    "title": "Qualite preferee",
+    "type": "select",
+    "default": "1080p",
+    "values": ["1080p", "720p", "480p", "360p"]
+  }
+]

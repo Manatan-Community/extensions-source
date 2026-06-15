@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sort",
+      "default": "most-viewd",
+      "options": [
+        { "label": "Latest updated", "value": "latest-updated" },
+        { "label": "Score", "value": "score" },
+        { "label": "Name A-Z", "value": "name-az" },
+        { "label": "Release date", "value": "release-date" },
+        { "label": "Most viewed", "value": "most-viewd" }
+      ]
+    },
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "Genre",
+      "options": [
+        { "label": "All", "value": "tat-ca-truyen" },
+        { "label": "Completed", "value": "hoan-thanh" },
+        { "label": "Action", "value": "the-loai/action" },
+        { "label": "Adult", "value": "the-loai/adult" },
+        { "label": "Adventure", "value": "the-loai/adventure" },
+        { "label": "Comedy", "value": "the-loai/comedy" },
+        { "label": "Drama", "value": "the-loai/drama" },
+        { "label": "Fantasy", "value": "the-loai/fantasy" },
+        { "label": "Harem", "value": "the-loai/harem" },
+        { "label": "Isekai", "value": "the-loai/isekai" },
+        { "label": "Manhua", "value": "the-loai/manhua" },
+        { "label": "Manhwa", "value": "the-loai/manhwa" },
+        { "label": "Manga", "value": "the-loai/manga" },
+        { "label": "Ngon Tinh", "value": "the-loai/ngon-tinh" },
+        { "label": "Romance", "value": "the-loai/romance" },
+        { "label": "School Life", "value": "the-loai/school-life" },
+        { "label": "Shounen", "value": "the-loai/shounen" },
+        { "label": "Slice Of Life", "value": "the-loai/slice-of-life" },
+        { "label": "Truyen Mau", "value": "the-loai/truyen-mau" },
+        { "label": "Webtoon", "value": "the-loai/webtoon" }
+      ]
+    }
+  ]
+}

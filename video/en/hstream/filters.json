@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "order",
+      "label": "Order by",
+      "kind": "select",
+      "defaultValue": "view-count",
+      "options": [
+        {
+          "label": "View Count",
+          "value": "view-count"
+        },
+        {
+          "label": "A-Z",
+          "value": "az"
+        },
+        {
+          "label": "Z-A",
+          "value": "za"
+        },
+        {
+          "label": "Recently Uploaded",
+          "value": "recently-uploaded"
+        },
+        {
+          "label": "Recently Released",
+          "value": "recently-released"
+        },
+        {
+          "label": "Oldest Uploads",
+          "value": "oldest-uploads"
+        },
+        {
+          "label": "Oldest Releases",
+          "value": "oldest-releases"
+        }
+      ]
+    },
+    {
+      "id": "include_genres",
+      "label": "Include genres",
+      "kind": "multiselect",
+      "defaultValue": [
+
+      ],
+      "options": [
+        {
+          "label": "3D",
+          "value": "3d"
+        },
+        {
+          "label": "4K",
+          "value": "4k"
+        },
+        {
+          "label": "Ahegao",
+          "value": "ahegao"
+        },
+        {
+          "label": "Anal",
+          "value": "anal"
+        },
+        {
+          "label": "Bdsm",
+          "value": "bdsm"
+        },
+        {
+          "label": "Big Boobs",
+          "value": "big-boobs"
+        },
+        {
+          "label": "Blow Job",
+          "value": "blow-job"
+        },
+        {
+          "label": "Bondage",
+          "value": "bondage"
+        },
+        {
+          "label": "Boob Job",
+          "value": "boob-job"
+        },
+        {
+          "label": "Censored",
+          "value": "censored"
+        },
+        {
+          "label": "Comedy",
+          "value": "comedy"
+        },
+        {
+          "label": "Cosplay",
+          "value": "cosplay"
+        },
+        {
+          "label": "Creampie",
+          "value": "creampie"
+        },
+        {
+          "label": "Dark Skin",
+          "value": "dark-skin"
+        },
+        {
+          "label": "Elf",
+          "value": "elf"
+        },
+        {
+          "label": "Facial",
+          "value": "facial"
+        },
+        {
+          "label": "Fantasy",
+          "value": "fantasy"
+        },
+        {
+          "label": "Filmed",
+          "value": "filmed"
+        },
+        {
+          "label": "Foot Job",
+          "value": "foot-job"
+        },
+        {
+          "label": "Futanari",
+          "value": "futanari"
+        },
+        {
+          "label": "Gangbang",
+          "value": "gangbang"
+        },
+        {
+          "label": "Glasses",
+          "value": "glasses"
+        },
+        {
+          "label": "Hand Job",
+          "value": "hand-job"
+        },
+        {
+          "label": "Harem",
+          "value": "harem"
+        },
+        {
+          "label": "Horror",
+          "value": "horror"
+        },
+        {
+          "label": "Incest",
+          "value": "incest"
+        },
+        {
+          "label": "Inflation",
+          "value": "inflation"
+        },
+        {
+          "label": "Lactation",
+          "value": "lactation"
+        },
+        {
+          "label": "Loli",
+          "value": "loli"
+        },
+        {
+          "label": "Maid",
+          "value": "maid"
+        },
+        {
+          "label": "Masturbation",
+          "value": "masturbation"
+        },
+        {
+          "label": "Milf",
+          "value": "milf"
+        },
+        {
+          "label": "Mind Break",
+          "value": "mind-break"
+        },
+        {
+          "label": "Mind Control",
+          "value": "mind-control"
+        },
+        {
+          "label": "Monster",
+          "value": "monster"
+        },
+        {
+          "label": "Nekomimi",
+          "value": "nekomimi"
+        },
+        {
+          "label": "Ntr",
+          "value": "ntr"
+        },
+        {
+          "label": "Nurse",
+          "value": "nurse"
+        },
+        {
+          "label": "Orgy",
+          "value": "orgy"
+        },
+        {
+          "label": "Pov",
+          "value": "pov"
+        },
+        {
+          "label": "Pregnant",
+          "value": "pregnant"
+        },
+        {
+          "label": "Public Sex",
+          "value": "public-sex"
+        },
+        {
+          "label": "Rape",
+          "value": "rape"
+        },
+        {
+          "label": "Reverse Rape",
+          "value": "reverse-rape"
+        },
+        {
+          "label": "Rimjob",
+          "value": "rimjob"
+        },
+        {
+          "label": "Scat",
+          "value": "scat"
+        },
+        {
+          "label": "School Girl",
+          "value": "school-girl"
+        },
+        {
+          "label": "Shota",
+          "value": "shota"
+        },
+        {
+          "label": "Small Boobs",
+          "value": "small-boobs"
+        },
+        {
+          "label": "Succubus",
+          "value": "succubus"
+        },
+        {
+          "label": "Swim Suit",
+          "value": "swim-suit"
+        },
+        {
+          "label": "Teacher",
+          "value": "teacher"
+        },
+        {
+          "label": "Tentacle",
+          "value": "tentacle"
+        },
+        {
+          "label": "Threesome",
+          "value": "threesome"
+        },
+        {
+          "label": "Toys",
+          "value": "toys"
+        },
+        {
+          "label": "Trap",
+          "value": "trap"
+        },
+        {
+          "label": "Tsundere",
+          "value": "tsundere"
+        },
+        {
+          "label": "Ugly Bastard",
+          "value": "ugly-bastard"
+        },
+        {
+          "label": "Uncensored",
+          "value": "uncensored"
+        },
+        {
+          "label": "Vanilla",
+          "value": "vanilla"
+        },
+        {
+          "label": "Virgin",
+          "value": "virgin"
+        },
+        {
+          "label": "X-Ray",
+          "value": "x-ray"
+        },
+        {
+          "label": "Yuri",
+          "value": "yuri"
+        }
+      ]
+    },
+    {
+      "id": "exclude_genres",
+      "label": "Exclude genres",
+      "kind": "multiselect",
+      "defaultValue": [
+
+      ],
+      "options": [
+        {
+          "label": "3D",
+          "value": "3d"
+        },
+        {
+          "label": "4K",
+          "value": "4k"
+        },
+        {
+          "label": "Ahegao",
+          "value": "ahegao"
+        },
+        {
+          "label": "Anal",
+          "value": "anal"
+        },
+        {
+          "label": "Bdsm",
+          "value": "bdsm"
+        },
+        {
+          "label": "Big Boobs",
+          "value": "big-boobs"
+        },
+        {
+          "label": "Blow Job",
+          "value": "blow-job"
+        },
+        {
+          "label": "Bondage",
+          "value": "bondage"
+        },
+        {
+          "label": "Boob Job",
+          "value": "boob-job"
+        },
+        {
+          "label": "Censored",
+          "value": "censored"
+        },
+        {
+          "label": "Comedy",
+          "value": "comedy"
+        },
+        {
+          "label": "Cosplay",
+          "value": "cosplay"
+        },
+        {
+          "label": "Creampie",
+          "value": "creampie"
+        },
+        {
+          "label": "Dark Skin",
+          "value": "dark-skin"
+        },
+        {
+          "label": "Elf",
+          "value": "elf"
+        },
+        {
+          "label": "Facial",
+          "value": "facial"
+        },
+        {
+          "label": "Fantasy",
+          "value": "fantasy"
+        },
+        {
+          "label": "Filmed",
+          "value": "filmed"
+        },
+        {
+          "label": "Foot Job",
+          "value": "foot-job"
+        },
+        {
+          "label": "Futanari",
+          "value": "futanari"
+        },
+        {
+          "label": "Gangbang",
+          "value": "gangbang"
+        },
+        {
+          "label": "Glasses",
+          "value": "glasses"
+        },
+        {
+          "label": "Hand Job",
+          "value": "hand-job"
+        },
+        {
+          "label": "Harem",
+          "value": "harem"
+        },
+        {
+          "label": "Horror",
+          "value": "horror"
+        },
+        {
+          "label": "Incest",
+          "value": "incest"
+        },
+        {
+          "label": "Inflation",
+          "value": "inflation"
+        },
+        {
+          "label": "Lactation",
+          "value": "lactation"
+        },
+        {
+          "label": "Loli",
+          "value": "loli"
+        },
+        {
+          "label": "Maid",
+          "value": "maid"
+        },
+        {
+          "label": "Masturbation",
+          "value": "masturbation"
+        },
+        {
+          "label": "Milf",
+          "value": "milf"
+        },
+        {
+          "label": "Mind Break",
+          "value": "mind-break"
+        },
+        {
+          "label": "Mind Control",
+          "value": "mind-control"
+        },
+        {
+          "label": "Monster",
+          "value": "monster"
+        },
+        {
+          "label": "Nekomimi",
+          "value": "nekomimi"
+        },
+        {
+          "label": "Ntr",
+          "value": "ntr"
+        },
+        {
+          "label": "Nurse",
+          "value": "nurse"
+        },
+        {
+          "label": "Orgy",
+          "value": "orgy"
+        },
+        {
+          "label": "Pov",
+          "value": "pov"
+        },
+        {
+          "label": "Pregnant",
+          "value": "pregnant"
+        },
+        {
+          "label": "Public Sex",
+          "value": "public-sex"
+        },
+        {
+          "label": "Rape",
+          "value": "rape"
+        },
+        {
+          "label": "Reverse Rape",
+          "value": "reverse-rape"
+        },
+        {
+          "label": "Rimjob",
+          "value": "rimjob"
+        },
+        {
+          "label": "Scat",
+          "value": "scat"
+        },
+        {
+          "label": "School Girl",
+          "value": "school-girl"
+        },
+        {
+          "label": "Shota",
+          "value": "shota"
+        },
+        {
+          "label": "Small Boobs",
+          "value": "small-boobs"
+        },
+        {
+          "label": "Succubus",
+          "value": "succubus"
+        },
+        {
+          "label": "Swim Suit",
+          "value": "swim-suit"
+        },
+        {
+          "label": "Teacher",
+          "value": "teacher"
+        },
+        {
+          "label": "Tentacle",
+          "value": "tentacle"
+        },
+        {
+          "label": "Threesome",
+          "value": "threesome"
+        },
+        {
+          "label": "Toys",
+          "value": "toys"
+        },
+        {
+          "label": "Trap",
+          "value": "trap"
+        },
+        {
+          "label": "Tsundere",
+          "value": "tsundere"
+        },
+        {
+          "label": "Ugly Bastard",
+          "value": "ugly-bastard"
+        },
+        {
+          "label": "Uncensored",
+          "value": "uncensored"
+        },
+        {
+          "label": "Vanilla",
+          "value": "vanilla"
+        },
+        {
+          "label": "Virgin",
+          "value": "virgin"
+        },
+        {
+          "label": "X-Ray",
+          "value": "x-ray"
+        },
+        {
+          "label": "Yuri",
+          "value": "yuri"
+        }
+      ]
+    },
+    {
+      "id": "studios",
+      "label": "Studios",
+      "kind": "multiselect",
+      "defaultValue": [
+
+      ],
+      "options": [
+        {
+          "label": "BOMB! CUTE! BOMB!",
+          "value": "bomb-cute-bomb"
+        },
+        {
+          "label": "BreakBottle",
+          "value": "breakbottle"
+        },
+        {
+          "label": "ChiChinoya",
+          "value": "chichinoya"
+        },
+        {
+          "label": "ChuChu",
+          "value": "chuchu"
+        },
+        {
+          "label": "Circle Tribute",
+          "value": "circle-tribute"
+        },
+        {
+          "label": "Collaboration Works",
+          "value": "collaboration-works"
+        },
+        {
+          "label": "Digital Works",
+          "value": "digital-works"
+        },
+        {
+          "label": "Discovery",
+          "value": "discovery"
+        },
+        {
+          "label": "Edge",
+          "value": "edge"
+        },
+        {
+          "label": "Gold Bear",
+          "value": "gold-bear"
+        },
+        {
+          "label": "Green Bunny",
+          "value": "green-bunny"
+        },
+        {
+          "label": "Himajin Planning",
+          "value": "himajin-planning"
+        },
+        {
+          "label": "King Bee",
+          "value": "king-bee"
+        },
+        {
+          "label": "L.",
+          "value": "l"
+        },
+        {
+          "label": "Lune Pictures",
+          "value": "lune-pictures"
+        },
+        {
+          "label": "MS Pictures",
+          "value": "ms-pictures"
+        },
+        {
+          "label": "Majin",
+          "value": "majin"
+        },
+        {
+          "label": "Mary Jane",
+          "value": "mary-jane"
+        },
+        {
+          "label": "Mediabank",
+          "value": "mediabank"
+        },
+        {
+          "label": "Mousou Senka",
+          "value": "mousou-senka"
+        },
+        {
+          "label": "Natural High",
+          "value": "natural-high"
+        },
+        {
+          "label": "Nihikime no Dozeu",
+          "value": "nihikime-no-dozeu"
+        },
+        {
+          "label": "Nur",
+          "value": "nur"
+        },
+        {
+          "label": "Pashmina",
+          "value": "pashmina"
+        },
+        {
+          "label": "Peak Hunt",
+          "value": "peak-hunt"
+        },
+        {
+          "label": "Pink Pineapple",
+          "value": "pink-pineapple"
+        },
+        {
+          "label": "Pixy Soft",
+          "value": "pixy-soft"
+        },
+        {
+          "label": "Pixy",
+          "value": "pixy"
+        },
+        {
+          "label": "PoRO",
+          "value": "poro"
+        },
+        {
+          "label": "Queen Bee",
+          "value": "queen-bee"
+        },
+        {
+          "label": "Rabbit Gate",
+          "value": "rabbit-gate"
+        },
+        {
+          "label": "SELFISH",
+          "value": "selfish"
+        },
+        {
+          "label": "Seven",
+          "value": "seven"
+        },
+        {
+          "label": "Showten",
+          "value": "showten"
+        },
+        {
+          "label": "Studio 1st",
+          "value": "studio-1st"
+        },
+        {
+          "label": "Studio Eromatick",
+          "value": "studio-eromatick"
+        },
+        {
+          "label": "Studio Fantasia",
+          "value": "studio-fantasia"
+        },
+        {
+          "label": "Suiseisha",
+          "value": "suiseisha"
+        },
+        {
+          "label": "Suzuki Mirano",
+          "value": "suzuki-mirano"
+        },
+        {
+          "label": "T-Rex",
+          "value": "t-rex"
+        },
+        {
+          "label": "Toranoana",
+          "value": "toranoana"
+        },
+        {
+          "label": "Union Cho",
+          "value": "union-cho"
+        },
+        {
+          "label": "Valkyria",
+          "value": "valkyria"
+        },
+        {
+          "label": "White Bear",
+          "value": "white-bear"
+        },
+        {
+          "label": "ZIZ",
+          "value": "ziz"
+        }
+      ]
+    }
+  ]
+}

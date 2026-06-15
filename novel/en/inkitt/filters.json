@@ -1,0 +1,9 @@
+[
+  {
+    "id": "genres",
+    "type": "select",
+    "label": "Genre",
+    "options": ["", "scifi", "fantasy", "adventure", "mystery", "action", "horror", "humor", "erotica", "poetry", "other", "thriller", "romance", "children", "drama"],
+    "default": ""
+  }
+]

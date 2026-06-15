@@ -1,0 +1,9 @@
+{
+  "groups": [
+    { "id": "sort", "label": "Sort", "type": "select", "default": "popularity", "options": [
+      { "label": "Popularity", "value": "popularity" },
+      { "label": "Recent", "value": "recent" }
+    ] },
+    { "id": "genre", "label": "Genre", "type": "string", "default": "" }
+  ]
+}

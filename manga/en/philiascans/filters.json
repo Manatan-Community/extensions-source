@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "orderby", "label": "Sort by", "kind": "select", "defaultValue": "", "options": [
+      { "label": "Recently Updated", "value": "" },
+      { "label": "Trending", "value": "trending" },
+      { "label": "Most Viewed", "value": "views" },
+      { "label": "Highest Rating", "value": "rating" },
+      { "label": "Alphabetical", "value": "title" },
+      { "label": "New Manga", "value": "added" }
+    ] },
+    { "id": "order", "label": "Order by", "kind": "select", "defaultValue": "desc", "options": [
+      { "label": "Descending", "value": "desc" },
+      { "label": "Ascending", "value": "asc" }
+    ] },
+    { "id": "types", "label": "Types", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Webtoon", "value": "webtoon" },
+      { "label": "Comic", "value": "comic" }
+    ] },
+    { "id": "statuses", "label": "Status", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "On Going", "value": "on_going" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "On Hold", "value": "on_hold" },
+      { "label": "Canceled", "value": "canceled" }
+    ] },
+    { "id": "genres", "label": "Genre", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "Action", "value": "action" },
+      { "label": "Adventure", "value": "adventure" },
+      { "label": "Comedy", "value": "comedy" },
+      { "label": "Drama", "value": "drama" },
+      { "label": "Fantasy", "value": "fantasy" },
+      { "label": "Romance", "value": "romance" },
+      { "label": "School Life", "value": "school-life" },
+      { "label": "Shoujo", "value": "shoujo" },
+      { "label": "Shounen", "value": "shounen" },
+      { "label": "Slice of Life", "value": "slice-of-life" },
+      { "label": "Supernatural", "value": "supernatural" }
+    ] }
+  ]
+}

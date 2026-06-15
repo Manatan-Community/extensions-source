@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lianscans",
+  "name": "LianScans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.lianscans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "lianscans",
+      "name": "LianScans",
+      "lang": "id",
+      "baseUrl": "https://www.lianscans.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

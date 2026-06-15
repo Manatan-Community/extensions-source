@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "filterUri",
+      "type": "text",
+      "name": "Filter URI such as the-loai/action, nhom/team, truyen-hot-nhat"
+    }
+  ]
+}

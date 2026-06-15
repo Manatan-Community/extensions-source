@@ -1,0 +1,30 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_hoster",
+    "title": "Standard-Hoster",
+    "default": "https://streamtape",
+    "options": [
+      { "label": "Streamtape", "value": "https://streamtape" },
+      { "label": "VidGuard", "value": "https://moflix-stream" },
+      { "label": "Streamvid", "value": "https://streamvid" },
+      { "label": "Highstream", "value": "https://highstream" },
+      { "label": "Filelions", "value": "https://moflix-stream" },
+      { "label": "LuluStream", "value": "https://luluvdo" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "hoster_selection",
+    "title": "auswählen",
+    "default": ["stape", "vidg", "svid", "hstream", "flions", "lstream"],
+    "options": [
+      { "label": "Streamtape", "value": "stape" },
+      { "label": "VidGuard", "value": "vidg" },
+      { "label": "Streamvid", "value": "svid" },
+      { "label": "Highstream", "value": "hstream" },
+      { "label": "Filelions", "value": "flions" },
+      { "label": "LuluStream", "value": "lstream" }
+    ]
+  }
+]

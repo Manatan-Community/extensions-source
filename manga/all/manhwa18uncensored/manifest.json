@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwa18uncensored",
+  "name": "Manhwa 18 Uncensored",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhwa18uncensored.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "manhwa18uncensored-en", "name": "Manhwa 18 Uncensored", "lang": "en", "baseUrl": "https://manhwa18uncensored.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "manhwa18uncensored-all", "name": "Manhwa 18 Uncensored", "lang": "all", "baseUrl": "https://manhwa18uncensored.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

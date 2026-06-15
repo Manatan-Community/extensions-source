@@ -1,0 +1,51 @@
+[
+  {
+    "id": "category",
+    "type": "multiselect",
+    "label": "Category",
+    "options": [
+      { "label": "Male-oriented", "value": "men" },
+      { "label": "Female-oriented", "value": "women" },
+      { "label": "TL", "value": "tl" },
+      { "label": "BL", "value": "bl" }
+    ]
+  },
+  {
+    "id": "label",
+    "type": "multiselect",
+    "label": "Label",
+    "options": [
+      { "label": "Alphapolis", "value": "alphapolis" },
+      { "label": "Regina", "value": "regina" },
+      { "label": "Alphanorn", "value": "alphanorn" },
+      { "label": "Eternity", "value": "eternity" },
+      { "label": "Noche", "value": "noche" },
+      { "label": "Andarche", "value": "andarche" }
+    ]
+  },
+  {
+    "id": "complete",
+    "type": "multiselect",
+    "label": "Status",
+    "options": [
+      { "label": "Ongoing", "value": "running" },
+      { "label": "Completed", "value": "finished" },
+      { "label": "Hiatus", "value": "sleeping" }
+    ]
+  },
+  {
+    "id": "rental",
+    "type": "multiselect",
+    "label": "Rental",
+    "options": [
+      { "label": "Rental available", "value": "enable" },
+      { "label": "All free", "value": "disable" }
+    ]
+  },
+  {
+    "id": "is_free_daily",
+    "type": "toggle",
+    "label": "Daily free",
+    "default": false
+  }
+]

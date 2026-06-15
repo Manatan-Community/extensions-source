@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "battleinfivesecondsaftermeeting",
+  "name": "Battle In 5 Seconds After Meeting",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://www.deatte5.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "battleinfivesecondsaftermeeting",
+      "name": "Battle In 5 Seconds After Meeting",
+      "lang": "en",
+      "baseUrl": "https://www.deatte5.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

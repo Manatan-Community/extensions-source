@@ -1,0 +1,27 @@
+[
+  {"id":"type","type":"select","name":"Tipo","options":[
+    {"label":"Seleccionar","value":""},
+    {"label":"Hentais","value":"hentais/"},
+    {"label":"Audio Latino","value":"hentai-audio-latino/"},
+    {"label":"3D","value":"3d/"},
+    {"label":"JAV","value":"jav/"}
+  ]},
+  {"id":"tag","type":"select","name":"Tags","options":[
+    {"label":"Seleccionar","value":""},
+    {"label":"3P","value":"video_tag/3p/"},
+    {"label":"Anal","value":"video_tag/anal/"},
+    {"label":"Bakunyuu","value":"video_tag/bakunyuu/"},
+    {"label":"Big Tits","value":"video_tag/big-tits/"},
+    {"label":"Bondage","value":"video_tag/bondage/"},
+    {"label":"Comedia","value":"video_tag/comedia/"},
+    {"label":"Futanari","value":"video_tag/futanari/"},
+    {"label":"Hardcore","value":"video_tag/hardcore/"},
+    {"label":"Harem","value":"video_tag/harem/"},
+    {"label":"Incest","value":"video_tag/incest/"},
+    {"label":"Milf","value":"video_tag/milf/"},
+    {"label":"Netorare","value":"video_tag/netorare/"},
+    {"label":"Romance","value":"video_tag/romance/"},
+    {"label":"Tentaculos","value":"video_tag/tentaculos/"},
+    {"label":"Yuri","value":"video_tag/yuri/"}
+  ]}
+]

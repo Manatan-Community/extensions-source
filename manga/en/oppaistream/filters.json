@@ -1,0 +1,32 @@
+{
+  "groups": [
+    {
+      "id": "sort",
+      "label": "Sort By",
+      "type": "select",
+      "default": "",
+      "options": [
+        { "label": "Default", "value": "" },
+        { "label": "A-Z", "value": "az" },
+        { "label": "Z-A", "value": "za" },
+        { "label": "Recently Released", "value": "recent" },
+        { "label": "Oldest Releases", "value": "old" },
+        { "label": "Most Views", "value": "views" },
+        { "label": "Highest Rated", "value": "rating" },
+        { "label": "Recently Uploaded", "value": "uploaded" }
+      ]
+    },
+    {
+      "id": "genres",
+      "label": "Genres",
+      "type": "text",
+      "placeholder": "Comma-separated include slugs"
+    },
+    {
+      "id": "blacklist",
+      "label": "Blacklist",
+      "type": "text",
+      "placeholder": "Comma-separated exclude slugs"
+    }
+  ]
+}

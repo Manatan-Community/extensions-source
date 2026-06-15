@@ -1,0 +1,14 @@
+[
+  {
+    "id": "token",
+    "type": "text",
+    "name": "令牌(Token)",
+    "default": ""
+  },
+  {
+    "id": "comments",
+    "type": "boolean",
+    "name": "章末吐槽页",
+    "default": false
+  }
+]

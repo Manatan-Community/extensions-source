@@ -1,0 +1,22 @@
+name: Source bug
+description: Report a problem with a Manatan source.
+body:
+  - type: input
+    id: source_id
+    attributes:
+      label: Source ID
+    validations:
+      required: true
+  - type: dropdown
+    id: media
+    attributes:
+      label: Media kind
+      options: [manga, video, novel]
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true

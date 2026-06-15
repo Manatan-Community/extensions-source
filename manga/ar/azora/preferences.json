@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "toggle",
+      "id": "showLockedChapters",
+      "name": "Show locked chapters",
+      "default": false
+    }
+  ]
+}

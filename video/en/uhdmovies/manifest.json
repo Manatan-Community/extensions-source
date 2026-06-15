@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "uhdmovies",
+  "name": "UHD Movies",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://uhdmovies.vip",
+    "https://*"
+  ],
+  "sources": [
+    {
+      "id": "uhdmovies",
+      "name": "UHD Movies",
+      "lang": "en",
+      "baseUrl": "https://uhdmovies.vip",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://uhdmovies.vip/*", "kind": "item" }
+      ]
+    }
+  ]
+}

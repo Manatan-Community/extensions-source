@@ -1,0 +1,20 @@
+[
+  {
+    "id": "url",
+    "label": "Server URL",
+    "kind": "text",
+    "defaultValue": ""
+  },
+  {
+    "id": "email",
+    "label": "Email",
+    "kind": "text",
+    "defaultValue": ""
+  },
+  {
+    "id": "password",
+    "label": "Password",
+    "kind": "text",
+    "defaultValue": ""
+  }
+]

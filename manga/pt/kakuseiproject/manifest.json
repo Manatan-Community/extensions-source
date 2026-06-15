@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kakuseiproject",
+  "name": "Kakusei Project",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://kakuseiproject.org"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kakuseiproject",
+      "name": "Kakusei Project",
+      "lang": "pt-BR",
+      "baseUrl": "https://kakuseiproject.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://kakuseiproject.org/manga/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

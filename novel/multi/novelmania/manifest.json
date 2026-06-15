@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "novelmania",
+  "name": "Novel Mania",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "multi",
+  "contentType": "novel",
+  "contentRating": "adult",
+  "filters": "filters.json",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://novelmania.com.br"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "novelmania",
+      "name": "Novel Mania",
+      "lang": "multi",
+      "baseUrl": "https://novelmania.com.br",
+      "contentType": "novel",
+      "contentRating": "adult",
+      "filters": true,
+      "urlPatterns": [
+        {
+          "pattern": "https://novelmania.com.br/novels/*",
+          "kind": "item"
+        }
+      ],
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

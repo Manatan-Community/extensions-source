@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "imperiodabritannia",
+  "name": "Sagrado Império da Britannia",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://imperiodabritannia.net",
+      "https://api.imperiodabritannia.net",
+      "https://cdn.imperiodabritannia.net"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "imperiodabritannia",
+      "name": "Sagrado Império da Britannia",
+      "lang": "pt-BR",
+      "baseUrl": "https://imperiodabritannia.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://imperiodabritannia.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

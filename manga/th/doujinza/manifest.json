@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doujinza",
+  "name": "DoujinZa",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://doujinza.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "doujinza",
+      "name": "DoujinZa",
+      "lang": "th",
+      "baseUrl": "https://doujinza.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://doujinza.com/doujin/*", "kind": "item" }
+      ]
+    }
+  ]
+}

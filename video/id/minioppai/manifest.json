@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "minioppai",
+  "name": "MiniOppai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://minioppai.org"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "minioppai",
+      "name": "MiniOppai",
+      "lang": "id",
+      "baseUrl": "https://minioppai.org",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }],
+      "urlPatterns": [{ "pattern": "https://minioppai.org/*", "kind": "item" }]
+    }
+  ]
+}

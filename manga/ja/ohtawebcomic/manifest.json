@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ohtawebcomic",
+  "name": "Ohta Web Comic",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://webcomic.ohtabooks.com",
+      "https://www.yondemill.jp"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ohtawebcomic",
+      "name": "Ohta Web Comic",
+      "lang": "ja",
+      "baseUrl": "https://webcomic.ohtabooks.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true,
+        "processedPages": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://webcomic.ohtabooks.com/*", "kind": "item" },
+        { "pattern": "https://www.yondemill.jp/contents/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

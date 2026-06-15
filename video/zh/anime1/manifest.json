@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anime1",
+  "name": "Anime1.me",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh-Hant",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": ["https://anime1.me", "https://v.anime1.me", "https://d1zquzjgwo9yb.cloudfront.net"],
+  "sources": [
+    {
+      "id": "anime1",
+      "name": "Anime1.me",
+      "lang": "zh-Hant",
+      "baseUrl": "https://anime1.me",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "動畫列表" },
+        { "id": "latest", "name": "動畫列表" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anime1.me/*", "kind": "item" }
+      ]
+    }
+  ]
+}

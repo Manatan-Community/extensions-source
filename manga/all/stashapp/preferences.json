@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "text",
+      "id": "baseUrl",
+      "name": "Server URL",
+      "default": "http://localhost:9999"
+    },
+    {
+      "type": "text",
+      "id": "apiKey",
+      "name": "API key"
+    }
+  ]
+}

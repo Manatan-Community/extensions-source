@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeworldindia",
+  "name": "AnimeWorld India",
+  "version": "0.1.0",
+  "versionCode": 22,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://anime-world.co"
+  ],
+  "sources": [
+    {
+      "id": "animeworldindia",
+      "name": "AnimeWorld India",
+      "lang": "all",
+      "baseUrl": "https://anime-world.co",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Most Viewed" },
+        { "id": "latest", "name": "Recently Updated" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anime-world.co/*", "kind": "item" }
+      ]
+    }
+  ]
+}

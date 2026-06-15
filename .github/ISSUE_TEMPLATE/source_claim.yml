@@ -1,0 +1,22 @@
+name: Source claim
+description: Claim a source you plan to implement.
+body:
+  - type: input
+    id: source_id
+    attributes:
+      label: Source ID
+    validations:
+      required: true
+  - type: dropdown
+    id: media
+    attributes:
+      label: Media kind
+      options: [manga, video, novel]
+    validations:
+      required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: Implementation plan
+    validations:
+      required: true

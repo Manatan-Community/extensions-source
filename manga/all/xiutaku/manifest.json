@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "xiutaku",
+  "name": "Xiutaku",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://xiutaku.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "xiutaku",
+      "name": "Xiutaku",
+      "lang": "all",
+      "baseUrl": "https://xiutaku.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

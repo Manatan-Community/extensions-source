@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animebase",
+  "name": "Anime-Base",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://anime-base.net"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animebase",
+      "name": "Anime-Base",
+      "lang": "de",
+      "baseUrl": "https://anime-base.net",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Favorites" },
+        { "id": "latest", "name": "Updates" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anime-base.net/anime/*", "kind": "item" },
+        { "pattern": "https://anime-base.net/link/*", "kind": "item" }
+      ]
+    }
+  ]
+}

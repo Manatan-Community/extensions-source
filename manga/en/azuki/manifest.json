@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "azuki",
+  "name": "Omoi",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.omoi.com", "https://production.api.azuki.co"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "azuki",
+      "name": "Omoi",
+      "lang": "en",
+      "baseUrl": "https://www.omoi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

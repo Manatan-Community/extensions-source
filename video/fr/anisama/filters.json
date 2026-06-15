@@ -1,0 +1,16 @@
+[
+  {
+    "key": "sort",
+    "title": "Trie par",
+    "type": "select",
+    "default": "",
+    "values": ["", "default", "recently_added", "most_watched", "name_az"]
+  },
+  {
+    "key": "language",
+    "title": "Langues",
+    "type": "select",
+    "default": "",
+    "values": ["", "sub", "dub"]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sakuramanhwa",
+  "name": "BlossomManhwa",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://api.cherrymanhwa.com", "https://cherrymanhwa.com"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "sakuramanhwa", "name": "BlossomManhwa", "lang": "all", "baseUrl": "https://api.cherrymanhwa.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

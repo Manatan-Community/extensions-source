@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "linovel",
+  "name": "linovel",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.linovel.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "linovel",
+      "name": "linovel",
+      "lang": "zh",
+      "baseUrl": "https://www.linovel.net",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

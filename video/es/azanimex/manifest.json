@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "azanimex",
+  "name": "az-animex",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://www.az-animex.com",
+    "https://series-am2.az-animex.com",
+    "https://series-nz2.az-animex.com"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "azanimex",
+      "name": "az-animex",
+      "lang": "es",
+      "baseUrl": "https://www.az-animex.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.az-animex.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

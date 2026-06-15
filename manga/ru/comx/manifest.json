@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comx",
+  "name": "Com-X",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://ru.com-x.life"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "comx",
+    "name": "Com-X",
+    "lang": "ru",
+    "baseUrl": "https://ru.com-x.life",
+    "contentType": "manga",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Последние" }
+    ],
+    "urlPatterns": [{ "pattern": "https://ru.com-x.life/*", "kind": "item" }]
+  }]
+}

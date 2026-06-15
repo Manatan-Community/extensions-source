@@ -1,0 +1,8 @@
+[
+  {
+    "id": "hiddenGenres",
+    "type": "multiselect",
+    "label": "Приховані жанри",
+    "options": []
+  }
+]

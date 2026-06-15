@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ninemanga",
+  "name": "NineManga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.ninemanga.com",
+      "https://es.ninemanga.com",
+      "https://br.ninemanga.com",
+      "https://ru.ninemanga.com",
+      "https://de.ninemanga.com",
+      "https://it.ninemanga.com",
+      "https://fr.ninemanga.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "ninemanga-en", "name": "NineMangaEn", "lang": "en", "baseUrl": "https://www.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-es", "name": "NineMangaEs", "lang": "es", "baseUrl": "https://es.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-pt-br", "name": "NineMangaBr", "lang": "pt-BR", "baseUrl": "https://br.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-ru", "name": "NineMangaRu", "lang": "ru", "baseUrl": "https://ru.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-de", "name": "NineMangaDe", "lang": "de", "baseUrl": "https://de.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-it", "name": "NineMangaIt", "lang": "it", "baseUrl": "https://it.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "ninemanga-fr", "name": "NineMangaFr", "lang": "fr", "baseUrl": "https://fr.ninemanga.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

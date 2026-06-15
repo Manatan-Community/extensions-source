@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kisskh",
+  "name": "KissKH",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://kisskh.ovh",
+    "https://kisskh.do",
+    "https://kisskh.co",
+    "https://kisskh.id",
+    "https://kisskh.la",
+    "https://script.google.com"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "kisskh",
+      "name": "KissKH",
+      "lang": "en",
+      "baseUrl": "https://kisskh.ovh",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kisskh.ovh/Drama/*", "kind": "item" },
+        { "pattern": "https://kisskh.do/Drama/*", "kind": "item" },
+        { "pattern": "https://kisskh.co/Drama/*", "kind": "item" },
+        { "pattern": "https://kisskh.id/Drama/*", "kind": "item" },
+        { "pattern": "https://kisskh.la/Drama/*", "kind": "item" }
+      ]
+    }
+  ]
+}

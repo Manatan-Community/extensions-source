@@ -1,0 +1,5 @@
+[
+  {"id":"preferred_server","type":"select","label":"Preferred server","default":"StreamWish","options":["StreamWish","Uqload","VidGuard","Dood","StreamHideVid","Voe","VidHide","Filemoon","External"]},
+  {"id":"preferred_quality","type":"select","label":"Preferred quality","default":"1080p","options":["480p","720p","1080p"]},
+  {"id":"preferred_language","type":"select","label":"Preferred language","default":"[LAT]","options":["[LAT]","[SUB]","[CAST]"]}
+]

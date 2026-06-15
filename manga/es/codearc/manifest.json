@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "codearc",
+  "name": "Code Arc Mangas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangas.codearctraducciones.com", "https://cdn.codearctraducciones.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "codearc",
+      "name": "Code Arc Mangas",
+      "lang": "es",
+      "baseUrl": "https://mangas.codearctraducciones.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangas.codearctraducciones.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

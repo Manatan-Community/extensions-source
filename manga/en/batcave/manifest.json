@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "batcave",
+  "name": "BatCave",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://batcave.biz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "batcave",
+      "name": "BatCave",
+      "lang": "en",
+      "baseUrl": "https://batcave.biz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

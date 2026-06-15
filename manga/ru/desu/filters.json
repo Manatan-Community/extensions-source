@@ -1,0 +1,72 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "name": "Сортировка",
+    "options": ["popular", "updated", "name"]
+  },
+  {
+    "id": "types",
+    "type": "multiSelect",
+    "name": "Тип",
+    "options": [
+      "manga:Манга",
+      "manhwa:Манхва",
+      "manhua:Маньхуа",
+      "one_shot:Ваншот",
+      "comics:Комикс"
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "multiSelect",
+    "name": "Жанр",
+    "options": [
+      "Dementia:Безумие",
+      "Martial Arts:Боевые искусства",
+      "Vampire:Вампиры",
+      "Military:Военное",
+      "Harem:Гарем",
+      "Demons:Демоны",
+      "Mystery:Детектив",
+      "Kids:Детское",
+      "Josei:Дзёсей",
+      "Doujinshi:Додзинси",
+      "Drama:Драма",
+      "Game:Игры",
+      "Historical:Исторический",
+      "Comedy:Комедия",
+      "Space:Космос",
+      "Magic:Магия",
+      "Cars:Машины",
+      "Mecha:Меха",
+      "Music:Музыка",
+      "Parody:Пародия",
+      "Slice of Life:Повседневность",
+      "Police:Полиция",
+      "Adventure:Приключения",
+      "Psychological:Психологическое",
+      "Romance:Романтика",
+      "Samurai:Самураи",
+      "Supernatural:Сверхъестественное",
+      "Shoujo:Сёдзе",
+      "Shoujo Ai:Сёдзе Ай",
+      "Seinen:Сейнен",
+      "Shounen:Сёнен",
+      "Shounen Ai:Сёнен Ай",
+      "Gender Bender:Смена пола",
+      "Sports:Спорт",
+      "Super Power:Супер сила",
+      "Thriller:Триллер",
+      "Horror:Ужасы",
+      "Sci-Fi:Фантастика",
+      "Fantasy:Фэнтези",
+      "Hentai:Хентай",
+      "School:Школа",
+      "Action:Экшен",
+      "Ecchi:Этти",
+      "Yuri:Юри",
+      "Yaoi:Яой"
+    ]
+  }
+]

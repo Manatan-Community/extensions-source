@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yaoilib",
+  "name": "YaoiLib",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://v2.shlib.life", "https://api.cdnlibs.org", "https://api2.mangalib.me", "https://hapi.hentaicdn.org", "https://api.imglib.info"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "yaoilib",
+    "name": "YaoiLib",
+    "lang": "ru",
+    "baseUrl": "https://v2.shlib.life",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Последние" }
+    ],
+    "urlPatterns": [{ "pattern": "https://v2.shlib.life/*", "kind": "item" }]
+  }]
+}

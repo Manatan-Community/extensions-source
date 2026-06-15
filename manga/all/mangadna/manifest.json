@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangadna",
+  "name": "MangaDNA",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangadna.com"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "mangadna-en", "name": "MangaDNA", "lang": "en", "baseUrl": "https://mangadna.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "mangadna-all", "name": "MangaDNA", "lang": "all", "baseUrl": "https://mangadna.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

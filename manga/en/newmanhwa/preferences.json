@@ -1,0 +1,9 @@
+[
+  {
+    "id": "base_url",
+    "type": "select",
+    "label": "Mirror",
+    "default": "https://newmanhwa.com",
+    "options": ["https://newmanhwa.com", "https://fullmanhwa.com"]
+  }
+]

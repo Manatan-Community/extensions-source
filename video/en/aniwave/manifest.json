@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "packageId": "aniwave",
+  "name": "AniWave (Unoriginal)",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://animewave.to",
+      "https://aniwave.id",
+      "https://aniwave.best",
+      "https://aniwave.ro",
+      "https://mapper.mewcdn.online",
+      "https://megaplay.buzz",
+      "https://kwik.cx"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "aniwave",
+      "name": "AniWave (Unoriginal)",
+      "lang": "en",
+      "baseUrl": "https://animewave.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Most Viewed" },
+        { "id": "latest", "name": "Latest Updated" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animewave.to/*", "kind": "item" },
+        { "pattern": "https://aniwave.id/*", "kind": "item" },
+        { "pattern": "https://aniwave.best/*", "kind": "item" },
+        { "pattern": "https://aniwave.ro/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "preferred_quality", "label": "Default-Quality", "kind": "select", "defaultValue": "1080", "options": ["1080", "720", "480"] },
+    { "id": "debrid_provider", "label": "Debrid Provider", "kind": "select", "defaultValue": "none", "options": ["none", "realdebrid", "premiumize", "alldebrid", "debridlink", "offcloud", "torbox"] },
+    { "id": "token", "label": "Token", "kind": "string", "defaultValue": "" }
+  ]
+}

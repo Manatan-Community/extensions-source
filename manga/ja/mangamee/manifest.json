@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangamee",
+  "name": "MangaMee",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga-mee.jp", "https://prod2-android.manga-mee.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangamee",
+      "name": "MangaMee",
+      "lang": "ja",
+      "baseUrl": "https://manga-mee.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga-mee.jp/detail/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "show_spoiler_chapters",
+    "type": "toggle",
+    "label": "Montrer les chapitres spoiler",
+    "default": false
+  }
+]

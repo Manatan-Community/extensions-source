@@ -1,0 +1,64 @@
+{
+  "groups": [
+    {
+      "id": "sort",
+      "label": "Sort By",
+      "type": "select",
+      "default": "updated_chapters_desc",
+      "options": [
+        { "label": "Latest Updated Chapters", "value": "updated_chapters_desc" },
+        { "label": "Oldest Updated Chapters", "value": "updated_chapters_asc" },
+        { "label": "Latest Created", "value": "created_at_desc" },
+        { "label": "Oldest Created", "value": "created_at_asc" },
+        { "label": "Title A-Z", "value": "name_asc" },
+        { "label": "Title Z-A", "value": "name_desc" },
+        { "label": "Views High to Low", "value": "views_desc" },
+        { "label": "Views Low to High", "value": "views_asc" }
+      ]
+    },
+    {
+      "id": "demographic",
+      "label": "Magazine Demographic",
+      "type": "select",
+      "default": "any",
+      "options": [
+        { "label": "Any", "value": "any" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Shoujo", "value": "shoujo" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Yuri", "value": "yuri" },
+        { "label": "Yaoi", "value": "yaoi" }
+      ]
+    },
+    {
+      "id": "status",
+      "label": "Publication Status",
+      "type": "select",
+      "default": "any",
+      "options": [
+        { "label": "Any", "value": "any" },
+        { "label": "Ongoing", "value": "ongoing" },
+        { "label": "Completed", "value": "completed" },
+        { "label": "Hiatus", "value": "hiatus" },
+        { "label": "Cancelled", "value": "cancelled" }
+      ]
+    },
+    { "id": "tagIncludedIds", "label": "Included tag IDs", "type": "string", "default": "" },
+    { "id": "tagExcludedIds", "label": "Excluded tag IDs", "type": "string", "default": "" },
+    {
+      "id": "tagIncludedMode",
+      "label": "Tag Include Mode",
+      "type": "select",
+      "default": "and",
+      "options": [{ "label": "AND", "value": "and" }, { "label": "OR", "value": "or" }]
+    },
+    {
+      "id": "tagExcludedMode",
+      "label": "Tag Exclude Mode",
+      "type": "select",
+      "default": "and",
+      "options": [{ "label": "AND", "value": "and" }, { "label": "OR", "value": "or" }]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangascantrad",
+  "name": "Manga-Scantrad",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga-scantrad.io"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangascantrad",
+      "name": "Manga-Scantrad",
+      "lang": "fr",
+      "baseUrl": "https://manga-scantrad.io",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernières sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga-scantrad.io/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

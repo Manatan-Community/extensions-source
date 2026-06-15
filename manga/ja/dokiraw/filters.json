@@ -1,0 +1,23 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "All",
+    "options": [
+      { "label": "All", "value": "All" },
+      { "label": "フルカラー", "value": "フルカラー" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "エロい", "value": "エロい" },
+      { "label": "コメディ", "value": "コメディ" },
+      { "label": "ロマンス", "value": "ロマンス" },
+      { "label": "アクション", "value": "アクション" },
+      { "label": "スポーツ", "value": "スポーツ" },
+      { "label": "ファンタジー", "value": "ファンタジー" },
+      { "label": "SF", "value": "SF" },
+      { "label": "異世界", "value": "異世界" },
+      { "label": "心理的", "value": "心理的" },
+      { "label": "青年", "value": "青年" }
+    ]
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "luvevaland",
+  "name": "LuvEvaLand",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://luvevalands2.co", "https://picevaland.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "luvevaland",
+      "name": "LuvEvaLand",
+      "lang": "vi",
+      "baseUrl": "https://luvevalands2.co",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://luvevalands2.co/truyen-tranh/*", "kind": "item" },
+        { "pattern": "https://luvevalands2.co/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "groups": [
+    { "id": "category", "type": "select", "name": "Category", "options": ["Any", "China", "Cosplay", "Japan", "Korea", "Thailand"] },
+    { "id": "tags", "type": "text", "name": "Included tag IDs" },
+    { "id": "tagsExclude", "type": "text", "name": "Excluded tag IDs" }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sololatino",
+  "name": "SoloLatino",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://sololatino.net"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "sololatino",
+    "name": "SoloLatino",
+    "lang": "es",
+    "baseUrl": "https://sololatino.net",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Tendencias" },
+      { "id": "latest", "name": "Estrenos" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://sololatino.net/pelicula/*", "kind": "item" },
+      { "pattern": "https://sololatino.net/serie/*", "kind": "item" },
+      { "pattern": "https://sololatino.net/episodio/*", "kind": "episode" }
+    ]
+  }]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sandraandwoo",
+  "name": "Sandra and Woo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.sandraandwoo.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "sandraandwoo-en", "name": "Sandra and Woo", "lang": "en", "baseUrl": "https://www.sandraandwoo.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "sandraandwoo-de", "name": "Sandra und Woo", "lang": "de", "baseUrl": "https://www.sandraandwoo.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

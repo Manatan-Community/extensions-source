@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangafoxfun",
+  "name": "MangaFox.fun",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangafox.fun", "https://api.mghcdn.com", "https://imgx.mghcdn.com", "https://thumb.mghcdn.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangafoxfun",
+      "name": "MangaFox.fun",
+      "lang": "en",
+      "baseUrl": "https://mangafox.fun",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

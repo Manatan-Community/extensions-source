@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "onepiecefans",
+  "name": "One Piece Fans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://one-piece-fans2.com"],
+    "webview": false,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "onepiecefans-es", "name": "One Piece Fans", "lang": "es", "baseUrl": "https://one-piece-fans2.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "onepiecefans-en", "name": "One Piece Fans", "lang": "en", "baseUrl": "https://one-piece-fans2.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": true, "home": false, "urlResolution": true } }
+  ]
+}

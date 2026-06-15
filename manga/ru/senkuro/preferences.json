@@ -1,0 +1,3 @@
+[
+  { "id": "apiDomain", "type": "select", "label": "Домен", "options": ["https://api.senkuro.me", "https://api.senkuro.com"], "default": "https://api.senkuro.me" }
+]

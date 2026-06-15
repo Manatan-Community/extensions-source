@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lmanime",
+  "name": "LMAnime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://lmanime.com"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "lmanime",
+      "name": "LMAnime",
+      "lang": "all",
+      "baseUrl": "https://lmanime.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lmanime.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

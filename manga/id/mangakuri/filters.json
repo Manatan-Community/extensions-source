@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sort", "name": "Sort By", "default": "new", "options": [
+      { "label": "New", "value": "new" },
+      { "label": "Top Views", "value": "views" },
+      { "label": "Top Rate", "value": "rate" },
+      { "label": "Top Bookmark", "value": "bookmark" },
+      { "label": "Title A-Z", "value": "az" },
+      { "label": "Title Z-A", "value": "za" }
+    ] },
+    { "type": "select", "id": "order", "name": "Order", "default": "desc", "options": [
+      { "label": "DESC", "value": "desc" },
+      { "label": "ASC", "value": "asc" }
+    ] },
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "ONGOING" },
+      { "label": "Completed", "value": "COMPLETED" },
+      { "label": "Hiatus", "value": "HIATUS" }
+    ] },
+    { "type": "text", "id": "genre", "name": "Genre slug" },
+    { "type": "select", "id": "comic_type", "name": "Type", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Manga", "value": "MANGA" },
+      { "label": "Manhwa", "value": "MANHWA" },
+      { "label": "Manhua", "value": "MANHUA" }
+    ] },
+    { "type": "select", "id": "color_format", "name": "Color", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Full Color", "value": "FULL_COLOR" },
+      { "label": "B&W", "value": "BW" }
+    ] },
+    { "type": "select", "id": "reading_format", "name": "Reading", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Vertical Scroll", "value": "VERTICAL_SCROLL" },
+      { "label": "Page", "value": "PAGE" }
+    ] },
+    { "type": "text", "id": "author", "name": "Author" },
+    { "type": "text", "id": "artist", "name": "Artist" },
+    { "type": "text", "id": "publisher", "name": "Publisher" }
+  ]
+}

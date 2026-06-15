@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangabay",
+  "name": "Manga-Bay",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://read.manga-bay.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangabay",
+      "name": "Manga-Bay",
+      "lang": "en",
+      "baseUrl": "https://read.manga-bay.org",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

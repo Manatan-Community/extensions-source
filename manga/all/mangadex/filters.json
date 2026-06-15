@@ -1,0 +1,14 @@
+{
+  "groups": [
+    { "id": "sort", "label": "Sort", "type": "select", "default": "relevance", "options": [
+      { "label": "Relevance", "value": "relevance" },
+      { "label": "Latest Uploaded Chapter", "value": "latestUploadedChapter" },
+      { "label": "Most Followed", "value": "followedCount" },
+      { "label": "Recently Added", "value": "createdAt" },
+      { "label": "Title", "value": "title" }
+    ] },
+    { "id": "contentRating", "label": "Content ratings", "type": "string", "default": "safe,suggestive,erotica,pornographic" },
+    { "id": "includedTags", "label": "Included tag UUIDs", "type": "string", "default": "" },
+    { "id": "excludedTags", "label": "Excluded tag UUIDs", "type": "string", "default": "" }
+  ]
+}

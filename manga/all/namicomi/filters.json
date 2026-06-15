@@ -1,0 +1,70 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Sort",
+    "default": "views",
+    "options": [
+      {
+        "label": "Most viewed",
+        "value": "views"
+      },
+      {
+        "label": "Latest",
+        "value": "publishedAt"
+      },
+      {
+        "label": "Recently updated",
+        "value": "updatedAt"
+      }
+    ]
+  },
+  {
+    "id": "contentRating",
+    "type": "select",
+    "name": "Content rating",
+    "default": "safe,suggestive,erotica",
+    "options": [
+      {
+        "label": "Safe + suggestive + erotica",
+        "value": "safe,suggestive,erotica"
+      },
+      {
+        "label": "Safe only",
+        "value": "safe"
+      },
+      {
+        "label": "All",
+        "value": "safe,suggestive,erotica,pornographic"
+      }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "name": "Status",
+    "default": "",
+    "options": [
+      {
+        "label": "Any",
+        "value": ""
+      },
+      {
+        "label": "Ongoing",
+        "value": "ongoing"
+      },
+      {
+        "label": "Completed",
+        "value": "completed"
+      },
+      {
+        "label": "Hiatus",
+        "value": "hiatus"
+      },
+      {
+        "label": "Cancelled",
+        "value": "cancelled"
+      }
+    ]
+  }
+]

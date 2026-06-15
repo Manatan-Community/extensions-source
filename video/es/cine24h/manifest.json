@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cine24h",
+  "name": "Cine24h",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://cine24h.online"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "cine24h",
+    "name": "Cine24h",
+    "lang": "es",
+    "baseUrl": "https://cine24h.online",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Mas vistas" },
+      { "id": "latest", "name": "Estrenos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://cine24h.online/*", "kind": "item" }]
+  }]
+}

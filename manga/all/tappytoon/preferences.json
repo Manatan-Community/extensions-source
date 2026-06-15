@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "select",
+      "id": "latestDay",
+      "name": "Latest day",
+      "default": "mon",
+      "options": [
+        { "label": "Sunday", "value": "sun" },
+        { "label": "Monday", "value": "mon" },
+        { "label": "Tuesday", "value": "tue" },
+        { "label": "Wednesday", "value": "wed" },
+        { "label": "Thursday", "value": "thu" },
+        { "label": "Friday", "value": "fri" },
+        { "label": "Saturday", "value": "sat" }
+      ]
+    }
+  ]
+}

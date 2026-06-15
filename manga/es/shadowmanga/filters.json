@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "text",
+      "id": "genres",
+      "name": "Géneros incluidos, separados por coma"
+    },
+    {
+      "type": "text",
+      "id": "excludedGenres",
+      "name": "Géneros excluidos, separados por coma"
+    }
+  ]
+}

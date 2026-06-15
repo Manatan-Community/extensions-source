@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hanayume",
+  "name": "Hana To Yume+",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hanayume.com", "https://cdn-public.comici.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hanayume",
+      "name": "Hana To Yume+",
+      "lang": "ja",
+      "baseUrl": "https://hanayume.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": false, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [
+        { "pattern": "https://hanayume.com/episodes/*", "kind": "chapter" },
+        { "pattern": "https://hanayume.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "album",
+      "name": "Album",
+      "default": "album/Various-Authors",
+      "options": [
+        { "label": "Various Authors", "value": "album/Various-Authors" },
+        { "label": "Fakku Comics", "value": "album/Fakku-Comics" },
+        { "label": "Hentai and Manga English", "value": "album/Hentai-and-Manga-English" },
+        { "label": "ShadBase Comics", "value": "album/ShadBase-Comics" },
+        { "label": "MilfToon Comics", "value": "album/MilfToon-Comics" },
+        { "label": "JAB Comics", "value": "album/JAB-Comics" },
+        { "label": "8muses Comics", "value": "album/8muses-Comics" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "",
+      "options": [
+        { "label": "Views", "value": "" },
+        { "label": "Likes", "value": "like" },
+        { "label": "Date", "value": "date" },
+        { "label": "A-Z", "value": "az" }
+      ]
+    }
+  ]
+}

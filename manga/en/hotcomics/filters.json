@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "browse",
+      "name": "Browse",
+      "default": "en",
+      "options": [
+        { "label": "Home", "value": "en" },
+        { "label": "Weekly", "value": "en/weekly" },
+        { "label": "New", "value": "en/new" },
+        { "label": "Genre: All", "value": "en/genres" },
+        { "label": "Genre: Sports", "value": "en/genres/Sports" },
+        { "label": "Genre: Historical", "value": "en/genres/Historical" },
+        { "label": "Genre: Drama", "value": "en/genres/Drama" },
+        { "label": "Genre: BL", "value": "en/genres/BL" },
+        { "label": "Genre: Thriller", "value": "en/genres/Thriller" },
+        { "label": "Genre: School life", "value": "en/genres/School_life" },
+        { "label": "Genre: Comedy", "value": "en/genres/Comedy" },
+        { "label": "Genre: GL", "value": "en/genres/GL" },
+        { "label": "Genre: Action", "value": "en/genres/Action" },
+        { "label": "Genre: Sci-fi", "value": "en/genres/Sci-fi" },
+        { "label": "Genre: Horror", "value": "en/genres/Horror" },
+        { "label": "Genre: Fantasy", "value": "en/genres/Fantasy" },
+        { "label": "Genre: Romance", "value": "en/genres/Romance" }
+      ]
+    }
+  ]
+}

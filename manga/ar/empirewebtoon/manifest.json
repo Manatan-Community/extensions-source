@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "empirewebtoon",
+  "name": "Empire Webtoon",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://webtoonempire-bl.com"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "empirewebtoon",
+      "name": "Empire Webtoon",
+      "lang": "ar",
+      "baseUrl": "https://webtoonempire-bl.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "text", "id": "type", "name": "Type" },
+    { "type": "text", "id": "status", "name": "Statut" },
+    {
+      "type": "text",
+      "id": "genre",
+      "name": "Genres",
+      "description": "Valeurs de genres à envoyer en genre[], séparées par des virgules."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangasehri",
+  "name": "Manga Sehri",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "tr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga-sehri.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangasehri",
+      "name": "Manga Sehri",
+      "lang": "tr",
+      "baseUrl": "https://manga-sehri.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

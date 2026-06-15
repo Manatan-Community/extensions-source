@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "example-novel",
+  "name": "Example Novel",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.svg",
+  "sources": [
+    {
+      "id": "example-novel",
+      "name": "Example Novel",
+      "lang": "en",
+      "baseUrl": "https://novel.example",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://novel.example/novel/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "overrideBaseUrl",
+    "label": "Custom source URL",
+    "kind": "text",
+    "defaultValue": "https://hiperdex.com"
+  },
+  {
+    "id": "removeTitleVersion",
+    "label": "Remove version information from titles",
+    "kind": "toggle",
+    "defaultValue": "false"
+  },
+  {
+    "id": "removeTitleCustom",
+    "label": "Custom regex removed from titles",
+    "kind": "text",
+    "defaultValue": ""
+  }
+]

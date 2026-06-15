@@ -1,0 +1,8 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genres",
+    "options": ["shonen", "shojo", "seinen", "kids", "josei", "artbook", "one-shot", "bl", "suspense", "mystery", "adventure", "drama", "yuri", "sports", "food", "sci-fi", "isekai", "action", "fantasy", "horror", "romance", "comedy", "death-game", "war", "rom-com", "travel", "nature", "showbiz", "educational", "medical", "animal", "slice-of-life", "supernatural", "art", "gamble", "depressing", "profession", "survival", "hobby", "history"]
+  }
+]

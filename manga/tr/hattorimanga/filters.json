@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genres", "type": "text", "name": "Genres" }
+  ]
+}

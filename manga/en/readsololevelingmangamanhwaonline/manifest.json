@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "readsololevelingmangamanhwaonline",
+  "name": "Read Solo Leveling Manga Manhwa Online",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://ww3.readsololeveling.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "readsololevelingmangamanhwaonline",
+      "name": "Read Solo Leveling Manga Manhwa Online",
+      "lang": "en",
+      "baseUrl": "https://ww3.readsololeveling.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

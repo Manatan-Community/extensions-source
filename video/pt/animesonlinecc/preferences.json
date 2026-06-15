@@ -1,0 +1,10 @@
+[
+  { "id": "preferred_language", "type": "select", "label": "Lingua preferida", "default": "Legendado", "options": [
+    { "label": "Legendado", "value": "Legendado" },
+    { "label": "Dublado", "value": "Dublado" }
+  ] },
+  { "id": "preferred_quality", "type": "select", "label": "Qualidade preferida", "default": "720p", "options": [
+    { "label": "720p", "value": "720p" },
+    { "label": "360p", "value": "360p" }
+  ] }
+]

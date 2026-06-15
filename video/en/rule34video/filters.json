@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "order",
+      "label": "Sort by",
+      "kind": "select",
+      "defaultValue": "latest-updates",
+      "options": [
+        "latest-updates",
+        "most-popular",
+        "top-rated"
+      ]
+    },
+    {
+      "id": "category",
+      "label": "Category",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        "",
+        "Straight:2109",
+        "Futa:15",
+        "Gay:192",
+        "Music:4747",
+        "Iwara:1821"
+      ]
+    },
+    {
+      "id": "tag",
+      "label": "Tag search",
+      "kind": "text",
+      "defaultValue": ""
+    },
+    {
+      "id": "tag_ids",
+      "label": "Tag IDs",
+      "kind": "text",
+      "defaultValue": ""
+    }
+  ]
+}

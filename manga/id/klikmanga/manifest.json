@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "klikmanga",
+  "name": "KlikManga",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://klikmanga.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "klikmanga",
+      "name": "KlikManga",
+      "lang": "id",
+      "baseUrl": "https://klikmanga.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

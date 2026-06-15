@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Estado",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "En curso", "value": "Ongoing" },
+        { "label": "Completado", "value": "Completed" },
+        { "label": "Abandonado", "value": "Dropped" },
+        { "label": "Próximamente", "value": "Upcoming" },
+        { "label": "Pausado", "value": "Hiatus" },
+        { "label": "Cancelado", "value": "Cancelled" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Tipo",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Novel", "value": "Novel" },
+        { "label": "Web Novel JP", "value": "Web Novel (JP)" },
+        { "label": "Web Novel KR", "value": "Web Novel (KR)" },
+        { "label": "Web Novel CN", "value": "Web Novel (CN)" },
+        { "label": "Doujinshi", "value": "Doujinshi" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "genres",
+      "name": "Géneros, separados por coma"
+    }
+  ]
+}

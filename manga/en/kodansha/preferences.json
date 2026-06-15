@@ -1,0 +1,5 @@
+[
+  { "id": "hide_locked", "type": "toggle", "label": "Hide paid chapters", "default": false },
+  { "id": "email_pref", "type": "text", "label": "E-Mail", "default": "" },
+  { "id": "password_pref", "type": "text", "label": "Password", "default": "" }
+]

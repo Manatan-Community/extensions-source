@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangano",
+  "name": "MangaNo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga-no.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangano",
+      "name": "MangaNo",
+      "lang": "ja",
+      "baseUrl": "https://manga-no.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga-no.com/works/*", "kind": "item" },
+        { "pattern": "https://manga-no.com/episodes/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

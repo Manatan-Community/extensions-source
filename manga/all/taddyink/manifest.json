@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "taddyink",
+  "name": "Taddy INK",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://taddy.org"],
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "taddyink",
+      "name": "Taddy INK",
+      "lang": "all",
+      "baseUrl": "https://taddy.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

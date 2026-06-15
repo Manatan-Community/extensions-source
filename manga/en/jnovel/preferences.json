@@ -1,0 +1,3 @@
+[
+  { "id": "hide_locked", "type": "boolean", "label": "Hide locked chapters", "default": false }
+]

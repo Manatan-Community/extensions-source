@@ -1,0 +1,42 @@
+[
+  {
+    "id": "collection",
+    "type": "select",
+    "name": "フィルター",
+    "options": [
+      { "label": "すべて", "value": "" },
+      { "label": "echo", "value": "series/echo" },
+      { "label": "gateau", "value": "series/gateau" },
+      { "label": "カラフルハピネス", "value": "series/colorful_happiness" },
+      { "label": "REX", "value": "series/rex" },
+      { "label": "HOWL", "value": "series/howl" },
+      { "label": "POOL", "value": "series/pool" },
+      { "label": "百合姫", "value": "series/yurihime" },
+      { "label": "LAKE", "value": "series/lake" },
+      { "label": "ZERO-SUM", "value": "series/zerosum" },
+      { "label": "ぱれっと", "value": "series/palette" },
+      { "label": "ベビードール", "value": "series/babydoll" },
+      { "label": "一迅プラス", "value": "series/ichijin-plus" },
+      { "label": "恋愛", "value": "genres/romance" },
+      { "label": "ラブコメ", "value": "genres/romantic-comedy" },
+      { "label": "コメディ・ギャグ", "value": "genres/comedy" },
+      { "label": "ホラー", "value": "genres/horror" },
+      { "label": "サスペンス", "value": "genres/suspense" },
+      { "label": "アクション・バトル", "value": "genres/action" },
+      { "label": "歴史・時代", "value": "genres/history" },
+      { "label": "日常", "value": "genres/nichijo" },
+      { "label": "ヒューマンドラマ", "value": "genres/drama" },
+      { "label": "異世界・転生", "value": "genres/isekai" },
+      { "label": "ファンタジー", "value": "genres/fantasy" },
+      { "label": "百合", "value": "genres/yuri" },
+      { "label": "BL", "value": "genres/bl" },
+      { "label": "TL", "value": "genres/tl" },
+      { "label": "学園・青春", "value": "genres/school" },
+      { "label": "お仕事", "value": "genres/work" },
+      { "label": "メディア化", "value": "genres/media" },
+      { "label": "新人・読切", "value": "genres/oneshot" },
+      { "label": "完結", "value": "genres/finished" },
+      { "label": "オリジナル", "value": "genres/original" }
+    ]
+  }
+]

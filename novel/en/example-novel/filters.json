@@ -1,0 +1,4 @@
+[
+  { "id": "genre", "type": "multiSelect", "label": "Genre", "options": ["fantasy", "mystery", "slice-of-life"] },
+  { "id": "completed", "type": "checkbox", "label": "Completed only" }
+]

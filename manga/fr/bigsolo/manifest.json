@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "bigsolo",
+  "name": "BigSolo",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://bigsolo.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "bigsolo",
+      "name": "BigSolo",
+      "lang": "fr",
+      "baseUrl": "https://bigsolo.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Recommandés" },
+        { "id": "latest", "name": "Nouveautés" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://bigsolo.org/*", "kind": "item" }
+      ]
+    }
+  ]
+}

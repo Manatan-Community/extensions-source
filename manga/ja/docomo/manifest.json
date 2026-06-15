@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "docomo",
+  "name": "Docomo",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://dbook.docomo.ne.jp", "https://dxp-system.docomo.ne.jp", "https://rs4x.mw-pf.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "docomo",
+      "name": "Docomo",
+      "lang": "ja",
+      "baseUrl": "https://dbook.docomo.ne.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://dbook.docomo.ne.jp/item/*", "kind": "item" },
+        { "pattern": "https://dbook.docomo.ne.jp/view/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

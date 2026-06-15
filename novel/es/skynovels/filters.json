@@ -1,0 +1,22 @@
+[
+  {
+    "id": "genres",
+    "type": "multiSelect",
+    "label": "Generos",
+    "default": [],
+    "options": [
+      { "label": "Accion", "value": "9" },
+      { "label": "Adulto", "value": "38" },
+      { "label": "Artes marciales", "value": "3" },
+      { "label": "Aventura", "value": "2" },
+      { "label": "BL", "value": "40" },
+      { "label": "Comedia", "value": "7" },
+      { "label": "Drama", "value": "8" },
+      { "label": "Fantasia", "value": "4" },
+      { "label": "Harem", "value": "12" },
+      { "label": "Romance", "value": "5" },
+      { "label": "Xianxia", "value": "6" },
+      { "label": "Xuanhuan", "value": "11" }
+    ]
+  }
+]

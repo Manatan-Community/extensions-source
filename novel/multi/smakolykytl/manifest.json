@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "smakolykytl",
+  "name": "Smakolyky TL",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "multi",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://smakolykytl.site",
+      "https://api.smakolykytl.site"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "smakolykytl",
+      "name": "Smakolyky TL",
+      "lang": "multi",
+      "baseUrl": "https://smakolykytl.site",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "urlPatterns": [
+        {
+          "pattern": "https://smakolykytl.site/titles/*",
+          "kind": "item"
+        }
+      ],
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

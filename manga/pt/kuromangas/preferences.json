@@ -1,0 +1,5 @@
+[
+  { "id": "email", "type": "string", "label": "Email", "default": "" },
+  { "id": "password", "type": "password", "label": "Senha", "default": "" },
+  { "id": "bearerToken", "type": "password", "label": "Bearer token", "default": "" }
+]

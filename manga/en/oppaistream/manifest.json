@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "oppaistream",
+  "name": "Oppai Stream",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://read.oppai.stream", "https://myspacecat.pictures"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "oppaistream",
+      "name": "Oppai Stream",
+      "lang": "en",
+      "baseUrl": "https://read.oppai.stream",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

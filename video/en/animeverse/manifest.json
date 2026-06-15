@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeverse",
+  "name": "AnimeVerse",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://animeverse.to"
+  ],
+  "sources": [
+    {
+      "id": "animeverse",
+      "name": "AnimeVerse",
+      "lang": "en",
+      "baseUrl": "https://animeverse.to",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animeverse.to/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

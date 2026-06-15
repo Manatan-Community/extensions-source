@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kazokuden",
+  "name": "Kazoku Den",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://kazokuden.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kazokuden",
+      "name": "Kazoku Den",
+      "lang": "es",
+      "baseUrl": "https://kazokuden.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

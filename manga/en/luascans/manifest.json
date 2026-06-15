@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "luascans",
+  "name": "Lua Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://luacomic.org", "https://api.luacomic.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "luascans",
+      "name": "Lua Scans",
+      "lang": "en",
+      "baseUrl": "https://luacomic.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

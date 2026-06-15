@@ -1,0 +1,6 @@
+{
+  "groups": [
+    { "id": "dataSaver", "type": "toggle", "name": "Data saver images", "default": false },
+    { "id": "showLockedChapters", "type": "toggle", "name": "Show locked chapters", "default": true }
+  ]
+}

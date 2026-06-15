@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comico",
+  "name": "Comico",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "comico",
+      "name": "Comico",
+      "lang": "ja",
+      "baseUrl": "https://www.comico.jp",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.comico.jp/comic/*", "kind": "item" }
+      ]
+    }
+  ]
+}

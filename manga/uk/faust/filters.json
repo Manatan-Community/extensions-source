@@ -1,0 +1,47 @@
+[
+  {
+    "id": "sortBy",
+    "type": "select",
+    "label": "Сортувати за",
+    "options": [
+      { "label": "Оцінками", "value": "rating" },
+      { "label": "Популярністю", "value": "popularity" },
+      { "label": "Алфавітом", "value": "alphabet" },
+      { "label": "Останні оновлення", "value": "updated" },
+      { "label": "Нові тайтли", "value": "newest" }
+    ]
+  },
+  {
+    "id": "sortDirection",
+    "type": "select",
+    "label": "Напрям",
+    "options": [
+      { "label": "За спаданням", "value": "-" },
+      { "label": "За зростанням", "value": "+" }
+    ]
+  },
+  {
+    "id": "mangaType",
+    "type": "select",
+    "label": "Тип",
+    "options": [
+      { "label": "Всі категорії", "value": "" },
+      { "label": "Манґа", "value": "Manga" },
+      { "label": "Манхва", "value": "Manhwa" },
+      { "label": "Маньхва", "value": "Manhua" },
+      { "label": "Ваншот", "value": "Oneshot" },
+      { "label": "Вебкомікс", "value": "Webcomic" },
+      { "label": "Доджінші", "value": "Doujinshi" },
+      { "label": "Екстра", "value": "Extra" },
+      { "label": "Комікс", "value": "Comics" },
+      { "label": "Мальопис", "value": "Malyopys" }
+    ]
+  },
+  { "id": "translationStatus", "type": "text", "label": "Статус перекладу" },
+  { "id": "publicationStatus", "type": "text", "label": "Статус виходу" },
+  { "id": "ageBracket", "type": "text", "label": "Вікова категорія" },
+  { "id": "yearFrom", "type": "text", "label": "Рік від" },
+  { "id": "yearTo", "type": "text", "label": "Рік до" },
+  { "id": "minChapters", "type": "text", "label": "Розділів від" },
+  { "id": "maxChapters", "type": "text", "label": "Розділів до" }
+]

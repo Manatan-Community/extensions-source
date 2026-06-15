@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "allporncomicio",
+  "name": "AllPornComic.io",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://allporncomic.io"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "allporncomicio",
+      "name": "AllPornComic.io",
+      "lang": "en",
+      "baseUrl": "https://allporncomic.io",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

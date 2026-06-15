@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "komikstation",
+  "name": "Komik Station",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://komikstation.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "komikstation",
+      "name": "Komik Station",
+      "lang": "id",
+      "baseUrl": "https://komikstation.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

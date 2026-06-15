@@ -1,0 +1,10 @@
+[
+  { "id": "orderBy", "type": "select", "label": "Order by", "default": "views", "options": ["", "views", "latest", "popular", "alphabetical", "rating", "chapters"] },
+  { "id": "keyword", "type": "text", "label": "Keywords", "default": "" },
+  { "id": "status", "type": "select", "label": "Status", "default": "all", "options": ["all", "ongoing", "completed", "hiatus", "cancelled"] },
+  { "id": "genreInclude", "type": "multiSelect", "label": "Include genres", "default": [], "options": ["action", "actionadventure", "adult", "adventure", "comedy", "drama", "eastern", "ecchi", "fan-fiction", "fantasy", "game", "gender-bender", "harem", "historical", "horror", "isekai", "josei", "lolicon", "magic", "martial-arts", "mature", "mecha", "military", "modern-life", "movies", "mystery", "psychologic", "psychological", "reincarnation", "romance", "school-life", "sci-fi", "seinen", "shoujo", "shoujo-ai", "shounen", "shounen-ai", "slice-of-life", "smut", "sports", "supernatural", "system", "thriller", "tragedy", "urban", "urban-life", "wuxia", "xianxia", "xuanhuan", "yaoi", "yuri"] },
+  { "id": "genreExclude", "type": "multiSelect", "label": "Exclude genres", "default": [], "options": ["action", "actionadventure", "adult", "adventure", "comedy", "drama", "eastern", "ecchi", "fan-fiction", "fantasy", "game", "gender-bender", "harem", "historical", "horror", "isekai", "josei", "lolicon", "magic", "martial-arts", "mature", "mecha", "military", "modern-life", "movies", "mystery", "psychologic", "psychological", "reincarnation", "romance", "school-life", "sci-fi", "seinen", "shoujo", "shoujo-ai", "shounen", "shounen-ai", "slice-of-life", "smut", "sports", "supernatural", "system", "thriller", "tragedy", "urban", "urban-life", "wuxia", "xianxia", "xuanhuan", "yaoi", "yuri"] },
+  { "id": "min_ch", "type": "text", "label": "Minimum Chapters", "default": "" },
+  { "id": "max_ch", "type": "text", "label": "Maximum Chapters", "default": "" },
+  { "id": "demo", "type": "multiSelect", "label": "Demographics", "default": [], "options": ["shounen", "shoujo", "seinen", "josei"] }
+]

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hanime1-video",
+  "name": "Hanime1.me",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "video",
+  "contentRating": "adult",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": ["https://hanime1.me"],
+  "sources": [
+    {
+      "id": "hanime1-video",
+      "name": "Hanime1.me",
+      "lang": "zh",
+      "baseUrl": "https://hanime1.me",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "本週排行" },
+        { "id": "latest", "name": "最新上市" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hanime1.me/watch/*", "kind": "item" }
+      ]
+    }
+  ]
+}

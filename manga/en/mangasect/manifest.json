@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangasect",
+  "name": "Manga Sect",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangasect.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangasect",
+      "name": "Manga Sect",
+      "lang": "en",
+      "baseUrl": "https://mangasect.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Weekly Ranking" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

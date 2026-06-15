@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangafire",
+  "name": "MangaFire",
+  "version": "0.1.0",
+  "versionCode": 23,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://mangafire.to",
+      "https://static.mangafire.to",
+      "https://mfcdn.nl",
+      "https://cdnjs.cloudflare.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangafire-en",
+      "name": "MangaFire",
+      "lang": "en",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-es",
+      "name": "MangaFire",
+      "lang": "es",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-es-419",
+      "name": "MangaFire",
+      "lang": "es-419",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-fr",
+      "name": "MangaFire",
+      "lang": "fr",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-ja",
+      "name": "MangaFire",
+      "lang": "ja",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-pt",
+      "name": "MangaFire",
+      "lang": "pt",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "mangafire-pt-br",
+      "name": "MangaFire",
+      "lang": "pt-BR",
+      "baseUrl": "https://mangafire.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

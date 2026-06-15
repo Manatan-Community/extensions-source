@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesgames",
+  "name": "Animes Games",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animesgames.cc"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animesgames",
+    "name": "Animes Games",
+    "lang": "pt-BR",
+    "baseUrl": "https://animesgames.cc",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Top 10" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animesgames.cc/*", "kind": "item" }
+    ]
+  }]
+}

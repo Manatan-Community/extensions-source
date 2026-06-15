@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yskcomics",
+  "name": "YSK Comics",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.ysk-comics.com",
+      "https://api.ysk-comics.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "yskcomics-ar",
+      "name": "YSK Comics",
+      "lang": "ar",
+      "baseUrl": "https://www.ysk-comics.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "yskcomics-en",
+      "name": "YSK Comics",
+      "lang": "en",
+      "baseUrl": "https://www.ysk-comics.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

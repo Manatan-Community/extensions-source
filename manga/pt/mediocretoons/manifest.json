@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mediocretoons",
+  "name": "Mediocre Toons",
+  "version": "0.1.0",
+  "versionCode": 18,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://mediocrescan.com",
+      "https://back.mediocrescan.com",
+      "https://cdn.mediocrescan.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mediocretoons",
+      "name": "Mediocre Toons",
+      "lang": "pt-BR",
+      "baseUrl": "https://mediocrescan.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mediocrescan.com/obra/*", "kind": "item" },
+        { "pattern": "https://mediocrescan.com/capitulo/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

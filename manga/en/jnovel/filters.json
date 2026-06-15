@@ -1,0 +1,50 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort by",
+    "default": "",
+    "options": [
+      { "label": "Newest", "value": "" },
+      { "label": "Oldest", "value": "old" },
+      { "label": "A-Z", "value": "asc" },
+      { "label": "Z-A", "value": "desc" }
+    ]
+  },
+  {
+    "id": "label",
+    "type": "select",
+    "label": "Label",
+    "default": "",
+    "options": [
+      { "label": "All labels", "value": "" },
+      { "label": "J-Novel Club", "value": "club" },
+      { "label": "J-Novel Heart", "value": "heart" },
+      { "label": "J-Novel Pulp", "value": "pulp" },
+      { "label": "J-Novel Knight", "value": "knight" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Publication status",
+    "default": "",
+    "options": [
+      { "label": "Show all", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Complete", "value": "complete" },
+      { "label": "On hiatus", "value": "inactive" }
+    ]
+  },
+  {
+    "id": "rentals",
+    "type": "select",
+    "label": "Rentals",
+    "default": "",
+    "options": [
+      { "label": "Show all", "value": "" },
+      { "label": "Available", "value": "available" },
+      { "label": "Unavailable", "value": "unavailable" }
+    ]
+  }
+]

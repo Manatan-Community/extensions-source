@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Ordenar por",
+      "default": "newest",
+      "options": [
+        { "label": "Recientes", "value": "newest" },
+        { "label": "Populares", "value": "popular" },
+        { "label": "Valorados", "value": "rating" },
+        { "label": "A - Z", "value": "az" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Género (Ignorado si hay texto en la búsqueda)",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Acción", "value": "accion" },
+        { "label": "Artes Marciales", "value": "artes-marciales" },
+        { "label": "Aventura", "value": "aventura" },
+        { "label": "BL", "value": "bl" },
+        { "label": "Ciencia Ficción", "value": "ciencia-ficcion" },
+        { "label": "Comedia", "value": "comedia" },
+        { "label": "Deportes", "value": "deportes" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Escolar", "value": "escolar" },
+        { "label": "Fantasía", "value": "fantasia" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "HFY", "value": "humanity-fvck-yeah" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Kingdom building", "value": "kingdom-building" },
+        { "label": "Mecha", "value": "mecha" },
+        { "label": "Misterio", "value": "misterio" },
+        { "label": "Murim", "value": "murim" },
+        { "label": "Psicológico", "value": "psicologico" },
+        { "label": "Reencarnación", "value": "reencarnacion" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Sistemas", "value": "sistemas" },
+        { "label": "Slice of Life", "value": "slice-of-life" },
+        { "label": "Sobrenatural", "value": "sobrenatural" },
+        { "label": "Tragedia", "value": "tragedia" },
+        { "label": "Xianxia", "value": "xianxia" },
+        { "label": "Xuanhuan", "value": "xuanhuan" },
+        { "label": "Yuri", "value": "yuri" }
+      ]
+    }
+  ]
+}

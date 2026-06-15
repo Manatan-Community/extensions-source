@@ -1,0 +1,18 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "Category",
+    "default": "",
+    "options": [
+      { "label": "Search", "value": "" },
+      { "label": "Top 3 days", "value": "/top3/" },
+      { "label": "Top 7 days", "value": "/top7/" },
+      { "label": "Top 30 days", "value": "/top30/" },
+      { "label": "Cosplay", "value": "/tag/cosplay/" },
+      { "label": "AI Generated", "value": "/tag/ai-generated/" },
+      { "label": "XIUREN", "value": "/tag/xiuren/" },
+      { "label": "DJAWA", "value": "/tag/djawa/" }
+    ]
+  }
+]

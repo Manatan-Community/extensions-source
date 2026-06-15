@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "showLockedChapters", "label": "Show locked chapters", "kind": "toggle", "defaultValue": "true" }
+  ]
+}

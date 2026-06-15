@@ -1,0 +1,5 @@
+{
+  "items": [
+    { "id": "splitPostsIntoChapters", "type": "toggle", "name": "Split posts into individual chapters", "default": false }
+  ]
+}

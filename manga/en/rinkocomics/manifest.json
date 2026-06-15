@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rinkocomics",
+  "name": "Rinko Comics",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://rinkocomics.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "rinkocomics",
+      "name": "Rinko Comics",
+      "lang": "en",
+      "baseUrl": "https://rinkocomics.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Pinned" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kool",
+  "name": "Kool",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.kool.to", "https://www.dezor.net", "https://voe.sx", "https://streamtape.com", "https://vidoza.net", "https://clipboard.cc", "https://filemoon.sx"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "kool",
+      "name": "Kool",
+      "lang": "de",
+      "baseUrl": "https://www.kool.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular Movies" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.kool.to/*", "kind": "item" }
+      ]
+    }
+  ]
+}

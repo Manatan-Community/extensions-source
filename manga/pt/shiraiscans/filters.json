@@ -1,0 +1,27 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genero",
+    "options": [
+      { "label": "Todos", "value": "todos" },
+      { "label": "Adulto", "value": "Adulto" },
+      { "label": "Aventura", "value": "Aventura" },
+      { "label": "Comedia", "value": "Comédia" },
+      { "label": "Conto", "value": "Conto" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Fantasia", "value": "Fantasia" },
+      { "label": "Historico", "value": "Histórico" },
+      { "label": "Magia", "value": "Magia" },
+      { "label": "Misterio", "value": "Mistério" },
+      { "label": "Reencarnacao", "value": "Reencarnação" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Shoujo", "value": "Shoujo" },
+      { "label": "Sobrenatural", "value": "Sobrenatural" },
+      { "label": "Tragedia", "value": "Tragédia" },
+      { "label": "Traicao", "value": "Traição" },
+      { "label": "Viagem no tempo", "value": "Viagem no tempo" },
+      { "label": "Vinganca", "value": "Vingança" }
+    ]
+  }
+]

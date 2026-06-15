@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "goddoujin",
+  "name": "God-Doujin",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://god-doujin.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "goddoujin",
+      "name": "God-Doujin",
+      "lang": "th",
+      "baseUrl": "https://god-doujin.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://god-doujin.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

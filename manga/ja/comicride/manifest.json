@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comicride",
+  "name": "Comic Ride",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://comicride.jp", "https://cdn-public.comici.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "comicride",
+      "name": "Comic Ride",
+      "lang": "ja",
+      "baseUrl": "https://comicride.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": false, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [
+        { "pattern": "https://comicride.jp/episodes/*", "kind": "chapter" },
+        { "pattern": "https://comicride.jp/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

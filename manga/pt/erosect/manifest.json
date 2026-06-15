@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "erosect",
+  "name": "EroSect",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://erosect.xyz",
+      "https://*.erosect.xyz",
+      "https://cdn.erosect.xyz"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "erosect",
+      "name": "EroSect",
+      "lang": "pt-BR",
+      "baseUrl": "https://erosect.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://erosect.xyz/obra/*", "kind": "item" }
+      ]
+    }
+  ]
+}

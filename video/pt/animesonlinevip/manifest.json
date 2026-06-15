@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesonlinevip",
+  "name": "Animes Online Vip",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://animesonlinefhd.vip"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animesonlinevip",
+    "name": "Animes Online Vip",
+    "lang": "pt-BR",
+    "baseUrl": "https://animesonlinefhd.vip",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Top 100" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animesonlinefhd.vip/*", "kind": "item" }
+    ]
+  }]
+}

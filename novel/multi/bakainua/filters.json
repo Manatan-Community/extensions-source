@@ -1,0 +1,55 @@
+{
+  "filters": {
+    "genre": {
+      "type": "Picker",
+      "label": "Жанр",
+      "value": "",
+      "options": [
+        { "label": "Всі жанри", "value": "" },
+        { "label": "BL", "value": "19" },
+        { "label": "GL", "value": "20" },
+        { "label": "Авторське", "value": "32" },
+        { "label": "Бойовик", "value": "2" },
+        { "label": "Вуся", "value": "16" },
+        { "label": "Гарем", "value": "5" },
+        { "label": "Детектив", "value": "22" },
+        { "label": "Драма", "value": "12" },
+        { "label": "Жахи", "value": "10" },
+        { "label": "Ісекай", "value": "13" },
+        { "label": "Історичне", "value": "15" },
+        { "label": "Комедія", "value": "11" },
+        { "label": "ЛГБТ", "value": "3" },
+        { "label": "Містика", "value": "18" },
+        { "label": "Омегаверс", "value": "30" },
+        { "label": "Повсякденність", "value": "17" },
+        { "label": "Пригоди", "value": "7" },
+        { "label": "Психологія", "value": "28" },
+        { "label": "Романтика", "value": "1" },
+        { "label": "Спорт", "value": "9" },
+        { "label": "Сюаньхвань", "value": "27" },
+        { "label": "Сянься", "value": "26" },
+        { "label": "Трагедія", "value": "24" },
+        { "label": "Трилер", "value": "21" },
+        { "label": "Фантастика", "value": "8" },
+        { "label": "Фанфік", "value": "23" },
+        { "label": "Фентезі", "value": "4" },
+        { "label": "Школа", "value": "6" }
+      ]
+    },
+    "only_new": {
+      "type": "Switch",
+      "label": "Новинки",
+      "value": false
+    },
+    "longreads": {
+      "type": "Switch",
+      "label": "Довгочити",
+      "value": false
+    },
+    "finished": {
+      "type": "Switch",
+      "label": "Завершене",
+      "value": false
+    }
+  }
+}

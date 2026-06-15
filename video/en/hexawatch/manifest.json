@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hexawatch",
+  "name": "HexaWatch",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": [
+    "https://hexa.su",
+    "https://themoviedb.hexa.su",
+    "https://sub.wyzie.ru",
+    "https://enc-dec.app",
+    "https://image.tmdb.org"
+  ],
+  "sources": [
+    {
+      "id": "hexawatch",
+      "name": "HexaWatch",
+      "lang": "en",
+      "baseUrl": "https://hexa.su",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hexa.su/details/movie/*", "kind": "item" },
+        { "pattern": "https://hexa.su/details/tv/*", "kind": "item" },
+        { "pattern": "https://hexa.su/movie/*", "kind": "item" },
+        { "pattern": "https://hexa.su/tv/*", "kind": "item" }
+      ]
+    }
+  ]
+}

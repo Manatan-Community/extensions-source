@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hachiraw",
+  "name": "Hachiraw",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "hachiraw",
+      "name": "Hachiraw",
+      "lang": "ja",
+      "baseUrl": "https://hachiraw.net",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hachiraw.net/manga/*", "kind": "item" },
+        { "pattern": "https://hachiraw.net/manga/*/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

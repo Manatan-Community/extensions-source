@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animekai",
+  "name": "AnimeKai",
+  "version": "0.1.0",
+  "versionCode": 14,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://animekai.to",
+    "https://enc-dec.app"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animekai",
+      "name": "AnimeKai",
+      "lang": "en",
+      "baseUrl": "https://animekai.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Updates" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animekai.to/watch/*", "kind": "item" },
+        { "pattern": "https://animekai.to/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "komikindoco",
+  "name": "KomikIndo.co",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://komiksin.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "komikindoco",
+      "name": "KomikIndo.co",
+      "lang": "id",
+      "baseUrl": "https://komiksin.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://komiksin.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

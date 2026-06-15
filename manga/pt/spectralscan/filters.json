@@ -1,0 +1,87 @@
+[
+  {
+    "id": "sortBy",
+    "type": "select",
+    "label": "Ordenar por",
+    "options": [
+      { "label": "Visualizacoes", "value": "views" },
+      { "label": "Atualizacao", "value": "updatedAt" },
+      { "label": "Adicionado", "value": "created" },
+      { "label": "Titulo", "value": "title" },
+      { "label": "Avaliacoes", "value": "rating" },
+      { "label": "Capitulos", "value": "chapters" },
+      { "label": "Ano", "value": "releaseYear" }
+    ]
+  },
+  {
+    "id": "sortOrder",
+    "type": "select",
+    "label": "Ordem",
+    "options": [
+      { "label": "Decrescente", "value": "desc" },
+      { "label": "Crescente", "value": "asc" }
+    ]
+  },
+  {
+    "id": "categoryMode",
+    "type": "select",
+    "label": "Modo de categoria",
+    "options": [
+      { "label": "Qualquer categoria", "value": "or" },
+      { "label": "Todas categorias", "value": "and" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "multiselect",
+    "label": "Status",
+    "options": [
+      { "label": "Em andamento", "value": "ongoing" },
+      { "label": "Completo", "value": "completed" },
+      { "label": "Cancelado", "value": "cancelled" },
+      { "label": "Hiato", "value": "hiatus" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "multiselect",
+    "label": "Tipo",
+    "options": [
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Webtoon", "value": "webtoon" },
+      { "label": "Comic", "value": "comic" },
+      { "label": "HQ", "value": "hq" },
+      { "label": "Pornhwa", "value": "pornhwa" }
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "multiselect",
+    "label": "Generos",
+    "options": [
+      { "label": "Acao", "value": "acao" },
+      { "label": "Adulto", "value": "adulto" },
+      { "label": "Artes marciais", "value": "artes-marciais" },
+      { "label": "Aventura", "value": "aventura" },
+      { "label": "Comedia", "value": "comedia" },
+      { "label": "Drama", "value": "drama" },
+      { "label": "Ecchi", "value": "ecchi" },
+      { "label": "Fantasia", "value": "fantasia" },
+      { "label": "Harem", "value": "harem" },
+      { "label": "Hentai", "value": "hentai" },
+      { "label": "Historico", "value": "historico" },
+      { "label": "Isekai", "value": "isekai" },
+      { "label": "Josei", "value": "josei" },
+      { "label": "Magia", "value": "magia" },
+      { "label": "Romance", "value": "romance" },
+      { "label": "Seinen", "value": "seinen" },
+      { "label": "Shoujo", "value": "shoujo" },
+      { "label": "Shounen", "value": "shounen" },
+      { "label": "Sobrenatural", "value": "sobrenatural" },
+      { "label": "Yaoi", "value": "yaoi" },
+      { "label": "Yuri", "value": "yuri" }
+    ]
+  }
+]

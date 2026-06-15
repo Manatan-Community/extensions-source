@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "domain", "label": "Domain", "kind": "select", "defaultValue": "https://nyaa.si", "options": ["https://nyaa.si", "https://sukebei.nyaa.si"] },
+    { "id": "filename", "label": "Only display filename", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

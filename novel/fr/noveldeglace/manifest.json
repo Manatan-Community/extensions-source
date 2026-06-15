@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "noveldeglace",
+  "name": "NovelDeGlace",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://noveldeglace.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "noveldeglace",
+      "name": "NovelDeGlace",
+      "lang": "fr",
+      "baseUrl": "https://noveldeglace.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Romans" },
+        { "id": "latest", "name": "Chapitres" }
+      ],
+      "urlPatterns": [{ "pattern": "https://noveldeglace.com/*", "kind": "item" }]
+    }
+  ]
+}

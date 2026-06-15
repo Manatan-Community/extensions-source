@@ -1,0 +1,711 @@
+{
+  "schemaVersion": 1,
+  "packageId": "namicomi",
+  "name": "NamiComi",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://namicomi.com",
+      "https://api.namicomi.com",
+      "https://uploads.namicomi.com"
+    ],
+    "webview": false,
+    "cookies": false,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "namicomi-en",
+      "name": "NamiComi",
+      "lang": "en",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ar",
+      "name": "NamiComi",
+      "lang": "ar",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-bg",
+      "name": "NamiComi",
+      "lang": "bg",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ca",
+      "name": "NamiComi",
+      "lang": "ca",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-zh-hans",
+      "name": "NamiComi",
+      "lang": "zh-Hans",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-zh-hant",
+      "name": "NamiComi",
+      "lang": "zh-Hant",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-hr",
+      "name": "NamiComi",
+      "lang": "hr",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-cs",
+      "name": "NamiComi",
+      "lang": "cs",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-da",
+      "name": "NamiComi",
+      "lang": "da",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-nl",
+      "name": "NamiComi",
+      "lang": "nl",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-et",
+      "name": "NamiComi",
+      "lang": "et",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-fil",
+      "name": "NamiComi",
+      "lang": "fil",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-fi",
+      "name": "NamiComi",
+      "lang": "fi",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-fr",
+      "name": "NamiComi",
+      "lang": "fr",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-de",
+      "name": "NamiComi",
+      "lang": "de",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-el",
+      "name": "NamiComi",
+      "lang": "el",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-he",
+      "name": "NamiComi",
+      "lang": "he",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-hi",
+      "name": "NamiComi",
+      "lang": "hi",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-hu",
+      "name": "NamiComi",
+      "lang": "hu",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-is",
+      "name": "NamiComi",
+      "lang": "is",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ga",
+      "name": "NamiComi",
+      "lang": "ga",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-id",
+      "name": "NamiComi",
+      "lang": "id",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-it",
+      "name": "NamiComi",
+      "lang": "it",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ja",
+      "name": "NamiComi",
+      "lang": "ja",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ko",
+      "name": "NamiComi",
+      "lang": "ko",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-lt",
+      "name": "NamiComi",
+      "lang": "lt",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ms",
+      "name": "NamiComi",
+      "lang": "ms",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ne",
+      "name": "NamiComi",
+      "lang": "ne",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-no",
+      "name": "NamiComi",
+      "lang": "no",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-pa",
+      "name": "NamiComi",
+      "lang": "pa",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-fa",
+      "name": "NamiComi",
+      "lang": "fa",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-pl",
+      "name": "NamiComi",
+      "lang": "pl",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-pt-br",
+      "name": "NamiComi",
+      "lang": "pt-BR",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-pt",
+      "name": "NamiComi",
+      "lang": "pt",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-ru",
+      "name": "NamiComi",
+      "lang": "ru",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-sk",
+      "name": "NamiComi",
+      "lang": "sk",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-sl",
+      "name": "NamiComi",
+      "lang": "sl",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-es-419",
+      "name": "NamiComi",
+      "lang": "es-419",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-es",
+      "name": "NamiComi",
+      "lang": "es",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-sv",
+      "name": "NamiComi",
+      "lang": "sv",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-th",
+      "name": "NamiComi",
+      "lang": "th",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-tr",
+      "name": "NamiComi",
+      "lang": "tr",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "namicomi-uk",
+      "name": "NamiComi",
+      "lang": "uk",
+      "baseUrl": "https://namicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

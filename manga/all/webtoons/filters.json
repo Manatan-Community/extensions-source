@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "searchType",
+      "name": "Search Type",
+      "default": "",
+      "options": [
+        { "label": "ALL", "value": "" },
+        { "label": "Originals", "value": "originals" },
+        { "label": "Canvas", "value": "canvas" }
+      ]
+    }
+  ]
+}

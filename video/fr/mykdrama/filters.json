@@ -1,0 +1,9 @@
+[
+  {
+    "key": "order",
+    "title": "Ordre",
+    "type": "select",
+    "default": "popular",
+    "values": ["popular", "update"]
+  }
+]

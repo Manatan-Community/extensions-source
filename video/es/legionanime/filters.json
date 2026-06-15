@@ -1,0 +1,113 @@
+[
+  {
+    "id": "genre",
+    "type": "multiselect",
+    "name": "Generos",
+    "options": [
+      { "label": "Buscar exactamente con generos seleccionados", "value": "100" },
+      { "label": "Accion", "value": "1" },
+      { "label": "Artes Marciales", "value": "11" },
+      { "label": "Aventuras", "value": "21" },
+      { "label": "Carreras", "value": "31" },
+      { "label": "Ciencia Ficcion", "value": "2" },
+      { "label": "Comedia", "value": "12" },
+      { "label": "Demencia", "value": "22" },
+      { "label": "Demonios", "value": "32" },
+      { "label": "Deportes", "value": "3" },
+      { "label": "Donghua", "value": "45" },
+      { "label": "Drama", "value": "13" },
+      { "label": "Ecchi", "value": "23" },
+      { "label": "Escolares", "value": "33" },
+      { "label": "Espacial", "value": "4" },
+      { "label": "Fantasia", "value": "14" },
+      { "label": "Harem", "value": "24" },
+      { "label": "Historico", "value": "34" },
+      { "label": "Infantil", "value": "5" },
+      { "label": "Isekai", "value": "43" },
+      { "label": "Josei", "value": "15" },
+      { "label": "Juegos", "value": "25" },
+      { "label": "Latino y Castellano", "value": "41" },
+      { "label": "Magia", "value": "35" },
+      { "label": "Mecha", "value": "6" },
+      { "label": "Militar", "value": "16" },
+      { "label": "Misterio", "value": "26" },
+      { "label": "Musica", "value": "36" },
+      { "label": "Parodia", "value": "7" },
+      { "label": "Policia", "value": "17" },
+      { "label": "Psicologico", "value": "27" },
+      { "label": "Recuentos de la vida", "value": "37" },
+      { "label": "Romance", "value": "8" },
+      { "label": "Samurai", "value": "18" },
+      { "label": "Seinen", "value": "28" },
+      { "label": "Shoujo", "value": "38" },
+      { "label": "Shounen", "value": "9" },
+      { "label": "Sobrenatural", "value": "19" },
+      { "label": "Superpoderes", "value": "29" },
+      { "label": "Suspenso", "value": "39" },
+      { "label": "Terror / Gore", "value": "10" },
+      { "label": "Vampiros", "value": "20" },
+      { "label": "Yaoi", "value": "30" },
+      { "label": "Yuri", "value": "40" }
+    ]
+  },
+  {
+    "id": "not_genre",
+    "type": "multiselect",
+    "name": "Excluir Genero",
+    "options": [
+      { "label": "Accion", "value": "1" },
+      { "label": "Comedia", "value": "12" },
+      { "label": "Drama", "value": "13" },
+      { "label": "Fantasia", "value": "14" },
+      { "label": "Romance", "value": "8" },
+      { "label": "Shounen", "value": "9" },
+      { "label": "Sobrenatural", "value": "19" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "name": "Estado",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "Emision", "value": "1" },
+      { "label": "Finalizado", "value": "2" },
+      { "label": "Proximamente", "value": "3" }
+    ]
+  },
+  {
+    "id": "orderBy",
+    "type": "select",
+    "name": "Ordenar Por",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "Fecha (Menor a Mayor)", "value": "0" },
+      { "label": "Recientemente vistos por otros", "value": "1" },
+      { "label": "Fecha (Mayor a Menor)", "value": "2" },
+      { "label": "A-Z", "value": "3" },
+      { "label": "Mas Visitado", "value": "4" },
+      { "label": "Z-A", "value": "5" },
+      { "label": "Mejor Calificacion", "value": "6" },
+      { "label": "Peor Calificacion", "value": "7" },
+      { "label": "Ultimos Agregados en app", "value": "8" },
+      { "label": "Primeros Agregados en app", "value": "9" }
+    ]
+  },
+  {
+    "id": "studio",
+    "type": "select",
+    "name": "Estudio",
+    "options": [
+      { "label": "Todos", "value": "0" },
+      { "label": "Toei Animation", "value": "1" },
+      { "label": "TMS Entertainment", "value": "4" },
+      { "label": "Studio Pierrot", "value": "11" },
+      { "label": "Madhouse", "value": "13" },
+      { "label": "Production I.G", "value": "64" },
+      { "label": "MAPPA", "value": "67" },
+      { "label": "Bones", "value": "10" },
+      { "label": "Kyoto Animation", "value": "48" },
+      { "label": "Wit Studio", "value": "23" }
+    ]
+  }
+]

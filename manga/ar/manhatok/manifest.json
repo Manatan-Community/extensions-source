@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhatok",
+  "name": "Manhatok",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhatok.blogspot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhatok",
+      "name": "Manhatok",
+      "lang": "ar",
+      "baseUrl": "https://manhatok.blogspot.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

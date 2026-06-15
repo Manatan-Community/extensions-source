@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "neobook",
+  "name": "Neobook",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://neobook.org", "https://api.neobook.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "neobook",
+      "name": "Neobook",
+      "lang": "ru",
+      "baseUrl": "https://neobook.org",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [{ "pattern": "https://neobook.org/book/*", "kind": "item" }]
+    }
+  ]
+}

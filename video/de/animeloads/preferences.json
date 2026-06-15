@@ -1,0 +1,34 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_hoster",
+    "title": "Standard-Hoster",
+    "default": "https://voe.sx",
+    "options": [
+      { "label": "Doodstream", "value": "https://dood" },
+      { "label": "Voe", "value": "https://voe.sx" },
+      { "label": "Streamtape", "value": "https://streamtape.com" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "hoster_selection",
+    "title": "Hoster auswählen",
+    "default": ["dood", "voe", "stape"],
+    "options": [
+      { "label": "Doodstream", "value": "dood" },
+      { "label": "Voe", "value": "voe" },
+      { "label": "Streamtape", "value": "stape" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "sub_selection",
+    "title": "Sprache auswählen",
+    "default": ["sub"],
+    "options": [
+      { "label": "SUB", "value": "sub" },
+      { "label": "DUB", "value": "dub" }
+    ]
+  }
+]

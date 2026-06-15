@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "Genre",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Action", "value": "47" },
+        { "label": "Adventure", "value": "48" },
+        { "label": "Anime", "value": "11" },
+        { "label": "Chuyen Sinh", "value": "12" },
+        { "label": "Comedy", "value": "49" },
+        { "label": "Comic", "value": "14" },
+        { "label": "Co Dai", "value": "13" },
+        { "label": "Drama", "value": "52" },
+        { "label": "Fantasy", "value": "53" },
+        { "label": "Harem", "value": "19" },
+        { "label": "Historical", "value": "20" },
+        { "label": "Isekai", "value": "22" },
+        { "label": "Manga", "value": "26" },
+        { "label": "Manhua", "value": "27" },
+        { "label": "Manhwa", "value": "28" },
+        { "label": "Ngon Tinh", "value": "32" },
+        { "label": "Romance", "value": "56" },
+        { "label": "School Life", "value": "35" },
+        { "label": "Shoujo", "value": "37" },
+        { "label": "Shounen", "value": "39" },
+        { "label": "Truyen Mau", "value": "44" },
+        { "label": "Webtoon", "value": "45" },
+        { "label": "Xuyen Khong", "value": "46" }
+      ]
+    }
+  ]
+}

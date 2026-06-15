@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "greedscans",
+  "name": "Greed Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "greedscans",
+      "name": "Greed Scans",
+      "lang": "en",
+      "baseUrl": "https://gojoscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://gojoscans.com/series/*", "kind": "item" },
+        { "pattern": "https://gojoscans.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

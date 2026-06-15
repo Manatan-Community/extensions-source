@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zonatmoto",
+  "name": "Zonatmo.to (unoriginal)",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://zonatmo.to", "https://cdn.zonatmo.to"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "zonatmoto",
+      "name": "Zonatmo.to (unoriginal)",
+      "lang": "es",
+      "baseUrl": "https://zonatmo.to",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://zonatmo.to/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

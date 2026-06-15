@@ -1,0 +1,60 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Trier par",
+    "default": "updated",
+    "options": [
+      { "label": "Derniere mise a jour", "value": "updated" },
+      { "label": "Note", "value": "rating" },
+      { "label": "Nombre de chapitres", "value": "chapters" }
+    ]
+  },
+  {
+    "id": "types",
+    "type": "select",
+    "name": "Type",
+    "default": "",
+    "options": [
+      { "label": "Tous", "value": "" },
+      { "label": "Manhwa", "value": "webtoon" },
+      { "label": "Manga", "value": "manga" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "multiselect",
+    "name": "Statut",
+    "options": [
+      { "label": "En cours", "value": "ongoing" },
+      { "label": "Termine", "value": "completed" },
+      { "label": "En pause", "value": "hiatus" }
+    ]
+  },
+  {
+    "id": "min_chapters",
+    "type": "select",
+    "name": "Minimum de chapitres",
+    "default": "",
+    "options": [
+      { "label": "Tous", "value": "" },
+      { "label": "10+", "value": "10" },
+      { "label": "50+", "value": "50" },
+      { "label": "100+", "value": "100" },
+      { "label": "200+", "value": "200" },
+      { "label": "300+", "value": "300" },
+      { "label": "500+", "value": "500" }
+    ]
+  },
+  {
+    "id": "premium",
+    "type": "toggle",
+    "name": "Premium uniquement",
+    "default": false
+  },
+  {
+    "id": "genres",
+    "type": "text",
+    "name": "Genres"
+  }
+]

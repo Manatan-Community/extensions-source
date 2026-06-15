@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comicfuz",
+  "name": "COMIC FUZ",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://comic-fuz.com", "https://api.comic-fuz.com", "https://img.comic-fuz.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "comicfuz",
+      "name": "COMIC FUZ",
+      "lang": "ja",
+      "baseUrl": "https://comic-fuz.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://comic-fuz.com/manga/*", "kind": "item" },
+        { "pattern": "https://comic-fuz.com/manga/viewer/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

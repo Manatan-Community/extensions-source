@@ -1,0 +1,14 @@
+[
+  {
+    "id": "browse",
+    "type": "select",
+    "name": "Filter by",
+    "default": "",
+    "options": [
+      { "label": "すべて", "value": "" },
+      { "label": "レーベル", "value": "label=" },
+      { "label": "ジャンル", "value": "genre=" },
+      { "label": "カテゴリ", "value": "category=" }
+    ]
+  }
+]

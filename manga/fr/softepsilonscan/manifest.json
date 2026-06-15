@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "softepsilonscan",
+  "name": "Soft Epsilon Scan",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://epsilonsoft.to"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "softepsilonscan",
+      "name": "Soft Epsilon Scan",
+      "lang": "fr",
+      "baseUrl": "https://epsilonsoft.to",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Nouveautes" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://epsilonsoft.to/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

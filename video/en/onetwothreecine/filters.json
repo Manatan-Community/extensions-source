@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "type",
+      "label": "Type",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        { "label": "Movie", "value": "movie" },
+        { "label": "TV-Shows", "value": "tv" }
+      ]
+    },
+    {
+      "id": "genre_mode",
+      "label": "Genre Inclusion Mode",
+      "kind": "select",
+      "defaultValue": "and",
+      "options": [
+        { "label": "And (all must match)", "value": "and" },
+        { "label": "Or (any can match)", "value": "or" }
+      ]
+    },
+    {
+      "id": "genre",
+      "label": "Genre",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        { "label": "Action", "value": "14" },
+        { "label": "Adult", "value": "15265" },
+        { "label": "Adventure", "value": "109" },
+        { "label": "Animation", "value": "404" },
+        { "label": "Biography", "value": "312" },
+        { "label": "Comedy", "value": "1" },
+        { "label": "Costume", "value": "50202" },
+        { "label": "Crime", "value": "126" },
+        { "label": "Documentary", "value": "92" },
+        { "label": "Drama", "value": "12" },
+        { "label": "Family", "value": "78" },
+        { "label": "Fantasy", "value": "53" },
+        { "label": "Film-Noir", "value": "1779" },
+        { "label": "Game-Show", "value": "966" },
+        { "label": "History", "value": "239" },
+        { "label": "Horror", "value": "2" },
+        { "label": "Kungfu", "value": "67893" },
+        { "label": "Music", "value": "99" },
+        { "label": "Musical", "value": "1809" },
+        { "label": "Mystery", "value": "154" },
+        { "label": "News", "value": "1515" },
+        { "label": "Reality", "value": "6774" },
+        { "label": "Reality-TV", "value": "726" },
+        { "label": "Romance", "value": "44" },
+        { "label": "Sci-Fi", "value": "162" },
+        { "label": "Science Fiction", "value": "219174" },
+        { "label": "Short", "value": "405" },
+        { "label": "Sport", "value": "79" },
+        { "label": "Talk", "value": "92400" },
+        { "label": "Talk-Show", "value": "7024" },
+        { "label": "Thriller", "value": "13" },
+        { "label": "TV Movie", "value": "18067" },
+        { "label": "TV Show", "value": "11185" },
+        { "label": "War", "value": "436" },
+        { "label": "War & Politics", "value": "218204" },
+        { "label": "Western", "value": "1443" }
+      ]
+    },
+    {
+      "id": "country_mode",
+      "label": "Country Inclusion Mode",
+      "kind": "select",
+      "defaultValue": "or",
+      "options": [
+        { "label": "And (all must match)", "value": "and" },
+        { "label": "Or (any can match)", "value": "or" }
+      ]
+    },
+    {
+      "id": "country",
+      "label": "Country",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        { "label": "Argentina", "value": "3388" },
+        { "label": "Australia", "value": "30" },
+        { "label": "Austria", "value": "1791" },
+        { "label": "Belgium", "value": "111" },
+        { "label": "Brazil", "value": "616" },
+        { "label": "Canada", "value": "64" },
+        { "label": "China", "value": "350" },
+        { "label": "Colombia", "value": "11332" },
+        { "label": "Czech Republic", "value": "5187" },
+        { "label": "Denmark", "value": "375" },
+        { "label": "Finland", "value": "3356" },
+        { "label": "France", "value": "16" },
+        { "label": "Germany", "value": "127" },
+        { "label": "Hong Kong", "value": "351" },
+        { "label": "Hungary", "value": "5042" },
+        { "label": "India", "value": "110" },
+        { "label": "Ireland", "value": "225" },
+        { "label": "Israel", "value": "1617" },
+        { "label": "Italy", "value": "163" },
+        { "label": "Japan", "value": "291" },
+        { "label": "Luxembourg", "value": "8087" },
+        { "label": "Mexico", "value": "1727" },
+        { "label": "Netherlands", "value": "867" },
+        { "label": "New Zealand", "value": "1616" },
+        { "label": "Nigeria", "value": "1618" },
+        { "label": "Norway", "value": "3357" },
+        { "label": "Philippines", "value": "4141" },
+        { "label": "Poland", "value": "5600" },
+        { "label": "Romania", "value": "5730" },
+        { "label": "Russia", "value": "6646" },
+        { "label": "South Africa", "value": "1541" },
+        { "label": "South Korea", "value": "360" },
+        { "label": "Spain", "value": "240" },
+        { "label": "Sweden", "value": "1728" },
+        { "label": "Switzerland", "value": "2521" },
+        { "label": "Taiwan", "value": "3564" },
+        { "label": "Thailand", "value": "9360" },
+        { "label": "Turkey", "value": "881" },
+        { "label": "United Kingdom", "value": "15" },
+        { "label": "United States", "value": "3" }
+      ]
+    },
+    {
+      "id": "year",
+      "label": "Year",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", { "label": "Older", "value": "older" }]
+    },
+    {
+      "id": "quality",
+      "label": "Quality",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": ["HD", "HDrip", "SD", "TS", "CAM"]
+    },
+    {
+      "id": "sort",
+      "label": "Sort By",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        { "label": "Most relevant", "value": "" },
+        { "label": "Updated date", "value": "updated_date" },
+        { "label": "Added date", "value": "added_date" },
+        { "label": "Release date", "value": "release_date" },
+        { "label": "Trending", "value": "trending" },
+        { "label": "Name A-Z", "value": "title_az" },
+        { "label": "Average score", "value": "score" },
+        { "label": "IMDb", "value": "imdb" },
+        { "label": "Most viewed", "value": "most_viewed" },
+        { "label": "Most followed", "value": "most_followed" }
+      ]
+    }
+  ]
+}

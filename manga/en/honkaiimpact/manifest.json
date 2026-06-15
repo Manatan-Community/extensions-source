@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "honkaiimpact",
+  "name": "Honkai Impact 3rd",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga.honkaiimpact3.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "honkaiimpact",
+      "name": "Honkai Impact 3rd",
+      "lang": "en",
+      "baseUrl": "https://manga.honkaiimpact3.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Books" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga.honkaiimpact3.com/book/*", "kind": "item" }
+      ]
+    }
+  ]
+}

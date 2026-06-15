@@ -1,0 +1,45 @@
+{
+  "note": "Only one filter is applied at a time.",
+  "groups": [
+    {
+      "id": "category",
+      "type": "select",
+      "name": "Category",
+      "options": [
+        "Any",
+        "Aidol",
+        "China",
+        "Chinese",
+        "Cosplay",
+        "Gravure",
+        "Japan",
+        "Korea",
+        "Magazine",
+        "Photobook",
+        "Thailand",
+        "Uncategorized",
+        "Western"
+      ]
+    },
+    {
+      "id": "tag",
+      "type": "select",
+      "name": "Tag",
+      "options": [
+        "<Select tag>",
+        "[☆JVID]",
+        "[4K-STAR]",
+        "[AISS爱丝钻石版]",
+        "[Akisoso秋楚楚]",
+        "[AllGravure]",
+        "[ArtGravia]",
+        "[Azami]",
+        "[BBUTTERMILK]",
+        "[Cosplay]",
+        "[Digi-Gra]",
+        "[Graphis]",
+        "[HaneAme 雨波]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "xasiatalbums",
+  "name": "Xasiat Albums",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.xasiat.com"],
+    "webview": true,
+    "cookies": true,
+    "filters": true
+  },
+  "sources": [
+    {
+      "id": "xasiatalbums",
+      "name": "Xasiat Albums",
+      "lang": "all",
+      "baseUrl": "https://www.xasiat.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

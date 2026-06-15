@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "pashup",
+  "name": "Pash Up!",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://pash-up.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "pashup",
+      "name": "Pash Up!",
+      "lang": "ja",
+      "baseUrl": "https://pash-up.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true,
+        "processedPages": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://pash-up.jp/content/*", "kind": "item" },
+        { "pattern": "https://pash-up.jp/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

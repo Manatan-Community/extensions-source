@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "text",
+      "id": "author",
+      "name": "Auteur"
+    },
+    {
+      "type": "text",
+      "id": "artist",
+      "name": "Artiste"
+    },
+    {
+      "type": "text",
+      "id": "release",
+      "name": "Annee de sortie"
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Statut",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "Termine", "value": "end" },
+        { "label": "En cours", "value": "on-going" },
+        { "label": "Annule", "value": "canceled" },
+        { "label": "En pause", "value": "on-hold" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Trier par",
+      "default": "",
+      "options": [
+        { "label": "Pertinence", "value": "" },
+        { "label": "Derniers", "value": "latest" },
+        { "label": "A-Z", "value": "alphabet" },
+        { "label": "Note", "value": "rating" },
+        { "label": "Tendance", "value": "trending" },
+        { "label": "Vues", "value": "views" },
+        { "label": "Nouveaux", "value": "new-manga" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "adult",
+      "name": "Contenu adulte",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "Afficher", "value": "1" },
+        { "label": "Masquer", "value": "0" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "op",
+      "name": "Condition des genres",
+      "default": "",
+      "options": [
+        { "label": "Ou", "value": "" },
+        { "label": "Et", "value": "1" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "genres",
+      "name": "Genres",
+      "description": "Identifiants de genres separes par des virgules."
+    }
+  ]
+}

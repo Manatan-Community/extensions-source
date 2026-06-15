@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "category", "label": "主分类", "kind": "select", "defaultValue": "5", "options": ["5", "7", "6", "3", "21", "64"] },
+    { "id": "type", "label": "类型", "kind": "select", "defaultValue": "", "options": ["", "51", "52"] },
+    { "id": "class", "label": "分类", "kind": "text", "defaultValue": "" },
+    { "id": "year", "label": "年份", "kind": "text", "defaultValue": "" },
+    { "id": "lang", "label": "语言", "kind": "select", "defaultValue": "", "options": ["", "国语", "粤语", "英语", "其他"] },
+    { "id": "region", "label": "地区", "kind": "text", "defaultValue": "" },
+    { "id": "sort", "label": "排序", "kind": "select", "defaultValue": "time", "options": ["time", "hits", "score"] }
+  ]
+}

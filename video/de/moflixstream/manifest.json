@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "moflixstream",
+  "name": "Moflix-Stream",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://moflix-stream.xyz", "https://streamtape.com", "https://streamvid.net", "https://highstream.tv", "https://luluvdo.com"],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "moflixstream",
+      "name": "Moflix-Stream",
+      "lang": "de",
+      "baseUrl": "https://moflix-stream.xyz",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Movies" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://moflix-stream.xyz/*", "kind": "item" }
+      ]
+    }
+  ]
+}

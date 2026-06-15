@@ -1,0 +1,14 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "options": [
+      { "id": "newest", "label": "Newest First" },
+      { "id": "oldest", "label": "Oldest First" },
+      { "id": "az", "label": "A-Z" },
+      { "id": "za", "label": "Z-A" }
+    ],
+    "default": "newest"
+  }
+]

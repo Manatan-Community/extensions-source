@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "select",
+      "id": "mirror",
+      "name": "Mirror",
+      "default": "https://lekmanga.net",
+      "options": [
+        "https://lekmanga.net",
+        "https://lekmanga.online",
+        "https://like-manga.net",
+        "https://lekmanga.site",
+        "https://manga-leko.site"
+      ]
+    },
+    {
+      "type": "text",
+      "id": "customBaseUrl",
+      "name": "Custom base URL",
+      "default": ""
+    }
+  ]
+}

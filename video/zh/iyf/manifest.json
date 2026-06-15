@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "iyf",
+  "name": "爱壹帆",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "video",
+  "contentRating": "safe",
+  "filters": "filters.json",
+  "network": ["https://www.iyf.tv", "https://m10.iyf.tv", "https://rankv21.iyf.tv"],
+  "sources": [
+    {
+      "id": "iyf",
+      "name": "爱壹帆",
+      "lang": "zh",
+      "baseUrl": "https://www.iyf.tv",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "人气高低" },
+        { "id": "latest", "name": "更新时间" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.iyf.tv/play/*", "kind": "item" }
+      ]
+    }
+  ]
+}

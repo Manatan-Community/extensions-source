@@ -1,0 +1,9 @@
+[
+  {
+    "id": "category",
+    "type": "multiSelect",
+    "label": "State",
+    "default": ["Completed", "Translating", "Lost in Voting Poll", "Dropped"],
+    "options": ["Completed", "Translating", "Lost in Voting Poll", "Dropped", "Personally Written"]
+  }
+]

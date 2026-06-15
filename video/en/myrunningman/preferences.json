@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    {
+      "id": "preferred_hoster",
+      "label": "Preferred hoster",
+      "kind": "select",
+      "defaultValue": "any",
+      "options": [
+        { "label": "Any", "value": "any" },
+        { "label": "Dood", "value": "Dood" },
+        { "label": "MixDrop", "value": "MixDrop" },
+        { "label": "StreamTape", "value": "StreamTape" }
+      ]
+    }
+  ]
+}

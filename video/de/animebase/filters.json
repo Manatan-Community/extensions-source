@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "year", "label": "Erscheinungsjahr", "kind": "string", "defaultValue": "" },
+    { "id": "languages", "label": "Sprache", "kind": "multiselect", "defaultValue": [], "options": ["0", "1", "2", "3"] },
+    { "id": "genres", "label": "Genre", "kind": "multiselect", "defaultValue": [], "options": ["1", "261", "2", "3", "4", "258", "59", "6", "7", "53", "193", "209", "58", "8", "9", "11", "18", "23", "27", "28", "30", "35", "37", "39", "40", "41", "43", "46", "49", "52", "54", "55", "62", "64", "69", "70", "71", "74", "75", "79", "83", "87", "90", "91", "94", "99", "120", "186", "201", "217", "225", "226"] },
+    { "id": "list", "label": "Liste der Konten", "kind": "select", "defaultValue": "", "options": ["", "animelist", "filmlist", "hentailist", "misclist"] },
+    { "id": "letter", "label": "Schreiben", "kind": "select", "defaultValue": "", "options": ["", "/A", "/B", "/C", "/D", "/E", "/F", "/G", "/H", "/I", "/J", "/K", "/L", "/M", "/N", "/O", "/P", "/Q", "/R", "/S", "/T", "/U", "/V", "/W", "/X", "/Y", "/Z"] }
+  ]
+}

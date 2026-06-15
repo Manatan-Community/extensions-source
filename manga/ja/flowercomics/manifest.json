@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "flowercomics",
+  "name": "Flower Comics",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://flowercomics.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "flowercomics",
+      "name": "Flower Comics",
+      "lang": "ja",
+      "baseUrl": "https://flowercomics.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true,
+        "processedPages": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://flowercomics.jp/title/*", "kind": "item" },
+        { "pattern": "https://flowercomics.jp/chapter/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

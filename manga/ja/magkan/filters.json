@@ -1,0 +1,13 @@
+[
+  {
+    "id": "browse",
+    "type": "select",
+    "label": "Filter by",
+    "default": "/series/list/up",
+    "options": [
+      { "label": "更新順", "value": "/series/list/up" },
+      { "label": "新作順", "value": "/series/list/new" },
+      { "label": "読み切り", "value": "/category/manga/oneShot" }
+    ]
+  }
+]

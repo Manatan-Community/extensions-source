@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "scansfr",
+  "name": "ScansFR",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://scansfr.com", "https://api.scansfr.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "scansfr",
+      "name": "ScansFR",
+      "lang": "fr",
+      "baseUrl": "https://scansfr.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Mis a jour" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://scansfr.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

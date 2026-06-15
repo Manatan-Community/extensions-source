@@ -1,0 +1,9 @@
+[
+  { "id": "sort", "type": "select", "label": "Sort", "options": ["sdate", "abc", "rating", "readerl", "reviews", "chapters", "frequency", "rank"] },
+  { "id": "order", "type": "select", "label": "Order", "options": ["desc", "asc"] },
+  { "id": "rank", "type": "select", "label": "Ranking", "options": ["", "popular", "popmonth"] },
+  { "id": "storyStatus", "type": "select", "label": "Story status", "options": ["", "1", "2"] },
+  { "id": "language", "type": "multiSelect", "label": "Original language", "options": ["495", "496", "497", "498", "499", "500", "501", "502", "503", "504"] },
+  { "id": "genresInclude", "type": "multiSelect", "label": "Include genres", "options": ["8", "13", "17", "22", "25", "28", "32", "35", "40", "43", "48", "50", "52", "56"] },
+  { "id": "genresExclude", "type": "multiSelect", "label": "Exclude genres", "options": ["8", "13", "17", "22", "25", "28", "32", "35", "40", "43", "48", "50", "52", "56"] }
+]

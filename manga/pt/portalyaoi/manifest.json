@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "portalyaoi",
+  "name": "Portal Yaoi",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://lerboyslove.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "portalyaoi",
+      "name": "Portal Yaoi",
+      "lang": "pt-BR",
+      "baseUrl": "https://lerboyslove.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lerboyslove.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

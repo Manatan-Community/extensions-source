@@ -1,0 +1,1 @@
+[{"id":"sort","type":"select","name":"分类","default":"","options":[{"label":"全部","value":""},{"label":"R-15","value":"r15"},{"label":"R-18","value":"r18"}]},{"id":"tag","type":"text","name":"标签","default":""}]

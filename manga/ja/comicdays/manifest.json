@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comicdays",
+  "name": "Comic Days",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "comicdays",
+      "name": "Comic Days",
+      "lang": "ja",
+      "baseUrl": "https://comic-days.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://comic-days.com/episode/*", "kind": "chapter" },
+        { "pattern": "https://comic-days.com/series/*", "kind": "item" },
+        { "pattern": "https://comic-days.com/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

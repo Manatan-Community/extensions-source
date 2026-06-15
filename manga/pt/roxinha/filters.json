@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Ordenar por",
+      "options": [
+        { "label": "Titulo", "value": "title" },
+        { "label": "Atualizado", "value": "updatedAt" },
+        { "label": "Visualizacoes", "value": "views" },
+        { "label": "Avaliacao", "value": "avgRating" }
+      ]
+    },
+    {
+      "id": "order",
+      "type": "select",
+      "name": "Ordem",
+      "options": [
+        { "label": "Desc", "value": "DESC" },
+        { "label": "Asc", "value": "ASC" }
+      ]
+    },
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Status",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Em andamento", "value": "ongoing" },
+        { "label": "Completo", "value": "completed" }
+      ]
+    },
+    {
+      "id": "type",
+      "type": "select",
+      "name": "Tipo",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Webtoon", "value": "Webtoon" }
+      ]
+    }
+  ]
+}

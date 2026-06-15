@@ -1,0 +1,8 @@
+[
+  {
+    "id": "show_premium_chapters",
+    "type": "toggle",
+    "label": "Show premium chapters",
+    "default": false
+  }
+]

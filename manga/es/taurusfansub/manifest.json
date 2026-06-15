@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "taurusfansub",
+  "name": "Taurus Fansub",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://lectortaurus.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "taurusfansub",
+      "name": "Taurus Fansub",
+      "lang": "es",
+      "baseUrl": "https://lectortaurus.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lectortaurus.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

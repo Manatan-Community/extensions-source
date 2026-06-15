@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort by",
+      "default": "views",
+      "options": [
+        { "label": "Most Viewed", "value": "views" },
+        { "label": "Recently Updated", "value": "new" },
+        { "label": "Top Rated", "value": "rating" },
+        { "label": "Alphabetical", "value": "title" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Order",
+      "default": "desc",
+      "options": [
+        { "label": "Descending", "value": "desc" },
+        { "label": "Ascending", "value": "asc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "statuses",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All Status", "value": "" },
+        { "label": "Ongoing", "value": "Ongoing" },
+        { "label": "Completed", "value": "Completed" },
+        { "label": "Hiatus", "value": "Hiatus" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "types",
+      "name": "Types",
+      "default": "",
+      "options": [
+        { "label": "All Types", "value": "" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Webtoon", "value": "Webtoon" }
+      ]
+    },
+    {
+      "type": "multiselect",
+      "id": "genres",
+      "name": "Genre",
+      "options": [
+        { "label": "Action", "value": "action" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Martial Arts", "value": "martial_arts" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Supernatural", "value": "supernatural" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "School Life", "value": "school_life" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Psychological", "value": "psychological" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Mystery", "value": "mystery" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Tragedy", "value": "tragedy" },
+        { "label": "Award Winning", "value": "award_winning" },
+        { "label": "Sci Fi", "value": "sci_fi" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Slice Of Life", "value": "slice_of_life" },
+        { "label": "Sports", "value": "sports" },
+        { "label": "Suspense", "value": "suspense" },
+        { "label": "Gourmet", "value": "gourmet" }
+      ]
+    }
+  ]
+}

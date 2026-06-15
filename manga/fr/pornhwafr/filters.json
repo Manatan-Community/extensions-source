@@ -1,0 +1,5 @@
+[
+  { "id": "order", "type": "select", "name": "Tri", "default": "popular", "options": [
+    { "label": "Populaire", "value": "popular" }, { "label": "Derniere mise a jour", "value": "update" }, { "label": "A-Z", "value": "title" }, { "label": "Note", "value": "rating" }
+  ] }
+]

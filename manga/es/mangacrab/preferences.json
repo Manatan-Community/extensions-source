@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "preferences": [
+    { "type": "toggle", "id": "desktopUserAgent", "name": "Usar agente de escritorio", "default": true }
+  ]
+}

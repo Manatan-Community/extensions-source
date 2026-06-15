@@ -1,0 +1,38 @@
+[
+  {
+    "id": "titleLanguage",
+    "type": "select",
+    "label": "Вибір мови на обкладинці",
+    "default": "ua",
+    "options": [
+      { "label": "Українська", "value": "ua" },
+      { "label": "Англійська", "value": "eng" }
+    ]
+  },
+  {
+    "id": "ageLimit",
+    "type": "multiselect",
+    "label": "Вікові обмеження",
+    "options": [
+      { "label": "0+", "value": "0" },
+      { "label": "16+", "value": "16" },
+      { "label": "18+", "value": "18" }
+    ]
+  },
+  {
+    "id": "hiddenCategories",
+    "type": "multiselect",
+    "label": "Приховані категорії",
+    "default": ["RANOBE"],
+    "options": [
+      { "label": "Мальопис", "value": "MANGA_UA" },
+      { "label": "Манґа", "value": "MANGA" },
+      { "label": "Манхва", "value": "MANHVA" },
+      { "label": "Маньхва", "value": "MANHUA" },
+      { "label": "Вебкомікс", "value": "WESTERN_COMICS" },
+      { "label": "Комікс", "value": "COMICS" },
+      { "label": "Роман", "value": "RANOBE" },
+      { "label": "Інше", "value": "OTHER" }
+    ]
+  }
+]

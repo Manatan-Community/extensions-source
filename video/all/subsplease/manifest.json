@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "subsplease",
+  "name": "Subsplease",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://subsplease.org",
+    "https://torrentio.strem.fun"
+  ],
+  "sources": [
+    {
+      "id": "subsplease",
+      "name": "Subsplease",
+      "lang": "all",
+      "baseUrl": "https://subsplease.org",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Schedule" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://subsplease.org/shows/*", "kind": "item" }
+      ]
+    }
+  ]
+}

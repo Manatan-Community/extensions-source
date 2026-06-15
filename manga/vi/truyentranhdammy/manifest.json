@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "truyentranhdammy",
+  "name": "Truyện tranh đam mỹ",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://truyentranhdammyy.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "truyentranhdammy",
+      "name": "Truyện tranh đam mỹ",
+      "lang": "vi",
+      "baseUrl": "https://truyentranhdammyy.site",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://truyentranhdammyy.site/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

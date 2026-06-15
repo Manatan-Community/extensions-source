@@ -1,0 +1,30 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_quality",
+    "title": "Preferred quality",
+    "default": "720p",
+    "options": [
+      { "label": "1080p", "value": "1080p" },
+      { "label": "720p", "value": "720p" },
+      { "label": "480p", "value": "480p" },
+      { "label": "288p", "value": "288p" },
+      { "label": "144p", "value": "144p" }
+    ]
+  },
+  {
+    "type": "select",
+    "key": "preferred_language",
+    "title": "Preferred language",
+    "default": "English",
+    "options": [
+      { "label": "English", "value": "English" },
+      { "label": "Español", "value": "Español" },
+      { "label": "Indonesian", "value": "Indonesian" },
+      { "label": "Portugués", "value": "Portugués" },
+      { "label": "Türkçe", "value": "Türkçe" },
+      { "label": "العَرَبِيَّة", "value": "العَرَبِيَّة" },
+      { "label": "ไทย", "value": "ไทย" }
+    ]
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "komiic",
+  "name": "Komiic",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://komiic.com"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "komiic",
+      "name": "Komiic",
+      "lang": "zh",
+      "baseUrl": "https://komiic.com",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://komiic.com/comic/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Ordenar por",
+      "default": "popular",
+      "options": [
+        { "label": "Popularidad", "value": "popular" },
+        { "label": "Recientes", "value": "latest" }
+      ]
+    }
+  ]
+}

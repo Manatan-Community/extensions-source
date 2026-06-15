@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Genero", "kind": "multiselect", "defaultValue": [], "options": ["Accion:1", "Artes Marciales:2", "Aventuras:3", "Ciencia Ficcion:33", "Comedia:9", "Cultivacion:71", "Demencia:40", "Demonios:42", "Deportes:27", "Donghua:50", "Drama:10", "Ecchi:25", "Escolares:22", "Espacial:48", "Fantasia:6", "Gore:67", "Harem:32", "Hentai:31", "Historico:43", "Horror:39", "Isekai:45", "Josei:70", "Juegos:11", "Latino / Castellano:46", "Magia:38", "Mecha:41", "Militar:44", "Misterio:26", "Mitologia:73", "Musica:28", "Parodia:13", "Policia:51", "Psicologico:29", "Recuentos de la vida:23", "Reencarnacion:72", "Romance:12", "Samurai:69", "Seinen:24", "Shoujo:36", "Shounen:4", "Sin Censura:68", "Sobrenatural:7", "Superpoderes:5", "Suspenso:21", "Terror:20", "Vampiros:49", "Venganza:74", "Yaoi:53", "Yuri:52"] },
+    { "id": "year", "label": "Ano", "kind": "multiselect", "defaultValue": [], "options": ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990"] },
+    { "id": "type", "label": "Tipo", "kind": "multiselect", "defaultValue": [], "options": ["Anime:1", "Ova:2", "Pelicula:3", "Donghua:7"] },
+    { "id": "estado", "label": "Estado", "kind": "multiselect", "defaultValue": [], "options": ["En emision:0", "Finalizado:1", "Proximamente:2"] },
+    { "id": "order", "label": "Orden", "kind": "select", "defaultValue": "created", "options": ["Por Defecto:created", "Recientemente Actualizados:updated", "Nombre A-Z:titleaz", "Nombre Z-A:titleza", "Calificacion:rating", "Vistas:views"] }
+  ]
+}

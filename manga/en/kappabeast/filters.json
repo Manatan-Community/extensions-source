@@ -1,0 +1,55 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Genre",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Thriller", "value": "Thriller" },
+      { "label": "Action", "value": "Action" },
+      { "label": "Psychological", "value": "Psychological" },
+      { "label": "Isekai", "value": "Isekai" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "name": "Status",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "Ongoing" },
+      { "label": "Completed", "value": "Completed" },
+      { "label": "Hiatus", "value": "Hiatus" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "name": "Type",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Manga", "value": "Manga" },
+      { "label": "Manhwa", "value": "Manhwa" },
+      { "label": "Manhua", "value": "Manhua" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Sort by",
+    "default": "",
+    "options": [
+      { "label": "Popularity", "value": "" },
+      { "label": "Latest updates", "value": "updatedAt:desc" },
+      { "label": "Newest", "value": "createdAt:desc" },
+      { "label": "A-Z name", "value": "title:asc" }
+    ]
+  }
+]

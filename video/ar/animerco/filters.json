@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genres", "label": "التصنيفات", "kind": "select", "defaultValue": "", "options": ["", "action", "ova", "thriller", "ecchi", "time-travel", "police", "historical", "detective", "suspense", "crime", "dementia", "josei", "harem", "work-life", "supernatural", "fantasy", "science-fiction", "sci-fi-fantasy", "drama", "gore", "gourmet", "horror", "romance", "sports", "parody", "samurai", "racing", "magic", "seinen", "slice-of-life", "shoujo", "shounen", "shounen-ai", "demons", "medical", "avant-garde", "military", "mystery", "space", "performing-arts", "performing-arts-2", "martial-arts", "super-power", "comedy", "game", "strategy-game", "school", "vampire", "adventure", "music", "mythology", "mecha", "psychological"] },
+    { "id": "dtyear", "label": "السنوات", "kind": "string", "defaultValue": "" }
+  ]
+}

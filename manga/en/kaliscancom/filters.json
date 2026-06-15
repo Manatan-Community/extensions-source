@@ -1,0 +1,32 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "name": "Status",
+    "default": "all",
+    "options": [
+      { "label": "All", "value": "all" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Order by",
+    "default": "views",
+    "options": [
+      { "label": "Views", "value": "views" },
+      { "label": "Updated", "value": "updated_at" },
+      { "label": "Created", "value": "created_at" },
+      { "label": "Name A-Z", "value": "name" },
+      { "label": "Rating", "value": "rating" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "text",
+    "name": "Genre IDs",
+    "default": ""
+  }
+]

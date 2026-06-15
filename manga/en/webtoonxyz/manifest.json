@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "webtoonxyz",
+  "name": "WebtoonXYZ",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://www.webtoon.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "webtoonxyz",
+      "name": "WebtoonXYZ",
+      "lang": "en",
+      "baseUrl": "https://www.webtoon.xyz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.webtoon.xyz/read/*", "kind": "item" }
+      ]
+    }
+  ]
+}

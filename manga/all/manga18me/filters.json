@@ -1,0 +1,66 @@
+{
+  "groups": [
+    {
+      "id": "genre",
+      "label": "Genre",
+      "type": "select",
+      "default": "manga",
+      "options": [
+        { "label": "Manga", "value": "manga" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Adult", "value": "adult" },
+        { "label": "Hentai", "value": "hentai" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "School Life", "value": "school-life" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Slice of Life", "value": "slice-of-life" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Yuri", "value": "yuri" },
+        { "label": "Action", "value": "action" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Supernatural", "value": "supernatural" },
+        { "label": "Sci-Fi", "value": "sci-fi" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Shoujo", "value": "shoujo" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Psychological", "value": "psychological" },
+        { "label": "Smut", "value": "smut" },
+        { "label": "Tragedy", "value": "tragedy" },
+        { "label": "Raw", "value": "raw" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "Martial Arts", "value": "martial-arts" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Mystery", "value": "mystery" },
+        { "label": "BL", "value": "bl" },
+        { "label": "Yaoi", "value": "yaoi" },
+        { "label": "Gender Bender", "value": "gender-bender" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Sports", "value": "sports" },
+        { "label": "GL", "value": "gl" },
+        { "label": "Family", "value": "family" },
+        { "label": "Magic", "value": "magic" }
+      ]
+    },
+    {
+      "id": "sort",
+      "label": "Sort",
+      "type": "select",
+      "default": "latest",
+      "options": [
+        { "label": "Latest", "value": "latest" },
+        { "label": "A-Z", "value": "alphabet" },
+        { "label": "Rating", "value": "rating" },
+        { "label": "Trending", "value": "trending" }
+      ]
+    },
+    { "id": "raw", "label": "Raw", "type": "boolean", "default": false },
+    { "id": "completed", "label": "Completed", "type": "boolean", "default": false }
+  ]
+}

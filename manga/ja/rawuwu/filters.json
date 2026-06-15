@@ -1,0 +1,51 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort by",
+    "default": "",
+    "options": [
+      { "label": "Recently updated", "value": "" },
+      { "label": "Most viewed", "value": "most_viewed" },
+      { "label": "Most viewed today", "value": "most_viewed_today" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "all",
+    "options": [
+      { "label": "All", "value": "all" },
+      { "label": "Action", "value": "85" },
+      { "label": "Adult", "value": "139" },
+      { "label": "Adventure", "value": "86" },
+      { "label": "Comedy", "value": "87" },
+      { "label": "Drama", "value": "114" },
+      { "label": "Ecchi", "value": "88" },
+      { "label": "Fantasy", "value": "89" },
+      { "label": "Harem", "value": "90" },
+      { "label": "Isekai", "value": "144" },
+      { "label": "Josei", "value": "130" },
+      { "label": "Mature", "value": "112" },
+      { "label": "Romance", "value": "106" },
+      { "label": "School Life", "value": "108" },
+      { "label": "Seinen", "value": "107" },
+      { "label": "Shounen", "value": "118" },
+      { "label": "Slice Of Life", "value": "92" },
+      { "label": "Yaoi", "value": "161" },
+      { "label": "Yuri", "value": "110" }
+    ]
+  }
+]

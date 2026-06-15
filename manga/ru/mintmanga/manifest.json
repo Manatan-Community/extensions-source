@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mintmanga",
+  "name": "MintManga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://2.mintmanga.one"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "mintmanga",
+    "name": "MintManga",
+    "lang": "ru",
+    "baseUrl": "https://2.mintmanga.one",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://2.mintmanga.one/*", "kind": "item" }]
+  }]
+}

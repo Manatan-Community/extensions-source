@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "madaradex",
+  "name": "MadaraDex",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://madaradex.org", "https://cdn.madaradex.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "madaradex",
+      "name": "MadaraDex",
+      "lang": "en",
+      "baseUrl": "https://madaradex.org",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

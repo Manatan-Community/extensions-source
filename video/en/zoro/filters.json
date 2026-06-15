@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "type", "label": "Type", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3", "4", "5", "6"] },
+    { "id": "status", "label": "Status", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3"] },
+    { "id": "rated", "label": "Rated", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3", "4", "5", "6"] },
+    { "id": "score", "label": "Score", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
+    { "id": "season", "label": "Season", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3", "4"] },
+    { "id": "language", "label": "Language", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3"] },
+    { "id": "sort", "label": "Sort by", "kind": "select", "defaultValue": "default", "options": ["default", "recently_added", "recently_updated", "score", "name_az", "released_date", "most_watched"] },
+    { "id": "genres", "label": "Genre ids", "kind": "text", "defaultValue": "" },
+    { "id": "sy", "label": "Start year", "kind": "text", "defaultValue": "" },
+    { "id": "sm", "label": "Start month", "kind": "text", "defaultValue": "" },
+    { "id": "sd", "label": "Start day", "kind": "text", "defaultValue": "" },
+    { "id": "ey", "label": "End year", "kind": "text", "defaultValue": "" },
+    { "id": "em", "label": "End month", "kind": "text", "defaultValue": "" },
+    { "id": "ed", "label": "End day", "kind": "text", "defaultValue": "" }
+  ]
+}

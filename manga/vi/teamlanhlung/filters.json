@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "The loai",
+      "options": [
+        { "label": "Tat ca", "value": "" },
+        { "label": "18+", "value": "the-loai/18" },
+        { "label": "ABO", "value": "the-loai/abo" },
+        { "label": "Bach hop", "value": "the-loai/bach-hop" },
+        { "label": "Boy love", "value": "the-loai/boy-love" },
+        { "label": "Co Dai", "value": "the-loai/co-dai" },
+        { "label": "Dam my", "value": "the-loai/dam-my" },
+        { "label": "Hai huoc", "value": "the-loai/hai-huoc" },
+        { "label": "Hanh dong", "value": "the-loai/hanh-dong" },
+        { "label": "Harem", "value": "the-loai/harem" },
+        { "label": "Manhua", "value": "the-loai/manhua" },
+        { "label": "Manhwa", "value": "the-loai/manhwa" },
+        { "label": "Ngon Tinh", "value": "the-loai/ngon-tinh" },
+        { "label": "Smut", "value": "the-loai/smut" },
+        { "label": "Xuyen khong", "value": "the-loai/xuyen-khong" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeplayer",
+  "name": "AnimePlayer",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animeplayer.com.br"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animeplayer",
+    "name": "AnimePlayer",
+    "lang": "pt-BR",
+    "baseUrl": "https://animeplayer.com.br",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Animes" },
+      { "id": "latest", "name": "Episodios" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animeplayer.com.br/*", "kind": "item" }
+    ]
+  }]
+}

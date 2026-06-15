@@ -1,0 +1,8 @@
+[
+  {
+    "id": "domain",
+    "type": "text",
+    "name": "网址",
+    "default": "www.vomicmh.com"
+  }
+]

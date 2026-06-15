@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rdscans",
+  "name": "RD Scans",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rdscans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "rdscans",
+      "name": "RD Scans",
+      "lang": "en",
+      "baseUrl": "https://rdscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

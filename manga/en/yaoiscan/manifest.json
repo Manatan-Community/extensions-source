@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yaoiscan",
+  "name": "YaoiScan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://yaoiscan.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "yaoiscan",
+      "name": "YaoiScan",
+      "lang": "en",
+      "baseUrl": "https://yaoiscan.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://yaoiscan.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

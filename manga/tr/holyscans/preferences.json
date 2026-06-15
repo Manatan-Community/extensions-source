@@ -1,0 +1,14 @@
+[
+  {
+    "id": "pref_username",
+    "type": "text",
+    "label": "Kullanıcı Adı / E-posta",
+    "default": ""
+  },
+  {
+    "id": "pref_password",
+    "type": "password",
+    "label": "Şifre",
+    "default": ""
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "grrlpower",
+  "name": "Grrl Power Comic",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "grrlpower",
+      "name": "Grrl Power Comic",
+      "lang": "en",
+      "baseUrl": "https://www.grrlpowercomic.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "urlPatterns": [
+        { "pattern": "https://www.grrlpowercomic.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

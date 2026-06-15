@@ -1,0 +1,12 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "コレクション",
+    "options": [
+      { "label": "連載中", "value": "ongoing" },
+      { "label": "連載終了", "value": "finished" },
+      { "label": "読切作品", "value": "oneshot" }
+    ]
+  }
+]

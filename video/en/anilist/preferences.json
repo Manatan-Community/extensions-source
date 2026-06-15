@@ -1,0 +1,12 @@
+[
+  { "key": "preferred_allow_adult", "type": "boolean", "title": "Allow adult content", "default": false },
+  {
+    "key": "preferred_title",
+    "type": "select",
+    "title": "Preferred title language",
+    "default": "romaji",
+    "entries": ["Romaji", "English", "Native"],
+    "values": ["romaji", "english", "native"]
+  },
+  { "key": "preferred_mark_fillers", "type": "boolean", "title": "Mark filler episodes", "default": true }
+]

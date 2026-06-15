@@ -1,0 +1,5 @@
+[
+  { "id": "sort", "type": "select", "name": "Сортировка", "options": ["favdesc:Популярность", "dateasc:Дата", "abcasc:Алфавит"] },
+  { "id": "genres", "type": "multiSelect", "name": "Тэги", "options": ["3D", "action", "ahegao", "bdsm", "corruption", "gender_bender", "incest", "lolicon", "milf", "netorare", "schoolgirl", "shotacon", "tentacles", "yaoi", "yuri"] },
+  { "id": "excludedGenres", "type": "multiSelect", "name": "Исключить тэги", "options": ["3D", "action", "ahegao", "bdsm", "corruption", "gender_bender", "incest", "lolicon", "milf", "netorare", "schoolgirl", "shotacon", "tentacles", "yaoi", "yuri"] }
+]

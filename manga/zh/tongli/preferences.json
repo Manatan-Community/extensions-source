@@ -1,0 +1,14 @@
+[
+  {
+    "id": "email",
+    "type": "text",
+    "name": "电子邮件",
+    "default": ""
+  },
+  {
+    "id": "password",
+    "type": "text",
+    "name": "密码",
+    "default": ""
+  }
+]

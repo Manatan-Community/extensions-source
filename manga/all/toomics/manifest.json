@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "toomics",
+  "name": "Toomics",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://global.toomics.com"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    { "id": "toomics-en", "name": "Toomics", "lang": "en", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-zh-hans", "name": "Toomics", "lang": "zh-Hans", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-zh-hant", "name": "Toomics", "lang": "zh-Hant", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-es-419", "name": "Toomics", "lang": "es-419", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-es", "name": "Toomics", "lang": "es", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-it", "name": "Toomics", "lang": "it", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-de", "name": "Toomics", "lang": "de", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-fr", "name": "Toomics", "lang": "fr", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "toomics-pt-br", "name": "Toomics", "lang": "pt-BR", "baseUrl": "https://global.toomics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

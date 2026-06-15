@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangagun",
+  "name": "NihonKuni",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://nihonkuni.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangagun",
+      "name": "NihonKuni",
+      "lang": "ja",
+      "baseUrl": "https://nihonkuni.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://nihonkuni.com/manga-*.html", "kind": "item" },
+        { "pattern": "https://nihonkuni.com/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

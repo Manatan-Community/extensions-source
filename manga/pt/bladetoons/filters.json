@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "status_id",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Ativo", "value": "6" },
+        { "label": "Cancelado", "value": "4" },
+        { "label": "Concluido", "value": "3" },
+        { "label": "Em Andamento", "value": "1" },
+        { "label": "Hiato", "value": "5" },
+        { "label": "Pausado", "value": "2" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "formato_id",
+      "name": "Formato",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Comic", "value": "20" },
+        { "label": "Hentai", "value": "23" },
+        { "label": "Manga", "value": "24" },
+        { "label": "Manhua", "value": "17" },
+        { "label": "Manhwa", "value": "25" },
+        { "label": "Novel", "value": "18" },
+        { "label": "Shoujo", "value": "19" },
+        { "label": "Webtoon", "value": "26" },
+        { "label": "Yaoi", "value": "21" },
+        { "label": "Yuri", "value": "22" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "min_capitulos",
+      "name": "Capitulos minimos",
+      "default": ""
+    },
+    {
+      "type": "text",
+      "id": "tag_ids",
+      "name": "IDs de tags",
+      "default": ""
+    }
+  ]
+}

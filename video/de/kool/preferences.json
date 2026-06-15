@@ -1,0 +1,28 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_hoster",
+    "title": "Standard-Hoster",
+    "default": "https://streamtape.com",
+    "options": [
+      { "label": "Streamtape", "value": "https://streamtape.com" },
+      { "label": "Voe", "value": "https://voe.sx" },
+      { "label": "Vidoza", "value": "https://vidoza.net" },
+      { "label": "Clipboard", "value": "https://clipboard.cc" },
+      { "label": "Filemoon", "value": "https://filemoon.sx" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "hoster_selection",
+    "title": "Hoster auswählen",
+    "default": ["stape", "voe", "vidoza", "clip", "fmoon"],
+    "options": [
+      { "label": "Streamtape", "value": "stape" },
+      { "label": "Voe", "value": "voe" },
+      { "label": "Vidoza", "value": "vidoza" },
+      { "label": "Clipboard", "value": "clip" },
+      { "label": "Filemoon", "value": "fmoon" }
+    ]
+  }
+]

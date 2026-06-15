@@ -1,0 +1,74 @@
+[
+  { "id": "title_nm", "type": "text", "label": "タイトル名", "default": "" },
+  { "id": "author_nm", "type": "text", "label": "作家名", "default": "" },
+  { "id": "magazine_nm", "type": "text", "label": "雑誌・レーベル", "default": "" },
+  { "id": "publisher_nm", "type": "text", "label": "出版社", "default": "" },
+  { "id": "titletag_nm", "type": "text", "label": "作品タグ", "default": "" },
+  {
+    "id": "genre_id",
+    "type": "select",
+    "label": "ジャンル",
+    "default": "",
+    "options": [
+      { "label": "すべてのジャンル", "value": "" },
+      { "label": "少女マンガ", "value": "20" },
+      { "label": "女性マンガ", "value": "2" },
+      { "label": "少年マンガ", "value": "12" },
+      { "label": "青年マンガ", "value": "13" },
+      { "label": "BLマンガ", "value": "24" },
+      { "label": "TLマンガ", "value": "34" },
+      { "label": "ハーレクインコミックス", "value": "21" },
+      { "label": "アダルトマンガ", "value": "11" },
+      { "label": "マンガ雑誌", "value": "28" },
+      { "label": "雑誌", "value": "9925" },
+      { "label": "写真集", "value": "9923" }
+    ]
+  },
+  {
+    "id": "point",
+    "type": "select",
+    "label": "価格",
+    "default": "",
+    "options": [
+      { "label": "すべての価格", "value": "" },
+      { "label": "～100pt", "value": "0-100" },
+      { "label": "101pt～500pt", "value": "101-500" },
+      { "label": "501pt～1,000pt", "value": "501-1000" },
+      { "label": "1,001pt～", "value": "1001-" }
+    ]
+  },
+  {
+    "id": "review",
+    "type": "select",
+    "label": "レビュー評点",
+    "default": "",
+    "options": [
+      { "label": "すべての評価", "value": "" },
+      { "label": "4.0以上", "value": "review_4" },
+      { "label": "3.0以上", "value": "review_3" },
+      { "label": "2.0以上", "value": "review_2" },
+      { "label": "1.0以上", "value": "review_1" },
+      { "label": "レビュー無し", "value": "review_nothing" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "並び替え",
+    "default": "10",
+    "options": [
+      { "label": "オススメ順", "value": "10" },
+      { "label": "人気順", "value": "14" },
+      { "label": "新着順", "value": "16" },
+      { "label": "価格の安い順", "value": "11" },
+      { "label": "価格の高い順", "value": "12" },
+      { "label": "レビューの評価順", "value": "13" },
+      { "label": "レビュー数の多い順", "value": "15" }
+    ]
+  },
+  { "id": "free_cam_flg", "type": "checkbox", "label": "無料版あり", "default": false },
+  { "id": "sample_up_flg", "type": "checkbox", "label": "立読み増量", "default": false },
+  { "id": "campaign_flg", "type": "checkbox", "label": "値引き/還元", "default": false },
+  { "id": "newest_flg", "type": "checkbox", "label": "新着/新刊", "default": false },
+  { "id": "complete_flg", "type": "checkbox", "label": "完結作品", "default": false }
+]

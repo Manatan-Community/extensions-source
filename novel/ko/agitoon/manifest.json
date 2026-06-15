@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "agitoon",
+  "name": "Agitoon",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ko",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://agit664.xyz"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "agitoon",
+      "name": "Agitoon",
+      "lang": "ko",
+      "baseUrl": "https://agit664.xyz",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

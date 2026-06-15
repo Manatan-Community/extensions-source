@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dilar",
+  "name": "Dilar",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://dilar.tube"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "dilar",
+      "name": "Dilar",
+      "lang": "ar",
+      "baseUrl": "https://dilar.tube",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

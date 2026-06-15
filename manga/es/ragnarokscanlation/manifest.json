@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ragnarokscanlation",
+  "name": "Ragnarok Scanlation",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://ragnarokscanlation.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ragnarokscanlation",
+      "name": "Ragnarok Scanlation",
+      "lang": "es",
+      "baseUrl": "https://ragnarokscanlation.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://ragnarokscanlation.org/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

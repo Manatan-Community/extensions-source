@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "fansubscathentai",
+  "name": "Hentai.cat",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ca",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga.hentai.cat", "https://api.hentai.cat"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "fansubscathentai",
+      "name": "Hentai.cat",
+      "lang": "ca",
+      "baseUrl": "https://manga.hentai.cat",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

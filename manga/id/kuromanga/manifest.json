@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kuromanga",
+  "name": "Kuro Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://kuromanga.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kuromanga",
+      "name": "Kuro Manga",
+      "lang": "id",
+      "baseUrl": "https://kuromanga.me",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

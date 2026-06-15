@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zelluloza",
+  "name": "Целлюлоза",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://zelluloza.ru"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "zelluloza",
+      "name": "Целлюлоза",
+      "lang": "ru",
+      "baseUrl": "https://zelluloza.ru",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [{ "pattern": "https://zelluloza.ru/books/*", "kind": "item" }]
+    }
+  ]
+}

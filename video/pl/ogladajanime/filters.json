@@ -1,0 +1,9 @@
+[
+  {
+    "key": "search_type",
+    "title": "Tryb",
+    "type": "select",
+    "default": "name",
+    "values": ["name", "page", "new"]
+  }
+]

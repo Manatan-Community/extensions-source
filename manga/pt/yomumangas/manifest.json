@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yomumangas",
+  "name": "Yomu Mangas",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://yomumangas.com",
+      "https://api.yomumangas.com",
+      "https://b2.yomumangas.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "yomumangas",
+      "name": "Yomu Mangas",
+      "lang": "pt-BR",
+      "baseUrl": "https://yomumangas.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://yomumangas.com/mangas/*", "kind": "item" }
+      ]
+    }
+  ]
+}

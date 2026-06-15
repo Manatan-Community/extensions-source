@@ -1,0 +1,14 @@
+[
+  {
+    "id": "categorySearch",
+    "type": "boolean",
+    "name": "将搜索词视为分类",
+    "default": false
+  },
+  {
+    "id": "category",
+    "type": "text",
+    "name": "分类",
+    "default": ""
+  }
+]

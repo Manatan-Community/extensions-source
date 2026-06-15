@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animetsu",
+  "name": "Animetsu",
+  "version": "0.1.1",
+  "versionCode": 6,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://animetsu.net",
+    "https://animetsu.live",
+    "https://animetsu.bz",
+    "https://animetsu.cc",
+    "https://swiftstream.top"
+  ],
+  "permissions": {
+    "network": [
+      "https://animetsu.net",
+      "https://animetsu.live",
+      "https://animetsu.bz",
+      "https://animetsu.cc",
+      "https://swiftstream.top"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "animetsu",
+      "name": "Animetsu",
+      "lang": "all",
+      "baseUrl": "https://animetsu.net",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animetsu.net/anime/*", "kind": "item" },
+        { "pattern": "https://animetsu.live/anime/*", "kind": "item" },
+        { "pattern": "https://animetsu.bz/anime/*", "kind": "item" },
+        { "pattern": "https://animetsu.cc/anime/*", "kind": "item" }
+      ]
+    }
+  ]
+}

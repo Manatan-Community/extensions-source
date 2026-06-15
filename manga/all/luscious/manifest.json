@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "luscious",
+  "name": "Luscious",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.luscious.net", "https://members.luscious.net", "https://ah-img.luscious.net"],
+    "webview": false,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "luscious-en", "name": "Luscious", "lang": "en", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-ja", "name": "Luscious", "lang": "ja", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-es", "name": "Luscious", "lang": "es", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-it", "name": "Luscious", "lang": "it", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-de", "name": "Luscious", "lang": "de", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-fr", "name": "Luscious", "lang": "fr", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-zh", "name": "Luscious", "lang": "zh", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-ko", "name": "Luscious", "lang": "ko", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-other", "name": "Luscious", "lang": "other", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-pt-br", "name": "Luscious", "lang": "pt-BR", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-th", "name": "Luscious", "lang": "th", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "luscious-all", "name": "Luscious", "lang": "all", "baseUrl": "https://www.luscious.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "labibliotecadeodin",
+  "name": "La Biblioteca de Odin",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://capibaratraductor.com", "https://r2.capibaratraductor.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "labibliotecadeodin",
+      "name": "La Biblioteca de Odin",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/labibliotecadeodin",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://capibaratraductor.com/labibliotecadeodin/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

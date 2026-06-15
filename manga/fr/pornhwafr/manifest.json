@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "packageId": "pornhwafr",
+  "name": "Pornhwa.fr",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": { "network": ["https://pornhwa.fr"], "webview": true, "cookies": true },
+  "sources": [{
+    "id": "pornhwafr",
+    "name": "Pornwha.fr",
+    "lang": "fr",
+    "baseUrl": "https://pornhwa.fr",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true },
+    "listings": [{ "id": "popular", "name": "Populaires" }, { "id": "latest", "name": "Dernieres sorties" }]
+  }]
+}

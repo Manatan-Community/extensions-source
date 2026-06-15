@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "inazumanga",
+  "name": "ReYume",
+  "version": "0.1.0",
+  "versionCode": 28,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.re-yume.my.id"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "inazumanga",
+      "name": "ReYume",
+      "lang": "id",
+      "baseUrl": "https://www.re-yume.my.id",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

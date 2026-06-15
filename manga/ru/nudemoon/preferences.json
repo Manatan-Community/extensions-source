@@ -1,0 +1,3 @@
+[
+  { "id": "domain", "type": "text", "label": "Домен", "default": "https://nude-moon.org" }
+]

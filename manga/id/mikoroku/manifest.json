@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mikoroku",
+  "name": "MikoRoku",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.mikoroku.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mikoroku",
+      "name": "MikoRoku",
+      "lang": "id",
+      "baseUrl": "https://www.mikoroku.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

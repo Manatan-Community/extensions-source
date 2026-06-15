@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "toonbr",
+  "name": "ToonBr",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://beta.toonbr.com",
+      "https://api.toonbr.com",
+      "https://cdn2.toonbr.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "toonbr",
+      "name": "ToonBr",
+      "lang": "pt-BR",
+      "baseUrl": "https://beta.toonbr.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://beta.toonbr.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaiera",
+  "name": "HentaiEra",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hentaiera.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "hentaiera-en", "name": "HentaiEra", "lang": "en", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-ja", "name": "HentaiEra", "lang": "ja", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-es", "name": "HentaiEra", "lang": "es", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-fr", "name": "HentaiEra", "lang": "fr", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-ko", "name": "HentaiEra", "lang": "ko", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-de", "name": "HentaiEra", "lang": "de", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-ru", "name": "HentaiEra", "lang": "ru", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hentaiera-all", "name": "HentaiEra", "lang": "all", "baseUrl": "https://hentaiera.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

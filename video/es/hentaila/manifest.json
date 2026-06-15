@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaila",
+  "name": "Hentaila",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://hentaila.com", "https://cdn.hentaila.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "hentaila",
+    "name": "Hentaila",
+    "lang": "es",
+    "baseUrl": "https://hentaila.com",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Populares" }, { "id": "latest", "name": "Recientes" }],
+    "urlPatterns": [{ "pattern": "https://hentaila.com/media/*", "kind": "item" }]
+  }]
+}

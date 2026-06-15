@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "label": "Genre",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        "", "fantasy", "comedy", "family", "action", "drama", "romance", "mystery", "music",
+        "adventure", "horror", "digitally-restored", "science-fiction", "pinay-sexy-movies",
+        "crime", "thriller", "history", "documentary", "biography", "animation", "war",
+        "musical", "indie", "lgbt", "concert", "short-movie", "2022", "tagalog-dubbed"
+      ]
+    }
+  ]
+}

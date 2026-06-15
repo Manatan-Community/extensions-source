@@ -1,0 +1,5 @@
+[
+  { "id": "hide_locked", "type": "boolean", "label": "Hide Locked Chapters", "default": false },
+  { "id": "email_pref", "type": "string", "label": "E-Mail", "default": "" },
+  { "id": "password_pref", "type": "string", "label": "Password", "default": "" }
+]

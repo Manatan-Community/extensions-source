@@ -1,0 +1,8 @@
+[
+  {
+    "id": "group_ended",
+    "type": "boolean",
+    "label": "Group ended chapters",
+    "default": false
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "toones",
+  "name": "Toon-es",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://toon-es.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "toones",
+      "name": "Toon-es",
+      "lang": "es",
+      "baseUrl": "https://toon-es.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://toon-es.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

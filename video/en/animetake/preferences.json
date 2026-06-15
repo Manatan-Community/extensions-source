@@ -1,0 +1,26 @@
+[
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080p",
+    "options": [
+      { "label": "1080p", "value": "1080p" },
+      { "label": "720p", "value": "720p" },
+      { "label": "480p", "value": "480p" },
+      { "label": "360p", "value": "360p" }
+    ]
+  },
+  {
+    "id": "preferred_server",
+    "type": "select",
+    "label": "Preferred server",
+    "default": "Vidstreaming",
+    "options": [
+      { "label": "Vidstreaming", "value": "Vidstreaming" },
+      { "label": "Filemoon", "value": "Filemoon" },
+      { "label": "Doodstream", "value": "Doodstream" },
+      { "label": "Mp4upload", "value": "Mp4upload" }
+    ]
+  }
+]

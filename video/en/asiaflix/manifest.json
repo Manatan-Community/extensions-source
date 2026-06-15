@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "packageId": "asiaflix",
+  "name": "AsiaFlix",
+  "version": "0.1.0",
+  "versionCode": 30,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://asiaflix.app",
+    "https://api.asiaflix.app",
+    "https://streamwish.to",
+    "https://streamwish.com",
+    "https://doodstream.com",
+    "https://dood.to",
+    "https://streamtape.com",
+    "https://mixdrop.co"
+  ],
+  "sources": [
+    {
+      "id": "asiaflix",
+      "name": "AsiaFlix",
+      "lang": "en",
+      "baseUrl": "https://asiaflix.app",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://asiaflix.app/show-details/*", "kind": "item" }
+      ]
+    }
+  ]
+}

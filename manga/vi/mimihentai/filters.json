@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sắp xếp",
+      "default": "-updated_at",
+      "options": [
+        { "label": "Mới cập nhật", "value": "-updated_at" },
+        { "label": "Xem nhiều", "value": "-views" },
+        { "label": "A-Z", "value": "name" }
+      ]
+    },
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Trạng thái",
+      "default": "",
+      "options": [
+        { "label": "Tất cả", "value": "" },
+        { "label": "Đang tiến hành", "value": "1" },
+        { "label": "Đã hoàn thành", "value": "2" }
+      ]
+    },
+    {
+      "id": "accept_genres",
+      "type": "text",
+      "name": "Genre IDs, comma separated"
+    }
+  ]
+}

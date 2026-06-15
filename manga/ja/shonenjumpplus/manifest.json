@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "shonenjumpplus",
+  "name": "Shonen Jump+",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://shonenjumpplus.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "shonenjumpplus",
+      "name": "Shonen Jump+",
+      "lang": "ja",
+      "baseUrl": "https://shonenjumpplus.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [
+        { "pattern": "https://shonenjumpplus.com/episode/*", "kind": "chapter" },
+        { "pattern": "https://shonenjumpplus.com/series/*", "kind": "item" },
+        { "pattern": "https://shonenjumpplus.com/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

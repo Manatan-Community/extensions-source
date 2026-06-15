@@ -1,0 +1,14 @@
+[
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "label": "Preferred video quality",
+    "default": "Mirror 2",
+    "options": [
+      { "label": "Mirror 1", "value": "Mirror 1" },
+      { "label": "Mirror 2", "value": "Mirror 2" },
+      { "label": "Mirror 3", "value": "Mirror 3" },
+      { "label": "Beta", "value": "Beta" }
+    ]
+  }
+]

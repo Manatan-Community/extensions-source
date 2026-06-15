@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "section", "label": "اقسام الموقع", "kind": "select", "defaultValue": "", "options": ["", "all-movies", "movies", "dubbed-movies", "hindi", "asian-movies", "anime-movies", "movies_top_votes", "movies_top_views", "movies_top_imdb", "series", "anime", "series_top_imdb", "short_series", "asian-series", "series_top_views", "asian_top_views", "anime_top_views", "tvshows", "tvshows_top_views"] },
+    { "id": "category", "label": "النوع", "kind": "select", "defaultValue": "", "options": ["", "movies-cats", "series_genres", "anime-cats"] },
+    { "id": "genre", "label": "التصنيف", "kind": "select", "defaultValue": "Action", "options": ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Horror", "Romance", "Sci-fi", "Short", "Sport", "Thriller", "Western"] }
+  ]
+}

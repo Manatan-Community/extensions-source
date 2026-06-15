@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sort", "name": "Sort", "default": "", "options": [
+      { "label": "Default", "value": "" },
+      { "label": "Latest", "value": "latest" },
+      { "label": "Popularity", "value": "popularity" },
+      { "label": "Rating", "value": "rating" }
+    ] },
+    { "type": "select", "id": "sort_order", "name": "Sort Order", "default": "desc", "options": [
+      { "label": "Descending", "value": "desc" },
+      { "label": "Ascending", "value": "asc" }
+    ] },
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Hiatus", "value": "hiatus" }
+    ] },
+    { "type": "text", "id": "format", "name": "Format slugs" },
+    { "type": "text", "id": "type", "name": "Type slugs" },
+    { "type": "text", "id": "genre_include", "name": "Included genre slugs" },
+    { "type": "text", "id": "genre_exclude", "name": "Excluded genre slugs" }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "options": ["latest", "popular", "rating", "a-z", "newest"]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "options": ["", "ongoing", "completed", "hiatus", "dropped"]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "label": "Type",
+    "options": ["", "manga", "manhwa", "manhua", "webtoon"]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "options": ["", "isekai", "action", "adventure", "all-ages", "comedy", "drama", "fantasy", "gore", "game-world", "gender-bender", "historical", "horror", "josei", "magic", "martial-arts", "modern", "mystery", "psychological", "regression", "romance", "royalty", "school-life", "science-fiction", "slice-of-life", "sports", "supernatural", "thriller", "webtoon", "another-world", "crossdressing", "dr", "elf", "emale-cartoon", "full-color", "love-affair", "manhwa", "pure", "revenge", "shoujo", "white-cat"]
+  }
+]

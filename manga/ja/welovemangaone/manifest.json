@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "welovemangaone",
+  "name": "Love4u",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "welovemangaone",
+      "name": "Love4u",
+      "lang": "ja",
+      "baseUrl": "https://love4u.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://love4u.net/*", "kind": "item" }
+      ]
+    }
+  ]
+}

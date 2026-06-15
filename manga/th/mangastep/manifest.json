@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangastep",
+  "name": "Mangastep",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangastep.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangastep",
+      "name": "Mangastep",
+      "lang": "th",
+      "baseUrl": "https://mangastep.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangastep.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Ordenar por",
+      "default": "visitas:desc",
+      "options": [
+        { "label": "Visitas descendente", "value": "visitas:desc" },
+        { "label": "Visitas ascendente", "value": "visitas:asc" },
+        { "label": "Recientes descendente", "value": "id:desc" },
+        { "label": "Recientes ascendente", "value": "id:asc" },
+        { "label": "Alfabetico descendente", "value": "nombre:desc" },
+        { "label": "Alfabetico ascendente", "value": "nombre:asc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Estado",
+      "default": "false",
+      "options": [
+        { "label": "Estado", "value": "false" },
+        { "label": "En desarrollo", "value": "1" },
+        { "label": "Completo", "value": "0" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Tipo",
+      "default": "false",
+      "options": [
+        { "label": "Todo", "value": "false" },
+        { "label": "Mangas", "value": "0" },
+        { "label": "Manhwas", "value": "1" },
+        { "label": "One Shot", "value": "2" },
+        { "label": "Manhuas", "value": "3" },
+        { "label": "Novelas", "value": "4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Generos",
+      "default": "false",
+      "options": [
+        { "label": "Todos", "value": "false" },
+        { "label": "Comedia", "value": "1" },
+        { "label": "Drama", "value": "2" },
+        { "label": "Accion", "value": "3" },
+        { "label": "Escolar", "value": "4" },
+        { "label": "Romance", "value": "5" },
+        { "label": "Ecchi", "value": "6" },
+        { "label": "Aventura", "value": "7" },
+        { "label": "Shonen", "value": "8" },
+        { "label": "Shojo", "value": "9" },
+        { "label": "Deportes", "value": "10" },
+        { "label": "Psicologico", "value": "11" },
+        { "label": "Fantasia", "value": "12" },
+        { "label": "Mecha", "value": "13" },
+        { "label": "Gore", "value": "14" },
+        { "label": "Yaoi", "value": "15" },
+        { "label": "Yuri", "value": "16" },
+        { "label": "Misterio", "value": "17" },
+        { "label": "Sobrenatural", "value": "18" },
+        { "label": "Seinen", "value": "19" },
+        { "label": "Ficcion", "value": "20" },
+        { "label": "Harem", "value": "21" },
+        { "label": "Webtoon", "value": "25" },
+        { "label": "Historico", "value": "27" },
+        { "label": "Musical", "value": "30" },
+        { "label": "Ciencia ficcion", "value": "31" },
+        { "label": "Shojo-ai", "value": "32" },
+        { "label": "Josei", "value": "33" },
+        { "label": "Magia", "value": "34" },
+        { "label": "Artes Marciales", "value": "35" },
+        { "label": "Horror", "value": "36" },
+        { "label": "Demonios", "value": "37" },
+        { "label": "Supervivencia", "value": "38" },
+        { "label": "Recuentos de la vida", "value": "39" },
+        { "label": "Shonen ai", "value": "40" },
+        { "label": "Militar", "value": "41" },
+        { "label": "Eroge", "value": "42" },
+        { "label": "Isekai", "value": "43" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "adult",
+      "name": "Contenido +18",
+      "default": "false",
+      "options": [
+        { "label": "Mostrar todo", "value": "false" },
+        { "label": "Mostrar solo +18", "value": "1" },
+        { "label": "No mostrar +18", "value": "0" }
+      ]
+    }
+  ]
+}

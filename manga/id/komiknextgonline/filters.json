@@ -1,0 +1,15 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "Kategori",
+    "default": "",
+    "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Pendidikan", "value": "pendidikan" },
+      { "label": "Persahabatan", "value": "persahabatan" },
+      { "label": "Anak Islami", "value": "anak-islami" },
+      { "label": "Horor dan Misteri", "value": "horor-dan-misteri" }
+    ]
+  }
+]

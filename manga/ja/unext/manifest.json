@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "packageId": "unext",
+  "name": "U-NEXT",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://video.unext.jp",
+      "https://cc.unext.jp",
+      "https://*.unext.jp"
+    ],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "unext",
+      "name": "U-NEXT",
+      "lang": "ja",
+      "baseUrl": "https://video.unext.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://video.unext.jp/book/title/*", "kind": "item" },
+        { "pattern": "https://video.unext.jp/book/view/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

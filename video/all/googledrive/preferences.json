@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "domain_list", "label": "Drive folder paths", "kind": "text", "defaultValue": "" },
+    { "id": "trim_anime_info", "label": "Trim list item info", "kind": "toggle", "defaultValue": "false" },
+    { "id": "trim_episode_name", "label": "Trim episode name", "kind": "toggle", "defaultValue": "true" },
+    { "id": "trim_episode_info", "label": "Trim episode folder info", "kind": "toggle", "defaultValue": "false" },
+    { "id": "scanlator_order", "label": "Show folder before size", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

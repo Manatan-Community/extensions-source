@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "header",
+      "name": "NOTA: Los filtros seran ignorados si se realiza una busqueda por texto."
+    },
+    {
+      "type": "header",
+      "name": "Solo se puede aplicar un filtro a la vez."
+    },
+    {
+      "type": "select",
+      "id": "filter",
+      "name": "Ordenar por",
+      "default": "",
+      "options": [
+        { "label": "<Seleccionar>", "value": "" },
+        { "label": "A", "value": "a" },
+        { "label": "B", "value": "b" },
+        { "label": "C", "value": "c" },
+        { "label": "D", "value": "d" },
+        { "label": "E", "value": "e" },
+        { "label": "F", "value": "f" },
+        { "label": "G", "value": "g" },
+        { "label": "H", "value": "h" },
+        { "label": "I", "value": "i" },
+        { "label": "J", "value": "j" },
+        { "label": "K", "value": "k" },
+        { "label": "L", "value": "l" },
+        { "label": "M", "value": "m" },
+        { "label": "N", "value": "n" },
+        { "label": "O", "value": "o" },
+        { "label": "P", "value": "p" },
+        { "label": "Q", "value": "q" },
+        { "label": "R", "value": "r" },
+        { "label": "S", "value": "s" },
+        { "label": "T", "value": "t" },
+        { "label": "U", "value": "u" },
+        { "label": "V", "value": "v" },
+        { "label": "W", "value": "w" },
+        { "label": "X", "value": "x" },
+        { "label": "Y", "value": "y" },
+        { "label": "Z", "value": "z" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "gen",
+      "name": "Genero",
+      "default": "",
+      "options": [
+        { "label": "<Seleccionar>", "value": "" },
+        { "label": "Adaptacion de Novela", "value": "Adaptacion de Novela" },
+        { "label": "Aventuras", "value": "Aventuras" },
+        { "label": "Bondage", "value": "Bondage" },
+        { "label": "Comedia", "value": "Comedia" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Ecchi", "value": "Ecchi" },
+        { "label": "Escolar", "value": "Escolar" },
+        { "label": "Fantasia", "value": "Fantasia" },
+        { "label": "Hardcore", "value": "Hardcore" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Isekai", "value": "Isekai" },
+        { "label": "MILF", "value": "MILF" },
+        { "label": "Netorare", "value": "Netorare" },
+        { "label": "Novela", "value": "Novela" },
+        { "label": "Recuentos de la vida", "value": "Recuentos de la vida" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "Seinen", "value": "Seinen" },
+        { "label": "Sistemas", "value": "Sistemas" },
+        { "label": "Venganza", "value": "Venganza" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "<Seleccionar>", "value": "" },
+        { "label": "Completed", "value": "Completed" },
+        { "label": "En Libertad", "value": "En Libertad" },
+        { "label": "Canceled", "value": "Canceled" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "select",
+      "id": "browseType",
+      "name": "Default browse list",
+      "default": "gallery",
+      "options": [
+        { "label": "Gallery", "value": "gallery" },
+        { "label": "Image", "value": "image" }
+      ]
+    }
+  ]
+}

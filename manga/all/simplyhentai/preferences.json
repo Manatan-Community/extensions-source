@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "text",
+      "id": "blacklist",
+      "name": "Blacklist"
+    }
+  ]
+}

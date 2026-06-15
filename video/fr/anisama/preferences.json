@@ -1,0 +1,23 @@
+[
+  {
+    "key": "preferred_language",
+    "title": "Langue preferee",
+    "type": "select",
+    "default": "",
+    "values": ["", "sub", "dub"]
+  },
+  {
+    "key": "preferred_server",
+    "title": "Serveur prefere",
+    "type": "select",
+    "default": "",
+    "values": ["", "Filemoon", "Sibnet", "Sendvid", "Voe", "Dood", "VidHide", "CDN"]
+  },
+  {
+    "key": "preferred_quality",
+    "title": "Qualite preferee",
+    "type": "select",
+    "default": "1080p",
+    "values": ["1080p", "720p", "480p", "360p"]
+  }
+]

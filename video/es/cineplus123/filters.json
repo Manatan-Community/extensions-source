@@ -1,0 +1,20 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Generos",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "accion", "value": "accion" },
+      { "label": "animacion", "value": "animacion" },
+      { "label": "aventura", "value": "aventura" },
+      { "label": "ciencia-ficcion", "value": "ciencia-ficcion" },
+      { "label": "comedia", "value": "comedia" },
+      { "label": "crimen", "value": "crimen" },
+      { "label": "drama", "value": "drama" },
+      { "label": "familia", "value": "familia" },
+      { "label": "fantasia", "value": "fantasia" },
+      { "label": "terror", "value": "terror" }
+    ]
+  }
+]

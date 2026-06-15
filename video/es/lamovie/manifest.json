@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lamovie",
+  "name": "LaMovie",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://la.movie", "https://lamovie.link"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "lamovie",
+    "name": "LaMovie",
+    "lang": "es",
+    "baseUrl": "https://la.movie",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Recientes" }
+    ],
+    "urlPatterns": [{ "pattern": "https://la.movie/*", "kind": "item" }]
+  }]
+}

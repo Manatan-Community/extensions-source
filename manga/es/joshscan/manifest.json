@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "joshscan",
+  "name": "JoshScan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://capibaratraductor.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "joshscan",
+      "name": "JoshScan",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/joshscan",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://capibaratraductor.com/joshscan/*", "kind": "item" }
+      ]
+    }
+  ]
+}

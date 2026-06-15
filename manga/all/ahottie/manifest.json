@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ahottie",
+  "name": "AHottie",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "ahottie",
+      "name": "AHottie",
+      "lang": "all",
+      "baseUrl": "https://ahottie.top",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://ahottie.top/albums/*", "kind": "item" },
+        { "pattern": "https://ahottie.top/tags/*", "kind": "search" }
+      ]
+    }
+  ]
+}

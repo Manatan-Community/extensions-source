@@ -1,0 +1,32 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_hoster",
+    "title": "Standard-Hoster",
+    "default": "https://streamtape.com",
+    "options": [
+      { "label": "Streamtape", "value": "https://streamtape.com" },
+      { "label": "Voe", "value": "https://voe.sx" },
+      { "label": "StreamZ", "value": "https://streamz.ws" },
+      { "label": "Vidoza", "value": "https://vidoza.net" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "hoster_selection",
+    "title": "Hoster auswählen",
+    "default": ["stape", "voe", "streamz", "vidoza"],
+    "options": [
+      { "label": "Streamtape", "value": "stape" },
+      { "label": "Voe", "value": "voe" },
+      { "label": "StreamZ", "value": "streamz" },
+      { "label": "Vidoza", "value": "vidoza" }
+    ]
+  },
+  {
+    "type": "toggle",
+    "key": "limit_qualities",
+    "title": "Anzahl der Videos auf 15 begrenzen",
+    "default": true
+  }
+]

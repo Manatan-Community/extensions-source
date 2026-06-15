@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "packageId": "koharu",
+  "name": "SchaleNetwork",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://schale.network", "https://api.schale.network"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "koharu-all", "name": "SchaleNetwork", "lang": "all", "baseUrl": "https://schale.network", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "koharu-en", "name": "SchaleNetwork", "lang": "en", "baseUrl": "https://schale.network", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "koharu-ja", "name": "SchaleNetwork", "lang": "ja", "baseUrl": "https://schale.network", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "koharu-zh", "name": "SchaleNetwork", "lang": "zh", "baseUrl": "https://schale.network", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } }
+  ]
+}

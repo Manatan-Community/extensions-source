@@ -1,0 +1,20 @@
+[
+  {
+    "id": "show_paid_chapters",
+    "type": "boolean",
+    "label": "Show paid chapters",
+    "default": false
+  },
+  {
+    "id": "username",
+    "type": "string",
+    "label": "Username",
+    "default": ""
+  },
+  {
+    "id": "password",
+    "type": "password",
+    "label": "Password",
+    "default": ""
+  }
+]

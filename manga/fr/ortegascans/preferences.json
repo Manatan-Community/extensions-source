@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "switch",
+      "id": "hidePremium",
+      "title": "Masquer les chapitres premium",
+      "summary": "Masquer les chapitres verrouillés du site",
+      "default": false
+    }
+  ]
+}

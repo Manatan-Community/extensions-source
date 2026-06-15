@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lelscanvf",
+  "name": "Lelscan-VF",
+  "version": "0.1.0",
+  "versionCode": 13,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://lelscanfr.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "lelscanvf",
+      "name": "Lelscan-VF",
+      "lang": "fr",
+      "baseUrl": "https://lelscanfr.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Chapitres récents" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lelscanfr.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "type": "text", "name": "题材 ID", "default": "0" },
+    {
+      "id": "status",
+      "type": "select",
+      "name": "状态",
+      "default": "0",
+      "options": [
+        { "label": "全部", "value": "0" },
+        { "label": "连载", "value": "1" },
+        { "label": "完结", "value": "2" }
+      ]
+    },
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "排序",
+      "default": "id",
+      "options": [
+        { "label": "最新", "value": "id" },
+        { "label": "热门", "value": "hits" },
+        { "label": "更新", "value": "addtime" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Status",
+      "default": "dang-phat-hanh",
+      "options": [
+        { "label": "Dang phat hanh", "value": "dang-phat-hanh" },
+        { "label": "Truyen moi", "value": "truyen-moi" },
+        { "label": "Hoan thanh", "value": "hoan-thanh" },
+        { "label": "Sap ra mat", "value": "sap-ra-mat" }
+      ]
+    },
+    { "id": "genre", "type": "text", "name": "Genre slug" }
+  ]
+}

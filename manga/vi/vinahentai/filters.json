@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "text",
+      "name": "Thể loại slug",
+      "default": ""
+    },
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sắp xếp theo",
+      "default": "updatedAt",
+      "options": [
+        { "label": "Mới cập nhật", "value": "updatedAt" },
+        { "label": "Xem nhiều", "value": "viewNumber" },
+        { "label": "Đánh giá cao", "value": "likeNumber" },
+        { "label": "Cũ nhất", "value": "oldest" }
+      ]
+    }
+  ]
+}

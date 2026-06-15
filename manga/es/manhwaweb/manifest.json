@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwaweb",
+  "name": "ManhwaWeb",
+  "version": "0.1.0",
+  "versionCode": 11,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://manhwaweb.com",
+      "https://manhwawebbackend-production.up.railway.app"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhwaweb",
+      "name": "ManhwaWeb",
+      "lang": "es",
+      "baseUrl": "https://manhwaweb.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manhwaweb.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

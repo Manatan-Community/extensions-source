@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doujindesu",
+  "name": "Doujindesu",
+  "version": "0.1.0",
+  "versionCode": 14,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://doujindesu.tv"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "doujindesu",
+      "name": "Doujindesu",
+      "lang": "id",
+      "baseUrl": "https://doujindesu.tv",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Manhwa" },
+        { "id": "latest", "name": "Doujin" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://doujindesu.tv/*", "kind": "item" }
+      ]
+    }
+  ]
+}

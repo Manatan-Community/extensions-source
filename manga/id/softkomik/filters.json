@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sortBy", "name": "Sort By", "default": "newKomik", "options": [
+      { "label": "Terbaru", "value": "newKomik" },
+      { "label": "Popular", "value": "popular" }
+    ] },
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Tamat", "value": "tamat" }
+    ] },
+    { "type": "select", "id": "type", "name": "Type", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Manhwa", "value": "manhwa" }
+    ] },
+    { "type": "select", "id": "genre", "name": "Genre", "default": "", "options": [
+      { "label": "Semua Genre", "value": "" },
+      { "label": "Action", "value": "Action" },
+      { "label": "Adventure", "value": "Adventure" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Cooking", "value": "Cooking" },
+      { "label": "Crime", "value": "Crime" },
+      { "label": "Demon", "value": "demon" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Game", "value": "Game" },
+      { "label": "Gender Bender", "value": "Gender Bender" },
+      { "label": "Gore", "value": "Gore" },
+      { "label": "Harem", "value": "Harem" },
+      { "label": "Historical", "value": "Historical" },
+      { "label": "Horror", "value": "Horror" },
+      { "label": "Isekai", "value": "Isekai" },
+      { "label": "Josei", "value": "Josei" },
+      { "label": "Magic", "value": "magic" },
+      { "label": "Martial Arts", "value": "Martial Arts" },
+      { "label": "Mature", "value": "Mature" },
+      { "label": "Mecha", "value": "Mecha" },
+      { "label": "Medical", "value": "Medical" },
+      { "label": "Military", "value": "Military" },
+      { "label": "Music", "value": "Musyc" },
+      { "label": "Mystery", "value": "Mystery" },
+      { "label": "Parody", "value": "parody" },
+      { "label": "Police", "value": "Police" },
+      { "label": "Psychological", "value": "Psychological" },
+      { "label": "Reincarnation", "value": "Reincarnation" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "School", "value": "School" },
+      { "label": "School Life", "value": "School Life" },
+      { "label": "Sci-fi", "value": "Sci-fi" },
+      { "label": "Seinen", "value": "Seinen" },
+      { "label": "Shoujo", "value": "Shoujo" },
+      { "label": "Shoujo Ai", "value": "Shoujo Ai" },
+      { "label": "Shounen", "value": "Shounen" },
+      { "label": "Shounen Ai", "value": "Shounen Ai" },
+      { "label": "Slice of Life", "value": "Slice of Life" },
+      { "label": "Sports", "value": "Sports" },
+      { "label": "Super Power", "value": "Super Power" },
+      { "label": "Supernatural", "value": "Supernatural" },
+      { "label": "Thriller", "value": "Thriler" },
+      { "label": "Tragedy", "value": "Tragedy" },
+      { "label": "Webtoons", "value": "Webtoons" },
+      { "label": "Yaoi", "value": "Yaoi" },
+      { "label": "Yuri", "value": "Yuri" },
+      { "label": "Zombies", "value": "zombies" }
+    ] },
+    { "type": "text", "id": "min", "name": "Minimal Chapter" }
+  ]
+}

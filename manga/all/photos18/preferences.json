@@ -1,0 +1,8 @@
+[
+  {
+    "id": "traditionalChinese",
+    "type": "toggle",
+    "title": "Use Traditional Chinese",
+    "default": false
+  }
+]

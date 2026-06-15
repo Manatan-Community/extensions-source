@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rawotaku",
+  "name": "Raw Otaku",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rawotaku.com"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "rawotaku",
+      "name": "Raw Otaku",
+      "lang": "ja",
+      "baseUrl": "https://rawotaku.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rawotaku.com/manga/*", "kind": "item" },
+        { "pattern": "https://rawotaku.com/chapter/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "addon_index", "label": "Addon index", "kind": "string", "defaultValue": "0" },
+    { "id": "catalog_index", "label": "Catalog index", "kind": "string", "defaultValue": "0" },
+    { "id": "genre", "label": "Genre", "kind": "string", "defaultValue": "" }
+  ]
+}

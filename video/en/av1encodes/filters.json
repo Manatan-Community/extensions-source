@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "label": "Sort By",
+      "kind": "select",
+      "defaultValue": "",
+      "options": ["", "a-z", "z-a", "episodes"]
+    },
+    {
+      "id": "type",
+      "label": "Audio Type",
+      "kind": "select",
+      "defaultValue": "",
+      "options": ["", "sub", "dual"]
+    },
+    {
+      "id": "genre",
+      "label": "Genre",
+      "kind": "select",
+      "defaultValue": "",
+      "options": ["", "action", "adventure", "comedy", "drama", "fantasy", "horror", "romance", "sci-fi"]
+    }
+  ]
+}

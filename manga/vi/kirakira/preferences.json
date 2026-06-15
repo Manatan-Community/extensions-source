@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    {
+      "id": "autoUnlockChapters",
+      "type": "boolean",
+      "name": "Auto unlock chapters",
+      "default": false
+    }
+  ]
+}

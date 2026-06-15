@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "uncensoredmanhwa",
+  "name": "Uncensored Manhwa",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://uncensoredmanhwa.us"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "uncensoredmanhwa-en", "name": "Uncensored Manhwa", "lang": "en", "baseUrl": "https://uncensoredmanhwa.us", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "uncensoredmanhwa-all", "name": "Uncensored Manhwa", "lang": "all", "baseUrl": "https://uncensoredmanhwa.us", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "tags",
+      "label": "Tags",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": ["1080p", "Action", "Adventure", "Aliens", "Assassins", "Boku no Hero", "Cg Animation", "Comedy", "Coming Of Age", "Crossdressing", "Daily Life", "Demons", "Dragons", "Drama", "Dystopia", "Ecchi", "Episodic", "Europe", "Explicit Sex", "Explicit Violence", "Fantasy", "Fate Stay Night", "Food And Beverage", "Futuristic", "Game", "Goku", "Gore", "Gunfights", "Hand To Hand Combat", "Harem", "High School", "High Stakes Games", "Highschool dxd", "Highschool", "Historical", "Horror", "Josei", "Magic School", "Magic", "Magical Girl", "Maids", "Manga", "Martial Arts", "Master-servant Relationship", "Mature Themes", "Mecha", "Medieval", "Mercenaries", "Military", "Mmorpg", "Monsters", "Music", "Mystery", "Netflix", "Newly Co-ed School", "Noitamina", "Nudity", "Otaku Culture", "Outer Space", "OVA", "Pandemic", "Panty Shots", "Parody", "Person In A Strange World", "Play Or Die", "Police", "Political", "Post-apocalyptic", "Psychic Powers", "Psychological", "Revenge", "Robots", "Romance", "Rpg", "Samurai", "School Club", "School Life", "School", "Sci Fi", "Sci-Fi", "Seinen", "Sexual Content", "Shingeki no Kyojin", "Shoujo Ai", "Shoujo", "Shoujo-ai", "Shounen Ai", "Shounen", "Slice Of Life", "Slice of Life", "Sports", "Sudden Girlfriend Appearance", "Super Power", "Supernatural", "Superpowers", "Survival", "Swordplay", "Thriller", "Time Travel", "Tournaments", "Tsundere", "Vampire", "Vampires", "Violence", "Virtual Reality", "War", "Work Life", "Zombies"]
+    }
+  ]
+}

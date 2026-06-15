@@ -1,0 +1,10 @@
+[
+  {
+    "key": "preferred_quality",
+    "title": "Preferred quality",
+    "type": "list",
+    "default": "1080p",
+    "entries": ["144p", "240p", "360p", "480p", "720p", "1080p"],
+    "entryValues": ["144p", "240p", "360p", "480p", "720p", "1080p"]
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "label": "Category",
+    "default": "/rensai",
+    "options": [
+      { "label": "Serializing", "value": "/rensai" },
+      { "label": "Finished", "value": "/finish" },
+      { "label": "Gangan pixiv", "value": "/pixiv" },
+      { "label": "Gangan GA", "value": "/ga" }
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhuanext",
+  "name": "Manhuanext",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhuanext.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhuanext",
+      "name": "Manhuanext",
+      "lang": "en",
+      "baseUrl": "https://manhuanext.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

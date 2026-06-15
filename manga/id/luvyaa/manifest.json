@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "luvyaa",
+  "name": "Luvyaa",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://v4.luvyaa.co"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "luvyaa",
+      "name": "Luvyaa",
+      "lang": "id",
+      "baseUrl": "https://v4.luvyaa.co",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "thumbnailUrl",
+    "type": "text",
+    "title": "Thumbnail URL",
+    "default": "https://one-piece-fans2.com/images/luffy.png"
+  }
+]

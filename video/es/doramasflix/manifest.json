@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doramasflix",
+  "name": "Doramasflix",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://doramasflix.in", "https://sv1.fluxcedene.net", "https://fkplayer.xyz"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "doramasflix",
+    "name": "Doramasflix",
+    "lang": "es",
+    "baseUrl": "https://doramasflix.in",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Doramas populares" },
+      { "id": "latest", "name": "Doramas recientes" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://doramasflix.in/*", "kind": "item" },
+      { "pattern": "https://www.doramasflix.in/*", "kind": "item" }
+    ]
+  }]
+}

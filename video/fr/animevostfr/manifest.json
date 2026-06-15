@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animevostfr",
+  "name": "AnimeVostFr",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animevostfr.tv", "https://cdopetimes.xyz"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animevostfr",
+    "name": "AnimeVostFr",
+    "lang": "fr",
+    "baseUrl": "https://animevostfr.tv",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Catalogue" },
+      { "id": "latest", "name": "En cours" }
+    ],
+    "urlPatterns": [{ "pattern": "https://animevostfr.tv/*", "kind": "item" }]
+  }]
+}

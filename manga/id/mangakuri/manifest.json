@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangakuri",
+  "name": "Mangakuri",
+  "version": "0.1.0",
+  "versionCode": 32,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://lc1.mangakuri.online", "https://api.mangakuri.online"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangakuri",
+      "name": "Mangakuri",
+      "lang": "id",
+      "baseUrl": "https://lc1.mangakuri.online",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

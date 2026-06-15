@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hackstore",
+  "name": "Hackstore",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.hackstore.fo"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "hackstore",
+    "name": "Hackstore",
+    "lang": "es",
+    "baseUrl": "https://www.hackstore.fo",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": false, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Peliculas" }],
+    "urlPatterns": [{ "pattern": "https://www.hackstore.fo/*", "kind": "item" }]
+  }]
+}

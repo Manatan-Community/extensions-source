@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "language", "label": "Language", "kind": "select", "defaultValue": "English", "options": ["Arabic", "Bahasa Indonesia", "Bulgarian", "Cantonese", "Chinese", "Chinese (Traditional)", "Czech", "Danish", "English", "Filipino", "Finnish", "Flemish Dutch", "French", "German", "Greek", "Hebrew", "Hindi", "Hungarian", "Italian", "Japanese", "Korean", "Malay", "Norwegian Bokmal", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish", "Thai", "Turkish", "Vietnamese"] },
+    { "id": "latest_language", "label": "Latest language slug", "kind": "text", "defaultValue": "English" },
+    { "id": "username", "label": "Username", "kind": "text", "defaultValue": "" },
+    { "id": "password", "label": "Password", "kind": "text", "defaultValue": "" }
+  ]
+}

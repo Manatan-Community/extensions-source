@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sortBy",
+    "type": "select",
+    "label": "Sort",
+    "options": [
+      { "label": "Most viewed", "value": "popular" },
+      { "label": "Releases", "value": "release" },
+      { "label": "Updated", "value": "updated" },
+      { "label": "Best rated", "value": "rating" },
+      { "label": "A-Z", "value": "title" }
+    ]
+  },
+  {
+    "id": "sortOrder",
+    "type": "select",
+    "label": "Direction",
+    "options": [
+      { "label": "Descending", "value": "desc" },
+      { "label": "Ascending", "value": "asc" }
+    ]
+  }
+]

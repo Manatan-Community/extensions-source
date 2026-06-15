@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort by",
+    "default": "new",
+    "options": [
+      { "label": "Newest", "value": "new" },
+      { "label": "Ranking", "value": "ranking" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Action", "value": "Action" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Horror", "value": "Horror" },
+      { "label": "Mystery", "value": "Mystery" },
+      { "label": "Boys Love", "value": "Boys Love" },
+      { "label": "Girls Love", "value": "Girls Love" },
+      { "label": "Comedy", "value": "Comedy" }
+    ]
+  },
+  {
+    "id": "publisher",
+    "type": "select",
+    "label": "Publisher",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Yen Press", "value": "Yen Press" },
+      { "label": "Kodansha USA Publishing LLC", "value": "Kodansha USA Publishing LLC" },
+      { "label": "VIZ Media LLC", "value": "VIZ Media LLC" },
+      { "label": "Manga UP!", "value": "Manga UP!" },
+      { "label": "J-Novel Club", "value": "J-Novel Club" }
+    ]
+  }
+]

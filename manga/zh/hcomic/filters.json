@@ -1,0 +1,1 @@
+[{"id":"random","type":"select","name":"排序","default":"","options":[{"label":"最近更新","value":""},{"label":"随机排序","value":"/random"}]},{"id":"tag","type":"text","name":"人氣標籤","default":""}]

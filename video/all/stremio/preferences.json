@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "host_url", "label": "WebUI Url", "kind": "string", "defaultValue": "https://app.strem.io/shell-v4.4" },
+    { "id": "server_url", "label": "Server Url", "kind": "string", "defaultValue": "" },
+    { "id": "addons", "label": "Addons", "kind": "string", "defaultValue": "" },
+    { "id": "auth_key", "label": "Auth key", "kind": "string", "defaultValue": "" },
+    { "id": "pref_skip_season_0", "label": "Skip season 0", "kind": "boolean", "defaultValue": false },
+    { "id": "pref_episode_name_template", "label": "Episode name format", "kind": "string", "defaultValue": "Season {seasonNumber} Ep. {episodeNumber} - {name}" },
+    { "id": "pref_scanlator_name_template", "label": "Scanlator format", "kind": "string", "defaultValue": "" }
+  ]
+}

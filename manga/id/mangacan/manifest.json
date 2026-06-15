@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangacan",
+  "name": "Manga Can",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangacanblog.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangacan",
+      "name": "Manga Can",
+      "lang": "id",
+      "baseUrl": "https://mangacanblog.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ]
+    }
+  ]
+}

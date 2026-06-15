@@ -1,0 +1,18 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "",
+    "options": [
+      { "label": "Top", "value": "" },
+      { "label": "Battle", "value": "1" },
+      { "label": "Fantasy", "value": "2" },
+      { "label": "School / Sports", "value": "3" },
+      { "label": "Romcom", "value": "4" },
+      { "label": "Comedy", "value": "6" },
+      { "label": "Mystery / Horror", "value": "7" },
+      { "label": "Other", "value": "8" }
+    ]
+  }
+]

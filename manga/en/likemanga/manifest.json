@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "likemanga",
+  "name": "LikeManga",
+  "version": "0.1.0",
+  "versionCode": 7,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://likemanga.ink"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "likemanga",
+      "name": "LikeManga",
+      "lang": "en",
+      "baseUrl": "https://likemanga.ink",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

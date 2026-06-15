@@ -1,0 +1,74 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Gêneros",
+    "options": [
+      { "label": "Gêneros", "value": "" },
+      { "label": "Ação", "value": "Ação" },
+      { "label": "Aventura", "value": "Aventura" },
+      { "label": "Artes Marciais", "value": "Artes Marciais" },
+      { "label": "Comédia", "value": "Comédia" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasia", "value": "Fantasia" },
+      { "label": "Ficção Científica", "value": "Ficção Científica" },
+      { "label": "Harem", "value": "Harem" },
+      { "label": "Histórico", "value": "Histórico" },
+      { "label": "Maduro", "value": "Maduro" },
+      { "label": "Mistério", "value": "Mistério" },
+      { "label": "Psicológico", "value": "Psicológico" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Seinen", "value": "Seinen" },
+      { "label": "Shoujo", "value": "Shoujo" },
+      { "label": "Shounen", "value": "Shounen" },
+      { "label": "Sobrenatural", "value": "Sobrenatural" },
+      { "label": "Tragédia", "value": "Tragédia" },
+      { "label": "Vida Escolar", "value": "Vida Escolar" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "label": "Tipo",
+    "options": [
+      { "label": "Todos", "value": "all" },
+      { "label": "Mangá", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Novel", "value": "novel" },
+      { "label": "Yaoi", "value": "yaoi" },
+      { "label": "Yuri", "value": "yuri" },
+      { "label": "Shoujo", "value": "shoujo" },
+      { "label": "English", "value": "english" },
+      { "label": "Webtoon", "value": "webtoon" },
+      { "label": "Doujinshi", "value": "doujinshi" },
+      { "label": "Hentai", "value": "hentai" },
+      { "label": "Pornhwa", "value": "pornhwa" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "options": [
+      { "label": "Status", "value": "all" },
+      { "label": "Em lançamento", "value": "ONGOING" },
+      { "label": "Completo", "value": "COMPLETED" },
+      { "label": "Hiato", "value": "HIATUS" },
+      { "label": "Cancelado", "value": "CANCELED" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Ordenar por",
+    "options": [
+      { "label": "Mais Populares", "value": "popular" },
+      { "label": "Maior Avaliação", "value": "rating" },
+      { "label": "Mais Recentes", "value": "recent" },
+      { "label": "Novidades", "value": "new" },
+      { "label": "A-Z", "value": "alphabetical" }
+    ]
+  }
+]

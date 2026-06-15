@@ -1,0 +1,5 @@
+[
+  {"id":"preferred_server","type":"select","name":"Preferred server","default":"VidGuard","options":[{"label":"StreamWish","value":"StreamWish"},{"label":"VidGuard","value":"VidGuard"},{"label":"Filemoon","value":"Filemoon"},{"label":"StreamTape","value":"StreamTape"},{"label":"FileLions","value":"FileLions"},{"label":"DoodStream","value":"DoodStream"},{"label":"Sendvid","value":"Sendvid"},{"label":"LuluStream","value":"LuluStream"},{"label":"Mp4Upload","value":"Mp4Upload"}]},
+  {"id":"preferred_quality","type":"select","name":"Preferred quality","default":"1080","options":[{"label":"1080","value":"1080"},{"label":"720","value":"720"},{"label":"480","value":"480"},{"label":"360","value":"360"}]},
+  {"id":"preferred_user_agent","type":"string","name":"User-Agent","default":"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36"}
+]

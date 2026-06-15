@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rawinu",
+  "name": "RawINU",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rawinu.com"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "rawinu",
+      "name": "RawINU",
+      "lang": "ja",
+      "baseUrl": "https://rawinu.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rawinu.com/manga-*", "kind": "item" },
+        { "pattern": "https://rawinu.com/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

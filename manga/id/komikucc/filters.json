@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Selesai", "value": "completed" },
+      { "label": "Hiatus", "value": "hiatus" }
+    ] },
+    { "type": "select", "id": "type", "name": "Type", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" }
+    ] },
+    { "type": "select", "id": "order", "name": "Sort", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "A-Z", "value": "title" },
+      { "label": "Z-A", "value": "titlereverse" },
+      { "label": "Update", "value": "update" },
+      { "label": "New", "value": "latest" },
+      { "label": "Popular", "value": "popular" }
+    ] },
+    { "type": "text", "id": "genres", "name": "Genre slug(s)" }
+  ]
+}

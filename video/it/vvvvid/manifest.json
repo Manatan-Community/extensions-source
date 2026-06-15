@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "vvvvid",
+  "name": "VVVVID",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "it",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.vvvvid.it"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "vvvvid",
+    "name": "VVVVID",
+    "lang": "it",
+    "baseUrl": "https://www.vvvvid.it",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": false},
+    "listings": [
+      { "id": "popular", "name": "Popolari" },
+      { "id": "latest", "name": "Nuove uscite" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://www.vvvvid.it/*", "kind": "item" }
+    ]
+  }]
+}

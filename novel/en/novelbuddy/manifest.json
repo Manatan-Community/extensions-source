@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "novelbuddy",
+  "name": "NovelBuddy",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://novelbuddy.com", "https://api.novelbuddy.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "novelbuddy",
+      "name": "NovelBuddy",
+      "lang": "en",
+      "baseUrl": "https://novelbuddy.com",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

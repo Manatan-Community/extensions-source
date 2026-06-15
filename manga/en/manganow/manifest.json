@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manganow",
+  "name": "MangaNow",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manganow.to"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manganow",
+      "name": "MangaNow",
+      "lang": "en",
+      "baseUrl": "https://manganow.to",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

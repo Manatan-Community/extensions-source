@@ -1,0 +1,10 @@
+[
+  {
+    "id": "collection",
+    "type": "select",
+    "name": "コレクション",
+    "options": [
+      { "label": "連載作品一覧", "value": "" }
+    ]
+  }
+]

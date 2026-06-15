@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwalistorg",
+  "name": "Manhwalist.org",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://isekaikomik.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhwalistorg",
+      "name": "Manhwalist.org",
+      "lang": "id",
+      "baseUrl": "https://isekaikomik.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://isekaikomik.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

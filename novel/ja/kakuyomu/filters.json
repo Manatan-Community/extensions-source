@@ -1,0 +1,36 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "all",
+    "options": [
+      { "label": "総合", "value": "all" },
+      { "label": "異世界ファンタジー", "value": "fantasy" },
+      { "label": "現代ファンタジー", "value": "action" },
+      { "label": "SF", "value": "sf" },
+      { "label": "恋愛", "value": "love_story" },
+      { "label": "ラブコメ", "value": "romance" },
+      { "label": "現代ドラマ", "value": "drama" },
+      { "label": "ホラー", "value": "horror" },
+      { "label": "ミステリー", "value": "mystery" },
+      { "label": "エッセイ・ノンフィクション", "value": "nonfiction" },
+      { "label": "歴史・時代・伝奇", "value": "history" },
+      { "label": "創作論・評論", "value": "criticism" },
+      { "label": "詩・童話・その他", "value": "others" }
+    ]
+  },
+  {
+    "id": "period",
+    "type": "select",
+    "label": "Period",
+    "default": "entire",
+    "options": [
+      { "label": "累計", "value": "entire" },
+      { "label": "日間", "value": "daily" },
+      { "label": "週間", "value": "weekly" },
+      { "label": "月間", "value": "monthly" },
+      { "label": "年間", "value": "yearly" }
+    ]
+  }
+]

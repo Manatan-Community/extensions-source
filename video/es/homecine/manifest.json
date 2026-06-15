@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "packageId": "homecine",
+  "name": "HomeCine",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://homecine.cc"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "homecine",
+    "name": "HomeCine",
+    "lang": "es",
+    "baseUrl": "https://homecine.cc",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": false, "filters": false, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Cartelera series" }],
+    "urlPatterns": [{ "pattern": "https://homecine.cc/*", "kind": "item" }]
+  }]
+}

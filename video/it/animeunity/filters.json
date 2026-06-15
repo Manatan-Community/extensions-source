@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Genere", "kind": "string", "defaultValue": "" },
+    { "id": "year", "label": "Anno", "kind": "select", "defaultValue": "", "options": ["", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"] },
+    { "id": "order", "label": "Ordina", "kind": "select", "defaultValue": "", "options": ["", "Lista A-Z", "Lista Z-A", "Popolarita", "Valutazione"] },
+    { "id": "status", "label": "Stato", "kind": "select", "defaultValue": "", "options": ["", "In Corso", "Terminato", "In Uscita", "Droppato"] },
+    { "id": "type", "label": "Tipo", "kind": "select", "defaultValue": "", "options": ["", "TV", "OVA", "ONA", "Special", "Movie"] },
+    { "id": "season", "label": "Stagione", "kind": "select", "defaultValue": "", "options": ["", "Inverno", "Primavera", "Estate", "Autunno"] },
+    { "id": "dubbed", "label": "Dub ITA", "kind": "select", "defaultValue": "", "options": ["No:", "Si:true"] }
+  ]
+}

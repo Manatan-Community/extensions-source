@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kewnscans",
+  "name": "Kewn Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://kewnscans.org", "https://cdn.meowing.org", "https://i0.wp.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kewnscans",
+      "name": "Kewn Scans",
+      "lang": "en",
+      "baseUrl": "https://kewnscans.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

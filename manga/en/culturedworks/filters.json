@@ -1,0 +1,8 @@
+[
+  { "id": "author", "type": "text", "label": "Author" },
+  { "id": "year", "type": "text", "label": "Year" },
+  { "id": "status", "type": "select", "label": "Status", "options": ["", "ongoing", "completed", "hiatus", "dropped"] },
+  { "id": "type", "type": "select", "label": "Type", "options": ["", "Manga", "Manhwa", "Manhua", "Comic"] },
+  { "id": "order", "type": "select", "label": "Order by", "options": ["", "title", "titlereverse", "update", "latest", "popular"] },
+  { "id": "genres", "type": "multiSelect", "label": "Genres", "options": [] }
+]

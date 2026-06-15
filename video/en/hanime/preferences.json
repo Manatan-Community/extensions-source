@@ -1,0 +1,35 @@
+[
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080p",
+    "options": ["1080p", "720p", "480p", "360p"]
+  },
+  {
+    "id": "censored_filter",
+    "type": "select",
+    "label": "Censored content filter",
+    "default": "all",
+    "options": ["all", "uncensored", "censored"]
+  },
+  {
+    "id": "premium_streams",
+    "type": "toggle",
+    "label": "Include premium streams",
+    "default": false
+  },
+  {
+    "id": "custom_cdn",
+    "type": "text",
+    "label": "Custom CDN domain",
+    "default": ""
+  },
+  {
+    "id": "episode_title_format",
+    "type": "select",
+    "label": "Episode title format",
+    "default": "clean",
+    "options": ["clean", "full"]
+  }
+]

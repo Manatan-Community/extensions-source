@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "stickhorse",
+  "name": "Stick Horse",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://stickhorse.cl"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "stickhorse",
+      "name": "Stick Horse",
+      "lang": "es",
+      "baseUrl": "https://stickhorse.cl",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://stickhorse.cl/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "jeazscans",
+  "name": "Jeaz Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://lectorhub.j5z.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "jeazscans",
+      "name": "Jeaz Scans",
+      "lang": "es",
+      "baseUrl": "https://lectorhub.j5z.xyz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Top Rankings" },
+        { "id": "latest", "name": "Lanzamientos" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lectorhub.j5z.xyz/manga.php*", "kind": "item" },
+        { "pattern": "https://lectorhub.j5z.xyz/leer/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

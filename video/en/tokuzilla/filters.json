@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "label": "Genres",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        "Any:",
+        "Series:/series",
+        "Movie:/movie",
+        "Kamen Rider:/kamen-rider",
+        "Super Sentai:/super-sentai",
+        "Armor Hero:/armor-hero",
+        "Garo:/garo",
+        "Godzilla:/godzilla",
+        "Metal Heroes:/metal-heroes",
+        "Power Rangers:/power-ranger",
+        "Ultraman:/ultraman",
+        "Other:/other"
+      ]
+    }
+  ]
+}

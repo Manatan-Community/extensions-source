@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "verpelistop",
+  "name": "VerPelisTop",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": [
+    "https://www1.verpelis.top",
+    "https://streamtape.com",
+    "https://filemoon.sx",
+    "https://uqload.to"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "verpelistop",
+    "name": "VerPelisTop",
+    "lang": "es",
+    "baseUrl": "https://www1.verpelis.top",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Online" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www1.verpelis.top/*", "kind": "item" }]
+  }]
+}

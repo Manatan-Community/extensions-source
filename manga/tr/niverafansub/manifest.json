@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "niverafansub",
+  "name": "Nivera Fansub",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "tr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://niverafansub.lol"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "niverafansub",
+      "name": "Nivera Fansub",
+      "lang": "tr",
+      "baseUrl": "https://niverafansub.lol",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

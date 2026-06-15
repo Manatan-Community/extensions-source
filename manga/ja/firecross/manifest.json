@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "firecross",
+  "name": "FireCross",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://firecross.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "firecross",
+      "name": "FireCross",
+      "lang": "ja",
+      "baseUrl": "https://firecross.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://firecross.jp/ebook/series/*", "kind": "item" },
+        { "pattern": "https://firecross.jp/viewer*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

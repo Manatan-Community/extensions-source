@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dragontranslationorg",
+  "name": "DragonTranslation.org",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://dragontranslation.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "dragontranslationorg",
+      "name": "DragonTranslation.org",
+      "lang": "es",
+      "baseUrl": "https://dragontranslation.org",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://dragontranslation.org/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

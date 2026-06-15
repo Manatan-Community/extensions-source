@@ -1,0 +1,80 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "title": "Sort by",
+    "default": "match",
+    "options": [
+      { "label": "一致度順", "value": "match" },
+      { "label": "人気順", "value": "popularRank" },
+      { "label": "新着順", "value": "newArrival" },
+      { "label": "高評価順", "value": "reviewScore" },
+      { "label": "価格の安い順", "value": "lowPrice" }
+    ]
+  },
+  {
+    "id": "release",
+    "type": "select",
+    "title": "発売日",
+    "default": "",
+    "options": [
+      { "label": "指定なし", "value": "" },
+      { "label": "過去3日以内", "value": "3d" },
+      { "label": "過去7日以内", "value": "7d" },
+      { "label": "過去30日以内", "value": "30d" },
+      { "label": "過去60日以内", "value": "60d" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "multiselect",
+    "title": "ジャンル",
+    "options": [
+      { "label": "コミック", "value": "A00002" },
+      { "label": "雑誌", "value": "A00001" },
+      { "label": "ボーイズラブ", "value": "A00009" },
+      { "label": "ティーンズラブ", "value": "A00008" },
+      { "label": "アダルト", "value": "A00003" }
+    ]
+  },
+  {
+    "id": "sale",
+    "type": "multiselect",
+    "title": "おトクな対象作品",
+    "options": [
+      { "label": "セール", "value": "discount" },
+      { "label": "ポイント還元", "value": "rewardPoints" },
+      { "label": "期間限定無料", "value": "limitedFree" },
+      { "label": "値引きセット", "value": "discountSet" }
+    ]
+  },
+  {
+    "id": "saleStatus",
+    "type": "multiselect",
+    "title": "販売状況",
+    "options": [
+      { "label": "予約受付中", "value": "reservation" },
+      { "label": "完結", "value": "completed" }
+    ]
+  },
+  {
+    "id": "exclude",
+    "type": "multiselect",
+    "title": "除外設定",
+    "options": [
+      { "label": "合本版を除く", "value": "bound" },
+      { "label": "分冊版・単話を除く", "value": "separate" },
+      { "label": "期間限定無料版を除く", "value": "limitedFree" }
+    ]
+  },
+  {
+    "id": "priceMin",
+    "type": "text",
+    "title": "最小価格 (円)"
+  },
+  {
+    "id": "priceMax",
+    "type": "text",
+    "title": "最大価格 (円)"
+  }
+]

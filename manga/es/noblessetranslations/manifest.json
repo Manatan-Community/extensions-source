@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "noblessetranslations",
+  "name": "Noblesse Translations",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://monopolymanhua.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "noblessetranslations",
+      "name": "Noblesse Translations",
+      "lang": "es",
+      "baseUrl": "https://nobledicion.yoveo.xyz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://nobledicion.yoveo.xyz/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "coronaex",
+  "name": "Corona EX",
+  "version": "0.1.0",
+  "versionCode": 24,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://to-corona-ex.com",
+      "https://en.to-corona-ex.com",
+      "https://api.to-corona-ex.com",
+      "https://api.en.to-corona-ex.com",
+      "https://cdn.to-corona-ex.com",
+      "https://cdn.en.to-corona-ex.com",
+      "https://identitytoolkit.googleapis.com",
+      "https://securetoken.googleapis.com"
+    ],
+    "webview": false,
+    "cookies": false,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "coronaex-ja", "name": "Corona EX", "lang": "ja", "baseUrl": "https://to-corona-ex.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "coronaex-en", "name": "Corona EX", "lang": "en", "baseUrl": "https://en.to-corona-ex.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "showLocked",
+    "type": "boolean",
+    "title": "Show locked chapters",
+    "default": false
+  }
+]

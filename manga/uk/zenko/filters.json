@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sortBy",
+    "type": "select",
+    "label": "Сортувати за",
+    "options": [
+      { "label": "По новизні", "value": "createdAt" },
+      { "label": "За датою виходу", "value": "releaseYear" },
+      { "label": "За кількістю переглядів", "value": "viewsCount" },
+      { "label": "За кількістю вподобайок", "value": "likesCount" },
+      { "label": "За останніми оновленнями", "value": "lastChapterCreatedAt" }
+    ]
+  },
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Напрям",
+    "options": [
+      { "label": "За спаданням", "value": "DESC" },
+      { "label": "За зростанням", "value": "ASC" }
+    ]
+  },
+  { "id": "categories", "type": "text", "label": "Категорії" },
+  { "id": "translationStatus", "type": "text", "label": "Статус перекладу" },
+  { "id": "ageLimit", "type": "text", "label": "Вікові обмеження" },
+  { "id": "genres", "type": "text", "label": "Жанри" },
+  { "id": "tags", "type": "text", "label": "Теги" },
+  { "id": "releaseYearFrom", "type": "text", "label": "Дата виходу від" },
+  { "id": "releaseYearTo", "type": "text", "label": "Дата виходу до" }
+]

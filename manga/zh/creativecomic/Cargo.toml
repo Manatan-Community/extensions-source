@@ -1,0 +1,19 @@
+[package]
+name = "creativecomic"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aes = "0.8"
+base64 = "0.22"
+cbc = { version = "0.1", features = ["alloc", "block-padding"] }
+manatan-extension = { git = "https://github.com/KolbyML/manatan-rs", default-features = false }
+manatan-shared = { path = "../../../shared/manatan-shared" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"

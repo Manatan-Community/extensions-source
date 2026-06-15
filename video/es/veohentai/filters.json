@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Genero", "kind": "select", "defaultValue": "", "options": ["", "3D:genero/3d", "Ahegao:genero/ahegao", "Anal:genero/anal", "Bondage:genero/bondage", "Casadas:genero/casadas", "Censurado:genero/censurado", "Chikan:genero/chikan", "Corridas:genero/corridas", "Ecchi:genero/ecchi", "Enfermeras:genero/enfermeras", "Escolares:genero/hentai-escolares", "Fantasia:genero/fantasia", "Futanari:genero/futanari", "Gore:genero/gore", "Hardcore:genero/hardcore", "Harem:genero/harem", "Incesto:genero/incesto", "Josei:genero/josei", "Juegos Sexuales:genero/juegos-sexuales", "Lesbiana:genero/lesbiana", "Lolicon:genero/lolicon", "Maids:genero/maids", "Manga:genero/manga", "Masturbacion:genero/masturbacion", "Milfs:genero/milfs", "Netorare:genero/netorare", "Ninfomania:genero/ninfomania", "Ninjas:genero/ninjas", "Orgias:genero/orgias", "Romance:genero/romance", "Sexo oral:genero/sexo-oral", "Shota:genero/shota", "Sin Censura:genero/hentai-sin-censura", "Softcore:genero/softcore", "Succubus:genero/succubus", "Teacher:genero/teacher", "Tentaculos:genero/tentaculos", "Tetonas:genero/tetonas", "Vanilla:genero/vanilla", "Violacion:genero/violacion", "Virgenes:genero/virgenes", "Yaoi:genero/yaoi", "Yuri:genero/yuri"] }
+  ]
+}

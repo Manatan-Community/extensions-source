@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Generi", "kind": "select", "defaultValue": "", "options": ["", "Azione:1", "Avventura:2", "Commedia:4", "Drammatico:7", "Ecchi:8", "Fantasy:9", "Harem:11", "Hentai:43", "Horror:13", "Josei:14", "Mecha:18", "Mistero:21", "Romantico:46", "Sci-Fi:28", "Scolastico:27", "Seinen:29", "Shoujo:30", "Shounen:32", "Slice of Life:34", "Sport:36", "Thriller:39", "Yaoi:41", "Yuri:42"] },
+    { "id": "season", "label": "Stagioni", "kind": "select", "defaultValue": "", "options": ["", "Inverno:winter", "Primavera:spring", "Estate:summer", "Autunno:fall", "Sconosciuto:unknown"] },
+    { "id": "year", "label": "Anno di Uscita", "kind": "select", "defaultValue": "", "options": ["", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"] },
+    { "id": "type", "label": "Tipo", "kind": "select", "defaultValue": "", "options": ["", "Anime:0", "Movie:4", "OVA:1", "ONA:2", "Special:3", "Music:5"] },
+    { "id": "status", "label": "Stato", "kind": "select", "defaultValue": "", "options": ["", "In corso:0", "Finito:1", "Non rilasciato:2", "Droppato:3"] },
+    { "id": "studio", "label": "Studio", "kind": "string", "defaultValue": "" },
+    { "id": "dub", "label": "Sottotitoli", "kind": "select", "defaultValue": "", "options": ["", "Subbato:0", "Doppiato:1"] },
+    { "id": "language", "label": "Audio", "kind": "select", "defaultValue": "", "options": ["", "Giapponese:jp", "Italiano:it", "Cinese:ch", "Coreano:kr", "Inglese:en"] },
+    { "id": "sort", "label": "Ordine", "kind": "select", "defaultValue": "0", "options": ["Standard:0", "Ultime Aggiunte:1", "Lista A-Z:2", "Lista Z-A:3", "Piu Vecchi:4", "Piu Recenti:5", "Piu Visti:6"] }
+  ]
+}

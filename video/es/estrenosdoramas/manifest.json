@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "estrenosdoramas",
+  "name": "EstrenosDoramas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://estrenosdoramas.es"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "estrenosdoramas",
+    "name": "EstrenosDoramas",
+    "lang": "es",
+    "baseUrl": "https://estrenosdoramas.es",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Popular" },
+      { "id": "latest", "name": "Latest" }
+    ],
+    "urlPatterns": [{ "pattern": "https://estrenosdoramas.es/*", "kind": "item" }]
+  }]
+}

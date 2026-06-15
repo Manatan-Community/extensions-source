@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangotoons",
+  "name": "Mango Toons",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://mangotoons.com",
+      "https://cdn.mangotoons.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangotoons",
+      "name": "Mango Toons",
+      "lang": "pt-BR",
+      "baseUrl": "https://mangotoons.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangotoons.com/obra/*", "kind": "item" }
+      ]
+    }
+  ]
+}

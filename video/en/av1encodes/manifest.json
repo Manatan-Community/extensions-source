@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "av1encodes",
+  "name": "AV1Encodes",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://av1encodes.com",
+    "https://av1please.com"
+  ],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "av1encodes",
+      "name": "AV1Encodes",
+      "lang": "en",
+      "baseUrl": "https://av1encodes.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://av1encodes.com/anime/*", "kind": "item" },
+        { "pattern": "https://av1please.com/anime/*", "kind": "item" },
+        { "pattern": "https://av1encodes.com/download/*", "kind": "episode" },
+        { "pattern": "https://av1please.com/download/*", "kind": "episode" }
+      ]
+    }
+  ]
+}

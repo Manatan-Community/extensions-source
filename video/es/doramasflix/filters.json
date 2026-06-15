@@ -1,0 +1,7 @@
+[
+  { "id": "genre", "type": "select", "label": "Generos", "options": [
+    { "label": "Doramas", "value": "doramas" },
+    { "label": "Peliculas", "value": "peliculas" },
+    { "label": "Variedades", "value": "variedades" }
+  ] }
+]

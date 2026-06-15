@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "medamtruyen",
+  "name": "MeDamTruyen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://saytongtai.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "medamtruyen",
+      "name": "MeDamTruyen",
+      "lang": "vi",
+      "baseUrl": "https://saytongtai.site",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://saytongtai.site/truyen/*", "kind": "item" },
+        { "pattern": "https://saytongtai.site/*-chap-*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

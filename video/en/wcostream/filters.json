@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "Action:14", "Adventure:4", "Animated:23", "Anime:230", "Comedy:6", "Drama:16", "Fantasy:8", "Horror:20", "Movie:121", "Romance:22", "Sci-fi:50", "Shounen:95", "Slice Of Life:25", "Sports:29", "Supernatural:26", "Thriller:24"] }
+  ]
+}

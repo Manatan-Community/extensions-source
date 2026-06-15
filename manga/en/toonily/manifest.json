@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "toonily",
+  "name": "Toonily",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://toonily.com", "https://*.toonily.com", "https://*.toonilycdnv2.xyz", "https://*.mbcdn.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "toonily",
+      "name": "Toonily",
+      "lang": "en",
+      "baseUrl": "https://toonily.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

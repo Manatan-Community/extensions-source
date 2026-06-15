@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "geasscomics",
+  "name": "Geass Comics",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://geasscomics.xyz",
+      "https://api.skkyscan.fun"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "geasscomics",
+      "name": "Geass Comics",
+      "lang": "pt-BR",
+      "baseUrl": "https://geasscomics.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://geasscomics.xyz/obra/*", "kind": "item" },
+        { "pattern": "https://geasscomics.xyz/ler/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

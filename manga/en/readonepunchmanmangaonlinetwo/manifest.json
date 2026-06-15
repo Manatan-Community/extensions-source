@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "readonepunchmanmangaonlinetwo",
+  "name": "Read One-Punch Man Manga Online",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://ww6.readopm.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "readonepunchmanmangaonlinetwo",
+      "name": "Read One-Punch Man Manga Online",
+      "lang": "en",
+      "baseUrl": "https://ww6.readopm.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangahona",
+  "name": "MangaHoNa",
+  "version": "0.1.0",
+  "versionCode": 51,
+  "lang": "pl",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://mangahona.pl",
+      "https://api.mangahona.pl",
+      "https://cdn.mangahona.pl"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangahona",
+      "name": "MangaHoNa",
+      "lang": "pl",
+      "baseUrl": "https://mangahona.pl",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Manga" }
+      ]
+    }
+  ]
+}

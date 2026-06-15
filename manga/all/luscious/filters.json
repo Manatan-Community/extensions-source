@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sort", "name": "Sort By", "default": "rating_all_time", "options": [
+      { "label": "Rating - All Time", "value": "rating_all_time" },
+      { "label": "Date - Newest First", "value": "date_newest" },
+      { "label": "Date - Oldest First", "value": "date_oldest" },
+      { "label": "Other - Search Score", "value": "search_score" }
+    ] },
+    { "type": "text", "id": "tags", "name": "Tags" },
+    { "type": "text", "id": "uploader", "name": "Uploader" },
+    { "type": "text", "id": "favoriteBy", "name": "Favorite by User" }
+  ]
+}

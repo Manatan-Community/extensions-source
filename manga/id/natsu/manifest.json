@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "natsu",
+  "name": "Natsu",
+  "version": "0.1.0",
+  "versionCode": 31,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://natsu.tv"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "natsu",
+      "name": "Natsu",
+      "lang": "id",
+      "baseUrl": "https://natsu.tv",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://natsu.tv/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

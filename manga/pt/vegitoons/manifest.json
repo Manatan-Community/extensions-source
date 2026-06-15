@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "vegitoons",
+  "name": "Vegitoons",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://vegitoons.black",
+      "https://api.vegitoons.black",
+      "https://cdn.verdinha.wtf"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "vegitoons",
+      "name": "Vegitoons",
+      "lang": "pt-BR",
+      "baseUrl": "https://vegitoons.black",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://vegitoons.black/obra/*", "kind": "item" }
+      ]
+    }
+  ]
+}

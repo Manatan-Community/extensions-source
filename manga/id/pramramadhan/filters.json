@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sort", "name": "Urutkan", "default": "popular", "options": [
+      { "label": "Populer", "value": "popular" },
+      { "label": "Terbaru", "value": "newest" },
+      { "label": "Terlama", "value": "oldest" },
+      { "label": "Judul A-Z", "value": "title_asc" },
+      { "label": "Judul Z-A", "value": "title_desc" }
+    ] },
+    { "type": "select", "id": "genre", "name": "Genre", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Adventure", "value": "Adventure" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Magic", "value": "Magic" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "School", "value": "School" },
+      { "label": "Slice of Life", "value": "Slice of Life" }
+    ] },
+    { "type": "select", "id": "type", "name": "Format", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Light Novel", "value": "Light Novel" },
+      { "label": "Manga", "value": "Manga" },
+      { "label": "Web Novel", "value": "Web Novel" }
+    ] },
+    { "type": "select", "id": "project", "name": "Project", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Continued", "value": "continued" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Dropped", "value": "dropped" }
+    ] },
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" }
+    ] },
+    { "type": "text", "id": "author", "name": "Author" },
+    { "type": "text", "id": "artist", "name": "Artist" }
+  ]
+}

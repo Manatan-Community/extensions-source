@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "torrentioanime",
+  "name": "Torrentio Anime (Torrent / Debrid)",
+  "version": "0.1.0",
+  "versionCode": 18,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": [
+    "https://torrentio.strem.fun",
+    "https://graphql.anilist.co",
+    "https://api.ani.zip",
+    "https://raw.githubusercontent.com"
+  ],
+  "sources": [
+    {
+      "id": "torrentioanime",
+      "name": "Torrentio Anime (Torrent / Debrid)",
+      "lang": "all",
+      "baseUrl": "https://torrentio.strem.fun",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://torrentio.strem.fun/*", "kind": "item" }
+      ]
+    }
+  ]
+}

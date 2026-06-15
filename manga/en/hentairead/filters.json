@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort by",
+      "default": "new:desc",
+      "options": [
+        { "label": "Latest", "value": "new:desc" },
+        { "label": "A-Z", "value": "alphabet:asc" },
+        { "label": "Rating", "value": "rating:desc" },
+        { "label": "Views", "value": "views:desc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Doujinshi", "value": "4" },
+        { "label": "Manga", "value": "52" },
+        { "label": "Artist CG", "value": "4798" },
+        { "label": "Western", "value": "36278" }
+      ]
+    },
+    { "type": "text", "id": "tags", "name": "Tags, comma separated" },
+    { "type": "text", "id": "artists", "name": "Artists, comma separated" },
+    { "type": "text", "id": "circles", "name": "Circles, comma separated" },
+    { "type": "text", "id": "characters", "name": "Characters, comma separated" },
+    { "type": "text", "id": "collections", "name": "Collections, comma separated" },
+    { "type": "text", "id": "scanlators", "name": "Scanlators, comma separated" },
+    { "type": "text", "id": "conventions", "name": "Conventions, comma separated" },
+    { "type": "text", "id": "uploaded", "name": "Uploaded year, e.g. >2024" },
+    { "type": "text", "id": "pages", "name": "Pages, e.g. >20" }
+  ]
+}

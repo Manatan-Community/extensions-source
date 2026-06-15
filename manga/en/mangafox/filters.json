@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "text", "id": "name", "name": "Name" },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "0",
+      "options": [
+        { "label": "Any", "value": "0" },
+        { "label": "Japanese Manga", "value": "1" },
+        { "label": "Korean Manhwa", "value": "2" },
+        { "label": "Chinese Manhua", "value": "3" },
+        { "label": "European Manga", "value": "4" },
+        { "label": "American Manga", "value": "5" },
+        { "label": "HongKong Manga", "value": "6" },
+        { "label": "Other Manga", "value": "7" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "st",
+      "name": "Completed Series",
+      "default": "0",
+      "options": [
+        { "label": "Either", "value": "0" },
+        { "label": "Yes", "value": "2" },
+        { "label": "No", "value": "1" }
+      ]
+    },
+    { "type": "text", "id": "author", "name": "Author" },
+    { "type": "text", "id": "artist", "name": "Artist" },
+    { "type": "text", "id": "released", "name": "Release year" },
+    { "type": "text", "id": "genres", "name": "Included genre ids, comma-separated" },
+    { "type": "text", "id": "nogenres", "name": "Excluded genre ids, comma-separated" }
+  ]
+}

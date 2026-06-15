@@ -1,0 +1,10 @@
+{
+  "note": "Tag ID is ignored when text search is provided.",
+  "groups": [
+    {
+      "id": "tagId",
+      "type": "text",
+      "name": "Tag ID"
+    }
+  ]
+}

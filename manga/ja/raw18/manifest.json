@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "raw18",
+  "name": "Raw18",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://raw18.cam"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "raw18",
+      "name": "Raw18",
+      "lang": "ja",
+      "baseUrl": "https://raw18.cam",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://raw18.cam/*", "kind": "item" }
+      ]
+    }
+  ]
+}

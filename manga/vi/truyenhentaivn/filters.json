@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "The loai Hentai",
+      "options": [
+        { "label": "Tat ca", "value": "" },
+        { "label": "3D Hentai", "value": "/the-loai-161-3d-hentai" },
+        { "label": "Action", "value": "/the-loai-142-action" },
+        { "label": "Adult", "value": "/the-loai-105-adult" },
+        { "label": "Ahegao", "value": "/the-loai-1-ahegao" },
+        { "label": "Anal", "value": "/the-loai-20-anal" },
+        { "label": "Big Ass", "value": "/the-loai-89-big-ass" },
+        { "label": "Big Boobs", "value": "/the-loai-13-big-boobs" },
+        { "label": "Comedy", "value": "/the-loai-40-comedy" },
+        { "label": "Doujinshi", "value": "/the-loai-9-doujinshi" },
+        { "label": "Ecchi", "value": "/the-loai-106-ecchi" },
+        { "label": "Full Color", "value": "/the-loai-16-full-color" },
+        { "label": "Harem", "value": "/the-loai-41-harem" },
+        { "label": "HentaiVN", "value": "/the-loai-102-hentaivn" },
+        { "label": "Manhwa", "value": "/the-loai-115-manhwa" },
+        { "label": "Webtoon", "value": "/the-loai-116-webtoon" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    {
+      "id": "pref_domain",
+      "type": "select",
+      "name": "Tên miền chính",
+      "default": "default",
+      "options": [
+        { "label": "MoeTruyen.net (Trong nước)", "value": "default" },
+        { "label": "Truyen.moe (Quốc tế)", "value": "global" },
+        { "label": "Tùy chỉnh", "value": "custom" }
+      ]
+    },
+    {
+      "id": "pref_custom_domain",
+      "type": "string",
+      "name": "Tên miền tùy chỉnh",
+      "default": ""
+    }
+  ]
+}

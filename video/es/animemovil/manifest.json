@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animemovil",
+  "name": "AnimeMovil",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://animemeow.xyz"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "animemovil",
+      "name": "AnimeMovil",
+      "lang": "es",
+      "baseUrl": "https://animemeow.xyz",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animemeow.xyz/*", "kind": "item" }
+      ]
+    }
+  ]
+}

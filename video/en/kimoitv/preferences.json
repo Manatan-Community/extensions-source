@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    {
+      "id": "preferred_quality",
+      "label": "Preferred quality",
+      "kind": "select",
+      "defaultValue": "auto",
+      "options": [
+        { "label": "Auto", "value": "auto" },
+        { "label": "1080p", "value": "1080" },
+        { "label": "720p", "value": "720" },
+        { "label": "480p", "value": "480" },
+        { "label": "360p", "value": "360" }
+      ]
+    }
+  ]
+}

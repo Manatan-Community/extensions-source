@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kappabeast",
+  "name": "Kappa Beast",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://kappabeast.com", "https://strapi.kappabeast.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kappabeast",
+      "name": "Kappa Beast",
+      "lang": "en",
+      "baseUrl": "https://kappabeast.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

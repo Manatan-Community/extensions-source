@@ -1,0 +1,20 @@
+[
+  {
+    "id": "taxonomy",
+    "type": "select",
+    "title": "Author, Group, or Series",
+    "default": "",
+    "options": [
+      { "label": "None", "value": "" },
+      { "label": "Author", "value": "author" },
+      { "label": "Group", "value": "group" },
+      { "label": "Series", "value": "series" }
+    ]
+  },
+  {
+    "id": "taxonomy_value",
+    "type": "string",
+    "title": "Exact value",
+    "default": ""
+  }
+]

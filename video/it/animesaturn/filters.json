@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Generi", "kind": "select", "defaultValue": "", "options": ["", "Arti Marziali", "Avventura", "Azione", "Bambini", "Commedia", "Demenziale", "Demoni", "Drammatico", "Ecchi", "Fantasy", "Gioco", "Harem", "Hentai", "Horror", "Josei", "Magia", "Mecha", "Militari", "Mistero", "Musicale", "Parodia", "Polizia", "Psicologico", "Romantico", "Samurai", "Sci-Fi", "Scolastico", "Seinen", "Sentimentale", "Shoujo", "Shounen", "Slice of Life", "Soprannaturale", "Spazio", "Sport", "Storico", "Superpoteri", "Thriller", "Vampiri", "Yaoi", "Yuri"] },
+    { "id": "year", "label": "Anno di Uscita", "kind": "select", "defaultValue": "", "options": ["", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"] },
+    { "id": "state", "label": "Stato", "kind": "select", "defaultValue": "", "options": ["", "In corso:0", "Finito:1", "Non rilasciato:2", "Droppato:3"] },
+    { "id": "language", "label": "Lingua", "kind": "select", "defaultValue": "", "options": ["", "Subbato:0", "Doppiato:1"] }
+  ]
+}

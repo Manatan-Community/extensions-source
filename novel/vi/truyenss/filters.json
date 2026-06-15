@@ -1,0 +1,3 @@
+[
+  { "id": "genre", "type": "select", "label": "The loai", "default": "tien-hiep", "options": ["tien-hiep", "nu-cuong", "xuyen-khong", "dien-van", "tham-hiem", "linh-di", "truyen-nguoc", "truyen-sung", "dong-phuong", "hai-huoc", "hien-dai", "quan-su", "mat-the", "trong-sinh", "dong-nhan", "quan-truong", "co-dai", "he-thong", "phuong-tay", "lich-su", "ngon-tinh", "huyen-huyen", "kiem-hiep", "vong-du", "trinh-tham", "khoa-huyen", "di-nang", "gia-dau-cung-dau", "goc-nhin-nu", "goc-nhin-nam"] }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "preferredDomain",
+    "type": "select",
+    "label": "Preferred domain",
+    "default": "https://animetsu.net",
+    "options": [
+      { "label": "animetsu.net", "value": "https://animetsu.net" },
+      { "label": "animetsu.live", "value": "https://animetsu.live" },
+      { "label": "animetsu.bz", "value": "https://animetsu.bz" },
+      { "label": "animetsu.cc", "value": "https://animetsu.cc" }
+    ]
+  },
+  {
+    "id": "preferredTitleLang",
+    "type": "select",
+    "label": "Preferred title language",
+    "default": "romaji",
+    "options": [
+      { "label": "Romaji", "value": "romaji" },
+      { "label": "English", "value": "english" },
+      { "label": "Japanese (Native)", "value": "native" }
+    ]
+  },
+  {
+    "id": "preferredServer",
+    "type": "select",
+    "label": "Preferred host",
+    "default": "none",
+    "options": [
+      { "label": "None", "value": "none" },
+      { "label": "Baku - Multi Quality", "value": "baku" },
+      { "label": "Dio - Multi Quality", "value": "dio" },
+      { "label": "Meg - Multi Quality", "value": "meg" },
+      { "label": "Kite - Multi Quality", "value": "kite" }
+    ]
+  },
+  {
+    "id": "preferredAudioType",
+    "type": "select",
+    "label": "Preferred audio type",
+    "default": "none",
+    "options": [
+      { "label": "None", "value": "none" },
+      { "label": "Sub", "value": "sub" },
+      { "label": "Dub", "value": "dub" }
+    ]
+  },
+  {
+    "id": "preferredQuality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080",
+    "options": [
+      { "label": "1080p", "value": "1080" },
+      { "label": "720p", "value": "720" },
+      { "label": "480p", "value": "480" },
+      { "label": "360p", "value": "360" }
+    ]
+  },
+  {
+    "id": "hideAdultContent",
+    "type": "boolean",
+    "label": "Hide adult content",
+    "default": true
+  }
+]

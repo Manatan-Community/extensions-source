@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaiorigines",
+  "name": "Hentai Origines",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hentai-origines.fr"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hentaiorigines",
+      "name": "Hentai Origines",
+      "lang": "fr",
+      "baseUrl": "https://hentai-origines.fr",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernières sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hentai-origines.fr/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

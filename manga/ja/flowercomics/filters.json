@@ -1,0 +1,30 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "Category",
+    "default": "day:mon",
+    "options": [
+      { "label": "月", "value": "day:mon" },
+      { "label": "火", "value": "day:tue" },
+      { "label": "水", "value": "day:wed" },
+      { "label": "木", "value": "day:thu" },
+      { "label": "金", "value": "day:fri" },
+      { "label": "土", "value": "day:sat" },
+      { "label": "日", "value": "day:sun" },
+      { "label": "完結", "value": "rensai:completed" },
+      { "label": "よみきり", "value": "rensai:one-shot" },
+      { "label": "Ｓｈｏ－Ｃｏｍｉ", "value": "label:3" },
+      { "label": "Sho-ComiX", "value": "label:6" },
+      { "label": "Ｃｈｅｅｓｅ！", "value": "label:12" },
+      { "label": "ベツコミ", "value": "label:21" },
+      { "label": "プチコミック", "value": "label:30" },
+      { "label": "月刊ｆｌｏｗｅｒｓ", "value": "label:39" },
+      { "label": "恋愛/学園", "value": "tag:1" },
+      { "label": "恋愛/コメディ", "value": "tag:7" },
+      { "label": "青春・友情", "value": "tag:16" },
+      { "label": "ファンタジー", "value": "tag:28" },
+      { "label": "ちょっとＨ", "value": "tag:119" }
+    ]
+  }
+]

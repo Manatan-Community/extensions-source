@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ravenmanga",
+  "name": "RavenManga",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://raventard.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ravenmanga",
+      "name": "RavenManga",
+      "lang": "es",
+      "baseUrl": "https://raventard.xyz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://raventard.xyz/sr2/*", "kind": "item" }
+      ]
+    }
+  ]
+}

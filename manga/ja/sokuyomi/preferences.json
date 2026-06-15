@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "hide_locked", "label": "Hide locked chapters", "kind": "toggle", "defaultValue": "false" },
+    { "id": "email_pref", "label": "E-Mail", "kind": "text", "defaultValue": "" },
+    { "id": "password_pref", "label": "Password", "kind": "text", "defaultValue": "" }
+  ]
+}

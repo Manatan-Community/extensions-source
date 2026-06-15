@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhuawu",
+  "name": "漫画屋",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://www.mhua5.com", "https://m.mhua5.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhuawu",
+      "name": "漫画屋",
+      "lang": "zh",
+      "baseUrl": "https://www.mhua5.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.mhua5.com/*", "kind": "item" },
+        { "pattern": "https://m.mhua5.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "key": "preferred_server",
+    "title": "Preferowany serwer",
+    "type": "select",
+    "default": "CDA",
+    "values": ["CDA", "sibnet", "gd", "okru"]
+  },
+  {
+    "key": "preferred_quality",
+    "title": "Preferowana jakosc",
+    "type": "select",
+    "default": "720p",
+    "values": ["1080p", "720p", "480p", "360p", "240p", "144p"]
+  }
+]

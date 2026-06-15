@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "",
+      "options": [
+        { "label": "Last update", "value": "" },
+        { "label": "Popularity", "value": "sort-hot" },
+        { "label": "Most comments", "value": "sort-comment" },
+        { "label": "Latest comments", "value": "sort-recent" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "category",
+      "name": "Category",
+      "default": "photos",
+      "options": [
+        { "label": "All", "value": "photos" },
+        { "label": "Amateur", "value": "amateurs" },
+        { "label": "Photo Album 1", "value": "photos/album-1" },
+        { "label": "Photo Album 2", "value": "photos/album-2" },
+        { "label": "Photo Album 5", "value": "photos/album-5" },
+        { "label": "Series 6660093348354", "value": "photos/series-6660093348354" },
+        { "label": "Series 5f1495dbda4de", "value": "photos/series-5f1495dbda4de" },
+        { "label": "Series 665f81885f103", "value": "photos/series-665f81885f103" },
+        { "label": "Series 6450b47c9db0b", "value": "photos/series-6450b47c9db0b" }
+      ]
+    }
+  ]
+}

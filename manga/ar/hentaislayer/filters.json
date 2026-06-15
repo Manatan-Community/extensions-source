@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Comics", "value": "comics" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Ongoing", "value": "ongoing" },
+        { "label": "Completed", "value": "completed" },
+        { "label": "Cancelled", "value": "cancelled" }
+      ]
+    }
+  ]
+}

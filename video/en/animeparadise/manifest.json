@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeparadise",
+  "name": "AnimeParadise",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://www.animeparadise.moe",
+    "https://api.animeparadise.moe"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animeparadise",
+      "name": "AnimeParadise",
+      "lang": "en",
+      "baseUrl": "https://www.animeparadise.moe",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.animeparadise.moe/anime/*", "kind": "item" }
+      ]
+    }
+  ]
+}

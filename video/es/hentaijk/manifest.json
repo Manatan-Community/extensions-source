@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaijk",
+  "name": "Hentaijk",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://hentaijk.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "hentaijk",
+    "name": "Hentaijk",
+    "lang": "es",
+    "baseUrl": "https://hentaijk.com",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Top" }, { "id": "latest", "name": "Directorio" }],
+    "urlPatterns": [{ "pattern": "https://hentaijk.com/*", "kind": "item" }]
+  }]
+}

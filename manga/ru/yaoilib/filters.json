@@ -1,0 +1,10 @@
+[
+  { "id": "sortBy", "type": "select", "name": "Сортировка", "options": ["popular:Популярность", "rate_avg:Рейтинг", "name:Имя (A-Z)", "rus_name:Имя (А-Я)", "views:Просмотры", "releaseDate:Дата релиза", "created_at:Дате добавления", "last_chapter_at:Дате обновления", "chap_count:Кол-во глав"] },
+  { "id": "sortType", "type": "select", "name": "Направление", "options": ["desc:По убыванию", "asc:По возрастанию"] },
+  { "id": "types", "type": "multiSelect", "name": "Тип", "options": ["1:Манга", "2:Манхва", "3:Маньхуа", "4:Комикс"] },
+  { "id": "genres", "type": "multiSelect", "name": "Жанры", "options": ["1:Боевик", "2:Драма", "3:Комедия", "4:Романтика", "5:Фэнтези", "6:Эротика"] },
+  { "id": "genresExclude", "type": "multiSelect", "name": "Исключить жанры", "options": ["1:Боевик", "2:Драма", "3:Комедия", "4:Романтика", "5:Фэнтези", "6:Эротика"] },
+  { "id": "scanlateStatus", "type": "multiSelect", "name": "Статус перевода", "options": ["1:Продолжается", "2:Завершён", "3:Заморожен"] },
+  { "id": "status", "type": "multiSelect", "name": "Статус тайтла", "options": ["1:Онгоинг", "2:Завершён", "3:Приостановлен"] },
+  { "id": "requireChapters", "type": "checkbox", "name": "Только проекты с главами" }
+]

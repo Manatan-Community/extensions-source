@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "subpage",
+      "label": "Sub-page",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        { "label": "<select>", "value": "" },
+        { "label": "izfanmade", "value": "/category/anime/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+[
+  { "id": "email", "type": "text", "label": "Email", "default": "" },
+  { "id": "password", "type": "password", "label": "Senha", "default": "" }
+]

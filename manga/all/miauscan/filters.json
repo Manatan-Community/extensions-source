@@ -1,0 +1,13 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "name": "Order",
+    "default": "popular",
+    "options": [
+      { "label": "Popular", "value": "popular" },
+      { "label": "Latest", "value": "update" },
+      { "label": "A-Z", "value": "title" }
+    ]
+  }
+]

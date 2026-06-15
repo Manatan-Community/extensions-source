@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yagamiproject",
+  "name": "YagamiProject",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://read.yagami.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "yagamiproject",
+    "name": "YagamiProject",
+    "lang": "ru",
+    "baseUrl": "https://read.yagami.me",
+    "contentType": "manga",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": false,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Новое" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://read.yagami.me/*", "kind": "item" }]
+  }]
+}

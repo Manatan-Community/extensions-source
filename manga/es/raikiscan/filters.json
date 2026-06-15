@@ -1,0 +1,20 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Orden",
+    "options": ["", "title", "titlereverse", "update", "latest", "popular"]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Estado",
+    "options": ["", "ongoing", "completed", "hiatus", "dropped"]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "label": "Tipo",
+    "options": ["", "Manga", "Manhwa", "Manhua", "Comic"]
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "multiSelect",
+      "id": "genres",
+      "name": "Géneros",
+      "options": [
+        { "label": "Acción", "value": "2" },
+        { "label": "Aventura", "value": "3" },
+        { "label": "Comedia", "value": "4" },
+        { "label": "Drama", "value": "15" },
+        { "label": "Fantasia", "value": "5" },
+        { "label": "Romance", "value": "16" },
+        { "label": "Vida Escolar", "value": "23" },
+        { "label": "Sobrenatural", "value": "7" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "type",
+      "name": "Tipo",
+      "options": [
+        { "label": "Doujinshi", "value": "207" },
+        { "label": "Manga", "value": "14" },
+        { "label": "Manhua", "value": "31" },
+        { "label": "Manhwa", "value": "87" },
+        { "label": "Novela", "value": "214" },
+        { "label": "OEL", "value": "976" },
+        { "label": "One shot", "value": "12312" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "status",
+      "name": "Estado",
+      "options": [
+        { "label": "Publicándose", "value": "12" },
+        { "label": "Finalizado", "value": "19" },
+        { "label": "Pausado", "value": "174" },
+        { "label": "Cancelado", "value": "198" }
+      ]
+    }
+  ]
+}

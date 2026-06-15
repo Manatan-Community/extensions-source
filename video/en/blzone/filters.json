@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "type",
+      "label": "Type",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        { "label": "Both", "value": "" },
+        { "label": "Anime", "value": "anime" },
+        { "label": "Drama", "value": "dorama" }
+      ]
+    }
+  ]
+}

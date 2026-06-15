@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "orionscans",
+  "name": "Orion Scans",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://orion-scans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "orionscans",
+      "name": "Orion Scans",
+      "lang": "en",
+      "baseUrl": "https://orion-scans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

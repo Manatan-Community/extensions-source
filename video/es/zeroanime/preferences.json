@@ -1,0 +1,26 @@
+[
+  {
+    "id": "preferred_server",
+    "type": "select",
+    "label": "Preferred server",
+    "default": "mp4upload",
+    "options": [
+      { "label": "filemoon", "value": "filemoon" },
+      { "label": "mp4upload", "value": "mp4upload" },
+      { "label": "streamtape", "value": "streamtape" },
+      { "label": "streamvid", "value": "streamvid" }
+    ]
+  },
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080",
+    "options": [
+      { "label": "1080", "value": "1080" },
+      { "label": "720", "value": "720" },
+      { "label": "480", "value": "480" },
+      { "label": "360", "value": "360" }
+    ]
+  }
+]

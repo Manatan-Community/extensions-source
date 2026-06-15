@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doujinku",
+  "name": "Doujinku",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://doujinku.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "doujinku",
+      "name": "Doujinku",
+      "lang": "id",
+      "baseUrl": "https://doujinku.org",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populer" },
+        { "id": "latest", "name": "Terbaru" }
+      ]
+    }
+  ]
+}

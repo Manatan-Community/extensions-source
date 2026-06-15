@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "writerscans",
+  "name": "Writer Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://writerscans.com", "https://cdn.keyoapp.com", "https://i0.wp.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "writerscans",
+      "name": "Writer Scans",
+      "lang": "en",
+      "baseUrl": "https://writerscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeq",
+  "name": "AnimeQ",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animeq.net"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animeq",
+    "name": "AnimeQ",
+    "lang": "pt-BR",
+    "baseUrl": "https://animeq.net",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Animes" },
+      { "id": "latest", "name": "Episodios" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animeq.net/*", "kind": "item" }
+    ]
+  }]
+}

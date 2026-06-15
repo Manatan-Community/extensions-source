@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kiwiyascans",
+  "name": "Kiwiya Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://kiwiyascans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kiwiyascans",
+      "name": "Kiwiya Scans",
+      "lang": "fr",
+      "baseUrl": "https://kiwiyascans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Derniers ajouts" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kiwiyascans.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

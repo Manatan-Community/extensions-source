@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "superstream",
+  "name": "SuperStream",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://showbox.shegu.net"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "superstream",
+      "name": "SuperStream",
+      "lang": "en",
+      "baseUrl": "https://showbox.shegu.net/api/api_client/index/",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": false
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

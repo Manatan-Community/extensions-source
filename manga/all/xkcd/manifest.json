@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "packageId": "xkcd",
+  "name": "xkcd",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://xkcd.com", "https://es.xkcd.com", "https://xkcd.tw", "https://xkcd.lapin.org", "https://xkcd.ru"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "xkcd-en", "name": "xkcd", "lang": "en", "baseUrl": "https://xkcd.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "xkcd-es", "name": "xkcd", "lang": "es", "baseUrl": "https://es.xkcd.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "xkcd-zh", "name": "xkcd", "lang": "zh", "baseUrl": "https://xkcd.tw", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "xkcd-fr", "name": "xkcd", "lang": "fr", "baseUrl": "https://xkcd.lapin.org", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "xkcd-ru", "name": "xkcd", "lang": "ru", "baseUrl": "https://xkcd.ru", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": false, "latest": false, "filters": false, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

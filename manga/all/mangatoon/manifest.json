@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangatoon",
+  "name": "MangaToon (Limited)",
+  "version": "0.1.0",
+  "versionCode": 7,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangatoon.mobi"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "mangatoon-zh", "name": "MangaToon (Limited)", "lang": "zh", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-en", "name": "MangaToon (Limited)", "lang": "en", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-id", "name": "MangaToon (Limited)", "lang": "id", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-vi", "name": "MangaToon (Limited)", "lang": "vi", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-es", "name": "MangaToon (Limited)", "lang": "es", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-pt-br", "name": "MangaToon (Limited)", "lang": "pt-BR", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-th", "name": "MangaToon (Limited)", "lang": "th", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-fr", "name": "MangaToon (Limited)", "lang": "fr", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mangatoon-ja", "name": "MangaToon (Limited)", "lang": "ja", "baseUrl": "https://mangatoon.mobi", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

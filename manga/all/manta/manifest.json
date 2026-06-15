@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manta",
+  "name": "Manta",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manta.net"],
+    "webview": false,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "manta-en", "name": "Manta", "lang": "en", "baseUrl": "https://manta.net/en", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": false, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "manta-es", "name": "Manta", "lang": "es", "baseUrl": "https://manta.net/es", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": false, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

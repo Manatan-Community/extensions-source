@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "gourmetscans",
+  "name": "Gourmet Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://gourmetsupremacy.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "gourmetscans",
+      "name": "Gourmet Scans",
+      "lang": "en",
+      "baseUrl": "https://gourmetsupremacy.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://gourmetsupremacy.com/project/*", "kind": "item" }
+      ]
+    }
+  ]
+}

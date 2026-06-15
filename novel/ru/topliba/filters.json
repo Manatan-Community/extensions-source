@@ -1,0 +1,3 @@
+[
+  { "id": "sort", "type": "select", "label": "Sort", "default": "rating", "options": ["rating", "num_downloads", "year", "date", "title"] }
+]

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sortBy",
+      "name": "Sort",
+      "default": "latest",
+      "options": [
+        { "label": "Relevance", "value": "" },
+        { "label": "Latest Update", "value": "latest" },
+        { "label": "Alphabetical", "value": "alphabetical" },
+        { "label": "Total Chapters", "value": "chapters" },
+        { "label": "Most Viewed", "value": "views" },
+        { "label": "Most Tracked", "value": "tracked" },
+        { "label": "Top Rated", "value": "rating" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "Any Status", "value": "" },
+        { "label": "Ongoing", "value": "Ongoing" },
+        { "label": "Completed", "value": "Completed" },
+        { "label": "Hiatus", "value": "Hiatus" }
+      ]
+    },
+    { "type": "text", "id": "origin", "name": "Type origins, comma-separated JP/KR/CN/ONESHOT" },
+    { "type": "text", "id": "genre", "name": "Genres, comma-separated; prefix excluded values with -" },
+    { "type": "text", "id": "author", "name": "Author" },
+    { "type": "text", "id": "artist", "name": "Artist" },
+    {
+      "type": "select",
+      "id": "adult",
+      "name": "NSFW Content",
+      "default": "none",
+      "options": [
+        { "label": "No 18+", "value": "0" },
+        { "label": "18+ Only", "value": "1" },
+        { "label": "Both", "value": "both" }
+      ]
+    }
+  ]
+}

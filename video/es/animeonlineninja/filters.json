@@ -1,0 +1,10 @@
+[
+  { "id": "genre", "type": "select", "label": "Genero", "options": [
+    { "label": "Seleccionar", "value": "" },
+    { "label": "Sin censura", "value": "sin-censura" },
+    { "label": "En emision", "value": "en-emision" },
+    { "label": "Blu-Ray / DVD", "value": "blu-ray-dvd" },
+    { "label": "Tendencias", "value": "tendencias" },
+    { "label": "Ratings", "value": "ratings" }
+  ] }
+]

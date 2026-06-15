@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tunovelaligera",
+  "name": "TuNovelaLigera",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "filters": "filters.json",
+  "network": ["https://tunovelaligera.com"],
+  "sources": [
+    {
+      "id": "tunovelaligera",
+      "name": "TuNovelaLigera",
+      "lang": "es",
+      "baseUrl": "https://tunovelaligera.com",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [{ "pattern": "https://tunovelaligera.com/*", "kind": "item" }]
+    }
+  ]
+}

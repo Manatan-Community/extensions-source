@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "gunnerkriggcourt",
+  "name": "Gunnerkrigg Court",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "gunnerkriggcourt",
+      "name": "Gunnerkrigg Court",
+      "lang": "en",
+      "baseUrl": "https://www.gunnerkrigg.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "urlResolution": true
+      },
+      "urlPatterns": [
+        { "pattern": "https://www.gunnerkrigg.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

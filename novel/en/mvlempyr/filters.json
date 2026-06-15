@@ -1,0 +1,22 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Order by",
+    "options": [
+      { "label": "Latest Added", "value": "created" },
+      { "label": "Best Rated", "value": "avgReview" },
+      { "label": "Most Reviewed", "value": "reviewCount" },
+      { "label": "Chapter Count", "value": "chapterCount" },
+      { "label": "Random", "value": "random" }
+    ],
+    "default": "reviewCount"
+  },
+  {
+    "id": "genre",
+    "type": "multiSelect",
+    "label": "Genres",
+    "options": ["action", "adult", "adventure", "comedy", "drama", "fantasy", "harem", "historical", "mature", "romance", "school-life", "sci-fi", "slice-of-life", "wuxia", "xianxia", "xuanhuan"],
+    "default": []
+  }
+]

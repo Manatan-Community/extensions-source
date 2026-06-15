@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sub_page",
+      "label": "Sub-page",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        "",
+        "Anime Series:/anime-series/",
+        "Anime Movie:/anime-movie/"
+      ]
+    },
+    {
+      "id": "genre",
+      "label": "Genres",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        "",
+        "Adventure:/adventure/",
+        "Comedy:/comedy/",
+        "Demons:/demons/",
+        "Drama:/drama/",
+        "Fantasy:/fantasy/",
+        "Mecha:/mecha/",
+        "Military:/military/",
+        "Romance:/romance/",
+        "School:/school/",
+        "Sci-Fi:/sci-fi/",
+        "Shounen:/shounen/",
+        "Slice of Life:/slice-of-life/",
+        "Sports:/sports/",
+        "Super Power:/super-power/",
+        "Supernatural:/supernatural/"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "groups": [
+    { "id": "genre", "label": "Genre", "type": "select", "default": "", "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Action", "value": "action" },
+      { "label": "Adult", "value": "adult" },
+      { "label": "Adventure", "value": "adventure" },
+      { "label": "Comedy", "value": "comedy" },
+      { "label": "Cooking", "value": "cooking" },
+      { "label": "Crime", "value": "crime" },
+      { "label": "Drama", "value": "drama" },
+      { "label": "Fantasy", "value": "fantasy" },
+      { "label": "Harem", "value": "harem" },
+      { "label": "Historical", "value": "historical" },
+      { "label": "Isekai", "value": "isekai" },
+      { "label": "Magic", "value": "magic" },
+      { "label": "Magical", "value": "magical" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Martial Arts", "value": "martial-arts" },
+      { "label": "Mature", "value": "mature" },
+      { "label": "Mystery", "value": "mystery" },
+      { "label": "Romance", "value": "romance" },
+      { "label": "School Life", "value": "school-life" },
+      { "label": "Sci-fi", "value": "sci-fi" },
+      { "label": "Shounen", "value": "shounen" },
+      { "label": "Shounen Ai", "value": "shounen-ai" },
+      { "label": "Slice of Life", "value": "slice-of-life" },
+      { "label": "Supernatural", "value": "supernatural" },
+      { "label": "Thriller", "value": "thriller" },
+      { "label": "Uncensored", "value": "uncensored" }
+    ] },
+    { "id": "sort", "label": "Sort by", "type": "select", "default": "latest", "options": [
+      { "label": "Latest", "value": "latest" },
+      { "label": "A-Z", "value": "alphabet" },
+      { "label": "Rating", "value": "rating" },
+      { "label": "Trending", "value": "trending" }
+    ] }
+  ]
+}

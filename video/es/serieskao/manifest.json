@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packageId": "serieskao",
+  "name": "SeriesKao",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://serieskao.top"],
+  "preferences": "preferences.json",
+  "sources": [{
+    "id": "serieskao",
+    "name": "SeriesKao",
+    "lang": "es",
+    "baseUrl": "https://serieskao.top",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": false, "filters": false, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Series" }],
+    "urlPatterns": [
+      { "pattern": "https://serieskao.top/serie/*", "kind": "item" },
+      { "pattern": "https://serieskao.top/series/*", "kind": "item" },
+      { "pattern": "https://serieskao.top/pelicula/*", "kind": "item" },
+      { "pattern": "https://serieskao.top/ver/*", "kind": "episode" }
+    ]
+  }]
+}

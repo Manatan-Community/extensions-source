@@ -1,0 +1,19 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "Ongoing" },
+      { "label": "Completed", "value": "Completed" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "text",
+    "label": "Genre",
+    "default": ""
+  }
+]

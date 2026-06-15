@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "beatzanime",
+  "name": "BeatZ Anime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.beatz-anime.net", "https://dd.beatz-anime.net"],
+  "filters": "filters.json",
+  "sources": [{
+    "id": "beatzanime",
+    "name": "BeatZ Anime",
+    "lang": "es",
+    "baseUrl": "https://www.beatz-anime.net",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": false,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "En emision" },
+      { "id": "latest", "name": "Ultimos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.beatz-anime.net/*", "kind": "item" }]
+  }]
+}

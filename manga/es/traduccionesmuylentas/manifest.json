@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packageId": "traduccionesmuylentas",
+  "name": "Traducciones Muy Lentas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://capibaratraductor.com",
+      "https://r2.capibaratraductor.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "traduccionesmuylentas",
+      "name": "Traducciones Muy Lentas",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/tmlentas",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://capibaratraductor.com/tmlentas/manga/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

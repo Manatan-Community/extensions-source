@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "packageId": "raijinscans",
+  "name": "Raijin Scans",
+  "version": "0.1.0",
+  "versionCode": 64,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": { "network": ["https://raijin-scans.fr"], "webview": true, "cookies": true },
+  "sources": [{
+    "id": "raijinscans",
+    "name": "Raijin Scans",
+    "lang": "fr",
+    "baseUrl": "https://raijin-scans.fr",
+    "contentType": "manga",
+    "contentRating": "safe",
+    "capabilities": { "search": true, "latest": true, "filters": false, "preferences": true, "home": false, "urlResolution": true },
+    "listings": [{ "id": "popular", "name": "Populaires" }, { "id": "latest", "name": "Dernieres sorties" }]
+  }]
+}

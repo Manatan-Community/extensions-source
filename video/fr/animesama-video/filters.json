@@ -1,0 +1,23 @@
+[
+  {
+    "key": "type",
+    "title": "Type",
+    "type": "select",
+    "default": "",
+    "values": ["", "Anime", "Film", "Autres"]
+  },
+  {
+    "key": "langue",
+    "title": "Langage",
+    "type": "select",
+    "default": "",
+    "values": ["", "VF", "VOSTFR", "VASTFR"]
+  },
+  {
+    "key": "genre",
+    "title": "Genre",
+    "type": "select",
+    "default": "",
+    "values": ["", "Action", "Aventure", "Comedie", "Drame", "Fantasy", "Romance", "Science-fiction", "Shonen", "Slice of Life", "Surnaturel"]
+  }
+]

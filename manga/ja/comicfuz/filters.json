@@ -1,0 +1,24 @@
+[
+  {
+    "id": "tag",
+    "type": "select",
+    "label": "Tags",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Sunday", "value": "7" },
+      { "label": "Original", "value": "12" },
+      { "label": "Gourmet", "value": "38" },
+      { "label": "FUZ Comics", "value": "138" },
+      { "label": "Gag / Comedy", "value": "540" },
+      { "label": "Daily Life", "value": "552" },
+      { "label": "School", "value": "23" },
+      { "label": "SF / Fantasy", "value": "26" },
+      { "label": "Romance", "value": "29" },
+      { "label": "Action", "value": "44" },
+      { "label": "Mystery / Suspense", "value": "47" },
+      { "label": "Yuri", "value": "549" },
+      { "label": "One-shot", "value": "17" }
+    ]
+  }
+]

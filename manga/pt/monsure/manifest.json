@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "monsure",
+  "name": "Monsure",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://monsure.com",
+      "https://*.monsure.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "monsure",
+      "name": "Monsure",
+      "lang": "pt-BR",
+      "baseUrl": "https://monsure.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://monsure.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

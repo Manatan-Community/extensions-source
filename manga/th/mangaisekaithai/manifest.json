@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangaisekaithai",
+  "name": "MangaIsekaiThai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://www.mangaisekaithai.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangaisekaithai",
+      "name": "MangaIsekaiThai",
+      "lang": "th",
+      "baseUrl": "https://www.mangaisekaithai.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.mangaisekaithai.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

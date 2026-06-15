@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doramogo",
+  "name": "Doramogo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://doramogo.com", "https://embedrise.com", "https://streamable.com", "https://drive.google.com", "https://ok.ru"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "doramogo",
+    "name": "Doramogo",
+    "lang": "pt-BR",
+    "baseUrl": "https://doramogo.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Recentes" }
+    ],
+    "urlPatterns": [{ "pattern": "https://doramogo.com/*", "kind": "item" }]
+  }]
+}

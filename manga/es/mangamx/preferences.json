@@ -1,0 +1,3 @@
+[
+  { "id": "HIDE_NSFW", "type": "boolean", "label": "Ocultar contenido +18", "default": false }
+]

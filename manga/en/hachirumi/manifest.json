@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hachirumi",
+  "name": "Hachirumi",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "hachirumi",
+      "name": "Hachirumi",
+      "lang": "en",
+      "baseUrl": "https://hachirumi.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Browse" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hachirumi.com/reader/series/*", "kind": "item" },
+        { "pattern": "https://hachirumi.com/read/manga/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

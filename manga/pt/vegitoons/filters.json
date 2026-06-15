@@ -1,0 +1,57 @@
+[
+  {
+    "id": "genreId",
+    "type": "select",
+    "name": "Gênero",
+    "default": "",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Hentais", "value": "5" },
+      { "label": "Livres", "value": "1" },
+      { "label": "Mangás", "value": "8" },
+      { "label": "Novel", "value": "6" },
+      { "label": "Shoujo / Romances", "value": "4" },
+      { "label": "Yaoi", "value": "7" }
+    ]
+  },
+  {
+    "id": "formatId",
+    "type": "select",
+    "name": "Formato",
+    "default": "",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Mangá", "value": "3" },
+      { "label": "Manhua", "value": "2" },
+      { "label": "Manhwa", "value": "1" },
+      { "label": "Novel", "value": "4" }
+    ]
+  },
+  {
+    "id": "statusId",
+    "type": "select",
+    "name": "Status",
+    "default": "",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Cancelado", "value": "4" },
+      { "label": "Concluído", "value": "2" },
+      { "label": "Em Andamento", "value": "1" },
+      { "label": "Hiato", "value": "3" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Ordenar Por",
+    "default": "ultima_atualizacao",
+    "options": [
+      { "label": "Última atualização", "value": "ultima_atualizacao" },
+      { "label": "Lançamentos", "value": "criacao" },
+      { "label": "Mais Visualizadas", "value": "visualizacoes_geral" },
+      { "label": "Melhor avaliação", "value": "rating" },
+      { "label": "A-Z", "value": "nome" }
+    ]
+  },
+  { "id": "tagIds", "type": "text", "name": "Tag IDs", "default": "" }
+]

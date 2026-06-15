@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "formato",
+      "name": "Formato",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Shoujo", "value": "4" },
+        { "label": "Comic", "value": "5" },
+        { "label": "Yaoi", "value": "8" },
+        { "label": "Yuri", "value": "9" },
+        { "label": "Hentai", "value": "10" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Em lancamento", "value": "1" },
+        { "label": "Finalizado", "value": "2" },
+        { "label": "Hiato", "value": "3" },
+        { "label": "Cancelado", "value": "4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "ordenarPor",
+      "name": "Ordenar por",
+      "default": "criada_em_desc",
+      "options": [
+        { "label": "Mais recentes", "value": "criada_em_desc" },
+        { "label": "Mais populares", "value": "view_geral" },
+        { "label": "A-Z", "value": "nome" }
+      ]
+    }
+  ]
+}

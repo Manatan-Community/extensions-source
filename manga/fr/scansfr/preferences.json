@@ -1,0 +1,8 @@
+[
+  {
+    "id": "show_nsfw",
+    "type": "toggle",
+    "label": "Afficher le contenu NSFW",
+    "default": false
+  }
+]

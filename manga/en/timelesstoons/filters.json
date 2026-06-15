@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "text", "id": "genre", "name": "Genres, comma separated" },
+    { "type": "text", "id": "type", "name": "Types, comma separated" },
+    { "type": "text", "id": "status", "name": "Statuses, comma separated" }
+  ]
+}

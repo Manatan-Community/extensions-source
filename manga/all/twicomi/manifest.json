@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "twicomi",
+  "name": "Twicomi",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://twicomi.com", "https://api.twicomi.com"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "twicomi",
+      "name": "Twicomi",
+      "lang": "all",
+      "baseUrl": "https://twicomi.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

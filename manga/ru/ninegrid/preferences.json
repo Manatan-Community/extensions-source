@@ -1,0 +1,4 @@
+[
+  { "id": "base_url", "type": "text", "label": "URL сервера", "default": "https://9grid.cc" },
+  { "id": "api_key", "type": "text", "label": "API-ключ", "default": "" }
+]

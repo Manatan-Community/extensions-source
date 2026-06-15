@@ -1,0 +1,33 @@
+[
+  {
+    "type": "select",
+    "key": "pref_quality_key",
+    "title": "Preferred quality",
+    "default": "720p",
+    "options": [
+      { "label": "240p", "value": "240p" },
+      { "label": "360p", "value": "360p" },
+      { "label": "480p", "value": "480p" },
+      { "label": "720p", "value": "720p" },
+      { "label": "1080p", "value": "1080p" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "pref_hoster_selection",
+    "title": "Enable/Disable video hosters",
+    "default": ["doodstream", "filelions", "filemoon", "lulustream", "mixdrop", "streamtape", "streamwish", "vidoza", "voe", "stream in hd"],
+    "options": [
+      { "label": "DoodStream", "value": "doodstream" },
+      { "label": "FileLions", "value": "filelions" },
+      { "label": "Filemoon", "value": "filemoon" },
+      { "label": "LuLuStream", "value": "lulustream" },
+      { "label": "MixDrop", "value": "mixdrop" },
+      { "label": "Streamtape", "value": "streamtape" },
+      { "label": "StreamWish", "value": "streamwish" },
+      { "label": "Vidoza", "value": "vidoza" },
+      { "label": "VOE", "value": "voe" },
+      { "label": "Stream in HD", "value": "stream in hd" }
+    ]
+  }
+]

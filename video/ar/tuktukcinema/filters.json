@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "section", "label": "Section", "kind": "select", "defaultValue": "", "options": ["", "category/movies-2/", "channel/film-netflix-1/", "category/movies-2/افلام-اجنبي/", "category/movies-2/افلام-هندى/", "category/movies-2/افلام-اسيوي/", "category/anime-6/افلام-انمي/", "category/movies-2/افلام-تركي/", "category/movies-2/افلام-مدبلجة/", "sercat/مسلسلات-اجنبي/", "sercat/مسلسلات-تركي/", "sercat/مسلسلات-أسيوي/", "channel/series-netflix-2/", "sercat/قائمة-الانمي/", "sercat/برامج-تلفزيونية/", "sercat/مسلسلات-هندي/"] },
+    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "اكشن", "مغامرة", "كرتون", "فانتازيا", "خيال-علمي", "رومانسي", "كوميدي", "عائلي", "دراما", "اثارة", "غموض", "جريمة", "رعب", "تاريخي", "وثائقي"] },
+    { "id": "advanced_section", "label": "Advanced section", "kind": "select", "defaultValue": "", "options": ["", "221258", "221271", "225978", "3", "221316", "5", "238759", "6", "283152", "8", "7", "1521566", "1277168", "2", "225979"] },
+    { "id": "advanced_genre", "label": "Advanced genre", "kind": "select", "defaultValue": "", "options": ["", "24", "180", "49", "50", "26", "51", "293186", "244998", "25", "308", "273", "272", "534", "97467", "731"] },
+    { "id": "advanced_rating", "label": "Age rating", "kind": "select", "defaultValue": "", "options": ["", "240378", "240244", "240660", "294376", "240192", "241926", "293269", "297197", "240447", "240363", "241023", "1530745", "1530272", "1529057", "1531434"] }
+  ]
+}

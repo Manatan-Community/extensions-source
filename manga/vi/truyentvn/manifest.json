@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "truyentvn",
+  "name": "TruyenTVN",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://truyentvn.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "truyentvn",
+      "name": "TruyenTVN",
+      "lang": "vi",
+      "baseUrl": "https://truyentvn.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://truyentvn.net/truyen/*", "kind": "item" },
+        { "pattern": "https://truyentvn.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

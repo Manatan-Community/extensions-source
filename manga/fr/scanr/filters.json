@@ -1,0 +1,32 @@
+[
+  {
+    "id": "type",
+    "type": "multiselect",
+    "name": "Type",
+    "default": ["os", "series"],
+    "options": [
+      { "label": "OS", "value": "os" },
+      { "label": "Series", "value": "series" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "multiselect",
+    "name": "Status",
+    "default": ["completed", "ongoing"],
+    "options": [
+      { "label": "Termine", "value": "completed" },
+      { "label": "En cours", "value": "ongoing" }
+    ]
+  },
+  {
+    "id": "adult",
+    "type": "multiselect",
+    "name": "Adulte ?",
+    "default": ["18", "normal"],
+    "options": [
+      { "label": "+18", "value": "18" },
+      { "label": "Normal", "value": "normal" }
+    ]
+  }
+]

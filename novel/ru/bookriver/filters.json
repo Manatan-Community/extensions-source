@@ -1,0 +1,4 @@
+[
+  { "id": "sort", "type": "select", "label": "Sort", "default": "bestseller", "options": ["bestseller", "newest", "last-update"] },
+  { "id": "genres", "type": "multiSelect", "label": "Genres", "default": [], "options": ["alternativnaya-istoriya", "boevaya-fantastika", "boevoe-fentezi", "detektiv", "fentezi", "fantastika", "litrpg", "lyubovnyi-roman", "popadantsy", "romanticheskaya-erotika", "sovremennyi-lyubovnyi-roman", "erotika"] }
+]

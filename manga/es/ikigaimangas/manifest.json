@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ikigaimangas",
+  "name": "Ikigai Mangas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://zonaikigai.gamesview.shop", "https://panel.ikigaimangas.com", "https://media.ikigaimangas.cloud"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ikigaimangas",
+      "name": "Ikigai Mangas",
+      "lang": "es",
+      "baseUrl": "https://zonaikigai.gamesview.shop",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://zonaikigai.gamesview.shop/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

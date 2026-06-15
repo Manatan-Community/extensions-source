@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeytes",
+  "name": "AnimeYT.es",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animeyt.es", "https://wwv.animeytx.net"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animeytes",
+    "name": "AnimeYT.es",
+    "lang": "es",
+    "baseUrl": "https://wwv.animeytx.net",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Ultimos" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animeyt.es/*", "kind": "item" },
+      { "pattern": "https://wwv.animeytx.net/*", "kind": "item" }
+    ]
+  }]
+}

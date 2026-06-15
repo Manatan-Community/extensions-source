@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "letter", "label": "Letter", "kind": "select", "defaultValue": "", "options": ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"] },
+    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "Action", "Adventure", "Chinese", "Comedy", "Detective", "Drama", "Ecchi", "Fantasy", "Gourmet", "Harem", "High Stakes Game:High+Stakes+Game", "Historical", "Horror", "Isekai", "Iyashikei", "Josei", "Kids", "Magic", "Martial Arts:Martial+Arts", "Mecha", "Military", "Music", "Mystery", "Mythology", "Parody", "Psychological", "Racing", "Reincarnation", "Romance", "Samurai", "School", "Sci-Fi", "Seinen", "Shoujo", "Shoujo Ai:Shoujo+Ai", "Shounen", "Shounen Ai:Shounen+Ai", "Slice of Life:Slice+of+Life", "Space", "Sports", "Strategy Game:Strategy+Game", "Super Power:Super+Power", "Supernatural", "Survival", "Suspense", "Team Sports:Team+Sports", "Time Travel:Time+Travel", "Vampire", "Video Game:Video+Game"] },
+    { "id": "score", "label": "Score", "kind": "select", "defaultValue": "", "options": ["", "Masterpiece (9+):masterpiece", "Fantastic (8+):fantastic", "Very Good+(7+):verygood", "Fine (6+):fine", "Average (5+):average", "Bad (4+):bad", "Very Bad (3+):verybad", "Unwatchable (2+):unwatchable"] },
+    { "id": "year", "label": "Year", "kind": "select", "defaultValue": "", "options": ["", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1990-1999:1990", "1980-1989:1980", "1970-1979:1970"] },
+    { "id": "rating", "label": "Rating", "kind": "select", "defaultValue": "", "options": ["", "G - All Ages:allages", "PG 13 - Teens 13 and Older:pg13", "R - 17+, Violence & Profanity:r17", "R+ - Profanity & Mild Nudity:rplus"] }
+  ]
+}

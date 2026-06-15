@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yellownote",
+  "name": "YellowNote",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://xchina.co",
+      "https://en.xchina.co",
+      "https://es.xchina.co",
+      "https://kr.xchina.co",
+      "https://tw.xchina.co",
+      "https://img.xchina.io"
+    ],
+    "webview": true,
+    "cookies": true,
+    "filters": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "yellownote",
+      "name": "YellowNote",
+      "lang": "all",
+      "baseUrl": "https://xchina.co",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

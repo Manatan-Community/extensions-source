@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "maidmanga",
+  "name": "Maid - Manga",
+  "version": "0.1.0",
+  "versionCode": 10,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.maid.my.id"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "maidmanga",
+      "name": "Maid - Manga",
+      "lang": "id",
+      "baseUrl": "https://www.maid.my.id",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

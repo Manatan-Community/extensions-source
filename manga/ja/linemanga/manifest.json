@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "linemanga",
+  "name": "Line Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "linemanga",
+      "name": "Line Manga",
+      "lang": "ja",
+      "baseUrl": "https://manga.line.me",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga.line.me/product/periodic?id=*", "kind": "item" },
+        { "pattern": "https://manga.line.me/book/viewer?id=*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "locopelis",
+  "name": "LocoPelis",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": ["https://www.locopelis.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "locopelis",
+    "name": "LocoPelis",
+    "lang": "es",
+    "baseUrl": "https://www.locopelis.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Mas vistas" },
+      { "id": "latest", "name": "Ultimas peliculas" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.locopelis.com/*", "kind": "item" }]
+  }]
+}

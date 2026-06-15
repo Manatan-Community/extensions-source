@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaiscanreader",
+  "name": "Hentai Scan Reader",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hentai.scanreader.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hentaiscanreader",
+      "name": "Hentai Scan Reader",
+      "lang": "fr",
+      "baseUrl": "https://hentai.scanreader.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernières sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hentai.scanreader.net/manga/*", "kind": "item" },
+        { "pattern": "https://hentai.scanreader.net/chapitre/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

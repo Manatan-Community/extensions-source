@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "topcomicpornonet",
+  "name": "TopComicPorno.net",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://topcomicporno.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "topcomicpornonet",
+      "name": "TopComicPorno.net",
+      "lang": "es",
+      "baseUrl": "https://topcomicporno.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://topcomicporno.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

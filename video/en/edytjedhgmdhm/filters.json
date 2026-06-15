@@ -1,0 +1,10 @@
+[
+  {
+    "key": "subpage",
+    "type": "select",
+    "title": "Select subpage",
+    "default": "/tvs/",
+    "entries": ["TVs", "Movies", "Misc", "K-drama", "Asian drama"],
+    "values": ["/tvs/", "/movies/", "/misc/", "/kdrama/", "/asiandrama/"]
+  }
+]

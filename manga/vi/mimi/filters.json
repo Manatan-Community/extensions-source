@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sắp xếp",
+      "default": "",
+      "options": [
+        { "label": "Mặc định", "value": "" },
+        { "label": "Mới", "value": "updated_at" },
+        { "label": "Likes", "value": "likes" },
+        { "label": "Views", "value": "views" },
+        { "label": "Lưu", "value": "follows" },
+        { "label": "Tên", "value": "title" }
+      ]
+    },
+    { "id": "parody", "type": "text", "name": "Parody" },
+    { "id": "character", "type": "text", "name": "Nhân vật" },
+    { "id": "author", "type": "text", "name": "ID Tác giả (chỉ nhập số)" },
+    { "id": "genre", "type": "text", "name": "Include genre IDs, comma separated" },
+    { "id": "exclude_genre", "type": "text", "name": "Exclude genre IDs, comma separated" }
+  ]
+}

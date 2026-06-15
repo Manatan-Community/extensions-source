@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "packageId": "qtoon",
+  "name": "QToon",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://qtoon.com", "https://api.qtoon.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "qtoon-en", "name": "QToon", "lang": "en", "baseUrl": "https://qtoon.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "qtoon-es", "name": "QToon", "lang": "es", "baseUrl": "https://qtoon.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "qtoon-pt-br", "name": "QToon", "lang": "pt-BR", "baseUrl": "https://qtoon.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

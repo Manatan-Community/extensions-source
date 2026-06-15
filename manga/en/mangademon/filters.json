@@ -1,0 +1,22 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "default": "VIEWS DESC",
+    "options": ["VIEWS DESC", "NAME ASC"]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "default": "all",
+    "options": ["all", "ongoing", "completed"]
+  },
+  {
+    "id": "genre",
+    "type": "multiSelect",
+    "label": "Genre",
+    "options": ["1", "2", "3", "34", "25", "4", "19", "5", "30", "10", "28", "8", "33", "31", "6", "22", "32", "15", "26", "11", "12", "13", "16", "17", "14", "23", "7", "29", "21", "27", "20", "9", "18", "24"]
+  }
+]

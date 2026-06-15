@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comicazen",
+  "name": "Comicazen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://comicazen.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "comicazen",
+      "name": "Comicazen",
+      "lang": "id",
+      "baseUrl": "https://comicazen.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://comicazen.com/komik/*", "kind": "item" }
+      ]
+    }
+  ]
+}

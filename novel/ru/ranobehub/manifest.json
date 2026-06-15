@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ranobehub",
+  "name": "RanobeHub",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://ranobehub.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ranobehub",
+      "name": "RanobeHub",
+      "lang": "ru",
+      "baseUrl": "https://ranobehub.org",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [{ "pattern": "https://ranobehub.org/ranobe/*", "kind": "item" }]
+    }
+  ]
+}

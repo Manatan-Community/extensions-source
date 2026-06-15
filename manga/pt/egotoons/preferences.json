@@ -1,0 +1,8 @@
+[
+  {
+    "id": "with_hentai",
+    "type": "toggle",
+    "label": "Exibir conteúdo Hentai (+18)",
+    "default": false
+  }
+]

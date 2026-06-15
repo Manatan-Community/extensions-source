@@ -1,0 +1,29 @@
+[
+  { "id": "tag", "type": "text", "name": "标签", "default": "" },
+  {
+    "id": "category",
+    "type": "select",
+    "name": "分类",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "更新", "value": "albums-index-page-%d.html" },
+      { "label": "同人志", "value": "albums-index-page-%d-cate-5.html" },
+      { "label": "同人志-汉化", "value": "albums-index-page-%d-cate-1.html" },
+      { "label": "同人志-日语", "value": "albums-index-page-%d-cate-12.html" },
+      { "label": "同人志-English", "value": "albums-index-cate-16.html" },
+      { "label": "同人志-CG书籍", "value": "albums-index-page-%d-cate-2.html" },
+      { "label": "写真&Cosplay", "value": "albums-index-page-%d-cate-3.html" },
+      { "label": "单行本", "value": "albums-index-page-%d-cate-6.html" },
+      { "label": "单行本-汉化", "value": "albums-index-page-%d-cate-9.html" },
+      { "label": "单行本-English", "value": "albums-index-page-%d-cate-17.html" },
+      { "label": "单行本-日语", "value": "albums-index-page-%d-cate-13.html" },
+      { "label": "杂志&短篇-汉语", "value": "albums-index-page-%d-cate-7.html" },
+      { "label": "杂志&短篇-日语", "value": "albums-index-page-%d-cate-14.html" },
+      { "label": "韩漫", "value": "albums-index-page-%d-cate-19.html" },
+      { "label": "韩漫-汉化", "value": "albums-index-page-%d-cate-20.html" },
+      { "label": "3D&漫画", "value": "albums-index-page-%d-cate-22.html" },
+      { "label": "AI图集", "value": "albums-index-page-%d-cate-37.html" }
+    ]
+  }
+]

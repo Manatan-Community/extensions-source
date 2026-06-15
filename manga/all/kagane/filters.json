@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "sort", "name": "Sort By", "default": "relevance", "options": [
+      { "label": "Relevance", "value": "" },
+      { "label": "Popular (Total Views)", "value": "total_views,desc" },
+      { "label": "Popular (Average Views)", "value": "avg_views,desc" },
+      { "label": "Popular (Today)", "value": "avg_views_today,desc" },
+      { "label": "Popular (Week)", "value": "avg_views_week,desc" },
+      { "label": "Popular (Month)", "value": "avg_views_month,desc" },
+      { "label": "Latest", "value": "updated_at,desc" },
+      { "label": "By Name", "value": "series_name" },
+      { "label": "Books count", "value": "books_count,desc" },
+      { "label": "Created at", "value": "created_at,desc" }
+    ] },
+    { "type": "text", "id": "tags", "name": "Tags" },
+    { "type": "text", "id": "sourceIds", "name": "Source IDs" },
+    { "type": "text", "id": "genres", "name": "Genre IDs" },
+    { "type": "text", "id": "formats", "name": "Formats" },
+    { "type": "text", "id": "status", "name": "Publication Status" }
+  ]
+}

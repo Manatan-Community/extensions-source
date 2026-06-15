@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "jetanime",
+  "name": "JetAnime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://ssl.jetanimes.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "jetanime",
+    "name": "JetAnime",
+    "lang": "fr",
+    "baseUrl": "https://ssl.jetanimes.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Popular" },
+      { "id": "latest", "name": "Episodes" }
+    ],
+    "urlPatterns": [{ "pattern": "https://ssl.jetanimes.com/*", "kind": "item" }]
+  }]
+}

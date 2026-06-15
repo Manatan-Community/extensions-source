@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "movie4k",
+  "name": "Movie4k",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://movie4k.stream", "https://api.movie4k.stream", "https://streamtape.com", "https://voe.sx", "https://streamz.ws", "https://vidoza.net"],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "movie4k",
+      "name": "Movie4k",
+      "lang": "de",
+      "baseUrl": "https://movie4k.stream",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending Movies" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://movie4k.stream/*", "kind": "item" },
+        { "pattern": "https://api.movie4k.stream/*", "kind": "item" }
+      ]
+    }
+  ]
+}

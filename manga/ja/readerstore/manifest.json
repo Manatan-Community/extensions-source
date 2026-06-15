@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "packageId": "readerstore",
+  "name": "Reader Store",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://ebookstore.sony.jp",
+      "https://viewer.ebookstore.sony.jp",
+      "https://*.ebookstore.sony.jp"
+    ],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "readerstore",
+      "name": "Reader Store",
+      "lang": "ja",
+      "baseUrl": "https://ebookstore.sony.jp",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://ebookstore.sony.jp/title/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

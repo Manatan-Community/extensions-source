@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "hide_locked", "label": "Hide Paid Chapters", "kind": "toggle", "defaultValue": "false" },
+    { "id": "hide_unavailable", "label": "Hide Unavailable Chapters", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

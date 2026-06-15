@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "nyrascans",
+  "name": "Nyra Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://nyrascans.com", "https://cdn.keyoapp.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "nyrascans",
+      "name": "Nyra Scans",
+      "lang": "en",
+      "baseUrl": "https://nyrascans.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

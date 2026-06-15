@@ -1,0 +1,24 @@
+[
+  {
+    "type": "select",
+    "id": "genre",
+    "label": "Genres",
+    "defaultValue": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Action", "value": "13" },
+      { "label": "Adventure", "value": "14" },
+      { "label": "Comedy", "value": "15" },
+      { "label": "School Life", "value": "16" },
+      { "label": "Dark Fantasy", "value": "17" },
+      { "label": "Suspense", "value": "18" },
+      { "label": "Historical", "value": "19" },
+      { "label": "Game", "value": "20" },
+      { "label": "Media Tie-ins", "value": "21" },
+      { "label": "LGBTQ+", "value": "253" },
+      { "label": "Completed", "value": "256" },
+      { "label": "History", "value": "history" },
+      { "label": "Favorites", "value": "favorites" }
+    ]
+  }
+]

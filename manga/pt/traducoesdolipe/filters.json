@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "type": "multiselect",
+      "id": "genres",
+      "name": "Genre",
+      "options": [
+        { "label": "Action", "value": "Action" },
+        { "label": "Adventurer", "value": "Adventurer" },
+        { "label": "Comedy", "value": "Comedy" },
+        { "label": "Dementia", "value": "Dementia" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Ecchi", "value": "Ecchi" },
+        { "label": "Fantasy", "value": "Fantasy" },
+        { "label": "Game", "value": "Game" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Historical", "value": "Historical" },
+        { "label": "Horror", "value": "Horror" },
+        { "label": "Josei", "value": "Josei" },
+        { "label": "Magic", "value": "Magic" },
+        { "label": "Martial Arts", "value": "Martial Arts" },
+        { "label": "Mecha", "value": "Mecha" },
+        { "label": "Military", "value": "Military" },
+        { "label": "Music", "value": "Music" },
+        { "label": "Mystery", "value": "Mystery" },
+        { "label": "Parody", "value": "Parody" },
+        { "label": "Police", "value": "Police" },
+        { "label": "Psychological", "value": "Psychological" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "Samurai", "value": "Samurai" },
+        { "label": "School", "value": "School" },
+        { "label": "Sci-fi", "value": "Sci-fi" },
+        { "label": "Seinen", "value": "Seinen" },
+        { "label": "Shoujo", "value": "Shoujo" },
+        { "label": "Shoujo Ai", "value": "Shoujo Ai" },
+        { "label": "Shounen", "value": "Shounen" },
+        { "label": "Slice of Life", "value": "Slice of Life" },
+        { "label": "Space", "value": "Space" },
+        { "label": "Sports", "value": "Sports" },
+        { "label": "Super Power", "value": "Super Power" },
+        { "label": "SuperNatural", "value": "SuperNatural" },
+        { "label": "Thriller", "value": "Thriller" },
+        { "label": "Vampire", "value": "Vampire" },
+        { "label": "Work Life", "value": "Work Life" },
+        { "label": "Yuri", "value": "Yuri" }
+      ]
+    }
+  ]
+}

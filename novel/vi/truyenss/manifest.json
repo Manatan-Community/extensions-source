@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "truyenss",
+  "name": "TruyenSS",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://truyenss.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "truyenss",
+      "name": "TruyenSS",
+      "lang": "vi",
+      "baseUrl": "https://truyenss.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

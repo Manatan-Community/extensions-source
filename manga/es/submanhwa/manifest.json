@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "submanhwa",
+  "name": "Submanhwa",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://submanhwa.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "submanhwa",
+      "name": "Submanhwa",
+      "lang": "es",
+      "baseUrl": "https://submanhwa.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://submanhwa.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

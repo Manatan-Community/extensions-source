@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manga1000",
+  "name": "Manga1000",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "manga1000",
+      "name": "Manga1000",
+      "lang": "ja",
+      "baseUrl": "https://hachiraw.win",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hachiraw.win/manga/*", "kind": "item" },
+        { "pattern": "https://hachiraw.win/manga/*/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

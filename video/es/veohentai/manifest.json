@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "veohentai",
+  "name": "VeoHentai",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://veohentai.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "veohentai",
+    "name": "VeoHentai",
+    "lang": "es",
+    "baseUrl": "https://veohentai.com",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Mas visitados" },
+      { "id": "latest", "name": "Recientes" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://veohentai.com/*", "kind": "item" }
+    ]
+  }]
+}

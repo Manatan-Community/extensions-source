@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "egotoons",
+  "name": "Ego Toons",
+  "version": "0.1.0",
+  "versionCode": 7,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://www.egotoons.com",
+      "https://*.egotoons.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "egotoons",
+      "name": "Ego Toons",
+      "lang": "pt-BR",
+      "baseUrl": "https://www.egotoons.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.egotoons.com/obra/*", "kind": "item" }
+      ]
+    }
+  ]
+}

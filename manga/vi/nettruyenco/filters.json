@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Trạng thái",
+      "default": "",
+      "options": [
+        { "label": "Tất cả", "value": "" },
+        { "label": "Đang tiến hành", "value": "1" },
+        { "label": "Hoàn thành", "value": "2" }
+      ]
+    },
+    {
+      "id": "genre",
+      "type": "text",
+      "name": "Genre slug"
+    }
+  ]
+}

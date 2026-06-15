@@ -1,0 +1,60 @@
+[
+  {
+    "id": "seriesStatus",
+    "type": "select",
+    "name": "Status",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Ongoing", "value": "ONGOING" },
+      { "label": "Completed", "value": "COMPLETED" },
+      { "label": "Canceled", "value": "CANCELLED" },
+      { "label": "Dropped", "value": "DROPPED" },
+      { "label": "Coming soon", "value": "COMING_SOON" },
+      { "label": "Mass released", "value": "MASS_RELEASED" }
+    ]
+  },
+  {
+    "id": "seriesType",
+    "type": "select",
+    "name": "Type",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Manga", "value": "MANGA" },
+      { "label": "Manhua", "value": "MANHUA" },
+      { "label": "Manhwa", "value": "MANHWA" },
+      { "label": "Russian", "value": "RUSSIAN" },
+      { "label": "Spanish", "value": "SPANISH" }
+    ]
+  },
+  {
+    "id": "orderBy",
+    "type": "select",
+    "name": "Sort by",
+    "default": "lastChapterAddedAt",
+    "options": [
+      { "label": "Last chapter", "value": "lastChapterAddedAt" },
+      { "label": "Views", "value": "totalViews" },
+      { "label": "Added date", "value": "createdAt" },
+      { "label": "Chapter count", "value": "chaptersCount" },
+      { "label": "Alphabetical", "value": "postTitle" }
+    ]
+  },
+  {
+    "id": "orderDirection",
+    "type": "select",
+    "name": "Direction",
+    "default": "desc",
+    "options": [
+      { "label": "Descending", "value": "desc" },
+      { "label": "Ascending", "value": "asc" }
+    ]
+  },
+  {
+    "id": "genreIds",
+    "type": "text",
+    "name": "Genre IDs",
+    "default": ""
+  }
+]

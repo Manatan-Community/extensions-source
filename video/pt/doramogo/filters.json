@@ -1,0 +1,4 @@
+{ "schemaVersion": 1, "filters": [
+  { "id": "audio", "label": "Audio", "kind": "select", "defaultValue": "", "options": ["", "Legendado:legendado", "Dublado:dublado"] },
+  { "id": "genre", "label": "Genero", "kind": "select", "defaultValue": "", "options": ["", "Acao:acao", "Comedia:comedia", "Drama:drama", "Fantasia:fantasia", "Romance:romance"] }
+] }

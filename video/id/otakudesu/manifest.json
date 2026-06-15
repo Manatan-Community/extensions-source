@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "otakudesu",
+  "name": "OtakuDesu",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://otakudesu.blog"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "otakudesu",
+      "name": "OtakuDesu",
+      "lang": "id",
+      "baseUrl": "https://otakudesu.blog",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }],
+      "urlPatterns": [{ "pattern": "https://otakudesu.blog/*", "kind": "item" }]
+    }
+  ]
+}

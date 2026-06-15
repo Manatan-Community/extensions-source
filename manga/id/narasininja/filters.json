@@ -1,0 +1,46 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "title": "Status",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "Ongoing" },
+      { "label": "Completed", "value": "Completed" },
+      { "label": "Hiatus", "value": "Hiatus" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "title": "Type",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Manga", "value": "Manga" },
+      { "label": "Manhwa", "value": "Manhwa" },
+      { "label": "Manhua", "value": "Manhua" }
+    ]
+  },
+  {
+    "id": "order",
+    "type": "select",
+    "title": "Order",
+    "default": "",
+    "options": [
+      { "label": "Default", "value": "" },
+      { "label": "Title", "value": "title" },
+      { "label": "Latest", "value": "latest" },
+      { "label": "Popular", "value": "popular" },
+      { "label": "Updated", "value": "updated" }
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "string",
+    "title": "Genres",
+    "summary": "Comma-separated genre values",
+    "default": ""
+  }
+]

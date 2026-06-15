@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Trang thai",
+      "default": "",
+      "options": [
+        { "label": "Tat ca", "value": "" },
+        { "label": "Con tiep", "value": "Còn tiếp" },
+        { "label": "Hoan thanh", "value": "Hoàn thành" }
+      ]
+    },
+    {
+      "id": "include",
+      "type": "multiSelect",
+      "name": "The loai",
+      "options": [
+        "2:Action", "20:Adventure", "29:Chuyen Sinh", "17:Comedy", "12:Crime",
+        "13:Drama", "44:Ecchi", "4:Fantasy", "35:Harem", "41:Historical",
+        "25:Horror", "11:Isekai", "19:Josei", "42:Martial Arts", "14:Mystery",
+        "1:Oneshot", "16:Psychological", "21:Romance", "10:School Life",
+        "15:Seinen", "18:Shoujo", "3:Shounen", "28:Slice Of Life", "27:Supernatural",
+        "37:Tragedy", "9:Yaoi"
+      ]
+    }
+  ]
+}

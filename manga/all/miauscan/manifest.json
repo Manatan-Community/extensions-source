@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "miauscan",
+  "name": "Miau Scan",
+  "version": "0.1.0",
+  "versionCode": 7,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://leemiau.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "miauscan-es", "name": "Miau Scan", "lang": "es", "baseUrl": "https://leemiau.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "miauscan-pt-br", "name": "Miau Scan", "lang": "pt-BR", "baseUrl": "https://leemiau.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

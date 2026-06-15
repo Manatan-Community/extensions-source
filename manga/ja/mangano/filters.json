@@ -1,0 +1,26 @@
+[
+  {
+    "id": "tag",
+    "type": "select",
+    "label": "人気のタグ",
+    "default": "日常",
+    "options": [
+      { "label": "日常", "value": "日常" },
+      { "label": "コメディ・ギャグ", "value": "コメディ・ギャグ" },
+      { "label": "ファンタジー", "value": "ファンタジー" },
+      { "label": "恋愛", "value": "恋愛" },
+      { "label": "ヒューマンドラマ", "value": "ヒューマンドラマ" },
+      { "label": "学園", "value": "学園" },
+      { "label": "ラブコメ", "value": "ラブコメ" },
+      { "label": "バトル", "value": "バトル" },
+      { "label": "SF", "value": "SF" },
+      { "label": "ホラー", "value": "ホラー" },
+      { "label": "BL", "value": "BL" },
+      { "label": "カラー", "value": "カラー" },
+      { "label": "サスペンス・ミステリー", "value": "サスペンス・ミステリー" },
+      { "label": "異世界", "value": "異世界" },
+      { "label": "縦読み", "value": "縦読み" },
+      { "label": "エッセイ", "value": "エッセイ" }
+    ]
+  }
+]

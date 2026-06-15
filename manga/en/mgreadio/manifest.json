@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mgreadio",
+  "name": "MgreadIo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://ww2.mgreadio.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mgreadio",
+      "name": "MgreadIo",
+      "lang": "en",
+      "baseUrl": "https://ww2.mgreadio.me",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

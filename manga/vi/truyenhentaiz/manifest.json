@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "truyenhentaiz",
+  "name": "TruyenHentaiz",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://truyenhentaiz.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "truyenhentaiz",
+      "name": "TruyenHentaiz",
+      "lang": "vi",
+      "baseUrl": "https://truyenhentaiz.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://truyenhentaiz.net/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "gremorymangas",
+  "name": "Gremory Mangas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://gremoryhistorias.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "gremorymangas",
+      "name": "Gremory Mangas",
+      "lang": "es",
+      "baseUrl": "https://gremoryhistorias.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://gremoryhistorias.org/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

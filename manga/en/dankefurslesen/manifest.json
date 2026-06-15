@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dankefurslesen",
+  "name": "Danke fürs Lesen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://danke.moe"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "dankefurslesen",
+      "name": "Danke fürs Lesen",
+      "lang": "en",
+      "baseUrl": "https://danke.moe",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

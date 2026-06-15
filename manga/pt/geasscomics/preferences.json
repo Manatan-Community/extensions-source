@@ -1,0 +1,6 @@
+[
+  { "id": "pref_email", "type": "text", "label": "Email", "default": "" },
+  { "id": "pref_password", "type": "password", "label": "Senha", "default": "" },
+  { "id": "pref_token", "type": "text", "label": "Token manual", "default": "" },
+  { "id": "pref_adult_content", "type": "toggle", "label": "Exibir conteúdo adulto", "default": false }
+]

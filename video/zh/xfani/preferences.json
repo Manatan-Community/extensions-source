@@ -1,0 +1,15 @@
+[
+  {
+    "id": "video_source",
+    "type": "select",
+    "label": "请设置首选视频源线路",
+    "default": "0",
+    "options": ["0", "1", "2"]
+  },
+  {
+    "id": "ignore_ssl_error",
+    "type": "toggle",
+    "label": "忽略SSL证书校验",
+    "default": false
+  }
+]

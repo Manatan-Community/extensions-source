@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Completed", "value": "Completed" },
+      { "label": "Ongoing", "value": "Ongoing" }
+    ] },
+    { "type": "select", "id": "type", "name": "Type", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Manga", "value": "Manga" },
+      { "label": "Manhua", "value": "Manhua" },
+      { "label": "Manhwa", "value": "Manhwa" }
+    ] },
+    { "type": "select", "id": "genre", "name": "Genre", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Action", "value": "Action" },
+      { "label": "Adventure", "value": "Adventure" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Crime", "value": "Crime" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Harem", "value": "Harem" },
+      { "label": "Historical", "value": "Historical" },
+      { "label": "Horror", "value": "Horror" },
+      { "label": "Josei", "value": "Josei" },
+      { "label": "Martial Arts", "value": "Martial Arts" },
+      { "label": "Medical", "value": "Medical" },
+      { "label": "Mystery", "value": "Mystery" },
+      { "label": "One Shot", "value": "One Shot" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "School Life", "value": "School Life" },
+      { "label": "Seinen", "value": "Seinen" },
+      { "label": "Shounen", "value": "Shounen" },
+      { "label": "Slice of Life", "value": "Slice of Life" },
+      { "label": "Supernatural", "value": "Supernatural" },
+      { "label": "Thriller", "value": "Thriller" },
+      { "label": "Tragedy", "value": "Tragedy" }
+    ] }
+  ]
+}

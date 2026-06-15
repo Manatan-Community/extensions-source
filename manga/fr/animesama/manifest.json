@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesama",
+  "name": "AnimeSama",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://anime-sama.to"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "animesama",
+      "name": "AnimeSama",
+      "lang": "fr",
+      "baseUrl": "https://anime-sama.to",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Derniers ajouts" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anime-sama.to/catalogue/*", "kind": "item" }
+      ]
+    }
+  ]
+}

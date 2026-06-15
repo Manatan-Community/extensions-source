@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kimoitv",
+  "name": "KimoiTV",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "network": ["https://kimoitv.com"],
+  "sources": [
+    {
+      "id": "kimoitv",
+      "name": "KimoiTV",
+      "lang": "en",
+      "baseUrl": "https://kimoitv.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kimoitv.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

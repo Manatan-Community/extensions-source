@@ -1,0 +1,4 @@
+[
+  { "id": "rank", "type": "select", "label": "Rank", "default": "allvisit", "options": ["allvisit", "monthvisit", "weekvisit", "dayvisit", "goodnum", "words", "allvote", "postdate", "lastupdate"] },
+  { "id": "sort", "type": "select", "label": "Category", "default": "none", "options": ["none", "all", "xuanhuan", "xianxia", "dushi", "lishi", "youxi", "kehuan", "kongbu", "nvsheng", "qita"] }
+]

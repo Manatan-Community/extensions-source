@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rawdex",
+  "name": "RawDEX",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "ko",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://rawdex.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "rawdex",
+      "name": "RawDEX",
+      "lang": "ko",
+      "baseUrl": "https://rawdex.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

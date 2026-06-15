@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "poster_quality", "label": "Thumbnail quality", "kind": "select", "defaultValue": "large", "options": [
+      { "label": "Small", "value": "small" },
+      { "label": "Medium", "value": "medium" },
+      { "label": "Large", "value": "large" }
+    ] },
+    { "id": "content_rating", "label": "Content rating", "kind": "select", "defaultValue": "pornographic", "options": [
+      { "label": "Show all", "value": "" },
+      { "label": "Safe only", "value": "safe" },
+      { "label": "Up to Suggestive", "value": "suggestive" },
+      { "label": "Up to Erotica", "value": "erotica" },
+      { "label": "Up to Pornographic", "value": "pornographic" }
+    ] },
+    { "id": "deduplicate_chapters", "label": "Deduplicate chapters", "kind": "toggle", "defaultValue": "false" },
+    { "id": "scanlator_blacklist", "label": "Scanlator blacklist", "kind": "text", "defaultValue": "" },
+    { "id": "show_tags_in_genres", "label": "Show tags in genre chips", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

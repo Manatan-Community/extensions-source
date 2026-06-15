@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "gto",
+  "name": "GTO The Great Site",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "it",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://reader.gtothegreatsite.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "gto",
+      "name": "GTO The Great Site",
+      "lang": "it",
+      "baseUrl": "https://reader.gtothegreatsite.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

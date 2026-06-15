@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rawdevartart",
+  "name": "Rawdevart.art",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rawdevart.art"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "rawdevartart",
+      "name": "Rawdevart.art",
+      "lang": "ja",
+      "baseUrl": "https://rawdevart.art",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rawdevart.art/spa/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

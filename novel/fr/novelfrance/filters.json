@@ -1,0 +1,62 @@
+{
+  "filters": {
+    "genre": {
+      "type": "Picker",
+      "label": "Genre",
+      "value": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "Action", "value": "action" },
+        { "label": "Adulte", "value": "adulte" },
+        { "label": "Anti-Heros", "value": "anti-h-ros" },
+        { "label": "Arts Martiaux", "value": "arts-martiaux" },
+        { "label": "Aventure", "value": "aventure" },
+        { "label": "Comedie", "value": "com-die" },
+        { "label": "Drame", "value": "drama" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Fantaisie", "value": "fantaisie" },
+        { "label": "Fantastique", "value": "fantastique" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Historique", "value": "historical" },
+        { "label": "Horreur", "value": "horreur" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Magie", "value": "magie" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Mecha", "value": "mcha" },
+        { "label": "Mystere", "value": "myst-re" },
+        { "label": "Psychologique", "value": "psychologique" },
+        { "label": "Reincarnation", "value": "r-incarnation" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "School Life", "value": "school-life" },
+        { "label": "Sci-fi", "value": "sci-fi" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Slice of Life", "value": "slice-of-life" },
+        { "label": "Sport", "value": "sport" },
+        { "label": "Surnaturel", "value": "surnaturel" },
+        { "label": "Systeme", "value": "syst-me" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Tragedie", "value": "trag-die" },
+        { "label": "Transmigration", "value": "transmigration" },
+        { "label": "Wuxia", "value": "wuxia" },
+        { "label": "Xianxia", "value": "xianxia" },
+        { "label": "Xuanhuan", "value": "xuanhuan" },
+        { "label": "Yaoi", "value": "yaoi" },
+        { "label": "Yuri", "value": "yuri" }
+      ]
+    },
+    "status": {
+      "type": "Picker",
+      "label": "Statut",
+      "value": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "En cours", "value": "ONGOING" },
+        { "label": "Termine", "value": "COMPLETED" },
+        { "label": "En pause", "value": "HIATUS" },
+        { "label": "Abandonne", "value": "DROPPED" }
+      ]
+    }
+  }
+}

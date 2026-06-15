@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "donghuanosekai",
+  "name": "Donghua no Sekai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://donghuanosekai.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "donghuanosekai",
+    "name": "Donghua no Sekai",
+    "lang": "pt-BR",
+    "baseUrl": "https://donghuanosekai.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Top" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://donghuanosekai.com/*", "kind": "item" }]
+  }]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "shadowmanga",
+  "name": "Shadow Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://shademanga.com",
+      "https://media.shademanga.com",
+      "https://cdn.shademanga.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "shadowmanga",
+      "name": "Shadow Manga",
+      "lang": "es",
+      "baseUrl": "https://shademanga.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Novedades" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://shademanga.com/serie/local/*", "kind": "item" },
+        { "pattern": "https://shademanga.com/reader/local/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packageId": "commitstrip",
+  "name": "Commit Strip",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.commitstrip.com",
+      "https://i.imgur.com"
+    ],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    {
+      "id": "commitstrip-en",
+      "name": "Commit Strip",
+      "lang": "en",
+      "baseUrl": "https://www.commitstrip.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "commitstrip-fr",
+      "name": "Commit Strip",
+      "lang": "fr",
+      "baseUrl": "https://www.commitstrip.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

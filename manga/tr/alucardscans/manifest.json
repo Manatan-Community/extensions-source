@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "alucardscans",
+  "name": "Alucard Scans",
+  "version": "0.1.0",
+  "versionCode": 31,
+  "lang": "tr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://alucardscans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "alucardscans",
+      "name": "Alucard Scans",
+      "lang": "tr",
+      "baseUrl": "https://alucardscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

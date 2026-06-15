@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "nekotoons",
+  "name": "Neko Toons",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://nekotoons.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "nekotoons",
+      "name": "Neko Toons",
+      "lang": "pt-BR",
+      "baseUrl": "https://nekotoons.site",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://nekotoons.site/manga/*", "kind": "item" },
+        { "pattern": "https://nekotoons.site/*/capitulo-*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

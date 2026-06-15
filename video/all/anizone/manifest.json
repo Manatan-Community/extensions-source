@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anizone",
+  "name": "AniZone",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://anizone.to"
+  ],
+  "sources": [
+    {
+      "id": "anizone",
+      "name": "AniZone",
+      "lang": "all",
+      "baseUrl": "https://anizone.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "A-Z" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anizone.to/anime/*", "kind": "item" },
+        { "pattern": "https://anizone.to/watch/*", "kind": "episode" }
+      ]
+    }
+  ]
+}

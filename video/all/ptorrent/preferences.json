@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "filename", "label": "Only display filename", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

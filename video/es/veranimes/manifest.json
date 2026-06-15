@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "veranimes",
+  "name": "VerAnimes",
+  "version": "0.1.0",
+  "versionCode": 36,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://wwv.veranimes.net"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "veranimes",
+    "name": "VerAnimes",
+    "lang": "es",
+    "baseUrl": "https://wwv.veranimes.net",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Animes" },
+      { "id": "latest", "name": "En emision" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://wwv.veranimes.net/anime/*", "kind": "item" },
+      { "pattern": "https://wwv.veranimes.net/ver/*", "kind": "episode" }
+    ]
+  }]
+}

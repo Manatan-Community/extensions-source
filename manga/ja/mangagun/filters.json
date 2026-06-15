@@ -1,0 +1,56 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Completed", "value": "1" },
+      { "label": "Ongoing", "value": "2" }
+    ]
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "default": "last_update",
+    "options": [
+      { "label": "A-Z", "value": "name" },
+      { "label": "Most views", "value": "views" },
+      { "label": "Last updated", "value": "last_update" }
+    ]
+  },
+  {
+    "id": "direction",
+    "type": "select",
+    "label": "Direction",
+    "default": "DESC",
+    "options": [
+      { "label": "Descending", "value": "DESC" },
+      { "label": "Ascending", "value": "ASC" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Action", "value": "Action" },
+      { "label": "Adult", "value": "Adult" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Mature", "value": "Mature" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "School Life", "value": "School Life" },
+      { "label": "Seinen", "value": "Seinen" },
+      { "label": "Shounen", "value": "Shounen" },
+      { "label": "Slice of Life", "value": "Slice of Life" },
+      { "label": "Yaoi", "value": "Yaoi" }
+    ]
+  }
+]

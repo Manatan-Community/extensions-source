@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "arthurscan",
+  "name": "Arthur Scan",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://arthurscan.xyz",
+      "https://*.arthurscan.xyz"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "arthurscan",
+      "name": "Arthur Scan",
+      "lang": "pt-BR",
+      "baseUrl": "https://arthurscan.xyz",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://arthurscan.xyz/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

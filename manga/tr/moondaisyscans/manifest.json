@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "moondaisyscans",
+  "name": "Moon Daisy Scans",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "tr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://moondaisyscans.site", "https://*.moondaisyscans.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "moondaisyscans",
+      "name": "Moon Daisy Scans",
+      "lang": "tr",
+      "baseUrl": "https://moondaisyscans.site",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://moondaisyscans.site/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

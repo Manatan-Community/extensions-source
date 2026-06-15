@@ -1,0 +1,24 @@
+[
+  {
+    "type": "select",
+    "id": "language",
+    "label": "Language",
+    "defaultValue": "en",
+    "options": [
+      { "label": "English", "value": "en" },
+      { "label": "French", "value": "fr" }
+    ]
+  },
+  {
+    "type": "text",
+    "id": "username",
+    "label": "Username",
+    "defaultValue": ""
+  },
+  {
+    "type": "password",
+    "id": "password",
+    "label": "Password",
+    "defaultValue": ""
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "loadingartist",
+  "name": "Loading Artist",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://loadingartist.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "loadingartist",
+      "name": "Loading Artist",
+      "lang": "en",
+      "baseUrl": "https://loadingartist.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": false,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Archives" }
+      ]
+    }
+  ]
+}

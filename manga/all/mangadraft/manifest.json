@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangadraft",
+  "name": "MangaDraft",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangadraft.com"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "mangadraft", "name": "MangaDraft", "lang": "all", "baseUrl": "https://mangadraft.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kuromangas",
+  "name": "KuroMangas",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://beta.kuromangas.com",
+      "https://cdn.kuromangas.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kuromangas",
+      "name": "KuroMangas",
+      "lang": "pt-BR",
+      "baseUrl": "https://beta.kuromangas.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://beta.kuromangas.com/manga/*", "kind": "item" },
+        { "pattern": "https://beta.kuromangas.com/reader/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

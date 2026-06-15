@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangakatana",
+  "name": "MangaKatana",
+  "version": "0.1.0",
+  "versionCode": 12,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangakatana.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangakatana",
+      "name": "MangaKatana",
+      "lang": "en",
+      "baseUrl": "https://mangakatana.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

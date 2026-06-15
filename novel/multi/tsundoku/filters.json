@@ -1,0 +1,47 @@
+{
+  "filters": {
+    "order": {
+      "type": "Picker",
+      "label": "Ordenar por",
+      "value": "",
+      "options": [
+        { "label": "Padrao", "value": "" },
+        { "label": "A-Z", "value": "title" },
+        { "label": "Z-A", "value": "titlereverse" },
+        { "label": "Atualizar", "value": "update" },
+        { "label": "Adicionar", "value": "latest" },
+        { "label": "Popular", "value": "popular" }
+      ]
+    },
+    "genre": {
+      "type": "CheckboxGroup",
+      "label": "Genero",
+      "value": [],
+      "options": [
+        { "label": "Acao", "value": "328" },
+        { "label": "Adult", "value": "343" },
+        { "label": "Aventura", "value": "315" },
+        { "label": "Comedia", "value": "322" },
+        { "label": "Drama", "value": "311" },
+        { "label": "Ecchi", "value": "329" },
+        { "label": "Fantasia", "value": "316" },
+        { "label": "Harem", "value": "350" },
+        { "label": "Hentai", "value": "344" },
+        { "label": "Horror", "value": "317" },
+        { "label": "Isekai", "value": "318" },
+        { "label": "Maduro", "value": "351" },
+        { "label": "Misterio", "value": "319" },
+        { "label": "Romance", "value": "312" },
+        { "label": "Sci-fi", "value": "371" },
+        { "label": "Seinen", "value": "326" },
+        { "label": "Shoujo", "value": "323" },
+        { "label": "Shounen", "value": "341" },
+        { "label": "Sobrenatural", "value": "359" },
+        { "label": "Tragedia", "value": "352" },
+        { "label": "Vida Escolar", "value": "331" },
+        { "label": "Xianxia", "value": "357" },
+        { "label": "Yuri", "value": "313" }
+      ]
+    }
+  }
+}

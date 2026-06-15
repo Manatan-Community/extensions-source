@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwalatino",
+  "name": "Manhwa-Latino",
+  "version": "0.1.0",
+  "versionCode": 10,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://manhwa-latino.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhwalatino",
+      "name": "Manhwa-Latino",
+      "lang": "es",
+      "baseUrl": "https://manhwa-latino.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manhwa-latino.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

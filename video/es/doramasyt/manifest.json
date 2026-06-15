@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "doramasyt",
+  "name": "Doramasyt",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.doramasyt.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "doramasyt",
+    "name": "Doramasyt",
+    "lang": "es",
+    "baseUrl": "https://www.doramasyt.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Doramas" },
+      { "id": "latest", "name": "En emision" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.doramasyt.com/*", "kind": "item" }]
+  }]
+}

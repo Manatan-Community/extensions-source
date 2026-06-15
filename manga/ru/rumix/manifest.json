@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rumix",
+  "name": "RuMIX",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://rumix.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "rumix",
+    "name": "RuMIX",
+    "lang": "ru",
+    "baseUrl": "https://rumix.me",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://rumix.me/*", "kind": "item" }]
+  }]
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "estado", "label": "Estado", "kind": "select", "defaultValue": "", "options": ["", "Emision:2", "Finalizado:1", "Proximamente:3"] },
+    { "id": "tipo", "label": "Tipo", "kind": "select", "defaultValue": "", "options": ["", "TV:1", "Pelicula:2", "OVA:3", "Especial:4", "Serie:9", "Dorama:11", "Donghua:15", "Live Action:17"] },
+    { "id": "genero", "label": "Genero", "kind": "select", "defaultValue": "", "options": ["", "Accion:1", "Escolares:2", "Romance:3", "Shoujo:4", "Comedia:5", "Drama:6", "Seinen:7", "Deportes:8", "Shounen:9", "Recuentos de la vida:10", "Ecchi:11", "Sobrenatural:12", "Fantasia:13", "Magia:14", "Superpoderes:15", "Misterio:17", "Psicologico:18", "Suspenso:19", "Ciencia Ficcion:20", "Mecha:21", "Militar:22", "Aventuras:23", "Historico:24", "Terror:27", "Harem:28", "Josei:29", "Juegos:32", "Yuri:37", "Yaoi:40", "Hentai:43", "Isekai:51"] },
+    { "id": "estreno", "label": "Ano", "kind": "select", "defaultValue": "", "options": ["", "2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"] },
+    { "id": "idioma", "label": "Idioma", "kind": "select", "defaultValue": "", "options": ["", "Japones:1", "Latino:2"] }
+  ]
+}

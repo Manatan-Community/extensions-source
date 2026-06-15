@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zonaleros",
+  "name": "Zonaleros",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": [
+    "https://www.zona-leros.com",
+    "https://ok.ru",
+    "https://voe.sx",
+    "https://streamtape.com",
+    "https://mp4upload.com",
+    "https://filemoon.sx"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "zonaleros",
+    "name": "Zonaleros",
+    "lang": "es",
+    "baseUrl": "https://www.zona-leros.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Series populares" },
+      { "id": "latest", "name": "Peliculas recientes" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.zona-leros.com/*", "kind": "item" }]
+  }]
+}

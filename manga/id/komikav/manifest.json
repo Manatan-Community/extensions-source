@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "komikav",
+  "name": "APKOMIK",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://01.apkomik.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "komikav",
+      "name": "APKOMIK",
+      "lang": "id",
+      "baseUrl": "https://01.apkomik.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

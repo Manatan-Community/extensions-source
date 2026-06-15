@@ -1,0 +1,9 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort by",
+    "default": "viewed",
+    "options": ["viewed", "scored", "created_at", "updated_at"]
+  }
+]

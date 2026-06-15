@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "preferred_quality", "label": "Preferred quality & Server", "kind": "select", "defaultValue": "1080", "options": ["StreamTape", "Dood", "1080", "720", "480", "360"] }
+  ]
+}

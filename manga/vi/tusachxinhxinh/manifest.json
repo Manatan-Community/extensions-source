@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tusachxinhxinh",
+  "name": "TuSachXinhXinh",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://tusachxinhxinh12.online"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tusachxinhxinh",
+      "name": "TuSachXinhXinh",
+      "lang": "vi",
+      "baseUrl": "https://tusachxinhxinh12.online",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://tusachxinhxinh12.online/truyen-tranh/*", "kind": "item" }
+      ]
+    }
+  ]
+}

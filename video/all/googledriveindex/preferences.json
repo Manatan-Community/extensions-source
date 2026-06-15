@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "domain_list", "label": "Index paths", "kind": "text", "defaultValue": "" },
+    { "id": "trim_anime_name", "label": "Trim list item info", "kind": "toggle", "defaultValue": "false" },
+    { "id": "trim_episode_name", "label": "Trim episode name", "kind": "toggle", "defaultValue": "true" },
+    { "id": "ignore_folder", "label": "Ignore videos in search results", "kind": "toggle", "defaultValue": "false" }
+  ]
+}

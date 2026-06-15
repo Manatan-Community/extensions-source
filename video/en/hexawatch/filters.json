@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "type",
+      "label": "Type",
+      "kind": "select",
+      "defaultValue": "movie",
+      "options": [
+        { "label": "Movie", "value": "movie" },
+        { "label": "TV Show", "value": "tv" }
+      ]
+    },
+    {
+      "id": "sort",
+      "label": "Sort by",
+      "kind": "select",
+      "defaultValue": "popularity.desc",
+      "options": [
+        { "label": "Popularity descending", "value": "popularity.desc" },
+        { "label": "Popularity ascending", "value": "popularity.asc" },
+        { "label": "Rating descending", "value": "vote_average.desc" },
+        { "label": "Rating ascending", "value": "vote_average.asc" },
+        { "label": "Release date descending", "value": "release_date.desc" },
+        { "label": "Release date ascending", "value": "release_date.asc" }
+      ]
+    },
+    {
+      "id": "genres",
+      "label": "Genres",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        "Action",
+        "Action & Adventure",
+        "Adventure",
+        "Animation",
+        "Comedy",
+        "Crime",
+        "Documentary",
+        "Drama",
+        "Family",
+        "Fantasy",
+        "History",
+        "Horror",
+        "Kids",
+        "Music",
+        "Mystery",
+        "News",
+        "Reality",
+        "Romance",
+        "Sci-Fi & Fantasy",
+        "Science Fiction",
+        "Soap",
+        "TV Movie",
+        "Talk",
+        "Thriller",
+        "War",
+        "War & Politics",
+        "Western"
+      ]
+    },
+    {
+      "id": "providers",
+      "label": "Streaming platforms",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        { "label": "Amazon Prime Video", "value": "9" },
+        { "label": "Apple TV+", "value": "350" },
+        { "label": "Crunchyroll", "value": "283" },
+        { "label": "Disney+", "value": "337" },
+        { "label": "fuboTV", "value": "257" },
+        { "label": "HBO Max", "value": "1899" },
+        { "label": "HiDive", "value": "430" },
+        { "label": "Hulu", "value": "15" },
+        { "label": "Netflix", "value": "8" },
+        { "label": "Paramount+", "value": "531" },
+        { "label": "Peacock", "value": "386" },
+        { "label": "Pluto TV", "value": "300" },
+        { "label": "Starz", "value": "43" },
+        { "label": "The Roku Channel", "value": "207" },
+        { "label": "Tubi TV", "value": "73" },
+        { "label": "VIX", "value": "457" },
+        { "label": "YouTube", "value": "192" }
+      ]
+    }
+  ]
+}

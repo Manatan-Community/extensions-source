@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "marmota",
+  "name": "Marmota",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://marmota.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "marmota",
+      "name": "Marmota",
+      "lang": "es",
+      "baseUrl": "https://marmota.me",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://marmota.me/*", "kind": "item" }
+      ]
+    }
+  ]
+}

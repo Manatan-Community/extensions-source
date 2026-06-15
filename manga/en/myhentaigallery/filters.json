@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort By",
+      "default": "gpage",
+      "options": [
+        { "label": "Newest", "value": "gpage" },
+        { "label": "Most Viewed", "value": "views" },
+        { "label": "Most Favorited", "value": "favorites" },
+        { "label": "Most Commented", "value": "comments" },
+        { "label": "Longest", "value": "amount" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "category",
+      "name": "Category",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "3D Comic", "value": "3" },
+        { "label": "Ahegao", "value": "23" },
+        { "label": "Anal", "value": "25" },
+        { "label": "Animated", "value": "10" },
+        { "label": "Asian", "value": "54" },
+        { "label": "BBW", "value": "7" },
+        { "label": "Bondage", "value": "12" },
+        { "label": "Breast Expansion", "value": "13" },
+        { "label": "Cheating", "value": "49" },
+        { "label": "Cosplay", "value": "8157" },
+        { "label": "Femboy", "value": "8136" },
+        { "label": "Femdom", "value": "24" },
+        { "label": "Furry", "value": "14" },
+        { "label": "Futanari", "value": "19" },
+        { "label": "Harem", "value": "53" },
+        { "label": "Lesbian", "value": "41" },
+        { "label": "Milf", "value": "30" },
+        { "label": "Monster Girl", "value": "8139" },
+        { "label": "Pregnant", "value": "55" },
+        { "label": "Solo Girl", "value": "8146" },
+        { "label": "Tentacles", "value": "60" },
+        { "label": "Vanilla", "value": "8151" }
+      ]
+    },
+    { "type": "text", "id": "artist", "name": "Artist ID or name" },
+    { "type": "text", "id": "parody", "name": "Parody ID or name" }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "key": "preferred_title_style",
+    "type": "select",
+    "title": "Preferred Title Style",
+    "default": "translated",
+    "entries": ["Original", "Translated"],
+    "values": ["original", "translated"]
+  }
+]

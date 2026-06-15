@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ninegrid",
+  "name": "NineGrid",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://9grid.cc"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "ninegrid",
+    "name": "NineGrid",
+    "lang": "ru",
+    "baseUrl": "https://9grid.cc",
+    "contentType": "manga",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Новое" }
+    ],
+    "urlPatterns": [{ "pattern": "https://9grid.cc/*", "kind": "item" }]
+  }]
+}

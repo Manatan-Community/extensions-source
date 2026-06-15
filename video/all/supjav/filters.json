@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "language", "label": "Language", "kind": "select", "defaultValue": "en", "options": ["en", "ja", "zh"] }
+  ]
+}

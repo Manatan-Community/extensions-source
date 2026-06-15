@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "revivalscans",
+  "name": "Revival Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://www.revivalscans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "revivalscans",
+      "name": "Revival Scans",
+      "lang": "en",
+      "baseUrl": "https://www.revivalscans.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [{ "id": "popular", "name": "Series" }]
+    }
+  ]
+}

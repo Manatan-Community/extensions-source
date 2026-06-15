@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "softkomik",
+  "name": "Softkomik",
+  "version": "0.1.0",
+  "versionCode": 12,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://softkomik.co",
+      "https://v2.softdevices.my.id",
+      "https://cover.softdevices.my.id",
+      "https://psy1.komik.im",
+      "https://image.komik.im",
+      "https://cdn1.softkomik.online",
+      "https://cd1.softkomik.online",
+      "https://f1.softkomik.com",
+      "https://img.softdevices.my.id",
+      "https://image.softkomik.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "softkomik",
+      "name": "Softkomik",
+      "lang": "id",
+      "baseUrl": "https://softkomik.co",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://softkomik.co/*", "kind": "item" }
+      ]
+    }
+  ]
+}

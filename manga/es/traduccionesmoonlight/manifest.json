@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "traduccionesmoonlight",
+  "name": "Traducciones Moonlight",
+  "version": "0.1.0",
+  "versionCode": 45,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://traduccionesmoonlight.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "traduccionesmoonlight",
+      "name": "Traducciones Moonlight",
+      "lang": "es",
+      "baseUrl": "https://traduccionesmoonlight.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://traduccionesmoonlight.com/ver/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "pornhwa18",
+  "name": "Pornhwa18",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://pornhwa18.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "pornhwa18",
+      "name": "Pornhwa18",
+      "lang": "id",
+      "baseUrl": "https://pornhwa18.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://pornhwa18.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "wolftoon",
+  "name": "Wolftoon",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://wolftoon.lovable.app",
+      "https://encmakrlmutvsdzpodov.supabase.co"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "wolftoon",
+      "name": "Wolftoon",
+      "lang": "pt-BR",
+      "baseUrl": "https://wolftoon.lovable.app",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://wolftoon.lovable.app/manga/*", "kind": "item" },
+        { "pattern": "https://wolftoon.lovable.app/read/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

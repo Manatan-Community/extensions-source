@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packageId": "playmatehunter",
+  "name": "Playmate Hunter",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://pmatehunter.com", "https://cdn.pmatehunter.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "playmatehunter", "name": "Playmate Hunter", "lang": "all", "baseUrl": "https://pmatehunter.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

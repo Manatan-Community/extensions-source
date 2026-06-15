@@ -1,0 +1,7 @@
+[
+  { "id": "preferred_quality", "type": "select", "label": "Qualidade preferida", "default": "HD", "options": [
+    { "label": "SD", "value": "SD" },
+    { "label": "HD", "value": "HD" },
+    { "label": "FHD", "value": "FHD" }
+  ] }
+]

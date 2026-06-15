@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sushianimes",
+  "name": "Sushi Animes",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://sushianimes.com.br"],
+  "preferences": "preferences.json",
+  "sources": [{
+    "id": "sushianimes",
+    "name": "Sushi Animes",
+    "lang": "pt-BR",
+    "baseUrl": "https://sushianimes.com.br",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": true, "filters": false, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Trends" },
+      { "id": "latest", "name": "Episodios" }
+    ],
+    "urlPatterns": [{ "pattern": "https://sushianimes.com.br/*", "kind": "item" }]
+  }]
+}

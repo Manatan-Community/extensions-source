@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "packageId": "xprime",
+  "name": "XPrime",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": [
+    "https://xprime.tv",
+    "https://xprime.today",
+    "https://api.themoviedb.org",
+    "https://backend.xprime.tv",
+    "https://enc-dec.app",
+    "https://image.tmdb.org"
+  ],
+  "sources": [
+    {
+      "id": "xprime",
+      "name": "XPrime",
+      "lang": "en",
+      "baseUrl": "https://xprime.tv",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://xprime.tv/title/*", "kind": "item" },
+        { "pattern": "https://xprime.today/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

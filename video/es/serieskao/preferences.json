@@ -1,0 +1,20 @@
+[
+  {"id":"preferred_server","type":"select","label":"Preferred server","default":"Voe","options":[
+    {"label":"YourUpload","value":"YourUpload"},
+    {"label":"BurstCloud","value":"BurstCloud"},
+    {"label":"Voe","value":"Voe"},
+    {"label":"Mp4Upload","value":"Mp4Upload"},
+    {"label":"Doodstream","value":"Doodstream"},
+    {"label":"Upstream","value":"Upstream"},
+    {"label":"StreamTape","value":"StreamTape"},
+    {"label":"Fastream","value":"Fastream"},
+    {"label":"Filemoon","value":"Filemoon"},
+    {"label":"StreamWish","value":"StreamWish"},
+    {"label":"Okru","value":"Okru"},
+    {"label":"Streamlare","value":"Streamlare"},
+    {"label":"VidGuard","value":"VidGuard"},
+    {"label":"External","value":"External"}
+  ]},
+  {"id":"preferred_quality","type":"select","label":"Preferred quality","default":"1080","options":["1080","720","480","360"]},
+  {"id":"preferred_language","type":"select","label":"Preferred language","default":"[LAT]","options":["[LAT]","[SUB]","[CAST]"]}
+]

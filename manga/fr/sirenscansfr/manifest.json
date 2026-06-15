@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sirenscansfr",
+  "name": "Siren Scans FR",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://sirenscans.fr", "https://cdn.keyoapp.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "sirenscansfr",
+      "name": "Siren Scans FR",
+      "lang": "fr",
+      "baseUrl": "https://sirenscans.fr",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernieres sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://sirenscans.fr/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

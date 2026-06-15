@@ -1,0 +1,14 @@
+[
+  {
+    "id": "showLockedChapters",
+    "type": "boolean",
+    "name": "Show locked chapters",
+    "default": true
+  },
+  {
+    "id": "showCampaignLockedChapters",
+    "type": "boolean",
+    "name": "Show chapters that require login",
+    "default": true
+  }
+]

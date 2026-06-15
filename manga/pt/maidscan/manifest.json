@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "maidscan",
+  "name": "Maid Scan",
+  "version": "0.1.0",
+  "versionCode": 51,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "https://empreguetes.wtf",
+      "https://api.verdinha.wtf",
+      "https://cdn.verdinha.wtf"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "maidscan",
+      "name": "Maid Scan",
+      "lang": "pt-BR",
+      "baseUrl": "https://empreguetes.wtf",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://empreguetes.wtf/obra/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesroll",
+  "name": "Animes ROLL",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://anroll.tv", "https://anroll.online"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animesroll",
+    "name": "Animes ROLL",
+    "lang": "pt-BR",
+    "baseUrl": "https://anroll.tv",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Animes" },
+      { "id": "latest", "name": "Episodios" }
+    ],
+    "urlPatterns": [{ "pattern": "https://anroll.tv/*", "kind": "item" }]
+  }]
+}

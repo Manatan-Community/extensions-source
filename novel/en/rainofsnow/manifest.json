@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rainofsnow",
+  "name": "Rainofsnow",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://rainofsnow.com"
+  ],
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "rainofsnow",
+      "name": "Rainofsnow",
+      "lang": "en",
+      "baseUrl": "https://rainofsnow.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Novels" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rainofsnow.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

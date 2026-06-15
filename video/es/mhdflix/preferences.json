@@ -1,0 +1,47 @@
+[
+  {
+    "id": "preferred_language",
+    "type": "select",
+    "label": "Preferred language",
+    "default": "[LAT]",
+    "options": [
+      { "label": "[LAT]", "value": "[LAT]" },
+      { "label": "[SUB]", "value": "[SUB]" },
+      { "label": "[CAST]", "value": "[CAST]" },
+      { "label": "[VOSE]", "value": "[VOSE]" }
+    ]
+  },
+  {
+    "id": "preferred_server",
+    "type": "select",
+    "label": "Preferred server",
+    "default": "StreamWish",
+    "options": [
+      { "label": "StreamWish", "value": "StreamWish" },
+      { "label": "Filemoon", "value": "Filemoon" },
+      { "label": "StreamVid", "value": "StreamVid" },
+      { "label": "VidHide", "value": "VidHide" },
+      { "label": "Voe", "value": "Voe" },
+      { "label": "Uqload", "value": "Uqload" },
+      { "label": "Lulu", "value": "Lulu" },
+      { "label": "StreamTape", "value": "StreamTape" },
+      { "label": "Doodstream", "value": "Doodstream" },
+      { "label": "MixDrop", "value": "MixDrop" },
+      { "label": "Filelions", "value": "Filelions" },
+      { "label": "Hexupload", "value": "Hexupload" },
+      { "label": "Netu", "value": "Netu" }
+    ]
+  },
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080",
+    "options": [
+      { "label": "1080", "value": "1080" },
+      { "label": "720", "value": "720" },
+      { "label": "480", "value": "480" },
+      { "label": "360", "value": "360" }
+    ]
+  }
+]

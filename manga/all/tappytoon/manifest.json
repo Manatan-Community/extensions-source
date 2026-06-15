@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tappytoon",
+  "name": "Tappytoon",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.tappytoon.com",
+      "https://api-global.tappytoon.com"
+    ],
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "tappytoon-en", "name": "Tappytoon", "lang": "en", "baseUrl": "https://www.tappytoon.com/en", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "tappytoon-fr", "name": "Tappytoon", "lang": "fr", "baseUrl": "https://www.tappytoon.com/fr", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "tappytoon-de", "name": "Tappytoon", "lang": "de", "baseUrl": "https://www.tappytoon.com/de", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

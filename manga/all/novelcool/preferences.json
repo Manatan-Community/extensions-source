@@ -1,0 +1,8 @@
+[
+  {
+    "id": "useAppApi",
+    "type": "toggle",
+    "title": "Use app API for browse",
+    "default": true
+  }
+]

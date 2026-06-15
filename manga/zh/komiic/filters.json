@@ -1,0 +1,46 @@
+[
+  {
+    "id": "categoryIds",
+    "type": "text",
+    "name": "類型 ID（逗號分隔）",
+    "default": ""
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "排序",
+    "default": "DATE_UPDATED",
+    "options": [
+      { "label": "更新", "value": "DATE_UPDATED" },
+      { "label": "本月觀看數", "value": "MONTH_VIEWS" },
+      { "label": "觀看數", "value": "VIEWS" },
+      { "label": "喜愛數", "value": "FAVORITE_COUNT" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "name": "狀態",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "連載", "value": "ONGOING" },
+      { "label": "完結", "value": "END" }
+    ]
+  },
+  {
+    "id": "sexyLevel",
+    "type": "select",
+    "name": "色氣程度",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "無", "value": "0" },
+      { "label": "1", "value": "1" },
+      { "label": "2", "value": "2" },
+      { "label": "3", "value": "3" },
+      { "label": "≥4", "value": "4" },
+      { "label": "5", "value": "5" }
+    ]
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zaimanhua",
+  "name": "再漫画",
+  "version": "0.1.0",
+  "versionCode": 68,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhua.zaimanhua.com", "https://m.zaimanhua.com", "https://v4api.zaimanhua.com", "https://account-api.zaimanhua.com", "https://*"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "zaimanhua",
+      "name": "再漫画",
+      "lang": "zh",
+      "baseUrl": "https://manhua.zaimanhua.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://m.zaimanhua.com/pages/comic/detail?id=*", "kind": "item" },
+        { "pattern": "https://manhua.zaimanhua.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

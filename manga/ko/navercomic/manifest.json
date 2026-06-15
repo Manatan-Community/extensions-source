@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "navercomic",
+  "name": "Naver Comic",
+  "version": "0.1.0",
+  "versionCode": 7,
+  "lang": "ko",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://comic.naver.com", "https://m.comic.naver.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "navercomic-webtoon",
+      "name": "Naver Webtoon",
+      "lang": "ko",
+      "baseUrl": "https://comic.naver.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    },
+    {
+      "id": "navercomic-bestchallenge",
+      "name": "Naver Webtoon Best Challenge",
+      "lang": "ko",
+      "baseUrl": "https://comic.naver.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    },
+    {
+      "id": "navercomic-challenge",
+      "name": "Naver Webtoon Challenge",
+      "lang": "ko",
+      "baseUrl": "https://comic.naver.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    }
+  ]
+}

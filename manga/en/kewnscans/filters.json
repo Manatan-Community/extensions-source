@@ -1,0 +1,8 @@
+[
+  {
+    "id": "genre",
+    "type": "text",
+    "name": "Genre names",
+    "default": ""
+  }
+]

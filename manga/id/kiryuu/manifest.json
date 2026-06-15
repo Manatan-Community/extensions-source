@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kiryuu",
+  "name": "Kiryuu",
+  "version": "0.1.0",
+  "versionCode": 49,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://v5.kiryuu.to", "https://v6.kiryuu.to"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kiryuu",
+      "name": "Kiryuu",
+      "lang": "id",
+      "baseUrl": "https://v5.kiryuu.to",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

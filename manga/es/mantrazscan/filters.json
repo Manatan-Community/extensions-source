@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Genero",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Accion", "value": "accion" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Fantasia", "value": "fantasia" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Comedia", "value": "comedia" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Artes Marciales", "value": "artes-marciales" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Vida Escolar", "value": "vida-escolar" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shounen", "value": "shounen" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Estado",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "En curso", "value": "ongoing" },
+        { "label": "Completado", "value": "completed" },
+        { "label": "Hiatus", "value": "hiatus" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Ordenar",
+      "default": "updated",
+      "options": [
+        { "label": "Recientes", "value": "updated" },
+        { "label": "Vistas", "value": "views" },
+        { "label": "Rating", "value": "rating" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Tipo",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Adulto", "value": "adult" },
+        { "label": "BL", "value": "bl" },
+        { "label": "Shoujo", "value": "shoujo" },
+        { "label": "Manga", "value": "manga" }
+      ]
+    }
+  ]
+}

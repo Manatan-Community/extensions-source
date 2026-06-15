@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animepahe",
+  "name": "AnimePahe",
+  "version": "0.1.0",
+  "versionCode": 44,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://animepahe.pw",
+    "https://animepahe.com",
+    "https://animepahe.org",
+    "https://kwik.cx",
+    "https://kwik.si"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animepahe",
+      "name": "AnimePahe",
+      "lang": "en",
+      "baseUrl": "https://animepahe.pw",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Airing" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animepahe.pw/a/*", "kind": "item" },
+        { "pattern": "https://animepahe.pw/anime/*", "kind": "item" }
+      ]
+    }
+  ]
+}

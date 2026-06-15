@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "javgg",
+  "name": "JavGG",
+  "version": "0.1.0",
+  "versionCode": 19,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://javgg.net",
+    "https://*"
+  ],
+  "sources": [
+    {
+      "id": "javgg",
+      "name": "JavGG",
+      "lang": "all",
+      "baseUrl": "https://javgg.net",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "New Post" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://javgg.net/jav/*", "kind": "item" }
+      ]
+    }
+  ]
+}

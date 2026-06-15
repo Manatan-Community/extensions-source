@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "onfmangas",
+  "name": "ONF MANGAS",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://onfmangas.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "onfmangas",
+      "name": "ONF MANGAS",
+      "lang": "es",
+      "baseUrl": "https://onfmangas.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://onfmangas.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

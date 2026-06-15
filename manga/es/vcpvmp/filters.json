@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sourceId",
+      "name": "Source",
+      "default": "vcp",
+      "options": [
+        { "label": "VCP", "value": "vcp" },
+        { "label": "VMP", "value": "vmp" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Género",
+      "default": "",
+      "options": [
+        { "label": "Ver todos", "value": "" },
+        { "label": "Anal", "value": "anal" },
+        { "label": "Big Ass", "value": "big-ass" },
+        { "label": "Big Breasts", "value": "big-breasts" },
+        { "label": "Big Penis", "value": "big-penis" },
+        { "label": "Blowjob", "value": "blowjob" },
+        { "label": "Creampie", "value": "creampie" },
+        { "label": "Cum", "value": "cum" },
+        { "label": "Incest", "value": "incest" },
+        { "label": "Manga Hentai", "value": "manga-hentai" },
+        { "label": "Milf", "value": "milf" },
+        { "label": "Nakadashi", "value": "nakadashi" },
+        { "label": "Sin Censura", "value": "sin-censura" },
+        { "label": "Tetonas", "value": "tetonas" }
+      ]
+    }
+  ]
+}

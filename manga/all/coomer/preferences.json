@@ -1,0 +1,6 @@
+{
+  "items": [
+    { "id": "postPages", "type": "number", "name": "Maximum post pages", "default": 1 },
+    { "id": "lowResolutionImages", "type": "toggle", "name": "Use low resolution images", "default": false }
+  ]
+}

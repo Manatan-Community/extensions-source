@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ono",
+  "name": "Ono",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.ono.live", "https://ws.ono.live", "https://catalog.ono.live"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ono",
+      "name": "Ono",
+      "lang": "fr",
+      "baseUrl": "https://www.ono.live",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.ono.live/manga/*", "kind": "item" },
+        { "pattern": "https://www.ono.live/webtoon/*", "kind": "item" }
+      ]
+    }
+  ]
+}

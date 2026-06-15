@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "argoscomics",
+  "name": "Argos Comics",
+  "version": "0.1.0",
+  "versionCode": 54,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://aniargos.com",
+      "https://*.aniargos.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "argoscomics",
+      "name": "Argos Comics",
+      "lang": "pt-BR",
+      "baseUrl": "https://aniargos.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://aniargos.com/*/*", "kind": "item" }
+      ]
+    }
+  ]
+}

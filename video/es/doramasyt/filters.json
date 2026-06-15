@@ -1,0 +1,37 @@
+[
+  { "id": "categoria", "type": "select", "label": "Categoria", "options": [
+    { "label": "Seleccionar", "value": "" },
+    { "label": "Dorama", "value": "dorama" },
+    { "label": "Live Action", "value": "live-action" },
+    { "label": "Pelicula", "value": "pelicula" },
+    { "label": "Series Turcas", "value": "serie-turcas" }
+  ] },
+  { "id": "genero", "type": "select", "label": "Genero", "options": [
+    { "label": "Seleccionar", "value": "" },
+    { "label": "Romance", "value": "romance" },
+    { "label": "Comedia", "value": "comedia" },
+    { "label": "Accion", "value": "accion" },
+    { "label": "Drama", "value": "drama" },
+    { "label": "Misterio", "value": "misterio" },
+    { "label": "Historico", "value": "historico" },
+    { "label": "K-Drama", "value": "k-drama" },
+    { "label": "J-Drama", "value": "j-drama" },
+    { "label": "C-Drama", "value": "c-drama" },
+    { "label": "Turcas", "value": "turcas" }
+  ] },
+  { "id": "fecha", "type": "select", "label": "Ano", "options": [
+    { "label": "Seleccionar", "value": "" },
+    { "label": "2024", "value": "2024" },
+    { "label": "2023", "value": "2023" },
+    { "label": "2022", "value": "2022" },
+    { "label": "2021", "value": "2021" },
+    { "label": "2020", "value": "2020" }
+  ] },
+  { "id": "letra", "type": "select", "label": "Letra", "options": [
+    { "label": "Seleccionar", "value": "" },
+    { "label": "A", "value": "A" },
+    { "label": "B", "value": "B" },
+    { "label": "C", "value": "C" },
+    { "label": "D", "value": "D" }
+  ] }
+]

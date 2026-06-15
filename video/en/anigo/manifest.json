@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anigo",
+  "name": "AniGo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://anigo.to",
+    "https://enc-dec.app"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "anigo",
+      "name": "AniGo",
+      "lang": "en",
+      "baseUrl": "https://anigo.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Updates" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anigo.to/watch/*", "kind": "item" },
+        { "pattern": "https://anigo.to/*", "kind": "item" }
+      ]
+    }
+  ]
+}

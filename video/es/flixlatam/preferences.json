@@ -1,0 +1,37 @@
+[
+  {
+    "id": "preferred_language",
+    "type": "select",
+    "name": "Preferred language",
+    "default": "[LAT]",
+    "options": [
+      { "label": "[LAT]", "value": "[LAT]" },
+      { "label": "[SUB]", "value": "[SUB]" },
+      { "label": "[CAST]", "value": "[CAST]" }
+    ]
+  },
+  {
+    "id": "preferred_quality",
+    "type": "select",
+    "name": "Calidad preferida",
+    "default": "1080p",
+    "options": [
+      { "label": "480p", "value": "480p" },
+      { "label": "720p", "value": "720p" },
+      { "label": "1080p", "value": "1080p" }
+    ]
+  },
+  {
+    "id": "preferred_server",
+    "type": "select",
+    "name": "Preferred server",
+    "default": "Uqload",
+    "options": [
+      { "label": "StreamWish", "value": "StreamWish" },
+      { "label": "Uqload", "value": "Uqload" },
+      { "label": "VidGuard", "value": "VidGuard" },
+      { "label": "StreamHideVid", "value": "StreamHideVid" },
+      { "label": "Voe", "value": "Voe" }
+    ]
+  }
+]

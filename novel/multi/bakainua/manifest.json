@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "bakainua",
+  "name": "BakaInUA",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "multi",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "filters": "filters.json",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://baka.in.ua"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "bakainua",
+      "name": "BakaInUA",
+      "lang": "multi",
+      "baseUrl": "https://baka.in.ua",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "filters": true,
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "faqwikius",
+  "name": "Faq Wiki",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://faqwiki.us"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "faqwikius",
+      "name": "Faq Wiki",
+      "lang": "en",
+      "baseUrl": "https://faqwiki.us/novel",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

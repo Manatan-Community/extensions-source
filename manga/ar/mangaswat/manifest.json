@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangaswat",
+  "name": "MangaSwat",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://meshmanga.com"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "mangaswat",
+      "name": "MangaSwat",
+      "lang": "ar",
+      "baseUrl": "https://meshmanga.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

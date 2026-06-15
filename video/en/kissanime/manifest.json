@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kissanime",
+  "name": "kissanime.com.ru",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "network": [
+    "https://kissanime.com.ru",
+    "https://kissanime.co",
+    "https://kissanime.sx",
+    "https://kissanime.org.ru",
+    "https://embed.vodstream.xyz",
+    "https://yourupload.com",
+    "https://mp4upload.com",
+    "https://www.dailymotion.com"
+  ],
+  "sources": [
+    {
+      "id": "kissanime",
+      "name": "kissanime.com.ru",
+      "lang": "en",
+      "baseUrl": "https://kissanime.com.ru",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest Updates" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kissanime.com.ru/*", "kind": "item" },
+        { "pattern": "https://kissanime.co/*", "kind": "item" },
+        { "pattern": "https://kissanime.sx/*", "kind": "item" },
+        { "pattern": "https://kissanime.org.ru/*", "kind": "item" }
+      ]
+    }
+  ]
+}

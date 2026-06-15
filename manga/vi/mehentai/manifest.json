@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mehentai",
+  "name": "MeHentai",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://mehentai.blog"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mehentai",
+      "name": "MeHentai",
+      "lang": "vi",
+      "baseUrl": "https://mehentai.blog",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mehentai.blog/manga/*", "kind": "item" },
+        { "pattern": "https://mehentai.blog/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

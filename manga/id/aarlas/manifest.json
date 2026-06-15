@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "aarlas",
+  "name": "Aarlas",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.arlas.online"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "aarlas",
+      "name": "Aarlas",
+      "lang": "id",
+      "baseUrl": "https://www.arlas.online",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

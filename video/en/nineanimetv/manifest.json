@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packageId": "nineanimetv",
+  "name": "9AnimeTV",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": [
+    "https://9animetv.to",
+    "https://rapid-cloud.co",
+    "https://megacloud.tv"
+  ],
+  "sources": [
+    {
+      "id": "nineanimetv",
+      "name": "9AnimeTV",
+      "lang": "en",
+      "baseUrl": "https://9animetv.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Most Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Recently Updated"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://9animetv.to/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

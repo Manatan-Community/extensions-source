@@ -1,0 +1,41 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Generos",
+    "options": [
+      { "label": "<selecionar>", "value": "" },
+      { "label": "Peliculas", "value": "peliculas" },
+      { "label": "Series", "value": "series" },
+      { "label": "Doramas", "value": "doramas" },
+      { "label": "Animes", "value": "animes" },
+      { "label": "Accion", "value": "genres/accion" },
+      { "label": "Action & Adventure", "value": "genres/action-adventure" },
+      { "label": "Animacion", "value": "genres/animacion" },
+      { "label": "Aventura", "value": "genres/aventura" },
+      { "label": "Belica", "value": "genres/belica" },
+      { "label": "Ciencia ficcion", "value": "genres/ciencia-ficcion" },
+      { "label": "Comedia", "value": "genres/comedia" },
+      { "label": "Crimen", "value": "genres/crimen" },
+      { "label": "Documental", "value": "genres/documental" },
+      { "label": "Dorama", "value": "genres/dorama" },
+      { "label": "Drama", "value": "genres/drama" },
+      { "label": "Familia", "value": "genres/familia" },
+      { "label": "Fantasia", "value": "genres/fantasia" },
+      { "label": "Guerra", "value": "genres/guerra" },
+      { "label": "Historia", "value": "genres/historia" },
+      { "label": "Horror", "value": "genres/horror" },
+      { "label": "Kids", "value": "genres/kids" },
+      { "label": "Misterio", "value": "genres/misterio" },
+      { "label": "Musica", "value": "genres/musica" },
+      { "label": "Musical", "value": "genres/musical" },
+      { "label": "Pelicula de TV", "value": "genres/pelicula-de-tv" },
+      { "label": "Reality", "value": "genres/reality" },
+      { "label": "Romance", "value": "genres/romance" },
+      { "label": "Sci-Fi & Fantasy", "value": "genres/sci-fi-fantasy" },
+      { "label": "Suspense", "value": "genres/suspense" },
+      { "label": "Terror", "value": "genres/terror" },
+      { "label": "Western", "value": "genres/western" }
+    ]
+  }
+]

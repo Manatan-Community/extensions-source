@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "stashapp",
+  "name": "StashApp",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["http://localhost:9999"],
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "stashapp",
+      "name": "StashApp",
+      "lang": "all",
+      "baseUrl": "http://localhost:9999",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

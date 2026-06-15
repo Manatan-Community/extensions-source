@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "pixivcomic",
+  "name": "Pixiv Comic",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://comic.pixiv.net"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "pixivcomic",
+      "name": "Pixiv Comic",
+      "lang": "ja",
+      "baseUrl": "https://comic.pixiv.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://comic.pixiv.net/works/*", "kind": "item" },
+        { "pattern": "https://comic.pixiv.net/viewer/stories/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

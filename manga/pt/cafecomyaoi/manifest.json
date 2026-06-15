@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cafecomyaoi",
+  "name": "Café com Yaoi",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://cafecomyaoi.com.br",
+      "https://*.cafecomyaoi.com.br"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "cafecomyaoi",
+      "name": "Café com Yaoi",
+      "lang": "pt-BR",
+      "baseUrl": "https://cafecomyaoi.com.br",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://cafecomyaoi.com.br/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

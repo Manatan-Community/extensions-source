@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "filmpalast",
+  "name": "FilmPalast",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://filmpalast.to", "https://voe.sx", "https://streamtape.com", "https://evoload.io", "https://wolfstream.tv"],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "filmpalast",
+      "name": "FilmPalast",
+      "lang": "de",
+      "baseUrl": "https://filmpalast.to",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Top Filme" },
+        { "id": "latest", "name": "Neue Filme" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://filmpalast.to/*", "kind": "item" }
+      ]
+    }
+  ]
+}

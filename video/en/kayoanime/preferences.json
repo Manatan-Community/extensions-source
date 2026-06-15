@@ -1,0 +1,8 @@
+[
+  {
+    "key": "trim_episode",
+    "type": "boolean",
+    "title": "Trim info from episode name",
+    "default": true
+  }
+]

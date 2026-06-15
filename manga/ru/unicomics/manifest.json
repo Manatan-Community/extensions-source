@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "unicomics",
+  "name": "UniComics",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://unicomics.ru", "https://yandex.ru"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "unicomics",
+    "name": "UniComics",
+    "lang": "ru",
+    "baseUrl": "https://unicomics.ru",
+    "contentType": "manga",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": false,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Последние" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://unicomics.ru/comics/series/*", "kind": "item" },
+      { "pattern": "https://unicomics.ru/comics/issue/*", "kind": "chapter" },
+      { "pattern": "https://unicomics.ru/comics/online/*", "kind": "chapter" }
+    ]
+  }]
+}

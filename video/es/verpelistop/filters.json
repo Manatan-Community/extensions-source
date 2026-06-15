@@ -1,0 +1,29 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Generos",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "accion", "value": "genero/accion" },
+      { "label": "amazon prime", "value": "genero/amazon-prime" },
+      { "label": "animacion", "value": "genero/animacion" },
+      { "label": "aventura", "value": "genero/aventura" },
+      { "label": "biografia", "value": "genero/biografia" },
+      { "label": "ciencia ficcion", "value": "genero/ciencia-ficcion" },
+      { "label": "comedia", "value": "genero/comedia" },
+      { "label": "crimen", "value": "genero/crimen" },
+      { "label": "documentales", "value": "genero/documentales" },
+      { "label": "drama", "value": "genero/drama" },
+      { "label": "familia", "value": "genero/familia" },
+      { "label": "fantasia", "value": "genero/fantasia" },
+      { "label": "horror", "value": "genero/horror" },
+      { "label": "misterio", "value": "genero/misterio" },
+      { "label": "netflix", "value": "genero/netflix" },
+      { "label": "romance", "value": "genero/romance" },
+      { "label": "suspenso", "value": "genero/suspenso" },
+      { "label": "terror", "value": "genero/terror" },
+      { "label": "thriller", "value": "genero/thriller" }
+    ]
+  }
+]

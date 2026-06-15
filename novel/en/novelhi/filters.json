@@ -1,0 +1,5 @@
+[
+  { "id": "genres", "type": "select", "label": "Genres", "default": "", "options": ["", "action", "adventure", "comedy", "light-novel", "fanfiction", "fantasy", "game", "gender-bender", "harem", "historical", "horror", "martial-arts", "mature", "mecha", "military", "mystery", "romance", "school-life", "sci-fi", "slice-of-life", "sports", "supernatural", "tragedy", "urban-life", "wuxia", "xianxia", "xuanhuan", "yaoi", "yuri"] },
+  { "id": "order", "type": "select", "label": "Status", "default": "", "options": ["", "0", "1"] },
+  { "id": "time", "type": "select", "label": "Update Period", "default": "", "options": ["", "3", "7", "15", "30"] }
+]

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "packageId": "pornpics",
+  "name": "PornPics",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.pornpics.com"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "pornpics-en", "name": "PornPics", "lang": "en", "baseUrl": "https://www.pornpics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "pornpics-zh", "name": "PornPics", "lang": "zh", "baseUrl": "https://www.pornpics.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

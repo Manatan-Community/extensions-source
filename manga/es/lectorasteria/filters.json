@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort by",
+      "default": "updated_at",
+      "options": [
+        { "label": "Name", "value": "name" },
+        { "label": "Views", "value": "views" },
+        { "label": "Updated", "value": "updated_at" },
+        { "label": "Created", "value": "created_at" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "0",
+      "options": [
+        { "label": "All", "value": "0" },
+        { "label": "Ongoing", "value": "1" },
+        { "label": "Hiatus", "value": "2" },
+        { "label": "Dropped", "value": "3" },
+        { "label": "Completed", "value": "4" }
+      ]
+    }
+  ]
+}

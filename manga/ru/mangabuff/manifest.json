@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangabuff",
+  "name": "MangaBuff",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://mangabuff.ru"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "mangabuff",
+    "name": "MangaBuff",
+    "lang": "ru",
+    "baseUrl": "https://mangabuff.ru",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": false,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярные" },
+      { "id": "latest", "name": "Обновленные" }
+    ],
+    "urlPatterns": [{ "pattern": "https://mangabuff.ru/*", "kind": "item" }]
+  }]
+}

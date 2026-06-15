@@ -1,0 +1,3 @@
+[
+  { "key": "preferred_domain", "type": "select", "title": "Preferred domain", "default": "https://kisskh.ovh", "entries": ["kisskh.ovh", "kisskh.do", "kisskh.co", "kisskh.id", "kisskh.la"], "values": ["https://kisskh.ovh", "https://kisskh.do", "https://kisskh.co", "https://kisskh.id", "https://kisskh.la"] }
+]

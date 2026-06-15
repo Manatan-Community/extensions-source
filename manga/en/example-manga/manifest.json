@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "example-manga",
+  "name": "Example Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.svg",
+  "sources": [
+    {
+      "id": "example-manga",
+      "name": "Example Manga",
+      "lang": "en",
+      "baseUrl": "https://manga.example",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manga.example/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

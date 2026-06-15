@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "switch",
+      "id": "showPremium",
+      "title": "Afficher les chapitres premium",
+      "summary": "Afficher les chapitres payants dans la liste.",
+      "default": false
+    },
+    {
+      "type": "switch",
+      "id": "showWaitUntilFree",
+      "title": "Afficher les chapitres Wait until free",
+      "summary": "Afficher les chapitres lisibles avec un créneau d'attente.",
+      "default": true
+    },
+    {
+      "type": "login",
+      "id": "onoLogin",
+      "title": "Connexion Ono",
+      "summary": "Ouvrir Ono pour établir la session cookie utilisée par les chapitres protégés.",
+      "webviewUrl": "https://www.ono.live"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "scanvf",
+  "name": "Scan VF",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.scan-vf.net", "https://scan-vf.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "scanvf",
+      "name": "Scan VF",
+      "lang": "fr",
+      "baseUrl": "https://www.scan-vf.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Catalogue" },
+        { "id": "latest", "name": "Dernieres sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.scan-vf.net/*", "kind": "item" },
+        { "pattern": "https://scan-vf.net/*", "kind": "item" }
+      ]
+    }
+  ]
+}

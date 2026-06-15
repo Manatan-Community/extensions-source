@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hm2d",
+  "name": "HM2D",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://doujindistrict.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hm2d",
+      "name": "HM2D",
+      "lang": "en",
+      "baseUrl": "https://doujindistrict.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://doujindistrict.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

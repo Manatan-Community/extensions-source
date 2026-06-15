@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rocksmanga",
+  "name": "Rocks Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rocksmanga.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "rocksmanga",
+      "name": "Rocks Manga",
+      "lang": "ar",
+      "baseUrl": "https://rocksmanga.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

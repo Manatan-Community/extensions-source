@@ -1,0 +1,10 @@
+{
+  "groups": [
+    { "id": "useDataSaver", "label": "Use data saver pages", "type": "boolean", "default": false },
+    { "id": "coverQuality", "label": "Cover quality", "type": "select", "default": ".512.jpg", "options": [
+      { "label": "Original", "value": "" },
+      { "label": "Medium", "value": ".512.jpg" },
+      { "label": "Low", "value": ".256.jpg" }
+    ] }
+  ]
+}

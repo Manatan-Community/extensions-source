@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "index", "label": "Indice", "kind": "select", "defaultValue": "lista-anime-e-cartoni", "options": ["Lista Anime e Cartoni:lista-anime-e-cartoni", "Lista Film Anime:lista-film-anime"] }
+  ]
+}

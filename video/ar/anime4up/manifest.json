@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anime4up",
+  "name": "Anime4Up",
+  "version": "0.1.0",
+  "versionCode": 77,
+  "lang": "ar",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": ["https://w1.anime4up.rest"],
+  "sources": [
+    {
+      "id": "anime4up",
+      "name": "Anime4Up",
+      "lang": "ar",
+      "baseUrl": "https://w1.anime4up.rest",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Anime List" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://w1.anime4up.rest/anime/*", "kind": "item" },
+        { "pattern": "https://w1.anime4up.rest/episode/*", "kind": "episode" }
+      ]
+    }
+  ]
+}

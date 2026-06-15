@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cycity",
+  "name": "次元城动漫",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "video",
+  "contentRating": "safe",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": ["https://www.cycani.org", "https://player.cycanime.com"],
+  "sources": [
+    {
+      "id": "cycity",
+      "name": "次元城动漫",
+      "lang": "zh",
+      "baseUrl": "https://www.cycani.org",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "热门动画" },
+        { "id": "latest", "name": "最新动画" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.cycani.org/bangumi/*.html", "kind": "item" },
+        { "pattern": "https://www.cycani.org/play/*.html", "kind": "episode" }
+      ]
+    }
+  ]
+}

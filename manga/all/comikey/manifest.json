@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packageId": "comikey",
+  "name": "Comikey",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://comikey.com",
+      "https://br.comikey.com",
+      "https://gundam.comikey.net",
+      "https://*.epub.rocks"
+    ],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "comikey-en", "name": "Comikey", "lang": "en", "baseUrl": "https://comikey.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "comikey-es", "name": "Comikey", "lang": "es", "baseUrl": "https://comikey.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "comikey-id", "name": "Comikey", "lang": "id", "baseUrl": "https://comikey.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "comikey-pt-br", "name": "Comikey", "lang": "pt-BR", "baseUrl": "https://comikey.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "comikey-br", "name": "Comikey Brasil", "lang": "pt-BR", "baseUrl": "https://br.comikey.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

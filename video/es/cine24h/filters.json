@@ -1,0 +1,18 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Genero",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "Peliculas", "value": "peliculas" },
+      { "label": "Series", "value": "series" },
+      { "label": "Accion", "value": "category/accion" },
+      { "label": "Anime", "value": "category/anime" },
+      { "label": "Aventura", "value": "category/aventura" },
+      { "label": "Comedia", "value": "category/comedia" },
+      { "label": "Drama", "value": "category/drama" },
+      { "label": "Terror", "value": "category/terror" }
+    ]
+  }
+]

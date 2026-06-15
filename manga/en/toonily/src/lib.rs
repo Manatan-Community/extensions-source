@@ -1,0 +1,234 @@
+use manatan_extension::{
+    CatalogItem, HomeSection, HomeSectionStyle, MangaChapter, MangaPage, Paged, UrlResolveResult,
+    abi::ExtensionResult, export_manga_source, source::MangaSource,
+};
+use manatan_shared::{manga, manga::MadaraConfig, sdk::SearchRequest, url};
+use serde_json::Value;
+
+const SOURCE: Toonily = Toonily;
+
+struct Toonily;
+
+impl MangaSource for Toonily {
+    fn list(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
+        let config = config();
+        if request.as_object().is_some_and(|object| object.is_empty()) {
+            return Ok(page_from_body(LIST_FIXTURE, &config));
+        }
+        let page = request.get("page").and_then(Value::as_u64).unwrap_or(1);
+        let order = if request.get("listingId").and_then(Value::as_str) == Some("latest") {
+            "latest"
+        } else {
+            "views"
+        };
+        let body = fetch_document(&config, &config.list_url(page, order), LIST_FIXTURE);
+        Ok(page_from_body(&body, &config))
+    }
+
+    fn search(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
+        let config = config();
+        let page = request.get("page").and_then(Value::as_u64).unwrap_or(1);
+        let query = request
+            .get("query")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        if query.starts_with(config.base_url) {
+            let key = normalize_key(query, &config);
+            let body = fetch_document(&config, &config.absolute_url(&key), DETAILS_FIXTURE);
+            return Ok(Paged {
+                entries: vec![hd_cover_item(manga::Madara::parse_details(
+                    &body,
+                    Some(key),
+                    &config,
+                ))],
+                has_next_page: false,
+            });
+        }
+        let query = clean_search_query(query);
+        let body = fetch_document(&config, &config.search_url(page, &query), LIST_FIXTURE);
+        Ok(page_from_body(&body, &config))
+    }
+
+    fn details(&self, request: Value) -> ExtensionResult<CatalogItem> {
+        let config = config();
+        let key = manga::request_key(&request, "manga")
+            .map(|value| normalize_key(&value, &config))
+            .unwrap_or_else(|| "/serie/sample".to_string());
+        let body = fetch_document(&config, &config.absolute_url(&key), DETAILS_FIXTURE);
+        Ok(hd_cover_item(manga::Madara::parse_details(
+            &body,
+            Some(key),
+            &config,
+        )))
+    }
+
+    fn chapters(&self, request: Value) -> ExtensionResult<Vec<MangaChapter>> {
+        let config = config();
+        let key = manga::request_key(&request, "manga")
+            .map(|value| normalize_key(&value, &config))
+            .unwrap_or_else(|| "/serie/sample".to_string());
+        let body = fetch_document(&config, &config.absolute_url(&key), DETAILS_FIXTURE);
+        Ok(manga::Madara::parse_chapters(&body, &key, &config))
+    }
+
+    fn pages(&self, request: Value) -> ExtensionResult<Vec<MangaPage>> {
+        let config = config();
+        let key = manga::request_key(&request, "chapter")
+            .map(|value| normalize_key(&value, &config))
+            .unwrap_or_else(|| "/serie/sample/chapter-1".to_string());
+        let body = fetch_document(&config, &config.absolute_url(&key), PAGES_FIXTURE);
+        Ok(manga::Madara::parse_pages(&body, &config))
+    }
+
+    fn home(&self, _request: Value) -> ExtensionResult<Vec<HomeSection<CatalogItem>>> {
+        let config = config();
+        let popular = page_from_body(
+            &fetch_document(&config, &config.list_url(1, "views"), LIST_FIXTURE),
+            &config,
+        );
+        let latest = page_from_body(
+            &fetch_document(&config, &config.list_url(1, "latest"), LIST_FIXTURE),
+            &config,
+        );
+        Ok(vec![
+            HomeSection {
+                id: "popular".to_string(),
+                title: "Popular".to_string(),
+                style: Some(HomeSectionStyle::Cover),
+                entries: popular.entries,
+                has_more: popular.has_next_page,
+                ..HomeSection::default()
+            },
+            HomeSection {
+                id: "latest".to_string(),
+                title: "Latest".to_string(),
+                style: Some(HomeSectionStyle::Compact),
+                entries: latest.entries,
+                has_more: latest.has_next_page,
+                ..HomeSection::default()
+            },
+        ])
+    }
+
+    fn manga_url(&self, request: Value) -> ExtensionResult<Option<String>> {
+        let config = config();
+        Ok(manga::request_key(&request, "manga")
+            .map(|key| config.absolute_url(&normalize_key(&key, &config))))
+    }
+
+    fn chapter_url(&self, request: Value) -> ExtensionResult<Option<String>> {
+        let config = config();
+        Ok(manga::request_key(&request, "chapter")
+            .map(|key| config.absolute_url(&normalize_key(&key, &config))))
+    }
+
+    fn handle_url(&self, request: Value) -> ExtensionResult<Option<UrlResolveResult>> {
+        let config = config();
+        let Some(input) = request.get("url").and_then(Value::as_str) else {
+            return Ok(None);
+        };
+        if input.starts_with(config.base_url) {
+            let key = normalize_key(input, &config);
+            return Ok(Some(UrlResolveResult {
+                item: Some(manga::Madara::parse_details(
+                    &fetch_document(&config, &config.absolute_url(&key), DETAILS_FIXTURE),
+                    Some(key),
+                    &config,
+                ))
+                .map(hd_cover_item),
+                url: Some(input.to_string()),
+                ..UrlResolveResult::default()
+            }));
+        }
+        Ok(Some(UrlResolveResult {
+            search: Some(SearchRequest {
+                query: url::slug_from_url(input).unwrap_or_else(|| input.to_string()),
+                ..SearchRequest::default()
+            }),
+            url: Some(input.to_string()),
+            ..UrlResolveResult::default()
+        }))
+    }
+}
+
+fn fetch_document(config: &MadaraConfig, target: &str, fixture: &str) -> String {
+    manga::Madara::browser_client(config)
+        .get(target)
+        .header("Cookie", "toonily-mature=1")
+        .browser_document()
+        .send_text()
+        .unwrap_or_else(|_| fixture.to_string())
+        .replace("/webtoon/", "/serie/")
+}
+
+fn page_from_body(body: &str, config: &MadaraConfig) -> Paged<CatalogItem> {
+    Paged {
+        entries: manga::Madara::parse_listing(body, config)
+            .into_iter()
+            .map(hd_cover_item)
+            .collect(),
+        has_next_page: manga::Madara::has_next_page(body, config),
+    }
+}
+
+fn hd_cover_item(mut item: CatalogItem) -> CatalogItem {
+    item.cover = item.cover.map(hd_cover_url);
+    item
+}
+
+fn hd_cover_url(value: String) -> String {
+    let Some(dot) = value.rfind('.') else {
+        return value;
+    };
+    let Some(dash) = value[..dot].rfind('-') else {
+        return value;
+    };
+    let suffix = &value[dash + 1..dot];
+    let Some((width, height)) = suffix.split_once('x') else {
+        return value;
+    };
+    if width.chars().all(|ch| ch.is_ascii_digit()) && height.chars().all(|ch| ch.is_ascii_digit()) {
+        format!("{}{}", &value[..dash], &value[dot..])
+    } else {
+        value
+    }
+}
+
+fn clean_search_query(query: &str) -> String {
+    query
+        .to_ascii_lowercase()
+        .chars()
+        .map(|ch| if ch.is_ascii_alphanumeric() { ch } else { ' ' })
+        .collect::<String>()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn normalize_key(input: &str, config: &MadaraConfig) -> String {
+    config.normalize_manga_key(&input.replace("/webtoon/", "/serie/"))
+}
+
+fn config() -> MadaraConfig {
+    MadaraConfig {
+        base_url: "https://toonily.com",
+        lang: "en",
+        content_rating: "adult",
+        manga_path: "serie",
+        popular_url_marker: "post-title",
+        use_load_more: true,
+        latest_enabled: true,
+    }
+}
+
+export_manga_source!(SOURCE);
+
+const LIST_FIXTURE: &str = r#"
+<div class="page-item-detail manga"><h3 class="post-title"><a href="/webtoon/sample/">Sample Webtoon</a></h3><img src="/cover-193x278.jpg"></div>
+<div class="navigation-ajax"></div>
+"#;
+const DETAILS_FIXTURE: &str = r#"
+<h1 class="post-title">Sample Webtoon</h1><div class="summary_image"><img src="/cover.jpg"></div>
+<ul><li class="wp-manga-chapter"><a href="/serie/sample/chapter-1/">Chapter 1</a><span class="chapter-release-date">2024-01-01</span></li></ul>
+"#;
+const PAGES_FIXTURE: &str = r#"<div class="reading-content"><img class="wp-manga-chapter-img" data-src="/page1.jpg"></div>"#;

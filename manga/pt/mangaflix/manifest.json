@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangaflix",
+  "name": "MangaFlix",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://mangaflix.net",
+      "https://api.mangaflix.net"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangaflix",
+      "name": "MangaFlix",
+      "lang": "pt-BR",
+      "baseUrl": "https://mangaflix.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangaflix.net/br/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

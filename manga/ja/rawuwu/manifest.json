@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rawuwu",
+  "name": "Raw UwU",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://rawuwu.net"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "rawuwu",
+      "name": "Raw UwU",
+      "lang": "ja",
+      "baseUrl": "https://rawuwu.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rawuwu.net/raw/*", "kind": "item" },
+        { "pattern": "https://rawuwu.net/read/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

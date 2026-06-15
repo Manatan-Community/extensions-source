@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dragonballmultiverse",
+  "name": "Dragon Ball Multiverse",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.dragonball-multiverse.com"
+    ],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    {
+      "id": "dragonballmultiverse-en",
+      "name": "Dragon Ball Multiverse",
+      "lang": "en",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-fr",
+      "name": "Dragon Ball Multiverse",
+      "lang": "fr",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ja",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ja",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-zh",
+      "name": "Dragon Ball Multiverse",
+      "lang": "zh",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-es",
+      "name": "Dragon Ball Multiverse",
+      "lang": "es",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-it",
+      "name": "Dragon Ball Multiverse",
+      "lang": "it",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-pt",
+      "name": "Dragon Ball Multiverse",
+      "lang": "pt",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-de",
+      "name": "Dragon Ball Multiverse",
+      "lang": "de",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-pl",
+      "name": "Dragon Ball Multiverse",
+      "lang": "pl",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-nl",
+      "name": "Dragon Ball Multiverse",
+      "lang": "nl",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-fr-pa",
+      "name": "Dragon Ball Multiverse Parody",
+      "lang": "fr",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-tr",
+      "name": "Dragon Ball Multiverse",
+      "lang": "tr",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-pt-br",
+      "name": "Dragon Ball Multiverse",
+      "lang": "pt-BR",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-hu",
+      "name": "Dragon Ball Multiverse",
+      "lang": "hu",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ga",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ga",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ca",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ca",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-no",
+      "name": "Dragon Ball Multiverse",
+      "lang": "no",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ru",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ru",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ro",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ro",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-eu",
+      "name": "Dragon Ball Multiverse",
+      "lang": "eu",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-lt",
+      "name": "Dragon Ball Multiverse",
+      "lang": "lt",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-hr",
+      "name": "Dragon Ball Multiverse",
+      "lang": "hr",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ko",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ko",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-fi",
+      "name": "Dragon Ball Multiverse",
+      "lang": "fi",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-he",
+      "name": "Dragon Ball Multiverse",
+      "lang": "he",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-bg",
+      "name": "Dragon Ball Multiverse",
+      "lang": "bg",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-sv",
+      "name": "Dragon Ball Multiverse",
+      "lang": "sv",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-el",
+      "name": "Dragon Ball Multiverse",
+      "lang": "el",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-es-419",
+      "name": "Dragon Ball Multiverse",
+      "lang": "es-419",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-ar",
+      "name": "Dragon Ball Multiverse",
+      "lang": "ar",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-fil",
+      "name": "Dragon Ball Multiverse",
+      "lang": "fil",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-la",
+      "name": "Dragon Ball Multiverse",
+      "lang": "la",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-da",
+      "name": "Dragon Ball Multiverse",
+      "lang": "da",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-co",
+      "name": "Dragon Ball Multiverse",
+      "lang": "co",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-br",
+      "name": "Dragon Ball Multiverse",
+      "lang": "br",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-vec",
+      "name": "Dragon Ball Multiverse",
+      "lang": "vec",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    },
+    {
+      "id": "dragonballmultiverse-lmo",
+      "name": "Dragon Ball Multiverse",
+      "lang": "lmo",
+      "baseUrl": "https://www.dragonball-multiverse.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

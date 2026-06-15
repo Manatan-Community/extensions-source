@@ -1,0 +1,8 @@
+[
+  {
+    "id": "hide_premium_chapters",
+    "type": "toggle",
+    "label": "Hide premium chapters",
+    "default": false
+  }
+]

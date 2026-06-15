@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tcbscans",
+  "name": "TCB Scans",
+  "version": "0.1.0",
+  "versionCode": 12,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://tcbonepiecechapters.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tcbscans",
+      "name": "TCB Scans",
+      "lang": "en",
+      "baseUrl": "https://tcbonepiecechapters.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [{ "id": "popular", "name": "Projects" }]
+    }
+  ]
+}

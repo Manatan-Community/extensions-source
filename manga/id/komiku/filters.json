@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "select", "id": "tipe", "name": "Tipe", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Manhwa", "value": "manhwa" }
+    ] },
+    { "type": "select", "id": "orderby", "name": "Order", "default": "modified", "options": [
+      { "label": "Chapter Terbaru", "value": "modified" },
+      { "label": "Komik Terbaru", "value": "date" },
+      { "label": "Peringkat", "value": "meta_value_num" },
+      { "label": "Acak", "value": "rand" }
+    ] },
+    { "type": "text", "id": "genre", "name": "Genre 1 slug" },
+    { "type": "text", "id": "genre2", "name": "Genre 2 slug" },
+    { "type": "select", "id": "statusmanga", "name": "Status", "default": "", "options": [
+      { "label": "Semua", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Tamat", "value": "end" }
+    ] }
+  ]
+}

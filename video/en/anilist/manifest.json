@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anilist",
+  "name": "AniList",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": [
+    "https://anilist.co",
+    "https://graphql.anilist.co",
+    "https://api.jikan.moe"
+  ],
+  "sources": [
+    {
+      "id": "anilist",
+      "name": "AniList",
+      "lang": "en",
+      "baseUrl": "https://anilist.co",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anilist.co/anime/*", "kind": "item" }
+      ]
+    }
+  ]
+}

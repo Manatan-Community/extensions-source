@@ -1,0 +1,18 @@
+[
+  {
+    "id": "category",
+    "type": "text",
+    "name": "分类路径",
+    "default": ""
+  },
+  {
+    "id": "order",
+    "type": "select",
+    "name": "排序",
+    "default": "hits",
+    "options": [
+      { "label": "热门", "value": "hits" },
+      { "label": "更新", "value": "addtime" }
+    ]
+  }
+]

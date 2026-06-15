@@ -1,0 +1,34 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Order by",
+    "options": [
+      { "label": "Favourites", "value": "favourites" },
+      { "label": "Name", "value": "name" },
+      { "label": "Addition Date", "value": "date" }
+    ],
+    "default": "favourites"
+  },
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort by",
+    "options": [
+      { "label": "Descending", "value": "desc" },
+      { "label": "Ascending", "value": "asc" }
+    ],
+    "default": "desc"
+  },
+  {
+    "id": "storyStatus",
+    "type": "select",
+    "label": "Status",
+    "options": [
+      { "label": "All", "value": "all" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Finished", "value": "finished" }
+    ],
+    "default": "all"
+  }
+]

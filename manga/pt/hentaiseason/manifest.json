@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaiseason",
+  "name": "Hentai Season",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hentaiseason.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hentaiseason",
+      "name": "Hentai Season",
+      "lang": "pt-BR",
+      "baseUrl": "https://hentaiseason.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hentaiseason.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

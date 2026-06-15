@@ -1,0 +1,22 @@
+[package]
+name = "emaqi"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aes = "0.8"
+aes-gcm = { version = "0.10", default-features = false, features = ["aes", "alloc"] }
+base64 = "0.22"
+cbc = { version = "0.1", features = ["alloc", "block-padding"] }
+manatan-extension = { git = "https://github.com/KolbyML/manatan-rs", default-features = false }
+manatan-shared = { path = "../../../shared/manatan-shared" }
+rand_chacha = { version = "0.3", default-features = false }
+rand_core = { version = "0.6", default-features = false }
+rsa = { version = "0.9", default-features = false, features = ["sha2", "u64_digit"] }
+serde_json = "1"
+sha2 = "0.10"

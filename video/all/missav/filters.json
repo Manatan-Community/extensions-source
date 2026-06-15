@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "sort", "label": "Sort by", "kind": "select", "defaultValue": "", "options": ["", "released_at", "published_at", "today_views", "weekly_views", "monthly_views", "views"] },
+    { "id": "genre", "label": "Genre path", "kind": "text", "defaultValue": "" }
+  ]
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "id": "pref_domain",
+    "type": "select",
+    "label": "Preferred domain",
+    "default": "https://xprime.tv",
+    "options": [
+      { "label": "xprime.tv", "value": "https://xprime.tv" },
+      { "label": "xprime.today", "value": "https://xprime.today" }
+    ]
+  },
+  { "id": "tmdb_api_key", "type": "text", "label": "TMDB API key", "default": "" },
+  {
+    "id": "pref_latest",
+    "type": "select",
+    "label": "Preferred latest page",
+    "default": "movie",
+    "options": [
+      { "label": "Movies", "value": "movie" },
+      { "label": "TV Shows", "value": "tv" }
+    ]
+  },
+  {
+    "id": "pref_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080",
+    "options": [
+      { "label": "2160p (4k)", "value": "2160" },
+      { "label": "1080p", "value": "1080" },
+      { "label": "720p", "value": "720" },
+      { "label": "480p", "value": "480" },
+      { "label": "360p", "value": "360" }
+    ]
+  },
+  {
+    "id": "pref_sub",
+    "type": "select",
+    "label": "Preferred subtitle language",
+    "default": "en",
+    "options": [
+      { "label": "Arabic", "value": "ar" },
+      { "label": "Bengali", "value": "bn" },
+      { "label": "Chinese", "value": "zh" },
+      { "label": "English", "value": "en" },
+      { "label": "French", "value": "fr" },
+      { "label": "German", "value": "de" },
+      { "label": "Hindi", "value": "hi" },
+      { "label": "Indonesian", "value": "id" },
+      { "label": "Italian", "value": "it" },
+      { "label": "Japanese", "value": "ja" },
+      { "label": "Korean", "value": "ko" },
+      { "label": "Persian", "value": "fa" },
+      { "label": "Portuguese", "value": "pt" },
+      { "label": "Russian", "value": "ru" },
+      { "label": "Spanish", "value": "es" },
+      { "label": "Turkish", "value": "tr" },
+      { "label": "Urdu", "value": "ur" },
+      { "label": "Vietnamese", "value": "vi" }
+    ]
+  },
+  { "id": "pref_sub_limit", "type": "text", "label": "Subtitle search limit", "default": "25" }
+]

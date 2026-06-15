@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "chireads",
+  "name": "Chireads",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "filters": "filters.json",
+  "network": ["https://chireads.com"],
+  "sources": [
+    {
+      "id": "chireads",
+      "name": "Chireads",
+      "lang": "fr",
+      "baseUrl": "https://chireads.com",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaire" },
+        { "id": "latest", "name": "Derniers" }
+      ],
+      "urlPatterns": [{ "pattern": "https://chireads.com/*", "kind": "item" }]
+    }
+  ]
+}

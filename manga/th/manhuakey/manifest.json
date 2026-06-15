@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhuakey",
+  "name": "ManhuaKey",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://www.manhuakey.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhuakey",
+      "name": "ManhuaKey",
+      "lang": "th",
+      "baseUrl": "https://www.manhuakey.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.manhuakey.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

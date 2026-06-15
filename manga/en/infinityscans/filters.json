@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "options": ["latest", "popularity", "title"]
+  },
+  {
+    "id": "genres",
+    "type": "text",
+    "label": "Genre IDs, comma separated"
+  },
+  {
+    "id": "authors",
+    "type": "text",
+    "label": "Author IDs, comma separated"
+  },
+  {
+    "id": "statuses",
+    "type": "text",
+    "label": "Statuses, comma separated"
+  }
+]

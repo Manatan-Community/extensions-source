@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kaizentranslations",
+  "name": "Kaizen Translations",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://capibaratraductor.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kaizentranslations",
+      "name": "Kaizen Translations",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/kaizen",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://capibaratraductor.com/kaizen/*", "kind": "item" }
+      ]
+    }
+  ]
+}

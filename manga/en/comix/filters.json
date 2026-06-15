@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "sort", "label": "Sort", "kind": "select", "defaultValue": "chapter_updated_at:desc", "options": [
+      { "label": "Best Match", "value": "relevance:desc" },
+      { "label": "Latest update", "value": "chapter_updated_at:desc" },
+      { "label": "Recently added", "value": "created_at:desc" },
+      { "label": "Title", "value": "title:asc" },
+      { "label": "Year", "value": "year:desc" },
+      { "label": "Highest rated", "value": "score:desc" },
+      { "label": "Most viewed - all time", "value": "views_total:desc" },
+      { "label": "Most followed", "value": "follows_total:desc" }
+    ] },
+    { "id": "content_rating", "label": "Content rating", "kind": "select", "defaultValue": "", "options": [
+      { "label": "Use preference", "value": "" },
+      { "label": "Safe only", "value": "safe" },
+      { "label": "Up to Suggestive", "value": "suggestive" },
+      { "label": "Up to Erotica", "value": "erotica" },
+      { "label": "Up to Pornographic", "value": "pornographic" }
+    ] },
+    { "id": "types", "label": "Type", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Other", "value": "other" }
+    ] },
+    { "id": "genres_in", "label": "Include genres", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "Action", "value": "6" },
+      { "label": "Adult", "value": "87264" },
+      { "label": "Adventure", "value": "7" },
+      { "label": "Boys Love", "value": "8" },
+      { "label": "Comedy", "value": "9" },
+      { "label": "Drama", "value": "11" },
+      { "label": "Fantasy", "value": "12" },
+      { "label": "Girls Love", "value": "13" },
+      { "label": "Hentai", "value": "87266" },
+      { "label": "Romance", "value": "23" },
+      { "label": "Sci-Fi", "value": "24" },
+      { "label": "Slice of Life", "value": "25" }
+    ] },
+    { "id": "genres_mode", "label": "Genre match", "kind": "select", "defaultValue": "and", "options": [
+      { "label": "All", "value": "and" },
+      { "label": "Any", "value": "or" }
+    ] },
+    { "id": "statuses", "label": "Status", "kind": "multiSelect", "defaultValue": [], "options": [
+      { "label": "Releasing", "value": "releasing" },
+      { "label": "Finished", "value": "finished" },
+      { "label": "On Hiatus", "value": "on_hiatus" },
+      { "label": "Discontinued", "value": "discontinued" },
+      { "label": "Not Yet Released", "value": "not_yet_released" }
+    ] },
+    { "id": "min_chap", "label": "Minimum chapter length", "kind": "text", "defaultValue": "" }
+  ]
+}

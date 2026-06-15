@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "text",
+      "id": "category",
+      "name": "Categoria",
+      "default": ""
+    }
+  ]
+}

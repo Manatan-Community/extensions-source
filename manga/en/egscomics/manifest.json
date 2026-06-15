@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "egscomics",
+  "name": "El Goonish Shive",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.egscomics.com"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    {
+      "id": "egscomics",
+      "name": "El Goonish Shive",
+      "lang": "en",
+      "baseUrl": "https://www.egscomics.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

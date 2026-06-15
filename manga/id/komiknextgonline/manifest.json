@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "komiknextgonline",
+  "name": "Komik Next G Online",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://komiknextgonline.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "komiknextgonline",
+      "name": "Komik Next G Online",
+      "lang": "id",
+      "baseUrl": "https://komiknextgonline.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://komiknextgonline.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

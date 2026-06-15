@@ -1,0 +1,23 @@
+[
+  {
+    "key": "preferred_server",
+    "title": "Preferred server",
+    "type": "select",
+    "default": "Uqload",
+    "values": ["StreamWish", "Uqload"]
+  },
+  {
+    "key": "preferred_quality",
+    "title": "Calidad preferida",
+    "type": "select",
+    "default": "1080p",
+    "values": ["480p", "720p", "1080p"]
+  },
+  {
+    "key": "preferred_lang",
+    "title": "Preferred language",
+    "type": "select",
+    "default": "LATINO",
+    "values": ["SUBTITULADO", "LATINO", "CASTELLANO"]
+  }
+]

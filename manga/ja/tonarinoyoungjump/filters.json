@@ -1,0 +1,13 @@
+[
+  {
+    "id": "collection",
+    "type": "select",
+    "name": "Collection",
+    "default": "",
+    "options": [
+      { "label": "連載中", "value": "" },
+      { "label": "読切", "value": "oneshot" },
+      { "label": "出張作品", "value": "trial" }
+    ]
+  }
+]

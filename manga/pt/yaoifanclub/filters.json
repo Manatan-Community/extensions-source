@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Ativo", "value": "Ativo" },
+        { "label": "Completo", "value": "Completo" },
+        { "label": "Dropado", "value": "Dropado" },
+        { "label": "Em Breve", "value": "Em Breve" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Comic", "value": "Comic" },
+        { "label": "Doujinshi", "value": "Doujinshi" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Oneshot", "value": "Oneshot" },
+        { "label": "Anime", "value": "Anime" }
+      ]
+    },
+    {
+      "type": "multiselect",
+      "id": "genres",
+      "name": "Genre",
+      "options": [
+        { "label": "ABO", "value": "ABO" },
+        { "label": "Ação", "value": "Ação" },
+        { "label": "Anjo", "value": "Anjo" },
+        { "label": "Apocalipse", "value": "Apocalipse" },
+        { "label": "Aventura", "value": "Aventura" },
+        { "label": "Comédia", "value": "Comédia" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Demência", "value": "Demência" },
+        { "label": "Demônio", "value": "Demônio" },
+        { "label": "Espaço", "value": "Espaço" },
+        { "label": "Esporte", "value": "Esporte" },
+        { "label": "Fantasma", "value": "Fantasma" },
+        { "label": "Fantasia", "value": "Fantasia" },
+        { "label": "Ficção", "value": "Ficção" },
+        { "label": "Game", "value": "Game" },
+        { "label": "Gore", "value": "Gore" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Histórico", "value": "Histórico" },
+        { "label": "Horror", "value": "Horror" },
+        { "label": "Magia", "value": "Magia" },
+        { "label": "Militar", "value": "Militar" },
+        { "label": "Mistério", "value": "Mistério" },
+        { "label": "Música", "value": "Música" },
+        { "label": "Omegaverso", "value": "Omegaverso" },
+        { "label": "Paródia", "value": "Paródia" },
+        { "label": "Poderes", "value": "Poderes" },
+        { "label": "Policial", "value": "Policial" },
+        { "label": "Psicológico", "value": "Psicológico" },
+        { "label": "Robô", "value": "Robô" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "Samurai", "value": "Samurai" },
+        { "label": "Sobrenatural", "value": "Sobrenatural" },
+        { "label": "Suspense", "value": "Suspense" },
+        { "label": "Terror", "value": "Terror" },
+        { "label": "Vampiro", "value": "Vampiro" },
+        { "label": "Viagem no tempo", "value": "Viagem no tempo" },
+        { "label": "Vida Cotidiana", "value": "Vida Cotidiana" },
+        { "label": "Zumbi", "value": "Zumbi" }
+      ]
+    }
+  ]
+}

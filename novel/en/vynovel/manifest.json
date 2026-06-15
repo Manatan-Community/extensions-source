@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "vynovel",
+  "name": "VyNovel",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://vynovel.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "vynovel",
+      "name": "VyNovel",
+      "lang": "en",
+      "baseUrl": "https://vynovel.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+[{"id":"sort","type":"select","name":"Sort","default":"","options":[{"label":"最新","value":""},{"label":"熱門：本日","value":"popular-today"},{"label":"熱門：本週","value":"popular-week"},{"label":"熱門：所有","value":"popular"}]}]

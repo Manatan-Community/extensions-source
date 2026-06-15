@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hennojin",
+  "name": "Hennojin",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hennojin.com"],
+    "webview": false,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "hennojin-en", "name": "Hennojin", "lang": "en", "baseUrl": "https://hennojin.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "hennojin-ja", "name": "Hennojin", "lang": "ja", "baseUrl": "https://hennojin.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mvlempyr",
+  "name": "MVLEMPYR",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://www.mvlempyr.io", "https://chap.heliosarchive.online", "https://assets.mvlempyr.app"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mvlempyr",
+      "name": "MVLEMPYR",
+      "lang": "en",
+      "baseUrl": "https://www.mvlempyr.io",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

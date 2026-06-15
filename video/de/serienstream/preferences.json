@@ -1,0 +1,35 @@
+[
+  {
+    "id": "preferred_language",
+    "type": "select",
+    "label": "Bevorzugte Sprache",
+    "default": "Deutscher Sub",
+    "options": [
+      { "label": "Deutscher Sub", "value": "Deutscher Sub" },
+      { "label": "Deutscher Dub", "value": "Deutscher Dub" },
+      { "label": "Englischer Sub", "value": "Englischer Sub" }
+    ]
+  },
+  {
+    "id": "preferred_hoster",
+    "type": "select",
+    "label": "Standard-Hoster",
+    "default": "Streamtape",
+    "options": [
+      { "label": "VOE", "value": "VOE" },
+      { "label": "Doodstream", "value": "Doodstream" },
+      { "label": "Streamtape", "value": "Streamtape" }
+    ]
+  },
+  {
+    "id": "enabled_hosters",
+    "type": "multiSelect",
+    "label": "Hoster auswählen",
+    "default": ["VOE", "Doodstream", "Streamtape"],
+    "options": [
+      { "label": "VOE", "value": "VOE" },
+      { "label": "Doodstream", "value": "Doodstream" },
+      { "label": "Streamtape", "value": "Streamtape" }
+    ]
+  }
+]

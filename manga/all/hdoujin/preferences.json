@@ -1,0 +1,8 @@
+{
+  "groups": [
+    { "id": "imageQuality", "type": "select", "name": "Image resolution", "options": ["780", "980", "1280", "1600", "0"], "default": "1280" },
+    { "id": "removeAdditionalTitleInfo", "type": "toggle", "name": "Short titles", "default": false },
+    { "id": "includeTags", "type": "text", "name": "Always include tags" },
+    { "id": "excludeTags", "type": "text", "name": "Always exclude tags" }
+  ]
+}

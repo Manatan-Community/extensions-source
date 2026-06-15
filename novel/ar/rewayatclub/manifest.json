@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "rewayatclub",
+  "name": "Rewayat Club",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.svg",
+  "permissions": {
+    "network": ["https://rewayat.club", "https://api.rewayat.club"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "rewayatclub",
+      "name": "Rewayat Club",
+      "lang": "ar",
+      "baseUrl": "https://rewayat.club",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://rewayat.club/novel/*", "kind": "item" }
+      ]
+    }
+  ]
+}

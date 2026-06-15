@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "eightmuses",
+  "name": "8Muses",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://comics.8muses.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "eightmuses",
+      "name": "8Muses",
+      "lang": "en",
+      "baseUrl": "https://comics.8muses.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

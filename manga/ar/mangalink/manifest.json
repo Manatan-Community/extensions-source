@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangalink",
+  "name": "Mangalink",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://link-manga.net"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    {
+      "id": "mangalink",
+      "name": "Mangalink",
+      "lang": "ar",
+      "baseUrl": "https://link-manga.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangalivreblog",
+  "name": "Manga Livre Blog",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://mangalivre.blog"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangalivreblog",
+      "name": "Manga Livre Blog",
+      "lang": "pt-BR",
+      "baseUrl": "https://mangalivre.blog",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangalivre.blog/*", "kind": "item" }
+      ]
+    }
+  ]
+}

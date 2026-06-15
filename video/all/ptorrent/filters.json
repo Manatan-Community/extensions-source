@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "category", "label": "Category", "kind": "select", "defaultValue": "0", "options": ["0", "3D%20and%20VR%20Movies", "Adult%20Anime%20and%20Game", "Anime", "BDSM", "Bisexual", "Bukkake", "Chinese%20Movie", "Erotic%20Picture%20Gallery", "Erotic%20Softcore%20Movies", "Femdom%20and%20Strapon", "Fetish", "Fisting%20and%20Dildo", "Game", "Japanese%20Movie", "Peeing", "Porn%20Movies", "Pregnant", "Special%20Porn%20Movies", "Transsexual", "Voyeur"] }
+  ]
+}

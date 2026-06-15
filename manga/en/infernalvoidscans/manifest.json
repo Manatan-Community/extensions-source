@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "infernalvoidscans",
+  "name": "Hive Scans",
+  "version": "0.1.0",
+  "versionCode": 42,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hivetoons.org", "https://api.hivetoons.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "infernalvoidscans",
+      "name": "Hive Scans",
+      "lang": "en",
+      "baseUrl": "https://hivetoons.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

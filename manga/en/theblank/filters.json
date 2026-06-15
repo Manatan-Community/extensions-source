@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "date",
+      "options": [
+        { "label": "New Series", "value": "date" },
+        { "label": "Trending", "value": "trending" },
+        { "label": "Recently Updated", "value": "recently" },
+        { "label": "Most Views", "value": "views" },
+        { "label": "A-Z", "value": "alphabetical" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "include_genres",
+      "name": "Include genres",
+      "default": [],
+      "options": [
+        { "label": "Action", "value": "action" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "School life", "value": "school-life" },
+        { "label": "Sci-fi", "value": "sci-fi" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shoujo", "value": "shoujo" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Smut", "value": "smut" },
+        { "label": "Supernatural", "value": "supernatural" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Uncensored", "value": "uncensored" },
+        { "label": "Violence", "value": "violence" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "exclude_genres",
+      "name": "Exclude genres",
+      "default": [],
+      "options": [
+        { "label": "Action", "value": "action" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Isekai", "value": "isekai" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "School life", "value": "school-life" },
+        { "label": "Sci-fi", "value": "sci-fi" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shoujo", "value": "shoujo" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Smut", "value": "smut" },
+        { "label": "Supernatural", "value": "supernatural" },
+        { "label": "Thriller", "value": "thriller" },
+        { "label": "Uncensored", "value": "uncensored" },
+        { "label": "Violence", "value": "violence" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "include_types",
+      "name": "Include types",
+      "default": [],
+      "options": [
+        { "label": "Comic", "value": "comic" },
+        { "label": "Doujin", "value": "doujin" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Pornhwa", "value": "pornhwa" },
+        { "label": "Webtoon", "value": "webtoon" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "exclude_types",
+      "name": "Exclude types",
+      "default": [],
+      "options": [
+        { "label": "Comic", "value": "comic" },
+        { "label": "Doujin", "value": "doujin" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Pornhwa", "value": "pornhwa" },
+        { "label": "Webtoon", "value": "webtoon" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "status",
+      "name": "Status",
+      "default": [],
+      "options": [
+        { "label": "Ongoing", "value": "ongoing" },
+        { "label": "Finished", "value": "finished" },
+        { "label": "Dropped", "value": "dropped" },
+        { "label": "On Hold", "value": "onhold" },
+        { "label": "Upcoming", "value": "upcoming" }
+      ]
+    }
+  ]
+}

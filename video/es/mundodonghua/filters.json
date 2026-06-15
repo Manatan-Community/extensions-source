@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Generos", "kind": "select", "defaultValue": "", "options": ["", "Accion:Acción", "Artes Marciales:Artes Marciales", "Aventura:Aventura", "Ciencia Ficcion:Ciencia Ficción", "Comedia:Comedia", "Comida:Comida", "Cultivacion:Cultivación", "Demonios:Demonios", "Deportes:Deportes", "Drama:Drama", "Ecchi:Ecchi", "Escolar:Escolar", "Fantasia:Fantasía", "Harem:Harem", "Harem Inverso:Harem Inverso", "Historico:Historico", "Idols:Idols", "Juegos:Juegos", "Lucha:Lucha", "Magia:Magia", "Mechas:Mechas", "Militar:Militar", "Misterio:Misterio", "Musica:Música", "Por Definir:Por Definir", "Psicologico:Psicológico", "Reencarnacion:Reencarnación", "Romance:Romance", "Seinen:Seinen", "Shojo:Shojo", "Shonen:Shonen", "Sobrenatural:Sobrenatural", "Sucesos de la Vida:Sucesos de la Vida", "Superpoderes:Superpoderes", "Suspenso:Suspenso", "Terror:Terror", "Vampiros:Vampiros", "Viaje a Otro Mundo:Viaje a Otro Mundo", "Videojuegos:Videojuegos", "Zombis:Zombis"] }
+  ]
+}

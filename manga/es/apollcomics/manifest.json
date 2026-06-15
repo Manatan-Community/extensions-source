@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "apollcomics",
+  "name": "ApollComics",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://apollcomics.es"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "apollcomics",
+      "name": "ApollComics",
+      "lang": "es",
+      "baseUrl": "https://apollcomics.es",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

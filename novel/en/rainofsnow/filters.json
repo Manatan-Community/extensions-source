@@ -1,0 +1,3 @@
+[
+  { "id": "genre", "type": "select", "label": "Filter by", "options": ["", "?n_orderby=16", "?n_orderby=11", "?n_orderby=776", "?n_orderby=342", "?n_orderby=13", "?n_orderby=3", "?n_orderby=7", "?n_orderby=343", "?n_orderby=341", "?n_orderby=778", "?n_orderby=12", "?n_orderby=339", "?n_orderby=769", "?n_orderby=5", "?n_orderby=14", "?n_orderby=779", "?n_orderby=780", "?n_orderby=777"] }
+]

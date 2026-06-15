@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "lang", "label": "Language", "kind": "select", "defaultValue": "en", "options": ["en", "it"] },
+    { "id": "type", "label": "Type", "kind": "select", "defaultValue": "movie", "options": ["movie", "tv"] },
+    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "4", "11", "19", "12", "2", "24", "1", "16", "8", "22", "7", "14", "6", "15", "10", "5", "21", "9", "20"] },
+    { "id": "sort", "label": "Sort by", "kind": "select", "defaultValue": "", "options": ["", "last_air_date", "created_at", "score", "views", "name"] },
+    { "id": "year", "label": "Year", "kind": "string", "defaultValue": "" },
+    { "id": "score", "label": "Score", "kind": "select", "defaultValue": "", "options": ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
+    { "id": "service", "label": "Service", "kind": "select", "defaultValue": "", "options": ["", "netflix", "prime", "disney", "apple", "now"] },
+    { "id": "quality", "label": "Quality", "kind": "select", "defaultValue": "", "options": ["", "HD", "SD", "TS", "CAM"] },
+    { "id": "age", "label": "Age", "kind": "select", "defaultValue": "", "options": ["", "7", "12", "14", "16", "18"] }
+  ]
+}

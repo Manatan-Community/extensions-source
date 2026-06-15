@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "packageId": "meusanimes",
+  "name": "Meus Animes",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "network": ["https://meusanimes.vip", "https://image.tmdb.org", "https://www.blogger.com"],
+  "preferences": "preferences.json",
+  "sources": [{
+    "id": "meusanimes",
+    "name": "Meus Animes",
+    "lang": "pt-BR",
+    "baseUrl": "https://meusanimes.vip",
+    "contentType": "video",
+    "contentRating": "adult",
+    "capabilities": {"search": true, "latest": false, "filters": false, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [{ "id": "popular", "name": "Populares" }],
+    "urlPatterns": [{ "pattern": "https://meusanimes.vip/*", "kind": "item" }]
+  }]
+}

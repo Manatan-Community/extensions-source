@@ -1,0 +1,4 @@
+[
+  { "id": "serverToken", "type": "text", "label": "Server token", "default": "" },
+  { "id": "readerTheme", "type": "select", "label": "Reader theme", "options": ["system", "light", "dark"], "default": "system" }
+]

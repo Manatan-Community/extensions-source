@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "goctruyentranh",
+  "name": "GocTruyenTranh",
+  "version": "0.1.0",
+  "versionCode": 11,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://goctruyentranh.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "goctruyentranh",
+      "name": "GocTruyenTranh",
+      "lang": "vi",
+      "baseUrl": "https://goctruyentranh.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://goctruyentranh.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

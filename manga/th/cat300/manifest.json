@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cat300",
+  "name": "Cat300",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://cat-300.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "cat300",
+      "name": "Cat300",
+      "lang": "th",
+      "baseUrl": "https://cat-300.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://cat-300.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

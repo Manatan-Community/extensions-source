@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeiat",
+  "name": "Animeiat",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://api.animeiat.co"],
+  "sources": [
+    {
+      "id": "animeiat",
+      "name": "Animeiat",
+      "lang": "ar",
+      "baseUrl": "https://api.animeiat.co/v1",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [{ "pattern": "https://api.animeiat.co/v1/anime/*", "kind": "item" }]
+    }
+  ]
+}

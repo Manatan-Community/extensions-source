@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "wtrlab",
+  "name": "WTR-LAB",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://wtr-lab.com",
+    "https://translate-pa.googleapis.com"
+  ],
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "wtrlab",
+      "name": "WTR-LAB",
+      "lang": "en",
+      "baseUrl": "https://wtr-lab.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Novel Finder" },
+        { "id": "latest", "name": "Recent" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://wtr-lab.com/en/serie-*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Sort",
+    "default": "latest",
+    "options": [
+      { "label": "Most Recent", "value": "latest" },
+      { "label": "Most Viewed", "value": "views" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Genres",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Detective", "value": "Detective" },
+      { "label": "Spin-Off", "value": "Spin-Off" },
+      { "label": "Mommy", "value": "Mommy" },
+      { "label": "Uncensored", "value": "Uncensored" },
+      { "label": "New", "value": "New" },
+      { "label": "In-Law", "value": "In-Law" },
+      { "label": "Cheating", "value": "Cheating" },
+      { "label": "MILF", "value": "MILF" },
+      { "label": "Harem", "value": "Harem" },
+      { "label": "College", "value": "College" },
+      { "label": "Business", "value": "Business" },
+      { "label": "Supernatural", "value": "Supernatural" },
+      { "label": "Thriller", "value": "Thriller" },
+      { "label": "Adventure", "value": "Adventure" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Drama", "value": "Drama" }
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hdoujin",
+  "name": "HDoujin",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hdoujin.org", "https://api.hdoujin.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "hdoujin-all", "name": "HDoujin", "lang": "all", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "hdoujin-en", "name": "HDoujin", "lang": "en", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "hdoujin-es", "name": "HDoujin", "lang": "es", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "hdoujin-ja", "name": "HDoujin", "lang": "ja", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "hdoujin-ko", "name": "HDoujin", "lang": "ko", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "hdoujin-zh", "name": "HDoujin", "lang": "zh", "baseUrl": "https://hdoujin.org", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } }
+  ]
+}

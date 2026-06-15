@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sundaywebevery",
+  "name": "Sunday Web Every",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.sunday-webry.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "sundaywebevery",
+      "name": "Sunday Web Every",
+      "lang": "ja",
+      "baseUrl": "https://www.sunday-webry.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [
+        { "pattern": "https://www.sunday-webry.com/episode/*", "kind": "chapter" },
+        { "pattern": "https://www.sunday-webry.com/series/*", "kind": "item" },
+        { "pattern": "https://www.sunday-webry.com/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

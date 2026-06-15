@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "leafstudio",
+  "name": "LeafStudio",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://leafstudio.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "leafstudio",
+      "name": "LeafStudio",
+      "lang": "en",
+      "baseUrl": "https://leafstudio.site",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

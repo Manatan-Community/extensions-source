@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animelek",
+  "name": "AnimeLek",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animelek.me"],
+  "sources": [
+    {
+      "id": "animelek",
+      "name": "AnimeLek",
+      "lang": "ar",
+      "baseUrl": "https://animelek.me",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [{ "pattern": "https://animelek.me/*", "kind": "item" }]
+    }
+  ]
+}

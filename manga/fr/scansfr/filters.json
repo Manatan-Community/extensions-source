@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "toggle", "id": "has_chapters", "name": "Avec chapitres uniquement", "default": false },
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Trier par",
+      "default": "popular",
+      "options": [
+        { "label": "Populaire", "value": "popular" },
+        { "label": "Nouveautes", "value": "latest" },
+        { "label": "Mis a jour", "value": "updated" },
+        { "label": "Note", "value": "rating" },
+        { "label": "A-Z", "value": "alphabetical" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Webtoon", "value": "webtoon" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Statut",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "En cours", "value": "ongoing" },
+        { "label": "Termine", "value": "completed" },
+        { "label": "En pause", "value": "hiatus" },
+        { "label": "Abandonne", "value": "cancelled" }
+      ]
+    },
+    { "type": "text", "id": "genre", "name": "Genre" }
+  ]
+}

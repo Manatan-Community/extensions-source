@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "orderby",
+      "name": "Ordem",
+      "default": "views",
+      "options": [
+        { "label": "Data de criacao", "value": "date" },
+        { "label": "Data de modificacao", "value": "modified" },
+        { "label": "Titulo", "value": "title" },
+        { "label": "Visualizacoes", "value": "views" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Direcao",
+      "default": "desc",
+      "options": [
+        { "label": "Descendente", "value": "desc" },
+        { "label": "Ascendente", "value": "asc" }
+      ]
+    },
+    {
+      "type": "multiselect",
+      "id": "situacao",
+      "name": "Status",
+      "options": [
+        { "label": "Ativo", "value": "3" },
+        { "label": "Cancelado", "value": "5" },
+        { "label": "Finalizado", "value": "4" },
+        { "label": "One-shot", "value": "6" }
+      ]
+    },
+    {
+      "type": "multiselect",
+      "id": "generos",
+      "name": "Generos",
+      "options": [
+        { "label": "4Koma", "value": "31" },
+        { "label": "Acao", "value": "24" },
+        { "label": "Adulto", "value": "84" },
+        { "label": "Artes Marciais", "value": "21" },
+        { "label": "Aventura", "value": "25" },
+        { "label": "Comedia", "value": "26" },
+        { "label": "Drama", "value": "22" },
+        { "label": "Ecchi", "value": "12" },
+        { "label": "Fantasia", "value": "23" },
+        { "label": "Romance", "value": "7" },
+        { "label": "Seinen", "value": "28" },
+        { "label": "Shoujo", "value": "55" },
+        { "label": "Shounen", "value": "54" },
+        { "label": "Sobrenatural", "value": "17" },
+        { "label": "Webtoon", "value": "62" }
+      ]
+    }
+  ]
+}

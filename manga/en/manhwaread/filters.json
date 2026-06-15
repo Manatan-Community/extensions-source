@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort by",
+      "default": "daily_top:desc",
+      "options": [
+        { "label": "Release", "value": "release:desc" },
+        { "label": "New", "value": "new:desc" },
+        { "label": "A-Z", "value": "alphabet:asc" },
+        { "label": "Rating", "value": "rating:desc" },
+        { "label": "Bookmarks", "value": "bookmarks:desc" },
+        { "label": "Chapters", "value": "chapters:desc" },
+        { "label": "Comments", "value": "comments:desc" },
+        { "label": "Daily Views", "value": "daily_top:desc" },
+        { "label": "Weekly Views", "value": "weekly_top:desc" },
+        { "label": "Monthly Views", "value": "monthly_top:desc" },
+        { "label": "Yearly Views", "value": "yearly_top:desc" },
+        { "label": "All Time Views", "value": "all_top:desc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "keyword_mode",
+      "name": "Keyword Mode",
+      "default": "contain",
+      "options": [
+        { "label": "Contain", "value": "contain" },
+        { "label": "Start With", "value": "start-with" },
+        { "label": "End With", "value": "end-with" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "s_mode",
+      "name": "Tags Search Mode",
+      "default": "AND",
+      "options": [
+        { "label": "AND", "value": "AND" },
+        { "label": "OR", "value": "OR" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All Statuses", "value": "" },
+        { "label": "Ongoing", "value": "ongoing" },
+        { "label": "Completed", "value": "completed" },
+        { "label": "Cancelled", "value": "canceled" },
+        { "label": "Hiatus", "value": "on-hold" },
+        { "label": "Incomplete", "value": "incomplete" }
+      ]
+    },
+    { "type": "text", "id": "artists", "name": "Artist IDs, comma separated" },
+    { "type": "text", "id": "authors", "name": "Author IDs, comma separated" },
+    { "type": "text", "id": "publishers", "name": "Publisher IDs, comma separated" },
+    { "type": "text", "id": "genres", "name": "Genre IDs, comma separated" },
+    { "type": "text", "id": "include_tags", "name": "Included tag IDs, comma separated" },
+    { "type": "text", "id": "exclude_tags", "name": "Excluded tag IDs, comma separated" },
+    { "type": "text", "id": "publish_year", "name": "Publish year" },
+    { "type": "text", "id": "chapters", "name": "Chapter numbers" }
+  ]
+}

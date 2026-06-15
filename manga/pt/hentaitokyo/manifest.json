@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hentaitokyo",
+  "name": "Hentai Tokyo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://hentaitokyo.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hentaitokyo",
+      "name": "Hentai Tokyo",
+      "lang": "pt-BR",
+      "baseUrl": "https://hentaitokyo.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hentaitokyo.net/*", "kind": "item" }
+      ]
+    }
+  ]
+}

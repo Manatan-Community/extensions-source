@@ -1,0 +1,13 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "default": "シリーズ一覧-連載中",
+    "options": [
+      { "label": "Serializing", "value": "シリーズ一覧-連載中" },
+      { "label": "Completed", "value": "完結作品" },
+      { "label": "Unicorn serializing", "value": "https://unicorn.comic-ryu.jp/シリーズ一覧-連載中" }
+    ]
+  }
+]

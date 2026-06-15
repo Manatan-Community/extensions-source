@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "search_type", "label": "Suche", "kind": "select", "defaultValue": "filme", "options": ["filme", "serien", "tv"] }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "weebcentral",
+  "name": "Weeb Central",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://weebcentral.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "weebcentral",
+      "name": "Weeb Central",
+      "lang": "en",
+      "baseUrl": "https://weebcentral.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://weebcentral.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

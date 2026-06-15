@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "panomic",
+  "name": "Panomic",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://panomic1.info"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "panomic",
+      "name": "Panomic",
+      "lang": "vi",
+      "baseUrl": "https://panomic1.info",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://panomic1.info/truyen/*", "kind": "item" },
+        { "pattern": "https://panomic1.info/*-chap-*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

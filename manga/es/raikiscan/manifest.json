@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "raikiscan",
+  "name": "Raiki Scan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://raikiscan.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "raikiscan",
+      "name": "Raiki Scan",
+      "lang": "es",
+      "baseUrl": "https://raikiscan.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://raikiscan.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "options": ["", "Ongoing", "Completed", "Hiatus"]
+  }
+]

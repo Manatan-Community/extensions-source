@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangacloud",
+  "name": "MangaCloud",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangacloud.org", "https://api.mangacloud.org", "https://pika.mangacloud.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangacloud",
+      "name": "MangaCloud",
+      "lang": "en",
+      "baseUrl": "https://mangacloud.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

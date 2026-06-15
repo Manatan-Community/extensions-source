@@ -1,0 +1,29 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Generos",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "Accion", "value": "peliculas/accion-p01" },
+      { "label": "Animacion", "value": "peliculas/animacion-p04" },
+      { "label": "Aventura", "value": "peliculas/aventura" },
+      { "label": "Belicas", "value": "peliculas/belica" },
+      { "label": "Ciencia ficcion", "value": "peliculas/ciencia-ficcion" },
+      { "label": "Comedia", "value": "peliculas/comedia" },
+      { "label": "Crimen", "value": "peliculas/crimen" },
+      { "label": "Documentales", "value": "peliculas/documental" },
+      { "label": "Drama", "value": "peliculas/drama" },
+      { "label": "Familia", "value": "peliculas/familia-p01" },
+      { "label": "Fantasia", "value": "peliculas/fantasia-p01" },
+      { "label": "Historia", "value": "peliculas/historia" },
+      { "label": "Misterio", "value": "peliculas/misterio" },
+      { "label": "Musica", "value": "peliculas/musica" },
+      { "label": "Navidad", "value": "peliculas/navidad" },
+      { "label": "Romance", "value": "peliculas/romance" },
+      { "label": "Suspenso", "value": "peliculas/suspense" },
+      { "label": "Terror", "value": "peliculas/terror" },
+      { "label": "Western", "value": "peliculas/western" }
+    ]
+  }
+]

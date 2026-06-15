@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "packageId": "vomic",
+  "name": "vomic",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": [
+      "http://www.vomicmh.com",
+      "http://api.vomicmh.com",
+      "http://119.23.243.52",
+      "https://cdn.vomicer.com",
+      "https://*.vomicer.com"
+    ],
+    "webview": false,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "vomic",
+      "name": "vomic",
+      "lang": "zh",
+      "baseUrl": "http://www.vomicmh.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "http://www.vomicmh.com/*", "kind": "item" },
+        { "pattern": "http://api.vomicmh.com/*", "kind": "item" },
+        { "pattern": "http://119.23.243.52/*", "kind": "item" }
+      ]
+    }
+  ]
+}

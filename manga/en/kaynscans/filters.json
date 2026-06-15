@@ -1,0 +1,33 @@
+[
+  {
+    "id": "status",
+    "type": "multiSelect",
+    "name": "Status",
+    "default": [],
+    "options": [
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Hiatus", "value": "hiatus" },
+      { "label": "Paused", "value": "paused" },
+      { "label": "Dropped", "value": "dropped" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "multiSelect",
+    "name": "Type",
+    "default": [],
+    "options": [
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhua", "value": "manhua" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Mangatoon", "value": "mangatoon" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "text",
+    "name": "Genre names",
+    "default": ""
+  }
+]

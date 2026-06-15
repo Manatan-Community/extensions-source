@@ -1,0 +1,14 @@
+{
+  "groups": [
+    { "id": "mode", "type": "select", "name": "Search mode", "options": ["Pools", "Tags"] },
+    { "id": "category", "type": "select", "name": "Pool category", "options": ["Any", "Series", "Collection"] },
+    { "id": "poolOrder", "type": "select", "name": "Pool order", "options": ["Recently updated", "Most posts", "Name", "Newest first"] },
+    { "id": "description", "type": "text", "name": "Description contains" },
+    { "id": "activeOnly", "type": "toggle", "name": "Active pools only" },
+    { "id": "tagOrder", "type": "select", "name": "Tag order", "options": ["Default", "Newest", "Oldest", "Score", "Hot", "Favorites", "Random"] },
+    { "id": "date", "type": "select", "name": "Date", "options": ["All time", "Day", "Week", "Month", "Year"] },
+    { "id": "tags", "type": "text", "name": "Space separated tags" },
+    { "id": "firstPage", "type": "toggle", "name": "Search first pages" },
+    { "id": "endPage", "type": "toggle", "name": "Search end pages" }
+  ]
+}

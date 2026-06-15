@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "area",
+      "type": "select",
+      "name": "The loai",
+      "options": [
+        { "label": "Tat ca", "value": "-1" },
+        { "label": "Manhua", "value": "1" },
+        { "label": "Manhwa", "value": "2" },
+        { "label": "Manga", "value": "3" }
+      ]
+    },
+    {
+      "id": "end",
+      "type": "select",
+      "name": "Tien do",
+      "options": [
+        { "label": "Tat ca", "value": "-1" },
+        { "label": "Dang tien hanh", "value": "2" },
+        { "label": "Da hoan tat", "value": "1" }
+      ]
+    },
+    {
+      "id": "tag",
+      "type": "select",
+      "name": "Tu khoa",
+      "options": [
+        { "label": "All", "value": "All" },
+        { "label": "Adult", "value": "Adult" },
+        { "label": "Action", "value": "Action" },
+        { "label": "Comedy", "value": "Comedy" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Fantasy", "value": "Fantasy" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Webtoon", "value": "Webtoon" },
+        { "label": "18", "value": "18" }
+      ]
+    }
+  ]
+}

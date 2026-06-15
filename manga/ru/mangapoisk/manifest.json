@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangapoisk",
+  "name": "MangaPoisk",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://mangap.ru"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "mangapoisk",
+    "name": "MangaPoisk",
+    "lang": "ru",
+    "baseUrl": "https://mangap.ru",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": false,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://mangap.ru/*", "kind": "item" }]
+  }]
+}

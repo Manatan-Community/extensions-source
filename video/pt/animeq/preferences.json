@@ -1,0 +1,14 @@
+[
+  { "id": "preferred_quality", "type": "select", "label": "Qualidade preferida", "default": "1080p", "options": [
+    { "label": "1080p", "value": "1080p" },
+    { "label": "720p", "value": "720p" },
+    { "label": "480p", "value": "480p" },
+    { "label": "360p", "value": "360p" }
+  ] },
+  { "id": "preferred_server", "type": "select", "label": "Servidor preferido", "default": "HD", "options": [
+    { "label": "FULLHD", "value": "FULLHD" },
+    { "label": "HD", "value": "HD" },
+    { "label": "SD", "value": "SD" },
+    { "label": "Blogger", "value": "Blogger" }
+  ] }
+]

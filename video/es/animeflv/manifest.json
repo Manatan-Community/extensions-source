@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeflv",
+  "name": "AnimeFLV",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://www4.animeflv.net",
+    "https://www3.animeflv.net"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "animeflv",
+      "name": "AnimeFLV",
+      "lang": "es",
+      "baseUrl": "https://www4.animeflv.net",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" },
+        { "id": "latest", "name": "Ultimos episodios" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www4.animeflv.net/anime/*", "kind": "item" },
+        { "pattern": "https://www4.animeflv.net/ver/*", "kind": "episode" }
+      ]
+    }
+  ]
+}

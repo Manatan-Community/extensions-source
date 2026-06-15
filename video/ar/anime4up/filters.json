@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "تصنيف الأنمي", "kind": "select", "defaultValue": "", "options": ["", "%d8%a3%d8%b7%d9%81%d8%a7%d9%84", "%d8%a3%d9%83%d8%b4%d9%86/", "%d8%a5%d9%8a%d8%aa%d8%b4%d9%8a/", "%d8%a7%d8%ab%d8%a7%d8%b1%d8%a9/", "%d8%af%d8%b1%d8%a7%d9%85%d8%a7/", "%d8%b1%d8%b9%d8%a8/", "%d8%b1%d9%88%d9%85%d8%a7%d9%86%d8%b3%d9%8a/", "%d9%83%d9%88%d9%85%d9%8a%d8%af%d9%8a/", "%d9%85%d8%ba%d8%a7%d9%85%d8%b1%d8%a7%d8%aa/"] },
+    { "id": "type", "label": "نوع الأنمي", "kind": "select", "defaultValue": "", "options": ["", "movie-3", "ona1", "ova1", "special1", "tv2"] },
+    { "id": "status", "label": "حالة الأنمي", "kind": "select", "defaultValue": "", "options": ["", "%d9%84%d9%85-%d9%8a%d8%b9%d8%b1%d8%b6-%d8%a8%d8%b9%d8%af", "complete", "%d9%8a%d8%b9%d8%b1%d8%b6-%d8%a7%d9%84%d8%a7%d9%86-1"] }
+  ]
+}

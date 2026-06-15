@@ -1,0 +1,14 @@
+[
+  {
+    "type": "switch",
+    "id": "hidePaidChapters",
+    "label": "Hide paid chapters",
+    "defaultValue": false
+  },
+  {
+    "type": "switch",
+    "id": "loggedInSession",
+    "label": "Logged-in session",
+    "defaultValue": true
+  }
+]

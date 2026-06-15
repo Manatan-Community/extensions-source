@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lasprofanadasscan",
+  "name": "Las Profanadas Scan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://capibaratraductor.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "lasprofanadasscan",
+      "name": "Las Profanadas Scan",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/profanadasscan",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

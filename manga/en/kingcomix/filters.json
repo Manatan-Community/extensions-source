@@ -1,0 +1,14 @@
+[
+  {
+    "id": "category",
+    "type": "text",
+    "label": "Category path",
+    "default": ""
+  },
+  {
+    "id": "tag",
+    "type": "text",
+    "label": "Tag path",
+    "default": ""
+  }
+]

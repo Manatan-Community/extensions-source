@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "xlecx",
+  "name": "XlecX",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://xlecx.one"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "xlecx",
+      "name": "XlecX",
+      "lang": "en",
+      "baseUrl": "https://xlecx.one",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

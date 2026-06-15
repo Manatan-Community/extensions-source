@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mehgazone",
+  "name": "Mehgazone",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://mehgazone.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mehgazone",
+      "name": "Mehgazone",
+      "lang": "en",
+      "baseUrl": "https://mehgazone.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Latest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "id": "category",
+      "type": "select",
+      "name": "Category",
+      "options": [
+        "",
+        "Ao-yem",
+        "Asia",
+        "Beauty",
+        "Bikini",
+        "China",
+        "Cosplay",
+        "Japan",
+        "Nude",
+        "Sexy",
+        "Top",
+        "Tattoo",
+        "Vietnam"
+      ]
+    }
+  ]
+}

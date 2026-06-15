@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "catmanhwas",
+  "name": "Catoons",
+  "version": "0.1.0",
+  "versionCode": 52,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://newcat1.xyz", "https://cdn.newcat1.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "catmanhwas",
+      "name": "Catoons",
+      "lang": "es",
+      "baseUrl": "https://newcat1.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

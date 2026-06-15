@@ -1,0 +1,5 @@
+{
+  "groups": [
+    { "id": "displayFullTitle", "type": "toggle", "name": "Display full title", "default": false }
+  ]
+}

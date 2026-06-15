@@ -1,0 +1,4 @@
+[
+  { "id": "imageServer", "type": "text", "label": "Image server", "default": "https://img.example" },
+  { "id": "preferArchivePages", "type": "toggle", "label": "Prefer archive pages", "default": false }
+]

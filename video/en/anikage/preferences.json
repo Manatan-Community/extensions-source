@@ -1,0 +1,10 @@
+[
+  { "id": "title_format", "type": "select", "label": "Preferred title style", "default": "english", "options": [{ "label": "English", "value": "english" }, { "label": "Romaji", "value": "romaji" }] },
+  { "id": "nsfw", "type": "toggle", "label": "Enable NSFW content", "default": false },
+  { "id": "private_api_key", "type": "text", "label": "API key", "default": "x9f2k7m4q1w8e3r6t5y0" },
+  { "id": "is_sub_or_dub", "type": "select", "label": "Sub or dub", "default": "sub", "options": [{ "label": "Sub", "value": "sub" }, { "label": "Dub", "value": "dub" }] },
+  { "id": "preferred_sub_source", "type": "select", "label": "Preferred sub server", "default": "uwu", "options": [{ "label": "uwu", "value": "uwu" }, { "label": "beep", "value": "beep" }, { "label": "mochi", "value": "mochi" }, { "label": "miku", "value": "miku" }, { "label": "mimi", "value": "mimi" }, { "label": "vee", "value": "vee" }, { "label": "kiwi", "value": "kiwi" }, { "label": "yuki", "value": "yuki" }, { "label": "kami", "value": "kami" }, { "label": "shiro", "value": "shiro" }, { "label": "wave", "value": "wave" }, { "label": "zaza", "value": "zaza" }] },
+  { "id": "preferred_dub_source", "type": "select", "label": "Preferred dub server", "default": "miku", "options": [{ "label": "mochi", "value": "mochi" }, { "label": "miku", "value": "miku" }, { "label": "mimi", "value": "mimi" }, { "label": "kiwi", "value": "kiwi" }, { "label": "yuki", "value": "yuki" }, { "label": "uwu", "value": "uwu" }, { "label": "kami", "value": "kami" }] },
+  { "id": "try_fallback_providers", "type": "toggle", "label": "Try fallback providers", "default": true },
+  { "id": "preferred_quality", "type": "select", "label": "Preferred quality", "default": "1080", "options": [{ "label": "1080p", "value": "1080" }, { "label": "720p", "value": "720" }, { "label": "480p", "value": "480" }, { "label": "360p", "value": "360" }] }
+]

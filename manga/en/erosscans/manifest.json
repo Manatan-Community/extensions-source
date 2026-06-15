@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "erosscans",
+  "name": "Scythe Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://scythescans.com", "https://i0.wp.com", "https://i1.wp.com", "https://i2.wp.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "erosscans",
+      "name": "Scythe Scans",
+      "lang": "en",
+      "baseUrl": "https://scythescans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

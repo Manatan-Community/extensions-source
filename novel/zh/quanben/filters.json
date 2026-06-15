@@ -1,0 +1,3 @@
+[
+  { "id": "genre", "type": "select", "label": "Category", "default": "all", "options": ["all", "xuanhuan", "dushi", "yanqing", "chuanyue", "qingchun", "xianxia", "lingyi", "xuanyi", "lishi", "junshi", "youxi", "jingji", "kehuan", "zhichang", "guanchang", "xianyan", "danmei", "qita"] }
+]

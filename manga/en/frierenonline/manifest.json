@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "frierenonline",
+  "name": "Frieren Online",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.frieren.online"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "frierenonline",
+      "name": "Frieren Online",
+      "lang": "en",
+      "baseUrl": "https://www.frieren.online",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

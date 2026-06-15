@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesdigital",
+  "name": "Animes Digital",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animesdigital.org", "https://sabornutritivo.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animesdigital",
+    "name": "Animes Digital",
+    "lang": "pt-BR",
+    "baseUrl": "https://animesdigital.org",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Home" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animesdigital.org/*", "kind": "item" }
+    ]
+  }]
+}

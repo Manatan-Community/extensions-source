@@ -1,0 +1,8 @@
+[
+  {
+    "key": "ignore_extras",
+    "type": "switch",
+    "title": "Ignore \"Extras\" folder",
+    "default": true
+  }
+]

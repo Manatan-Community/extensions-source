@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lonertranslations",
+  "name": "Loner Translations",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://loner-tl.blogspot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "lonertranslations",
+      "name": "Loner Translations",
+      "lang": "ar",
+      "baseUrl": "https://loner-tl.blogspot.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

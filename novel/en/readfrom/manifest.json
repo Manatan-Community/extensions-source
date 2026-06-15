@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "readfrom",
+  "name": "Read From Net",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://readfrom.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "readfrom",
+      "name": "Read From Net",
+      "lang": "en",
+      "baseUrl": "https://readfrom.net",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

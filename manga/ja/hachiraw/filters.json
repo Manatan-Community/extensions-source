@@ -1,0 +1,34 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "default": "views",
+    "options": [
+      { "label": "Latest", "value": "lastest" },
+      { "label": "A-Z", "value": "name" },
+      { "label": "Most viewed", "value": "views" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genre",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" },
+      { "label": "Action", "value": "action" },
+      { "label": "Adult", "value": "adult" },
+      { "label": "Comedy", "value": "comedy" },
+      { "label": "Drama", "value": "drama" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Romance", "value": "romance" },
+      { "label": "School Life", "value": "school-life" },
+      { "label": "Seinen", "value": "seinen" },
+      { "label": "Shounen", "value": "Shounen" },
+      { "label": "Slice of Life", "value": "slice-of-life" },
+      { "label": "Yaoi", "value": "Yaoi" },
+      { "label": "Yuri", "value": "yuri" }
+    ]
+  }
+]

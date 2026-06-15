@@ -1,0 +1,34 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "label": "Category",
+    "default": "day:mon",
+    "options": [
+      { "label": "月曜日", "value": "day:mon" },
+      { "label": "火曜日", "value": "day:tue" },
+      { "label": "水曜日", "value": "day:wed" },
+      { "label": "木曜日", "value": "day:thu" },
+      { "label": "金曜日", "value": "day:fri" },
+      { "label": "土曜日", "value": "day:sat" },
+      { "label": "日曜日", "value": "day:sun" },
+      { "label": "雑誌一覧", "value": "magazine:magazine_list" },
+      { "label": "少年", "value": "genre:1" },
+      { "label": "青年", "value": "genre:3" },
+      { "label": "少女", "value": "genre:2" },
+      { "label": "女性", "value": "genre:4" },
+      { "label": "バトル・アクション", "value": "genre:5" },
+      { "label": "ギャグ・コメディ", "value": "genre:6" },
+      { "label": "ミステリー・スリル・サスペンス", "value": "genre:7" },
+      { "label": "SF・ファンタジー", "value": "genre:8" },
+      { "label": "スポーツ・部活・青春", "value": "genre:9" },
+      { "label": "恋愛", "value": "genre:10" },
+      { "label": "ラブコメ", "value": "genre:11" },
+      { "label": "アングラ・ヤンキー", "value": "genre:12" },
+      { "label": "ホラー・オカルト", "value": "genre:13" },
+      { "label": "異世界・勇者・転生", "value": "genre:34" },
+      { "label": "ヒューマンドラマ", "value": "genre:189" },
+      { "label": "歴史・時代物", "value": "genre:190" }
+    ]
+  }
+]

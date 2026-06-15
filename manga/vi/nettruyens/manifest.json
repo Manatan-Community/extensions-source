@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "nettruyens",
+  "name": "NetTruyenS (unoriginal)",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://nettruyen10s.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "nettruyens",
+      "name": "NetTruyenS (unoriginal)",
+      "lang": "vi",
+      "baseUrl": "https://nettruyen10s.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://nettruyen10s.com/truyen-tranh/*", "kind": "item" }
+      ]
+    }
+  ]
+}

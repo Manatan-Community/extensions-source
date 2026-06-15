@@ -1,0 +1,63 @@
+[
+  {
+    "id": "type",
+    "type": "select",
+    "label": "Type",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Manga", "value": "MANGA" },
+      { "label": "Manhwa", "value": "MANHWA" },
+      { "label": "Manhua", "value": "MANHUA" },
+      { "label": "Novel", "value": "NOVEL" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Ongoing", "value": "ONGOING" },
+      { "label": "Complete", "value": "COMPLETE" },
+      { "label": "Hiatus", "value": "HIATUS" },
+      { "label": "Cancelled", "value": "CANCELLED" }
+    ]
+  },
+  {
+    "id": "nsfw",
+    "type": "select",
+    "label": "NSFW",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Hide", "value": "false" },
+      { "label": "Show", "value": "true" }
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "multiselect",
+    "label": "Genres",
+    "options": [
+      { "label": "Action", "value": "1" },
+      { "label": "Adventure", "value": "2" },
+      { "label": "Drama", "value": "3" },
+      { "label": "Supernatural", "value": "4" },
+      { "label": "Comedy", "value": "5" },
+      { "label": "Horror", "value": "20" },
+      { "label": "Fantasy", "value": "7" },
+      { "label": "Psychological", "value": "8" },
+      { "label": "Mystery", "value": "9" },
+      { "label": "Romance", "value": "13" },
+      { "label": "Sci-Fi", "value": "29" },
+      { "label": "Martial Arts", "value": "33" },
+      { "label": "Isekai", "value": "40" },
+      { "label": "Yuri", "value": "41" },
+      { "label": "Josei", "value": "46" },
+      { "label": "Seinen", "value": "50" },
+      { "label": "Shoujo", "value": "51" },
+      { "label": "Shounen", "value": "53" },
+      { "label": "Mature", "value": "52" },
+      { "label": "Long Strip", "value": "63" }
+    ]
+  }
+]

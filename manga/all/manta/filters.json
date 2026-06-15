@@ -1,0 +1,22 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "Category",
+    "default": "tagId=288",
+    "options": [
+      { "label": "New", "value": "tagId=288" },
+      { "label": "Unlimited", "value": "tagId=359" },
+      { "label": "Exclusive", "value": "tagId=289" },
+      { "label": "Completed", "value": "tagId=287" },
+      { "label": "Romantasy", "value": "tagId=355" },
+      { "label": "Romance", "value": "tagId=3" },
+      { "label": "Drama", "value": "tagId=2" },
+      { "label": "BL", "value": "tagId=16" },
+      { "label": "GL", "value": "tagId=17" },
+      { "label": "Comedy", "value": "tagId=13" },
+      { "label": "Historical", "value": "tagId=7" },
+      { "label": "Slice of life", "value": "tagId=11" }
+    ]
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Genre",
+      "default": "",
+      "options": [
+        { "label": "Any", "value": "" },
+        { "label": "Action", "value": "COMICSERIES_ACTION" },
+        { "label": "Comedy", "value": "COMICSERIES_COMEDY" },
+        { "label": "Drama", "value": "COMICSERIES_DRAMA" },
+        { "label": "Educational", "value": "COMICSERIES_EDUCATIONAL" },
+        { "label": "Fantasy", "value": "COMICSERIES_FANTASY" },
+        { "label": "Historical", "value": "COMICSERIES_HISTORICAL" },
+        { "label": "Horror", "value": "COMICSERIES_HORROR" },
+        { "label": "Inspirational", "value": "COMICSERIES_INSPIRATIONAL" },
+        { "label": "Mystery", "value": "COMICSERIES_MYSTERY" },
+        { "label": "Romance", "value": "COMICSERIES_ROMANCE" },
+        { "label": "Sci-Fi", "value": "COMICSERIES_SCI_FI" },
+        { "label": "Slice Of Life", "value": "COMICSERIES_SLICE_OF_LIFE" },
+        { "label": "Superhero", "value": "COMICSERIES_SUPERHERO" },
+        { "label": "Supernatural", "value": "COMICSERIES_SUPERNATURAL" },
+        { "label": "Wholesome", "value": "COMICSERIES_WHOLESOME" },
+        { "label": "BL", "value": "COMICSERIES_BL" },
+        { "label": "GL", "value": "COMICSERIES_GL" },
+        { "label": "LGBTQ+", "value": "COMICSERIES_LGBTQ" },
+        { "label": "Thriller", "value": "COMICSERIES_THRILLER" },
+        { "label": "Zombies", "value": "COMICSERIES_ZOMBIES" },
+        { "label": "Post Apocalyptic", "value": "COMICSERIES_POST_APOCALYPTIC" },
+        { "label": "School", "value": "COMICSERIES_SCHOOL" },
+        { "label": "Sports", "value": "COMICSERIES_SPORTS" },
+        { "label": "Animals", "value": "COMICSERIES_ANIMALS" },
+        { "label": "Gaming", "value": "COMICSERIES_GAMING" }
+      ]
+    },
+    { "type": "text", "id": "creator", "name": "Creator" },
+    { "type": "text", "id": "tags", "name": "Tags" }
+  ]
+}

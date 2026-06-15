@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "_smart_",
+      "options": [
+        { "label": "Smart", "value": "_smart_" },
+        { "label": "Best Match", "value": "" },
+        { "label": "Alphabetical", "value": "name" },
+        { "label": "Date Added", "value": "created_at" },
+        { "label": "Release Date", "value": "released_on" }
+      ]
+    },
+    { "type": "text", "id": "classes", "name": "Types, comma separated" },
+    { "type": "text", "id": "with", "name": "Included tag IDs, comma separated" },
+    { "type": "text", "id": "without", "name": "Excluded tag IDs, comma separated" }
+  ]
+}

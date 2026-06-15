@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sắp xếp",
+      "default": "latest",
+      "options": [
+        { "label": "Mới cập nhật", "value": "latest" },
+        { "label": "Xếp hạng", "value": "rating" },
+        { "label": "Số lượng bookmark", "value": "bookmark" },
+        { "label": "Tên A-Z", "value": "name_asc" },
+        { "label": "Tên Z-A", "value": "name_desc" }
+      ]
+    },
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Trạng thái",
+      "default": "all",
+      "options": [
+        { "label": "Tất cả", "value": "all" },
+        { "label": "Đang tiến hành", "value": "Đang" },
+        { "label": "Hoàn thành", "value": "Hoàn thành" }
+      ]
+    },
+    {
+      "id": "type",
+      "type": "select",
+      "name": "Loại truyện",
+      "default": "all",
+      "options": [
+        { "label": "Tất cả", "value": "all" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Manhwa", "value": "manhwa" }
+      ]
+    },
+    {
+      "id": "genres",
+      "type": "text",
+      "name": "Thể loại, comma separated",
+      "default": ""
+    }
+  ]
+}

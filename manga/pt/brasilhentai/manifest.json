@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "brasilhentai",
+  "name": "Brasil Hentai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://brasilhentai.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "brasilhentai",
+      "name": "Brasil Hentai",
+      "lang": "pt-BR",
+      "baseUrl": "https://brasilhentai.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://brasilhentai.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

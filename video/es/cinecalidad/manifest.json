@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cinecalidad",
+  "name": "CineCalidad",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.cinecalidad.ec"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "cinecalidad",
+    "name": "CineCalidad",
+    "lang": "es",
+    "baseUrl": "https://www.cinecalidad.ec",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Estrenos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.cinecalidad.ec/*", "kind": "item" }]
+  }]
+}

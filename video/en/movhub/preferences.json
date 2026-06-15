@@ -1,0 +1,5 @@
+[
+  { "id": "pref_quality_key", "type": "select", "label": "Preferred quality", "default": "1080p", "options": [{ "label": "1080p", "value": "1080p" }, { "label": "720p", "value": "720p" }, { "label": "480p", "value": "480p" }, { "label": "360p", "value": "360p" }] },
+  { "id": "pref_server_key", "type": "select", "label": "Preferred server", "default": "Server 1", "options": [{ "label": "Server 1", "value": "Server 1" }, { "label": "Server 2", "value": "Server 2" }] },
+  { "id": "pref_hoster_key", "type": "multiselect", "label": "Enable servers", "default": ["Server 1", "Server 2"], "options": [{ "label": "Server 1", "value": "Server 1" }, { "label": "Server 2", "value": "Server 2" }] }
+]

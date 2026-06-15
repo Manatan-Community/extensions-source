@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animebalkan",
+  "name": "AnimeBalkan",
+  "version": "0.1.0",
+  "versionCode": 8,
+  "lang": "sr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": ["https://animebalkan.org"],
+  "sources": [
+    {
+      "id": "animebalkan",
+      "name": "AnimeBalkan",
+      "lang": "sr",
+      "baseUrl": "https://animebalkan.org",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animebalkan.org/*", "kind": "item" }
+      ]
+    }
+  ]
+}

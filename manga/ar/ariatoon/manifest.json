@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ariatoon",
+  "name": "AriaToon",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://ariatoon.com",
+      "https://api.ariatoon.com"
+    ],
+    "webview": true,
+    "cookies": true,
+    "filters": true
+  },
+  "sources": [
+    {
+      "id": "ariatoon",
+      "name": "AriaToon",
+      "lang": "ar",
+      "baseUrl": "https://ariatoon.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

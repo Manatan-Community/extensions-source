@@ -1,0 +1,3 @@
+[
+  { "id": "pref_hide_nsfw", "type": "toggle", "label": "Hide NSFW", "default": false }
+]

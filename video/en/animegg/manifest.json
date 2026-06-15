@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animegg",
+  "name": "AnimeGG",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://www.animegg.org"
+  ],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animegg",
+      "name": "AnimeGG",
+      "lang": "en",
+      "baseUrl": "https://www.animegg.org",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.animegg.org/series/*", "kind": "item" },
+        { "pattern": "https://www.animegg.org/peliculas/*", "kind": "item" },
+        { "pattern": "https://www.animegg.org/*", "kind": "item" }
+      ]
+    }
+  ]
+}

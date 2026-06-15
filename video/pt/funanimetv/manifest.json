@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "funanimetv",
+  "name": "Fun Anime TV",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://betterclass.click"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "funanimetv",
+    "name": "Fun Anime TV",
+    "lang": "pt-BR",
+    "baseUrl": "https://betterclass.click",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Mais vistos" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://betterclass.click/*", "kind": "item" }]
+  }]
+}

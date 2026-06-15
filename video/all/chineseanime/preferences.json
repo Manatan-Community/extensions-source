@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "720p", "options": ["1080p", "720p", "480p", "360p"] },
+    { "id": "preferred_language", "label": "Preferred video language", "kind": "select", "defaultValue": "All Sub", "options": ["All Sub", "Arabic", "English", "Indonesia", "Persian", "Malay", "Polish", "Portuguese", "Spanish", "Thai", "Vietnamese"] }
+  ]
+}

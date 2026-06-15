@@ -1,0 +1,20 @@
+[
+  {
+    "id": "email",
+    "type": "string",
+    "label": "E-mail",
+    "default": ""
+  },
+  {
+    "id": "password",
+    "type": "password",
+    "label": "Senha",
+    "default": ""
+  },
+  {
+    "id": "bearerToken",
+    "type": "password",
+    "label": "Bearer token",
+    "default": ""
+  }
+]

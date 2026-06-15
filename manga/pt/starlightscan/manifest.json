@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "starlightscan",
+  "name": "Starlight Scan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://starligthscan.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "starlightscan",
+      "name": "Starlight Scan",
+      "lang": "pt-BR",
+      "baseUrl": "https://starligthscan.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Mangas" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://starligthscan.com/mangas/*", "kind": "item" }
+      ]
+    }
+  ]
+}

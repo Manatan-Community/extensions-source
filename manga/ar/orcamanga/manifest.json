@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "orcamanga",
+  "name": "Orca Manga",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.orcamanga.site"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "orcamanga",
+      "name": "Orca Manga",
+      "lang": "ar",
+      "baseUrl": "https://www.orcamanga.site",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

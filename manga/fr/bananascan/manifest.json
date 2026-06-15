@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "bananascan",
+  "name": "Harmony-Scan",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://harmony-scan.fr"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "bananascan",
+      "name": "Harmony-Scan",
+      "lang": "fr",
+      "baseUrl": "https://harmony-scan.fr",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernières sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://harmony-scan.fr/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

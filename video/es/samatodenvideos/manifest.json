@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "samatodenvideos",
+  "name": "Samato's Den: Videos",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://samatoden.blogspot.com"],
+  "sources": [{
+    "id": "samatodenvideos",
+    "name": "Samato's Den: Videos",
+    "lang": "es",
+    "baseUrl": "https://samatoden.blogspot.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": false,
+      "filters": false,
+      "preferences": false,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [{ "id": "popular", "name": "Videos" }],
+    "urlPatterns": [{ "pattern": "https://samatoden.blogspot.com/*", "kind": "item" }]
+  }]
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "type": "select",
+    "key": "preferred_quality",
+    "title": "Preferred quality",
+    "default": "1080p",
+    "options": [
+      { "label": "1080p", "value": "1080p" },
+      { "label": "720p", "value": "720p" },
+      { "label": "480p", "value": "480p" },
+      { "label": "360p", "value": "360p" },
+      { "label": "240p", "value": "240p" }
+    ]
+  },
+  {
+    "type": "multiselect",
+    "key": "pref_hoster_selection",
+    "title": "Enable/Disable hosts",
+    "default": ["Dood", "Voe", "Mp4upload", "VidBom", "Okru"],
+    "options": [
+      { "label": "Dood", "value": "Dood" },
+      { "label": "Voe", "value": "Voe" },
+      { "label": "Mp4upload", "value": "Mp4upload" },
+      { "label": "VidBom", "value": "VidBom" },
+      { "label": "Okru", "value": "Okru" }
+    ]
+  }
+]

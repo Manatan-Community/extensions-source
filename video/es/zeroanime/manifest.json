@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zeroanime",
+  "name": "zeroanime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "network": [
+    "https://www4.zeroanime.xyz",
+    "https://streamtape.com",
+    "https://filemoon.sx",
+    "https://mp4upload.com"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "zeroanime",
+    "name": "zeroanime",
+    "lang": "es",
+    "baseUrl": "https://www4.zeroanime.xyz",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Populares" },
+      { "id": "latest", "name": "Ultimos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www4.zeroanime.xyz/*", "kind": "item" }]
+  }]
+}

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "packageId": "huntersscans",
+  "name": "Hunters Scans",
+  "version": "0.1.0",
+  "versionCode": 10,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://readhunters.xyz"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "huntersscans",
+      "name": "Hunters Scans",
+      "lang": "pt-BR",
+      "baseUrl": "https://readhunters.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://readhunters.xyz/comics/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

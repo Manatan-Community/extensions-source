@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "faust",
+  "name": "Faust",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "uk",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://faust-web.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "faust",
+      "name": "Faust",
+      "lang": "uk",
+      "baseUrl": "https://faust-web.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://faust-web.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

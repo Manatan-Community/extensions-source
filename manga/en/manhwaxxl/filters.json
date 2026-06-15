@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Genre",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Action", "value": "action" },
+        { "label": "Adult", "value": "adult" },
+        { "label": "BL", "value": "bl" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Doujinshi", "value": "doujinshi" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "NTR", "value": "ntr" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Uncensore", "value": "uncensore" },
+        { "label": "Webtoon", "value": "webtoon" }
+      ]
+    }
+  ]
+}

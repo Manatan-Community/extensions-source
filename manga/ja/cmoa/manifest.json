@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cmoa",
+  "name": "C'moA",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.cmoa.jp", "https://cmoa.akamaized.net", "https://c-cmoa.akamaized.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "cmoa",
+      "name": "C'moA",
+      "lang": "ja",
+      "baseUrl": "https://www.cmoa.jp",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true, "processedPages": true },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.cmoa.jp/title/*", "kind": "item" },
+        { "pattern": "https://www.cmoa.jp/reader/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

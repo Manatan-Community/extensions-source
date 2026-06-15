@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sortBy",
+      "name": "Sort by",
+      "default": "popularity",
+      "options": [
+        { "label": "Popularity", "value": "popularity" },
+        { "label": "Latest", "value": "latest" },
+        { "label": "Rank", "value": "rank" },
+        { "label": "Score", "value": "score" },
+        { "label": "Follower", "value": "follower" },
+        { "label": "A to Z", "value": "name_asc" },
+        { "label": "Z to A", "value": "name_desc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All Status", "value": "" },
+        { "label": "Finished", "value": "finished" },
+        { "label": "On Hiatus", "value": "on_hiatus" },
+        { "label": "On Going", "value": "currently_publishing" },
+        { "label": "Discontinued", "value": "discontinued" }
+      ]
+    },
+    { "type": "text", "id": "genres", "name": "Genre slugs separated by underscores" }
+  ]
+}

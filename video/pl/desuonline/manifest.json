@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "desuonline",
+  "name": "desu-online",
+  "version": "0.1.0",
+  "versionCode": 11,
+  "lang": "pl",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://desu-online.pl"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "desuonline",
+    "name": "desu-online",
+    "lang": "pl",
+    "baseUrl": "https://desu-online.pl",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Popular" },
+      { "id": "latest", "name": "Najnowsze" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://desu-online.pl/*", "kind": "item" }
+    ]
+  }]
+}

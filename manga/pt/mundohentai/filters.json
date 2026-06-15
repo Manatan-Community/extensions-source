@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "tag",
+      "type": "select",
+      "name": "Tag",
+      "options": [
+        { "label": "-- Selecione --", "value": "" },
+        { "label": "Ahegao", "value": "ahegao" },
+        { "label": "Anal", "value": "anal" },
+        { "label": "Biquini", "value": "biquini" },
+        { "label": "Chubby", "value": "chubby" },
+        { "label": "Colegial", "value": "colegial" },
+        { "label": "Creampie", "value": "creampie" },
+        { "label": "Dark Skin", "value": "dark-skin" },
+        { "label": "Dupla Penetracao", "value": "dupla-penetracao" },
+        { "label": "Espanhola", "value": "espanhola" },
+        { "label": "Exibicionismo", "value": "exibicionismo" },
+        { "label": "Footjob", "value": "footjob" },
+        { "label": "Furry", "value": "furry" },
+        { "label": "Futanari", "value": "futanari" },
+        { "label": "Grupal", "value": "grupal" },
+        { "label": "Incesto", "value": "incesto" },
+        { "label": "Lingerie", "value": "lingerie" },
+        { "label": "MILF", "value": "milf" },
+        { "label": "Maio", "value": "maio" },
+        { "label": "Masturbacao", "value": "masturbacao" },
+        { "label": "Netorare", "value": "netorare" },
+        { "label": "Oral", "value": "oral" },
+        { "label": "Peitinhos", "value": "peitinhos" },
+        { "label": "Preservativo", "value": "preservativo" },
+        { "label": "Professora", "value": "professora" },
+        { "label": "Sex Toys", "value": "sex-toys" },
+        { "label": "Tentaculos", "value": "tentaculos" },
+        { "label": "Yaoi", "value": "yaoi" }
+      ]
+    }
+  ]
+}

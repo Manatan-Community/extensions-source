@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangaailand",
+  "name": "Manga Ai Land",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "ar",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manga-ai-land.blogspot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangaailand",
+      "name": "Manga Ai Land",
+      "lang": "ar",
+      "baseUrl": "https://manga-ai-land.blogspot.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      }
+    }
+  ]
+}

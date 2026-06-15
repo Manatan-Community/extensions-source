@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "packageId": "wolfdotcom",
+  "name": "Wolf.com",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "ko",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://wfwf393.com", "https://nicelink52.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "wolfdotcom-webtoon",
+      "name": "늑대닷컴 - 웹툰",
+      "lang": "ko",
+      "baseUrl": "https://wfwf393.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    },
+    {
+      "id": "wolfdotcom-comicbook",
+      "name": "늑대닷컴 - 만화책",
+      "lang": "ko",
+      "baseUrl": "https://wfwf393.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    },
+    {
+      "id": "wolfdotcom-phototoon",
+      "name": "늑대닷컴 - 포토툰",
+      "lang": "ko",
+      "baseUrl": "https://wfwf393.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": { "search": true, "latest": true, "filters": false, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }]
+    }
+  ]
+}

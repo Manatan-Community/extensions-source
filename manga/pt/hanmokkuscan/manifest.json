@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hanmokkuscan",
+  "name": "Hanmokku Scan",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://hanmokkuscan.blogspot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hanmokkuscan",
+      "name": "Hanmokku Scan",
+      "lang": "pt-BR",
+      "baseUrl": "https://hanmokkuscan.blogspot.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://hanmokkuscan.blogspot.com/p/*", "kind": "item" },
+        { "pattern": "https://hanmokkuscan.blogspot.com/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

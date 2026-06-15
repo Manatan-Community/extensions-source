@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kmanga",
+  "name": "K Manga",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://kmanga.kodansha.com", "https://api.kmanga.kodansha.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kmanga",
+      "name": "K Manga",
+      "lang": "en",
+      "baseUrl": "https://kmanga.kodansha.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true,
+        "processPageImage": true
+      }
+    }
+  ]
+}

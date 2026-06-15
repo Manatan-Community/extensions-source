@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tranh18",
+  "name": "Tranh18",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://tranh18.cc"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tranh18",
+      "name": "Tranh18",
+      "lang": "vi",
+      "baseUrl": "https://tranh18.cc",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://tranh18.cc/*", "kind": "item" }
+      ]
+    }
+  ]
+}

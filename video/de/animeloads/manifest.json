@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeloads",
+  "name": "Anime-Loads",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "de",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.anime-loads.org", "https://check.ddos-guard.net"],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animeloads",
+      "name": "Anime-Loads",
+      "lang": "de",
+      "baseUrl": "https://www.anime-loads.org",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Anime Serien" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.anime-loads.org/*", "kind": "item" }
+      ]
+    }
+  ]
+}

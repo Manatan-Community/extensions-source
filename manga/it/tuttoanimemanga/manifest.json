@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tuttoanimemanga",
+  "name": "TuttoAnimeManga",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "it",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://tuttoanimemanga.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tuttoanimemanga",
+      "name": "TuttoAnimeManga",
+      "lang": "it",
+      "baseUrl": "https://tuttoanimemanga.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

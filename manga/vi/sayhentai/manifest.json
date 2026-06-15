@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sayhentai",
+  "name": "SayHentai",
+  "version": "0.1.0",
+  "versionCode": 17,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://sayhentai.sh"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "sayhentai",
+      "name": "SayHentai",
+      "lang": "vi",
+      "baseUrl": "https://sayhentai.sh",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://sayhentai.sh/truyen/*", "kind": "item" },
+        { "pattern": "https://sayhentai.sh/*-chap-*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "showLockedChapters", "label": "Show paid chapters", "kind": "toggle", "defaultValue": "true" },
+    { "id": "showLoginRequiredChapters", "label": "Show login-required free chapters", "kind": "toggle", "defaultValue": "true" }
+  ]
+}

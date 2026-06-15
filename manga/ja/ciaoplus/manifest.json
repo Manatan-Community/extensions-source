@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ciaoplus",
+  "name": "Ciao Plus",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://ciao.shogakukan.co.jp", "https://api.ciao.shogakukan.co.jp"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ciaoplus",
+      "name": "Ciao Plus",
+      "lang": "ja",
+      "baseUrl": "https://ciao.shogakukan.co.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://ciao.shogakukan.co.jp/comics/title/*", "kind": "item" },
+        { "pattern": "https://ciao.shogakukan.co.jp/comics/title/*/episode/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "muitohentai",
+  "name": "Muito Hentai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.muitohentai.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "muitohentai",
+      "name": "Muito Hentai",
+      "lang": "pt-BR",
+      "baseUrl": "https://www.muitohentai.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Mangas" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.muitohentai.com/manga/*", "kind": "item" },
+        { "pattern": "https://www.muitohentai.com/hentai/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

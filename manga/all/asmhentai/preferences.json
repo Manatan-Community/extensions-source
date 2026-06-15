@@ -1,0 +1,10 @@
+{
+  "items": [
+    {
+      "id": "shortTitle",
+      "type": "toggle",
+      "name": "Display short titles",
+      "default": false
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "latest",
+      "options": [
+        { "label": "Latest", "value": "latest" },
+        { "label": "Popular", "value": "popular" },
+        { "label": "Newest", "value": "newest" },
+        { "label": "Alphabetical", "value": "alphabetical" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Ongoing", "value": "ONGOING" },
+        { "label": "Completed", "value": "COMPLETED" },
+        { "label": "Hiatus", "value": "HIATUS" },
+        { "label": "Dropped", "value": "DROPPED" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Manga", "value": "MANGA" },
+        { "label": "Manhwa", "value": "MANHWA" },
+        { "label": "Manhua", "value": "MANHUA" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "genre",
+      "name": "Genre",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "Adventure (Alt)", "value": "adventure-589" },
+        { "label": "Live", "value": "live" },
+        { "label": "Acting", "value": "acting" },
+        { "label": "Action", "value": "action" },
+        { "label": "Action (Alt)", "value": "action-582" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Cooking", "value": "cooking" },
+        { "label": "Crazy MC", "value": "crazy-mc" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "Fantasy (Alt)", "value": "fantasy-747" },
+        { "label": "Fight", "value": "fight" },
+        { "label": "Gender Bender", "value": "gender-bender" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Horror", "value": "horror" },
+        { "label": "Josei", "value": "josei" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Martial Arts", "value": "martial-arts" },
+        { "label": "Mature", "value": "mature" },
+        { "label": "Mecha", "value": "mecha" },
+        { "label": "Murim", "value": "murim" },
+        { "label": "Mystery", "value": "mystery" },
+        { "label": "Psychological", "value": "psychological" },
+        { "label": "Reincarnation", "value": "reincarnation" },
+        { "label": "Revenge", "value": "revenge" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "School Life", "value": "school-life" },
+        { "label": "Sci-Fi", "value": "sci-fi" },
+        { "label": "Seinen", "value": "seinen" },
+        { "label": "Shounen", "value": "shounen" },
+        { "label": "Slice of Life", "value": "slice-of-life" },
+        { "label": "Sports", "value": "sports" },
+        { "label": "Supernatural", "value": "supernatural" },
+        { "label": "Tragedy", "value": "tragedy" },
+        { "label": "Virtual Reality", "value": "virtual-reality" },
+        { "label": "Apocalypse", "value": "apocalypce" },
+        { "label": "Cultivation", "value": "cultivation" },
+        { "label": "Hidden", "value": "hidden" },
+        { "label": "Magic", "value": "magic" },
+        { "label": "Medieval Area", "value": "medieval-area" },
+        { "label": "Munchkin", "value": "munchkin" },
+        { "label": "Myth", "value": "myth" },
+        { "label": "Politics", "value": "politics" },
+        { "label": "Superpower", "value": "superpower" },
+        { "label": "System", "value": "system" },
+        { "label": "Taming", "value": "taming" },
+        { "label": "Tower", "value": "tower" },
+        { "label": "Urban", "value": "urban" },
+        { "label": "Vampires", "value": "vampiers" },
+        { "label": "Wuxia", "value": "wuxia" }
+      ]
+    }
+  ]
+}

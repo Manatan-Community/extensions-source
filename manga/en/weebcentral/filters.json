@@ -1,0 +1,61 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "label": "Sort",
+    "options": ["Best Match", "Alphabet", "Popularity", "Subscribers", "Recently Added", "Latest Updates"]
+  },
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Sort Order",
+    "options": ["Descending", "Ascending"]
+  },
+  {
+    "id": "official",
+    "type": "select",
+    "label": "Official Translation",
+    "options": ["Any", "True", "False"]
+  },
+  {
+    "id": "anime",
+    "type": "select",
+    "label": "Anime Adaptation",
+    "options": ["Any", "True", "False"]
+  },
+  {
+    "id": "adult",
+    "type": "select",
+    "label": "Adult Content",
+    "options": ["Any", "True", "False"]
+  },
+  {
+    "id": "author",
+    "type": "text",
+    "label": "Author"
+  },
+  {
+    "id": "included_status",
+    "type": "multiselect",
+    "label": "Series Status",
+    "options": ["Ongoing", "Complete", "Hiatus", "Canceled"]
+  },
+  {
+    "id": "included_type",
+    "type": "multiselect",
+    "label": "Series Type",
+    "options": ["Manga", "Manhwa", "Manhua", "OEL"]
+  },
+  {
+    "id": "included_tag",
+    "type": "multiselect",
+    "label": "Included Tags",
+    "options": ["Action", "Adult", "Adventure", "Comedy", "Drama", "Ecchi", "Fantasy", "Horror", "Isekai", "Josei", "Martial Arts", "Mature", "Mystery", "Romance", "School Life", "Sci-fi", "Seinen", "Shoujo", "Shounen", "Slice of Life", "Smut", "Supernatural", "Yaoi", "Yuri"]
+  },
+  {
+    "id": "excluded_tag",
+    "type": "multiselect",
+    "label": "Excluded Tags",
+    "options": ["Action", "Adult", "Adventure", "Comedy", "Drama", "Ecchi", "Fantasy", "Horror", "Isekai", "Josei", "Martial Arts", "Mature", "Mystery", "Romance", "School Life", "Sci-fi", "Seinen", "Shoujo", "Shounen", "Slice of Life", "Smut", "Supernatural", "Yaoi", "Yuri"]
+  }
+]

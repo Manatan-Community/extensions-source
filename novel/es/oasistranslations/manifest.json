@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "oasistranslations",
+  "name": "Oasis Translations",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "network": ["https://oasistranslations.wordpress.com"],
+  "sources": [
+    {
+      "id": "oasistranslations",
+      "name": "Oasis Translations",
+      "lang": "es",
+      "baseUrl": "https://oasistranslations.wordpress.com/",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [{ "pattern": "https://oasistranslations.wordpress.com/*", "kind": "item" }]
+    }
+  ]
+}

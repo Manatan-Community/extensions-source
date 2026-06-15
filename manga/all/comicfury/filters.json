@@ -1,0 +1,12 @@
+{
+  "groups": [
+    { "id": "tags", "type": "text", "name": "Tags" },
+    { "id": "sort", "type": "select", "name": "Sort By", "options": ["Relevance", "Popularity", "Last Update"] },
+    { "id": "lastupdate", "type": "select", "name": "Last Updated", "options": ["All Time", "This Week", "This Month", "This Year", "Completed Only"] },
+    { "id": "completed", "type": "toggle", "name": "Comic Completed" },
+    { "id": "fv", "type": "select", "name": "Violence", "options": ["None / Minimal", "Violent Content", "Gore / Graphic"] },
+    { "id": "fn", "type": "select", "name": "Frontal Nudity", "options": ["None", "Occasional", "Frequent"] },
+    { "id": "fl", "type": "select", "name": "Strong Language", "options": ["None", "Occasional", "Frequent"] },
+    { "id": "fs", "type": "select", "name": "Sexual Content", "options": ["No Sexual Content", "Sexual Situations", "Strong Sexual Themes"] }
+  ]
+}

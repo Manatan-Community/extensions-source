@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "select",
+      "id": "latestDay",
+      "name": "Latest day",
+      "default": "monday",
+      "options": [
+        { "label": "Sunday", "value": "sunday" },
+        { "label": "Monday", "value": "monday" },
+        { "label": "Tuesday", "value": "tuesday" },
+        { "label": "Wednesday", "value": "wednesday" },
+        { "label": "Thursday", "value": "thursday" },
+        { "label": "Friday", "value": "friday" },
+        { "label": "Saturday", "value": "saturday" }
+      ]
+    },
+    { "type": "switch", "id": "showAuthorsNotes", "name": "Show author's notes", "default": false },
+    { "type": "switch", "id": "useMaxQuality", "name": "Use maximum quality images", "default": false },
+    { "type": "switch", "id": "useSequentialNumbering", "name": "Use sequential chapter numbering", "default": false }
+  ]
+}

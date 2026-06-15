@@ -1,0 +1,23 @@
+[
+  {
+    "key": "preferred_domain",
+    "title": "Domaine prefere",
+    "type": "select",
+    "default": "https://empire-stream.net",
+    "values": ["https://empire-stream.net", "https://empire-streaming.app"]
+  },
+  {
+    "key": "preferred_hoster",
+    "title": "Hebergeur standard",
+    "type": "select",
+    "default": "Voe",
+    "values": ["Voe", "Dood", "Eplayer"]
+  },
+  {
+    "key": "preferred_quality",
+    "title": "Qualite preferee",
+    "type": "select",
+    "default": "720p",
+    "values": ["1080p", "800p", "720p", "480p"]
+  }
+]

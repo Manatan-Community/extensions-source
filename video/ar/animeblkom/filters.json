@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "type", "label": "نوع الأنمي", "kind": "select", "defaultValue": "", "options": ["", "anime-list", "series-list", "movie-list", "ova-list", "ona-list", "special-list"] }
+  ]
+}

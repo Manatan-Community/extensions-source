@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "arabanime",
+  "name": "ArabAnime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ar",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.arabanime.net"],
+  "sources": [
+    {
+      "id": "arabanime",
+      "name": "ArabAnime",
+      "lang": "ar",
+      "baseUrl": "https://www.arabanime.net",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.arabanime.net/show-*", "kind": "item" },
+        { "pattern": "https://www.arabanime.net/watch-*", "kind": "episode" }
+      ]
+    }
+  ]
+}

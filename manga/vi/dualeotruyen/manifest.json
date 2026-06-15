@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dualeotruyen",
+  "name": "Dưa Leo Truyện",
+  "version": "0.1.0",
+  "versionCode": 19,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://dualeotruyenpy.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "dualeotruyen",
+      "name": "Dưa Leo Truyện",
+      "lang": "vi",
+      "baseUrl": "https://dualeotruyenpy.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://dualeotruyenpy.com/truyen-tranh/*", "kind": "item" },
+        { "pattern": "https://dualeotruyenpy.com/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

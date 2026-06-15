@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangaforfree",
+  "name": "MangaForFree.net",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangaforfree.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "mangaforfree-en", "name": "MangaForFree.net", "lang": "en", "baseUrl": "https://mangaforfree.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "mangaforfree-ko", "name": "MangaForFree.net", "lang": "ko", "baseUrl": "https://mangaforfree.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "mangaforfree-all", "name": "MangaForFree.net", "lang": "all", "baseUrl": "https://mangaforfree.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

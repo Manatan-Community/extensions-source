@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packageId": "misskon",
+  "name": "MissKon",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://misskon.com"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "misskon", "name": "MissKon", "lang": "all", "baseUrl": "https://misskon.com", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

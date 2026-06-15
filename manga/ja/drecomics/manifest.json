@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "drecomics",
+  "name": "DreComi+",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://drecomi-plus.jp", "https://api.drecomi-plus.jp", "https://cdn.drecomi-plus.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "drecomics",
+      "name": "DreComi+",
+      "lang": "ja",
+      "baseUrl": "https://drecomi-plus.jp",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://drecomi-plus.jp/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

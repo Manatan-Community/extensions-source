@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mitaku",
+  "name": "Mitaku",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mitaku.net"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "mitaku", "name": "Mitaku", "lang": "all", "baseUrl": "https://mitaku.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": false, "filters": true, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

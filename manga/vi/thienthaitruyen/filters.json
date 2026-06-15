@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "The loai",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Adult", "value": "adult" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Hentai", "value": "hentai" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Smut", "value": "smut" },
+        { "label": "Webtoon", "value": "webtoon" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Manga", "value": "manga" }
+      ]
+    },
+    {
+      "id": "status",
+      "type": "select",
+      "name": "Trang thai",
+      "options": [
+        { "label": "All", "value": "all" },
+        { "label": "Hoan thanh", "value": "completed" },
+        { "label": "Dang ra", "value": "ongoing" },
+        { "label": "Dang cho xu ly", "value": "pending" }
+      ]
+    },
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sap xep",
+      "options": [
+        { "label": "Cap nhat gan day", "value": "latest" },
+        { "label": "Xep hang", "value": "rating" },
+        { "label": "Bookmark", "value": "bookmark" },
+        { "label": "Ten A-Z", "value": "name_asc" },
+        { "label": "Ten Z-A", "value": "name_desc" }
+      ]
+    }
+  ]
+}

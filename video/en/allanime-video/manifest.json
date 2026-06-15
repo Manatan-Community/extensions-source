@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "allanime-video",
+  "name": "AllAnime",
+  "version": "0.1.0",
+  "versionCode": 55,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://allmanga.to",
+    "https://api.allanime.day",
+    "https://youtu-chan.com",
+    "https://blog.allanime.day"
+  ],
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "allanime-video",
+      "name": "AllAnime",
+      "lang": "en",
+      "baseUrl": "https://allmanga.to/anime",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://allmanga.to/bangumi/*", "kind": "item" }
+      ]
+    }
+  ]
+}

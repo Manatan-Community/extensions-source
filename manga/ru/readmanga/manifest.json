@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "readmanga",
+  "name": "ReadManga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://a.zazaza.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "readmanga",
+    "name": "ReadManga",
+    "lang": "ru",
+    "baseUrl": "https://a.zazaza.me",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://a.zazaza.me/*", "kind": "item" }]
+  }]
+}

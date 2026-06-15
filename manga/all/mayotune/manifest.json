@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mayotune",
+  "name": "MayoTune",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mayochuu.xyz"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    { "id": "mayotune-en", "name": "MayoTune", "lang": "en", "baseUrl": "https://mayochuu.xyz", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "mayotune-ja", "name": "MayoTune", "lang": "ja", "baseUrl": "https://mayochuu.xyz", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

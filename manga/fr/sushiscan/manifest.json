@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sushiscan",
+  "name": "Sushi-Scan",
+  "version": "0.1.0",
+  "versionCode": 16,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://sushiscan.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "sushiscan",
+      "name": "Sushi-Scan",
+      "lang": "fr",
+      "baseUrl": "https://sushiscan.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populaires" },
+        { "id": "latest", "name": "Dernières sorties" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://sushiscan.net/catalogue/*", "kind": "item" }
+      ]
+    }
+  ]
+}

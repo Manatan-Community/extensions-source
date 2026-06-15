@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "packageId": "thelibraryofohara",
+  "name": "The Library of Ohara",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://thelibraryofohara.com"],
+    "cookies": true
+  },
+  "sources": [
+    { "id": "thelibraryofohara-id", "name": "The Library of Ohara", "lang": "id", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "thelibraryofohara-en", "name": "The Library of Ohara", "lang": "en", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "thelibraryofohara-es", "name": "The Library of Ohara", "lang": "es", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "thelibraryofohara-it", "name": "The Library of Ohara", "lang": "it", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "thelibraryofohara-ar", "name": "The Library of Ohara", "lang": "ar", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } },
+    { "id": "thelibraryofohara-fr", "name": "The Library of Ohara", "lang": "fr", "baseUrl": "https://thelibraryofohara.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": false, "filters": false, "preferences": false, "home": true, "urlResolution": true } }
+  ]
+}

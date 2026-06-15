@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "wnacg",
+  "name": "紳士漫畫",
+  "version": "0.1.0",
+  "versionCode": 23,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.wn05.ru", "https://www.wn04.ru", "https://www.wnacg05.cc", "http://*", "https://*"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "wnacg",
+      "name": "紳士漫畫",
+      "lang": "zh",
+      "baseUrl": "https://www.wn05.ru",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.wn05.ru/photos-index-aid-*.html", "kind": "item" },
+        { "pattern": "https://www.wn04.ru/photos-index-aid-*.html", "kind": "item" },
+        { "pattern": "https://www.wnacg05.cc/photos-index-aid-*.html", "kind": "item" }
+      ]
+    }
+  ]
+}

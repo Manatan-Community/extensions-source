@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "otascans",
+  "name": "Ota Scans",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://yurilabs.my.id"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "otascans",
+      "name": "Ota Scans",
+      "lang": "id",
+      "baseUrl": "https://yurilabs.my.id",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://yurilabs.my.id/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

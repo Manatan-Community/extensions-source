@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "language", "label": "Language", "kind": "select", "defaultValue": "en", "options": ["en", "zh", "ja"] },
+    { "id": "sort_by", "label": "Popular sort", "kind": "select", "defaultValue": "video_viewed_week", "options": ["video_viewed_month", "video_viewed_week", "video_viewed_today", "video_viewed"] }
+  ]
+}

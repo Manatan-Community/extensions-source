@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "senkuro",
+  "name": "Senkuro",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://senkuro.me", "https://senkuro.com", "https://api.senkuro.me", "https://api.senkuro.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "senkuro",
+    "name": "Senkuro",
+    "lang": "ru",
+    "baseUrl": "https://senkuro.com",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": false,
+      "filters": false,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [{ "id": "popular", "name": "Популярное" }],
+    "urlPatterns": [
+      { "pattern": "https://senkuro.me/manga/*", "kind": "item" },
+      { "pattern": "https://senkuro.com/manga/*", "kind": "item" }
+    ]
+  }]
+}

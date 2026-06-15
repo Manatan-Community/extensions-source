@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "miaoqu",
+  "name": "喵趣漫画",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://www.miaoqumh.org", "https://m.miaoqumh.org"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "miaoqu",
+      "name": "喵趣漫画",
+      "lang": "zh",
+      "baseUrl": "https://www.miaoqumh.org",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.miaoqumh.org/*", "kind": "item" },
+        { "pattern": "https://m.miaoqumh.org/*", "kind": "item" }
+      ]
+    }
+  ]
+}

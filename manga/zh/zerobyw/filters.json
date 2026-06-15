@@ -1,0 +1,46 @@
+[
+  {
+    "id": "category_id",
+    "type": "select",
+    "name": "分类",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "卖肉", "value": "1" },
+      { "label": "战斗", "value": "15" },
+      { "label": "日常", "value": "32" },
+      { "label": "后宫", "value": "6" },
+      { "label": "搞笑", "value": "13" },
+      { "label": "爱情", "value": "31" },
+      { "label": "冒险", "value": "22" },
+      { "label": "奇幻", "value": "23" },
+      { "label": "体育", "value": "29" },
+      { "label": "机战", "value": "34" },
+      { "label": "职业", "value": "35" },
+      { "label": "汉化组跟上，不再更新", "value": "36" }
+    ]
+  },
+  {
+    "id": "jindu",
+    "type": "select",
+    "name": "进度",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "连载中", "value": "0" },
+      { "label": "已完结", "value": "1" }
+    ]
+  },
+  {
+    "id": "shuxing",
+    "type": "select",
+    "name": "性质",
+    "default": "",
+    "options": [
+      { "label": "全部", "value": "" },
+      { "label": "一半中文一半生肉", "value": "一半中文一半生肉" },
+      { "label": "全生肉", "value": "全生肉" },
+      { "label": "全中文", "value": "全中文" }
+    ]
+  }
+]

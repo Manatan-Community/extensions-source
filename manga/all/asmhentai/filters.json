@@ -1,0 +1,21 @@
+{
+  "hint": "Separate search terms with commas.",
+  "groups": [
+    {
+      "id": "sort",
+      "type": "select",
+      "name": "Sort By",
+      "options": ["Popular", "Latest"]
+    },
+    {
+      "id": "speechless",
+      "type": "toggle",
+      "name": "Show speechless items only"
+    },
+    {
+      "id": "random",
+      "type": "toggle",
+      "name": "Random gallery"
+    }
+  ]
+}

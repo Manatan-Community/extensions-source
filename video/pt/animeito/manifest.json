@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeito",
+  "name": "Animeito",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animesonline.io"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animeito",
+    "name": "Animeito",
+    "lang": "pt-BR",
+    "baseUrl": "https://animesonline.io",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Popular" },
+      { "id": "latest", "name": "Atualizados" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animesonline.io/*", "kind": "item" }
+    ]
+  }]
+}

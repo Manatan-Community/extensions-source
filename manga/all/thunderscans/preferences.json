@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "toggle",
+      "id": "hidePaidChapters",
+      "name": "Hide paid chapters",
+      "default": true
+    }
+  ]
+}

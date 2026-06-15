@@ -1,0 +1,14 @@
+[
+  {
+    "id": "languages",
+    "type": "text",
+    "title": "Language keys",
+    "default": "en"
+  },
+  {
+    "id": "highResolution",
+    "type": "toggle",
+    "title": "High resolution images",
+    "default": false
+  }
+]

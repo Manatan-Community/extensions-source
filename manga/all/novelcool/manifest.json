@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "novelcool",
+  "name": "NovelCool",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://www.novelcool.com",
+      "https://es.novelcool.com",
+      "https://de.novelcool.com",
+      "https://ru.novelcool.com",
+      "https://it.novelcool.com",
+      "https://br.novelcool.com",
+      "https://fr.novelcool.com",
+      "https://api.novelcool.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "novelcool-en", "name": "NovelCool", "lang": "en", "baseUrl": "https://www.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-es", "name": "NovelCool", "lang": "es", "baseUrl": "https://es.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-de", "name": "NovelCool", "lang": "de", "baseUrl": "https://de.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-ru", "name": "NovelCool", "lang": "ru", "baseUrl": "https://ru.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-it", "name": "NovelCool", "lang": "it", "baseUrl": "https://it.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-pt-br", "name": "NovelCool", "lang": "pt-BR", "baseUrl": "https://br.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } },
+    { "id": "novelcool-fr", "name": "NovelCool", "lang": "fr", "baseUrl": "https://fr.novelcool.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": false, "urlResolution": true } }
+  ]
+}

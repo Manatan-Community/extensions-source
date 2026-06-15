@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kakuyomu",
+  "name": "Kakuyomu",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "novel",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://kakuyomu.jp"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "kakuyomu",
+      "name": "Kakuyomu",
+      "lang": "ja",
+      "baseUrl": "https://kakuyomu.jp",
+      "contentType": "novel",
+      "contentRating": "safe",
+      "capabilities": {
+        "filters": true,
+        "preferences": false
+      }
+    }
+  ]
+}

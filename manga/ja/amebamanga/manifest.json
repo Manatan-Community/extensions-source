@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "amebamanga",
+  "name": "Ameba Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://dokusho-ojikan.jp", "https://api.dokusho-ojikan.jp"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "amebamanga",
+      "name": "Ameba Manga",
+      "lang": "ja",
+      "baseUrl": "https://dokusho-ojikan.jp",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://dokusho-ojikan.jp/series_list/series_id=*", "kind": "item" },
+        { "pattern": "https://dokusho-ojikan.jp/reader/index.html?cid=*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

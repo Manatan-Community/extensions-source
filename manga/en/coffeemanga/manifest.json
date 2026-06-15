@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "coffeemanga",
+  "name": "Coffee Manga",
+  "version": "0.1.0",
+  "versionCode": 5,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://coffeemanga.ink"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "coffeemanga",
+      "name": "Coffee Manga",
+      "lang": "en",
+      "baseUrl": "https://coffeemanga.ink",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

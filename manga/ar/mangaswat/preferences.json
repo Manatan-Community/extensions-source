@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "preferences": [
+    {
+      "type": "text",
+      "id": "overrideBaseUrl",
+      "name": "Override base URL",
+      "default": "https://meshmanga.com"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "searchType",
+      "name": "Search by",
+      "default": "title",
+      "options": [
+        { "label": "Title", "value": "title" },
+        { "label": "Artist", "value": "artist" },
+        { "label": "Category", "value": "category" },
+        { "label": "Translator", "value": "translator" }
+      ]
+    }
+  ]
+}

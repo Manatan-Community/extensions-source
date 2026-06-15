@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhastro",
+  "name": "Manhastro",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://manhastro.net",
+      "https://api2.manhastro.net",
+      "https://img.manhastro.net",
+      "https://capa.manhastro.net",
+      "https://temp2.manhastro.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhastro",
+      "name": "Manhastro",
+      "lang": "pt-BR",
+      "baseUrl": "https://manhastro.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manhastro.net/manga/*", "kind": "item" },
+        { "pattern": "https://manhastro.net/capitulo/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Ordenar por",
+      "default": "updated_at",
+      "options": [
+        { "label": "Actualización", "value": "updated_at" },
+        { "label": "Nombre", "value": "name" },
+        { "label": "Vistas", "value": "views" },
+        { "label": "Creación", "value": "created_at" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "name": "Dirección",
+      "default": "desc",
+      "options": [
+        { "label": "Descendente", "value": "desc" },
+        { "label": "Ascendente", "value": "asc" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Estado",
+      "default": "0",
+      "options": [
+        { "label": "Todos", "value": "0" },
+        { "label": "En curso", "value": "1" },
+        { "label": "Pausado", "value": "2" },
+        { "label": "Abandonado", "value": "3" },
+        { "label": "Completado", "value": "4" }
+      ]
+    }
+  ]
+}

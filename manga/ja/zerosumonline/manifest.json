@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "zerosumonline",
+  "name": "Zerosum Online",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://zerosumonline.com", "https://api.zerosumonline.com"],
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "zerosumonline",
+      "name": "Zerosum Online",
+      "lang": "ja",
+      "baseUrl": "https://zerosumonline.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://zerosumonline.com/detail/*", "kind": "item" }
+      ]
+    }
+  ]
+}

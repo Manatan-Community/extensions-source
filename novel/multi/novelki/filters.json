@@ -1,0 +1,62 @@
+{
+  "filters": {
+    "genres": {
+      "type": "Picker",
+      "label": "Genre",
+      "value": "",
+      "options": [
+        { "label": "Wybierz gatunek", "value": "" },
+        { "label": "Akcja", "value": "1" },
+        { "label": "Fantasy", "value": "2" },
+        { "label": "Komedia", "value": "3" },
+        { "label": "Przygodowy", "value": "4" },
+        { "label": "Sztuki walki", "value": "6" },
+        { "label": "Romans", "value": "7" },
+        { "label": "Dramat", "value": "10" },
+        { "label": "Dojrzaly", "value": "11" },
+        { "label": "Psychologiczny", "value": "12" },
+        { "label": "Tragedia", "value": "13" },
+        { "label": "Tajemnica", "value": "14" },
+        { "label": "Horror", "value": "15" },
+        { "label": "RPG", "value": "17" },
+        { "label": "Okruchy zycia", "value": "18" },
+        { "label": "Szkolne zycie", "value": "20" },
+        { "label": "Boys Love", "value": "22" },
+        { "label": "Girls Love", "value": "23" },
+        { "label": "Shounen", "value": "24" },
+        { "label": "Shoujo", "value": "25" },
+        { "label": "Seinen", "value": "26" },
+        { "label": "Josei", "value": "27" },
+        { "label": "Isekai", "value": "44" }
+      ]
+    },
+    "status": {
+      "type": "Picker",
+      "label": "Status",
+      "value": "",
+      "options": [
+        { "label": "Wybierz status", "value": "" },
+        { "label": "Zakonczony", "value": "0" },
+        { "label": "Aktywny", "value": "1" },
+        { "label": "Porzucony", "value": "2" },
+        { "label": "Wstrzymany", "value": "3" },
+        { "label": "Zlicencjonowany", "value": "4" }
+      ]
+    },
+    "type": {
+      "type": "Picker",
+      "label": "Type",
+      "value": "",
+      "options": [
+        { "label": "Wybierz typ", "value": "" },
+        { "label": "Nie zdefiniowano", "value": "0" },
+        { "label": "Light Novel", "value": "1" },
+        { "label": "Wuxia", "value": "2" },
+        { "label": "Xianxia", "value": "3" },
+        { "label": "Web Novel", "value": "4" },
+        { "label": "Autorska", "value": "5" },
+        { "label": "Inne", "value": "6" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "webdexscans",
+  "name": "Webdex Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://webdexscans.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "webdexscans",
+      "name": "Webdex Scans",
+      "lang": "en",
+      "baseUrl": "https://webdexscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://webdexscans.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

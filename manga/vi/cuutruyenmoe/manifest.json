@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "cuutruyenmoe",
+  "name": "CuuTruyen (unoriginal)",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://cuutruyen.moe"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "cuutruyenmoe",
+      "name": "CuuTruyen (unoriginal)",
+      "lang": "vi",
+      "baseUrl": "https://cuutruyen.moe",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://cuutruyen.moe/truyen/*", "kind": "item" }
+      ]
+    }
+  ]
+}

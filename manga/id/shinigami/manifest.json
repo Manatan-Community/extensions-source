@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "shinigami",
+  "name": "Shinigami",
+  "version": "0.1.0",
+  "versionCode": 78,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://g.shinigami.asia", "https://api.shngm.io", "https://storage.shngm.id"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "shinigami",
+      "name": "Shinigami",
+      "lang": "id",
+      "baseUrl": "https://g.shinigami.asia",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://g.shinigami.asia/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

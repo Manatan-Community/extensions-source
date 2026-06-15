@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kuramanime",
+  "name": "Kuramanime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://v8.kuramanime.tel"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "kuramanime",
+      "name": "Kuramanime",
+      "lang": "id",
+      "baseUrl": "https://v8.kuramanime.tel",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": false, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }],
+      "urlPatterns": [{ "pattern": "https://v8.kuramanime.tel/*", "kind": "item" }]
+    }
+  ]
+}

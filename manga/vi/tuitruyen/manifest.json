@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tuitruyen",
+  "name": "TuiTruyen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://tuitruyen.top"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tuitruyen",
+      "name": "TuiTruyen",
+      "lang": "vi",
+      "baseUrl": "https://tuitruyen.top",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://tuitruyen.top/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "filters": {
+    "genres": {
+      "type": "Picker",
+      "label": "Generos",
+      "value": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Acao", "value": "01" },
+        { "label": "Adulto", "value": "02" },
+        { "label": "Aventura", "value": "03" },
+        { "label": "Comedia", "value": "04" },
+        { "label": "Fantasia", "value": "05" },
+        { "label": "Terror", "value": "06" },
+        { "label": "Artes Marciais", "value": "07" },
+        { "label": "Misterio", "value": "09" },
+        { "label": "Romance", "value": "12" },
+        { "label": "Sci-fi", "value": "14" },
+        { "label": "Wuxia", "value": "18" },
+        { "label": "Xianxia", "value": "19" },
+        { "label": "Xuanhuan", "value": "20" },
+        { "label": "Drama", "value": "23" },
+        { "label": "Isekai", "value": "30" },
+        { "label": "Yaoi", "value": "35" },
+        { "label": "Yuri", "value": "37" }
+      ]
+    },
+    "status": {
+      "type": "Picker",
+      "label": "Status",
+      "value": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Ativo", "value": "ativo" },
+        { "label": "Completo", "value": "Completo" },
+        { "label": "Pausado", "value": "pausado" },
+        { "label": "Parado", "value": "Parado" }
+      ]
+    },
+    "type": {
+      "type": "Picker",
+      "label": "Type",
+      "value": "",
+      "options": [
+        { "label": "Todas", "value": "" },
+        { "label": "Americana", "value": "americana" },
+        { "label": "Angolana", "value": "angolana" },
+        { "label": "Brasileira", "value": "brasileira" },
+        { "label": "Chinesa", "value": "chinesa" },
+        { "label": "Coreana", "value": "coreana" },
+        { "label": "Japonesa", "value": "japonesa" }
+      ]
+    },
+    "ordem": {
+      "type": "Picker",
+      "label": "Ordenar",
+      "value": "",
+      "options": [
+        { "label": "Qualquer ordem", "value": "" },
+        { "label": "Ordem alfabetica", "value": "1" },
+        { "label": "No. de Capitulos", "value": "2" },
+        { "label": "Popularidade", "value": "3" },
+        { "label": "Novidades", "value": "4" }
+      ]
+    }
+  }
+}

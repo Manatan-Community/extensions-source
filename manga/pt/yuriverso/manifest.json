@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "yuriverso",
+  "name": "Yuri on Air",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://yurionair.top"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "yuriverso",
+      "name": "Yuri on Air",
+      "lang": "pt-BR",
+      "baseUrl": "https://yurionair.top",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://yurionair.top/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

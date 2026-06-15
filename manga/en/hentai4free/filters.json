@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Order by",
+      "default": "",
+      "options": [
+        { "label": "Default", "value": "" },
+        { "label": "Views", "value": "views" },
+        { "label": "Latest", "value": "latest" }
+      ]
+    }
+  ]
+}

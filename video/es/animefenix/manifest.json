@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animefenix",
+  "name": "AnimeFenix",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://animefenix2.tv"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "animefenix",
+      "name": "AnimeFenix",
+      "lang": "es",
+      "baseUrl": "https://animefenix2.tv",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://animefenix2.tv/*", "kind": "item" }
+      ]
+    }
+  ]
+}

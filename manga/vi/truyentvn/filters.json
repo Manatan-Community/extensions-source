@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "path",
+      "type": "select",
+      "name": "Danh muc",
+      "default": "",
+      "options": [
+        { "label": "Tat ca", "value": "" },
+        { "label": "Nhat Ban", "value": "/country/nhat-ban" },
+        { "label": "Trung Quoc", "value": "/country/trung-quoc" },
+        { "label": "Han Quoc", "value": "/country/han-quoc" },
+        { "label": "Viet Nam", "value": "/country/viet-nam" },
+        { "label": "Co Che", "value": "/danh-muc/co-che" },
+        { "label": "Truyen Tranh 18+", "value": "/danh-muc/truyen-tranh-18" },
+        { "label": "Manga", "value": "/danh-muc/manga" },
+        { "label": "Manhua", "value": "/danh-muc/manhua" },
+        { "label": "Manhwa", "value": "/danh-muc/manhwa" },
+        { "label": "Webtoon", "value": "/danh-muc/webtoon" },
+        { "label": "Adult", "value": "/the-loai/adult" },
+        { "label": "Romance", "value": "/the-loai/romance" },
+        { "label": "Comedy", "value": "/the-loai/comedy" },
+        { "label": "Action", "value": "/the-loai/action" },
+        { "label": "NTR", "value": "/the-loai/ntr" },
+        { "label": "Uncensored", "value": "/the-loai/uncensored" }
+      ]
+    }
+  ]
+}

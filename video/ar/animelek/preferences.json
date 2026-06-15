@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "preferences": [
+    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "720p", "options": ["1080p", "720p", "480p", "360p", "Doodstream", "StreamTape"] }
+  ]
+}

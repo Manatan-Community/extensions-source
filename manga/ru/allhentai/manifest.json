@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "allhentai",
+  "name": "AllHentai",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "permissions": {
+    "network": ["https://20.allhen.online"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "allhentai",
+      "name": "AllHentai",
+      "lang": "ru",
+      "baseUrl": "https://20.allhen.online",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://20.allhen.online/*", "kind": "item" }
+      ]
+    }
+  ]
+}

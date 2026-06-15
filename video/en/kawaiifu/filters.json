@@ -1,0 +1,941 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "tags",
+      "label": "Tags",
+      "kind": "multiselect",
+      "defaultValue": [],
+      "options": [
+        {
+          "label": "18 +",
+          "value": "18"
+        },
+        {
+          "label": "4-koma",
+          "value": "4-koma"
+        },
+        {
+          "label": "Action",
+          "value": "action"
+        },
+        {
+          "label": "Adapted from Manga",
+          "value": "manga"
+        },
+        {
+          "label": "Adapted from Mobile Game",
+          "value": "mobile"
+        },
+        {
+          "label": "Adult",
+          "value": "adult"
+        },
+        {
+          "label": "Adventure",
+          "value": "adventure"
+        },
+        {
+          "label": "AKB48",
+          "value": "akb48"
+        },
+        {
+          "label": "Audio Drama",
+          "value": "audio-drama"
+        },
+        {
+          "label": "Avant Garde",
+          "value": "avant-garde"
+        },
+        {
+          "label": "Bluray",
+          "value": "bluray"
+        },
+        {
+          "label": "Boxing",
+          "value": "boxing"
+        },
+        {
+          "label": "Boys Love",
+          "value": "boys-love"
+        },
+        {
+          "label": "Card Battle",
+          "value": "card-battle"
+        },
+        {
+          "label": "Card Game",
+          "value": "card-game"
+        },
+        {
+          "label": "Code Geass",
+          "value": "code-geass"
+        },
+        {
+          "label": "Comedy",
+          "value": "comedy"
+        },
+        {
+          "label": "Crossdressing",
+          "value": "crossdressing"
+        },
+        {
+          "label": "Cute Girls Doing Cute Things",
+          "value": "cute-girls-doing-cute-things"
+        },
+        {
+          "label": "Dementia",
+          "value": "dementia"
+        },
+        {
+          "label": "Demon",
+          "value": "demon"
+        },
+        {
+          "label": "Demons",
+          "value": "demons"
+        },
+        {
+          "label": "Detective",
+          "value": "detective"
+        },
+        {
+          "label": "Donghua",
+          "value": "donghua"
+        },
+        {
+          "label": "Drama",
+          "value": "drama"
+        },
+        {
+          "label": "Drama Fantasy Mystery",
+          "value": "drama-fantasy-mystery"
+        },
+        {
+          "label": "Drawing",
+          "value": "drawing"
+        },
+        {
+          "label": "Dub",
+          "value": "dub"
+        },
+        {
+          "label": "Ecchi",
+          "value": "ecchi"
+        },
+        {
+          "label": "Fantasy",
+          "value": "fantasy"
+        },
+        {
+          "label": "Fighting",
+          "value": "fighting"
+        },
+        {
+          "label": "Game",
+          "value": "game"
+        },
+        {
+          "label": "Ghost",
+          "value": "ghost"
+        },
+        {
+          "label": "Ghoul is ghoul",
+          "value": "ghoul-is-ghoul"
+        },
+        {
+          "label": "Girls Love",
+          "value": "girls-love"
+        },
+        {
+          "label": "Gourmet",
+          "value": "gourmet"
+        },
+        {
+          "label": "Gyaru",
+          "value": "gyaru"
+        },
+        {
+          "label": "Harem",
+          "value": "harem"
+        },
+        {
+          "label": "Hentai",
+          "value": "hentai"
+        },
+        {
+          "label": "High Stakes Game",
+          "value": "high-stakes-game"
+        },
+        {
+          "label": "Historical",
+          "value": "historical"
+        },
+        {
+          "label": "History",
+          "value": "history"
+        },
+        {
+          "label": "Horror",
+          "value": "horror"
+        },
+        {
+          "label": "Idol",
+          "value": "idol"
+        },
+        {
+          "label": "Idols (Female)",
+          "value": "idols-female"
+        },
+        {
+          "label": "Idols (Male)",
+          "value": "idols-male"
+        },
+        {
+          "label": "Isekai",
+          "value": "isekai"
+        },
+        {
+          "label": "Josei",
+          "value": "josei"
+        },
+        {
+          "label": "Kancolle",
+          "value": "kancolle"
+        },
+        {
+          "label": "Kids",
+          "value": "kids"
+        },
+        {
+          "label": "Light Novel",
+          "value": "light-novel"
+        },
+        {
+          "label": "Magic",
+          "value": "magic"
+        },
+        {
+          "label": "Mahou Shoujo",
+          "value": "mahou-shoujo"
+        },
+        {
+          "label": "Maid",
+          "value": "maid"
+        },
+        {
+          "label": "Manhwa",
+          "value": "manhwa"
+        },
+        {
+          "label": "Martial Arts",
+          "value": "martial-arts"
+        },
+        {
+          "label": "Mecha",
+          "value": "mecha"
+        },
+        {
+          "label": "Military",
+          "value": "military"
+        },
+        {
+          "label": "Music",
+          "value": "music"
+        },
+        {
+          "label": "MV",
+          "value": "mv"
+        },
+        {
+          "label": "Mystery",
+          "value": "mystery"
+        },
+        {
+          "label": "Novel",
+          "value": "novel"
+        },
+        {
+          "label": "ONA",
+          "value": "ona"
+        },
+        {
+          "label": "Original",
+          "value": "original"
+        },
+        {
+          "label": "Ost",
+          "value": "ost"
+        },
+        {
+          "label": "Other",
+          "value": "other"
+        },
+        {
+          "label": "OVA",
+          "value": "ova"
+        },
+        {
+          "label": "Parody",
+          "value": "parody"
+        },
+        {
+          "label": "Performing Arts",
+          "value": "performing-arts"
+        },
+        {
+          "label": "Police",
+          "value": "PS4"
+        },
+        {
+          "label": "Psychological",
+          "value": "psychological"
+        },
+        {
+          "label": "Romance",
+          "value": "romance"
+        },
+        {
+          "label": "Samurai",
+          "value": "samurai"
+        },
+        {
+          "label": "School",
+          "value": "school"
+        },
+        {
+          "label": "School Life",
+          "value": "school-life"
+        },
+        {
+          "label": "Sci-Fi",
+          "value": "sci-fi"
+        },
+        {
+          "label": "Seinen",
+          "value": "seinen"
+        },
+        {
+          "label": "Short",
+          "value": "short"
+        },
+        {
+          "label": "Short Anime",
+          "value": "short-anime"
+        },
+        {
+          "label": "Shoujo",
+          "value": "shoujo"
+        },
+        {
+          "label": "Shoujo Ai",
+          "value": "shoujo-ai"
+        },
+        {
+          "label": "Shounen",
+          "value": "shounen"
+        },
+        {
+          "label": "Shounen Ai",
+          "value": "shounen-ai"
+        },
+        {
+          "label": "Slapstick Comedy",
+          "value": "slapstick-comedy"
+        },
+        {
+          "label": "Slice of life",
+          "value": "slice-of-life"
+        },
+        {
+          "label": "Smut",
+          "value": "smut"
+        },
+        {
+          "label": "Space",
+          "value": "space"
+        },
+        {
+          "label": "Sports",
+          "value": "sports"
+        },
+        {
+          "label": "Strategy Game",
+          "value": "strategy-game"
+        },
+        {
+          "label": "Super Power",
+          "value": "super-power"
+        },
+        {
+          "label": "Super Powers",
+          "value": "super-powers"
+        },
+        {
+          "label": "Supernatural",
+          "value": "supernatural"
+        },
+        {
+          "label": "Suspense",
+          "value": "suspense"
+        },
+        {
+          "label": "Team Sports",
+          "value": "team-sports"
+        },
+        {
+          "label": "Tennis",
+          "value": "tennis"
+        },
+        {
+          "label": "Thriller",
+          "value": "thriller"
+        },
+        {
+          "label": "Time Travel",
+          "value": "time-travel"
+        },
+        {
+          "label": "Tragedy",
+          "value": "tragedy"
+        },
+        {
+          "label": "Uncensored",
+          "value": "uncensored"
+        },
+        {
+          "label": "Vampire",
+          "value": "vampire"
+        },
+        {
+          "label": "Video Game",
+          "value": "video-game"
+        },
+        {
+          "label": "Visual Novel",
+          "value": "visual-novel"
+        },
+        {
+          "label": "Web Manga",
+          "value": "web-manga"
+        },
+        {
+          "label": "Webmaster Choice",
+          "value": "webmaster-choice"
+        },
+        {
+          "label": "Western",
+          "value": "western"
+        },
+        {
+          "label": "Work Life",
+          "value": "work-life"
+        },
+        {
+          "label": "Yaoi",
+          "value": "yaoi"
+        },
+        {
+          "label": "Youkai",
+          "value": "Youkai"
+        },
+        {
+          "label": "Yuri",
+          "value": "yuri"
+        }
+      ]
+    },
+    {
+      "id": "category",
+      "label": "Category",
+      "kind": "select",
+      "defaultValue": "",
+      "options": [
+        {
+          "label": "All",
+          "value": ""
+        },
+        {
+          "label": "Dub",
+          "value": "dub"
+        },
+        {
+          "label": "Ecchi Anime",
+          "value": "ecchi-anime"
+        },
+        {
+          "label": "Entertainment",
+          "value": "entertainment"
+        },
+        {
+          "label": "Fall 1990",
+          "value": "fall-1990"
+        },
+        {
+          "label": "Fall 1994",
+          "value": "fall-1994"
+        },
+        {
+          "label": "Fall 1995",
+          "value": "fall-1995"
+        },
+        {
+          "label": "Fall 1999",
+          "value": "fall-1999"
+        },
+        {
+          "label": "Fall 2000",
+          "value": "fall-2000"
+        },
+        {
+          "label": "Fall 2001",
+          "value": "fall-2001"
+        },
+        {
+          "label": "Fall 2002",
+          "value": "fall-2002"
+        },
+        {
+          "label": "Fall 2003",
+          "value": "fall-2003"
+        },
+        {
+          "label": "Fall 2004",
+          "value": "fall-2004"
+        },
+        {
+          "label": "Fall 2005",
+          "value": "fall-2005"
+        },
+        {
+          "label": "Fall 2006",
+          "value": "fall-2006"
+        },
+        {
+          "label": "Fall 2007",
+          "value": "fall-2007"
+        },
+        {
+          "label": "Fall 2008",
+          "value": "fall-2008"
+        },
+        {
+          "label": "Fall 2009",
+          "value": "fall-2009"
+        },
+        {
+          "label": "Fall 2010",
+          "value": "fall-2010"
+        },
+        {
+          "label": "Fall 2011",
+          "value": "fall-2011"
+        },
+        {
+          "label": "Fall 2012",
+          "value": "fall-2012"
+        },
+        {
+          "label": "Fall 2013",
+          "value": "fall-2013"
+        },
+        {
+          "label": "Fall 2014",
+          "value": "fall-2014"
+        },
+        {
+          "label": "Fall 2015",
+          "value": "fall-2015"
+        },
+        {
+          "label": "Fall 2016",
+          "value": "fall-2016"
+        },
+        {
+          "label": "Fall 2017",
+          "value": "fall-2017"
+        },
+        {
+          "label": "Fall 2018",
+          "value": "fall-2018"
+        },
+        {
+          "label": "Fall 2019",
+          "value": "fall-2019"
+        },
+        {
+          "label": "Fall 2020",
+          "value": "fall-2020"
+        },
+        {
+          "label": "Fall 2021",
+          "value": "fall-2021"
+        },
+        {
+          "label": "Fall 2022",
+          "value": "fall-2022"
+        },
+        {
+          "label": "Fall 2023",
+          "value": "fall-2023"
+        },
+        {
+          "label": "Most Watched",
+          "value": "most-watched"
+        },
+        {
+          "label": "Movies",
+          "value": "anime-movies"
+        },
+        {
+          "label": "Music",
+          "value": "music"
+        },
+        {
+          "label": "Others",
+          "value": "dub"
+        },
+        {
+          "label": "Dub",
+          "value": "others"
+        },
+        {
+          "label": "OVA/Specials",
+          "value": "ova-specials"
+        },
+        {
+          "label": "Season",
+          "value": "season"
+        },
+        {
+          "label": "Spring 1990",
+          "value": "spring-1990"
+        },
+        {
+          "label": "Spring 1993",
+          "value": "spring-1993"
+        },
+        {
+          "label": "Spring 1999",
+          "value": "spring-1999"
+        },
+        {
+          "label": "Spring 2000",
+          "value": "spring-2000"
+        },
+        {
+          "label": "Spring 2001",
+          "value": "spring-2001"
+        },
+        {
+          "label": "Spring 2002",
+          "value": "spring-2002"
+        },
+        {
+          "label": "Spring 2003",
+          "value": "spring-2003"
+        },
+        {
+          "label": "Spring 2004",
+          "value": "spring-2004"
+        },
+        {
+          "label": "Spring 2005",
+          "value": "spring-2005"
+        },
+        {
+          "label": "Spring 2006",
+          "value": "spring-2006"
+        },
+        {
+          "label": "Spring 2007",
+          "value": "spring-2007"
+        },
+        {
+          "label": "Spring 2008",
+          "value": "spring-2008"
+        },
+        {
+          "label": "Spring 2009",
+          "value": "spring-2009"
+        },
+        {
+          "label": "Spring 2010",
+          "value": "spring-2010"
+        },
+        {
+          "label": "Spring 2011",
+          "value": "spring-2011"
+        },
+        {
+          "label": "Spring 2012",
+          "value": "spring-2012"
+        },
+        {
+          "label": "Spring 2013",
+          "value": "spring-2013"
+        },
+        {
+          "label": "Spring 2014",
+          "value": "spring-2014"
+        },
+        {
+          "label": "Spring 2015",
+          "value": "spring-2015"
+        },
+        {
+          "label": "Spring 2016",
+          "value": "spring-2016"
+        },
+        {
+          "label": "Spring 2017",
+          "value": "spring-2017"
+        },
+        {
+          "label": "Spring 2018",
+          "value": "spring-2018"
+        },
+        {
+          "label": "Spring 2019",
+          "value": "spring-2019"
+        },
+        {
+          "label": "Spring 2020",
+          "value": "spring-2020"
+        },
+        {
+          "label": "Spring 2021",
+          "value": "spring-2021"
+        },
+        {
+          "label": "Spring 2022",
+          "value": "spring-2022"
+        },
+        {
+          "label": "Spring 2023",
+          "value": "spring-2023"
+        },
+        {
+          "label": "Summer 1990",
+          "value": "summer-1990"
+        },
+        {
+          "label": "Summer 1992",
+          "value": "summer-1992"
+        },
+        {
+          "label": "Summer 1999",
+          "value": "summer-1999"
+        },
+        {
+          "label": "Summer 2000",
+          "value": "summer-2000"
+        },
+        {
+          "label": "Summer 2001",
+          "value": "summer-2001"
+        },
+        {
+          "label": "Summer 2002",
+          "value": "summer-2002"
+        },
+        {
+          "label": "Summer 2003",
+          "value": "summer-2003"
+        },
+        {
+          "label": "Summer 2004",
+          "value": "summer-2004"
+        },
+        {
+          "label": "Summer 2005",
+          "value": "summer-2005"
+        },
+        {
+          "label": "Summer 2006",
+          "value": "summer-2006"
+        },
+        {
+          "label": "Summer 2007",
+          "value": "summer-2007"
+        },
+        {
+          "label": "Summer 2008",
+          "value": "summer-2008"
+        },
+        {
+          "label": "Summer 2009",
+          "value": "summer-2009"
+        },
+        {
+          "label": "Summer 2010",
+          "value": "summer-2010"
+        },
+        {
+          "label": "Summer 2011",
+          "value": "summer-2011"
+        },
+        {
+          "label": "Summer 2012",
+          "value": "summer-2012"
+        },
+        {
+          "label": "Summer 2013",
+          "value": "summer-2013"
+        },
+        {
+          "label": "Summer 2014",
+          "value": "summer-2014"
+        },
+        {
+          "label": "Summer 2015",
+          "value": "summer-2015"
+        },
+        {
+          "label": "Summer 2016",
+          "value": "summer-2016"
+        },
+        {
+          "label": "Summer 2017",
+          "value": "summer-2017"
+        },
+        {
+          "label": "Summer 2018",
+          "value": "summer-2018"
+        },
+        {
+          "label": "Summer 2019",
+          "value": "summer-2019"
+        },
+        {
+          "label": "Summer 2020",
+          "value": "summer-2020"
+        },
+        {
+          "label": "Summer 2021",
+          "value": "summer-2021"
+        },
+        {
+          "label": "Summer 2022",
+          "value": "summer-2022"
+        },
+        {
+          "label": "Summer 2023",
+          "value": "summer-2023"
+        },
+        {
+          "label": "Trailer",
+          "value": "trailer"
+        },
+        {
+          "label": "Tv series",
+          "value": "tv-series"
+        },
+        {
+          "label": "Upcoming",
+          "value": "upcoming"
+        },
+        {
+          "label": "Winter 1999",
+          "value": "winter-1999"
+        },
+        {
+          "label": "Winter 2000",
+          "value": "winter-2000"
+        },
+        {
+          "label": "Winter 2001",
+          "value": "winter-2001"
+        },
+        {
+          "label": "Winter 2002",
+          "value": "winter-2002"
+        },
+        {
+          "label": "Winter 2003",
+          "value": "winter-2003"
+        },
+        {
+          "label": "Winter 2004",
+          "value": "winter-2004"
+        },
+        {
+          "label": "Winter 2005",
+          "value": "winter-2005"
+        },
+        {
+          "label": "Winter 2006",
+          "value": "winter-2006"
+        },
+        {
+          "label": "Winter 2007",
+          "value": "winter-2007"
+        },
+        {
+          "label": "Winter 2008",
+          "value": "winter-2008"
+        },
+        {
+          "label": "Winter 2009",
+          "value": "winter-2009"
+        },
+        {
+          "label": "Winter 2010",
+          "value": "winter-2010"
+        },
+        {
+          "label": "Winter 2011",
+          "value": "winter-2011"
+        },
+        {
+          "label": "Winter 2012",
+          "value": "winter-2012"
+        },
+        {
+          "label": "Winter 2013",
+          "value": "winter-2013"
+        },
+        {
+          "label": "Winter 2014",
+          "value": "winter-2014"
+        },
+        {
+          "label": "Winter 2015",
+          "value": "winter-2015"
+        },
+        {
+          "label": "Winter 2016",
+          "value": "winter-2016"
+        },
+        {
+          "label": "Winter 2017",
+          "value": "winter-2017"
+        },
+        {
+          "label": "Winter 2018",
+          "value": "winter-2018"
+        },
+        {
+          "label": "Winter 2019",
+          "value": "winter-2019"
+        },
+        {
+          "label": "Winter 2020",
+          "value": "winter-2020"
+        },
+        {
+          "label": "Winter 2021",
+          "value": "winter-2021"
+        },
+        {
+          "label": "Winter 2022",
+          "value": "winter-2022"
+        },
+        {
+          "label": "Winter 2023",
+          "value": "winter-2023"
+        }
+      ]
+    }
+  ]
+}

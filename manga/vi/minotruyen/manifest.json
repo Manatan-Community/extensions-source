@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "packageId": "minotruyen",
+  "name": "MinoTruyen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://minotruyenv5.xyz", "https://api.cloudkk-v1.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "minotruyen-manga",
+      "name": "MinoTruyen Manga",
+      "lang": "vi",
+      "baseUrl": "https://minotruyenv5.xyz",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://minotruyenv5.xyz/manga/books/*", "kind": "item" }
+      ]
+    },
+    {
+      "id": "minotruyen-comics",
+      "name": "MinoTruyen Comics",
+      "lang": "vi",
+      "baseUrl": "https://minotruyenv5.xyz",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://minotruyenv5.xyz/comics/books/*", "kind": "item" }
+      ]
+    },
+    {
+      "id": "minotruyen-hentai",
+      "name": "MinoTruyen Hentai",
+      "lang": "vi",
+      "baseUrl": "https://minotruyenv5.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://minotruyenv5.xyz/hentai/books/*", "kind": "item" }
+      ]
+    }
+  ]
+}

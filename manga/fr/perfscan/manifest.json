@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "packageId": "perfscan",
+  "name": "Perf Scan",
+  "version": "0.1.0",
+  "versionCode": 31,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": { "network": ["https://perf-scan.xyz", "https://api.perf-scan.xyz"], "webview": true, "cookies": true },
+  "sources": [{
+    "id": "perfscan",
+    "name": "Perf Scan",
+    "lang": "fr",
+    "baseUrl": "https://perf-scan.xyz",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true },
+    "listings": [{ "id": "popular", "name": "Populaires" }, { "id": "latest", "name": "Dernieres sorties" }]
+  }]
+}

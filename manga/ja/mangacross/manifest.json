@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangacross",
+  "name": "Champion Cross",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "mangacross",
+      "name": "Champion Cross",
+      "lang": "ja",
+      "baseUrl": "https://championcross.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://championcross.jp/episodes/*", "kind": "chapter" },
+        { "pattern": "https://championcross.jp/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

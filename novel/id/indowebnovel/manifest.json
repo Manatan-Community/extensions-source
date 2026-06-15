@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "packageId": "indowebnovel",
+  "name": "IndoWebNovel",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://indowebnovel.id"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "indowebnovel",
+      "name": "IndoWebNovel",
+      "lang": "id",
+      "baseUrl": "https://indowebnovel.id",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

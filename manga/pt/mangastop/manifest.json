@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangastop",
+  "name": "Manga Stop",
+  "version": "0.1.0",
+  "versionCode": 10,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangastop.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangastop",
+      "name": "Manga Stop",
+      "lang": "pt-BR",
+      "baseUrl": "https://mangastop.net",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangastop.net/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

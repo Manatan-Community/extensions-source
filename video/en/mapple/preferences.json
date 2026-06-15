@@ -1,0 +1,89 @@
+[
+  {
+    "id": "pref_domain",
+    "type": "select",
+    "label": "Preferred domain",
+    "default": "https://mapple.uk",
+    "options": [
+      { "label": "mapple.uk", "value": "https://mapple.uk" },
+      { "label": "mappl.tv", "value": "https://mappl.tv" },
+      { "label": "mapple.mov", "value": "https://mapple.mov" }
+    ]
+  },
+  {
+    "id": "pref_latest",
+    "type": "select",
+    "label": "Preferred latest page",
+    "default": "movie",
+    "options": [
+      { "label": "Movies", "value": "movie" },
+      { "label": "TV Shows", "value": "tv" }
+    ]
+  },
+  {
+    "id": "pref_quality",
+    "type": "select",
+    "label": "Preferred quality",
+    "default": "1080",
+    "options": [
+      { "label": "2160p (4k)", "value": "2160" },
+      { "label": "1080p", "value": "1080" },
+      { "label": "720p", "value": "720" },
+      { "label": "480p", "value": "480" },
+      { "label": "360p", "value": "360" }
+    ]
+  },
+  {
+    "id": "pref_sub",
+    "type": "select",
+    "label": "Preferred subtitle language",
+    "default": "en",
+    "options": [
+      { "label": "Arabic", "value": "ar" },
+      { "label": "Bengali", "value": "bn" },
+      { "label": "Chinese", "value": "zh" },
+      { "label": "English", "value": "en" },
+      { "label": "French", "value": "fr" },
+      { "label": "German", "value": "de" },
+      { "label": "Hindi", "value": "hi" },
+      { "label": "Indonesian", "value": "id" },
+      { "label": "Italian", "value": "it" },
+      { "label": "Japanese", "value": "ja" },
+      { "label": "Korean", "value": "ko" },
+      { "label": "Persian", "value": "fa" },
+      { "label": "Portuguese", "value": "pt" },
+      { "label": "Russian", "value": "ru" },
+      { "label": "Spanish", "value": "es" },
+      { "label": "Turkish", "value": "tr" },
+      { "label": "Urdu", "value": "ur" },
+      { "label": "Vietnamese", "value": "vi" }
+    ]
+  },
+  { "id": "pref_sub_limit", "type": "text", "label": "Subtitle search limit", "default": "35" },
+  {
+    "id": "preferred_server",
+    "type": "select",
+    "label": "Preferred server",
+    "default": "Mapple",
+    "options": [
+      { "label": "Mapple", "value": "Mapple" },
+      { "label": "Sakura", "value": "Sakura" },
+      { "label": "Pinecone", "value": "Pinecone" },
+      { "label": "Oak", "value": "Oak" },
+      { "label": "Willow", "value": "Willow" }
+    ]
+  },
+  {
+    "id": "hoster_selection",
+    "type": "multiselect",
+    "label": "Enable hosts",
+    "default": ["Mapple", "Sakura", "Pinecone"],
+    "options": [
+      { "label": "Mapple", "value": "Mapple" },
+      { "label": "Sakura", "value": "Sakura" },
+      { "label": "Pinecone", "value": "Pinecone" },
+      { "label": "Oak", "value": "Oak" },
+      { "label": "Willow", "value": "Willow" }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangatellers",
+  "name": "Mangatellers",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://reader.mangatellers.gr"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangatellers",
+      "name": "Mangatellers",
+      "lang": "en",
+      "baseUrl": "https://reader.mangatellers.gr",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Directory" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

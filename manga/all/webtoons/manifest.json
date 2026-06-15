@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "packageId": "webtoons",
+  "name": "Webtoons.com",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.webtoons.com", "https://m.webtoons.com"],
+    "webview": true,
+    "cookies": true,
+    "preferences": true
+  },
+  "sources": [
+    { "id": "webtoons-en", "name": "Webtoons.com", "lang": "en", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-id", "name": "Webtoons.com", "lang": "id", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-th", "name": "Webtoons.com", "lang": "th", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-es", "name": "Webtoons.com", "lang": "es", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-fr", "name": "Webtoons.com", "lang": "fr", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-zh-hant", "name": "Webtoons.com", "lang": "zh-Hant", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } },
+    { "id": "webtoons-de", "name": "Webtoons.com", "lang": "de", "baseUrl": "https://www.webtoons.com", "contentType": "manga", "contentRating": "safe", "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "urlResolution": true } }
+  ]
+}

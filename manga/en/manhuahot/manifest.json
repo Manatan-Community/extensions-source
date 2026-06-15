@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhuahot",
+  "name": "ManhuaHot",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhuahot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhuahot",
+      "name": "ManhuaHot",
+      "lang": "en",
+      "baseUrl": "https://manhuahot.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      }
+    }
+  ]
+}

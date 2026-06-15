@@ -1,0 +1,45 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "name": "Sort",
+    "default": "rating",
+    "options": [
+      { "label": "Rating", "value": "rating" },
+      { "label": "Latest", "value": "latest" },
+      { "label": "Title", "value": "title" },
+      { "label": "Views", "value": "views" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "select",
+    "name": "Status",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Hiatus", "value": "hiatus" },
+      { "label": "Cancelled", "value": "cancelled" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "name": "Type",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" }
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "text",
+    "name": "Genre slugs",
+    "default": ""
+  }
+]

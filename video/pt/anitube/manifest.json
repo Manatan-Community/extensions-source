@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "anitube",
+  "name": "Anitube",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://www.anitube.vip", "https://ads.anitube.vip", "https://widgets.outbrain.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "anitube",
+    "name": "Anitube",
+    "lang": "pt-BR",
+    "baseUrl": "https://www.anitube.vip",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Animes" },
+      { "id": "latest", "name": "Ultimos episodios" }
+    ],
+    "urlPatterns": [{ "pattern": "https://www.anitube.vip/*", "kind": "item" }]
+  }]
+}

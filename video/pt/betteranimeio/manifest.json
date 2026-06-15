@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "packageId": "betteranimeio",
+  "name": "BetterAnimeIo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://betteranime.io"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "betteranimeio",
+    "name": "BetterAnimeIo",
+    "lang": "pt-BR",
+    "baseUrl": "https://betteranime.io",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Destaques" },
+      { "id": "latest", "name": "Lancamentos" }
+    ],
+    "urlPatterns": [{ "pattern": "https://betteranime.io/*", "kind": "item" }]
+  }]
+}

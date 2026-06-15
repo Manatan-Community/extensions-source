@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "packageId": "taimumangas",
+  "name": "TaimuMangas",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://beta.taimumangas.com",
+      "https://apiv2.taimumangas.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "taimumangas",
+      "name": "TaimuMangas",
+      "lang": "pt-BR",
+      "baseUrl": "https://beta.taimumangas.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://beta.taimumangas.com/series/*", "kind": "item" },
+        { "pattern": "https://beta.taimumangas.com/reader/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

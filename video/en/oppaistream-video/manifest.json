@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "oppaistream-video",
+  "name": "Oppai Stream",
+  "version": "0.1.0",
+  "versionCode": 6,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "network": [
+    "https://oppai.stream",
+    "https://myspacecat.pictures",
+    "https://graphql.anilist.co"
+  ],
+  "sources": [
+    {
+      "id": "oppaistream-video",
+      "name": "Oppai Stream",
+      "lang": "en",
+      "baseUrl": "https://oppai.stream",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://oppai.stream/watch*", "kind": "item" }
+      ]
+    }
+  ]
+}

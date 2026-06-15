@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangamura",
+  "name": "Manga Mura",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangamura.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangamura",
+      "name": "Manga Mura",
+      "lang": "ja",
+      "baseUrl": "https://mangamura.me",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangamura.me/manga/*", "kind": "item" },
+        { "pattern": "https://mangamura.me/*/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

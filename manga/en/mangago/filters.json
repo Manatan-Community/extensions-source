@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sortby",
+      "name": "Sort",
+      "default": "view",
+      "options": [
+        { "label": "Random", "value": "random" },
+        { "label": "Views", "value": "view" },
+        { "label": "Comment Count", "value": "comment_count" },
+        { "label": "Creation Date", "value": "create_date" },
+        { "label": "Update Date", "value": "update_date" }
+      ]
+    },
+    {
+      "type": "toggle",
+      "id": "completed",
+      "name": "Completed",
+      "default": true
+    },
+    {
+      "type": "toggle",
+      "id": "ongoing",
+      "name": "Ongoing",
+      "default": true
+    },
+    {
+      "type": "multiSelect",
+      "id": "genres",
+      "name": "Include genres",
+      "default": [],
+      "options": [
+        { "label": "Yaoi", "value": "Yaoi" },
+        { "label": "Doujinshi", "value": "Doujinshi" },
+        { "label": "Shounen Ai", "value": "Shounen Ai" },
+        { "label": "Shoujo", "value": "Shoujo" },
+        { "label": "Yuri", "value": "Yuri" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "Fantasy", "value": "Fantasy" },
+        { "label": "Comedy", "value": "Comedy" },
+        { "label": "Smut", "value": "Smut" },
+        { "label": "Adult", "value": "Adult" },
+        { "label": "School Life", "value": "School Life" },
+        { "label": "Mystery", "value": "Mystery" },
+        { "label": "One Shot", "value": "One Shot" },
+        { "label": "Ecchi", "value": "Ecchi" },
+        { "label": "Shounen", "value": "Shounen" },
+        { "label": "Martial Arts", "value": "Martial Arts" },
+        { "label": "Supernatural", "value": "Supernatural" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Action", "value": "Action" },
+        { "label": "Adventure", "value": "Adventure" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Historical", "value": "Historical" },
+        { "label": "Horror", "value": "Horror" },
+        { "label": "Josei", "value": "Josei" },
+        { "label": "Mature", "value": "Mature" },
+        { "label": "Psychological", "value": "Psychological" },
+        { "label": "Sci-fi", "value": "Sci-fi" },
+        { "label": "Seinen", "value": "Seinen" },
+        { "label": "Slice Of Life", "value": "Slice Of Life" },
+        { "label": "Sports", "value": "Sports" },
+        { "label": "Webtoons", "value": "Webtoons" }
+      ]
+    },
+    {
+      "type": "multiSelect",
+      "id": "exclude_genres",
+      "name": "Exclude genres",
+      "default": [],
+      "options": [
+        { "label": "Yaoi", "value": "Yaoi" },
+        { "label": "Doujinshi", "value": "Doujinshi" },
+        { "label": "Adult", "value": "Adult" },
+        { "label": "Smut", "value": "Smut" },
+        { "label": "Mature", "value": "Mature" }
+      ]
+    }
+  ]
+}

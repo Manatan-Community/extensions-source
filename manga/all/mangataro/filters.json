@@ -1,0 +1,12 @@
+{
+  "groups": [
+    { "id": "sort", "label": "Sort", "type": "select", "default": "popular", "options": [
+      { "label": "Popular", "value": "popular" },
+      { "label": "Latest", "value": "latest" }
+    ] },
+    { "id": "type", "label": "Type", "type": "string", "default": "" },
+    { "id": "status", "label": "Status", "type": "string", "default": "" },
+    { "id": "year", "label": "Year", "type": "string", "default": "" },
+    { "id": "genres", "label": "Genre IDs", "type": "string", "default": "" }
+  ]
+}

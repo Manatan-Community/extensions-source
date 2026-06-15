@@ -1,0 +1,3 @@
+[
+  { "id": "displayFullTitle", "type": "toggle", "label": "Display manga title as full title", "default": false }
+]

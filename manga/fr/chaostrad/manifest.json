@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "chaostrad",
+  "name": "ChaosTrad",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://chaostrad.fr"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "chaostrad",
+      "name": "ChaosTrad",
+      "lang": "fr",
+      "baseUrl": "https://chaostrad.fr",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Catalogue" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://chaostrad.fr/comics/*", "kind": "item" },
+        { "pattern": "https://chaostrad.fr/search/*", "kind": "item" }
+      ]
+    }
+  ]
+}

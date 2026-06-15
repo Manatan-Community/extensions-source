@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ranoberf",
+  "name": "РанобэРФ",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://xn--80ac9aeh6f.xn--p1ai"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ranoberf",
+      "name": "РанобэРФ",
+      "lang": "ru",
+      "baseUrl": "https://xn--80ac9aeh6f.xn--p1ai",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://xn--80ac9aeh6f.xn--p1ai/*", "kind": "item" },
+        { "pattern": "https://ранобэ.рф/*", "kind": "item" }
+      ]
+    }
+  ]
+}

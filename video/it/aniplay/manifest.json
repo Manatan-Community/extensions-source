@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "packageId": "aniplay",
+  "name": "AniPlay",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "it",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://aniplay.co", "https://api.aniplay.co"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "aniplay",
+    "name": "AniPlay",
+    "lang": "it",
+    "baseUrl": "https://aniplay.co",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Popolari" },
+      { "id": "latest", "name": "Ultimi episodi" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://aniplay.co/series/*", "kind": "item" },
+      { "pattern": "https://aniplay.co/watch/*", "kind": "episode" }
+    ]
+  }]
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Ordenar por",
+      "default": "updatedAt",
+      "options": [
+        { "label": "Mais Recentes", "value": "updatedAt" },
+        { "label": "Mais Vistos", "value": "views" },
+        { "label": "Melhor Avaliados", "value": "rating" },
+        { "label": "Título (A-Z)", "value": "title" },
+        { "label": "Qtd. de Capítulos", "value": "chapterCount" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "Todos", "value": "" },
+        { "label": "Em Andamento", "value": "ongoing" },
+        { "label": "Completo", "value": "completed" },
+        { "label": "Hiato", "value": "hiatus" },
+        { "label": "Cancelado", "value": "cancelled" }
+      ]
+    },
+    { "type": "toggle", "id": "nsfw", "name": "Mostrar conteúdo +18", "default": false },
+    { "type": "text", "id": "genres", "name": "IDs de gêneros separados por vírgula", "default": "" },
+    { "type": "text", "id": "tags", "name": "IDs de tags separados por vírgula", "default": "" }
+  ]
+}

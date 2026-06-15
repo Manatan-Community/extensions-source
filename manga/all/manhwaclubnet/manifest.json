@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwaclubnet",
+  "name": "ManhwaClub.net",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhwaclub.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    { "id": "manhwaclubnet-en", "name": "ManhwaClub.net", "lang": "en", "baseUrl": "https://manhwaclub.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } },
+    { "id": "manhwaclubnet-ko", "name": "ManhwaClub.net", "lang": "ko", "baseUrl": "https://manhwaclub.net", "contentType": "manga", "contentRating": "adult", "capabilities": { "search": true, "latest": true, "filters": false, "preferences": false, "home": false, "urlResolution": true } }
+  ]
+}

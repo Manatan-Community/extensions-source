@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    {
+      "id": "genre",
+      "type": "select",
+      "name": "Genre",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "15+", "value": "15" },
+        { "label": "18+", "value": "18" },
+        { "label": "Action", "value": "action" },
+        { "label": "Adult", "value": "adult" },
+        { "label": "Adventure", "value": "adventure" },
+        { "label": "BL", "value": "bl" },
+        { "label": "Comedy", "value": "comedy" },
+        { "label": "Completed", "value": "completed" },
+        { "label": "Drama", "value": "drama" },
+        { "label": "Ecchi", "value": "ecchi" },
+        { "label": "Fantasy", "value": "fantasy" },
+        { "label": "GL", "value": "gl" },
+        { "label": "Harem", "value": "harem" },
+        { "label": "Hentai", "value": "hentai" },
+        { "label": "Historical", "value": "historical" },
+        { "label": "Manga", "value": "manga" },
+        { "label": "Manhua", "value": "manhua" },
+        { "label": "Manhwa", "value": "manhwa" },
+        { "label": "Romance", "value": "romance" },
+        { "label": "Smut", "value": "smut" },
+        { "label": "Webtoon", "value": "webtoon" },
+        { "label": "Yaoi", "value": "yaoi" },
+        { "label": "Yuri", "value": "yuri" }
+      ]
+    }
+  ]
+}

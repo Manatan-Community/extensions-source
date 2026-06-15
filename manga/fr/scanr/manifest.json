@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "scanr",
+  "name": "ScanR",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://teamscanr.fr", "https://cdn.teamscanr.fr", "https://cubari.moe"],
+    "webview": false,
+    "cookies": false
+  },
+  "sources": [
+    {
+      "id": "scanr",
+      "name": "ScanR",
+      "lang": "fr",
+      "baseUrl": "https://teamscanr.fr",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Catalogue" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://teamscanr.fr/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "order", "label": "Order", "kind": "select", "defaultValue": "popular", "options": ["popular", "update"] },
+    { "id": "status", "label": "Status", "kind": "text", "defaultValue": "" },
+    { "id": "type", "label": "Type", "kind": "text", "defaultValue": "" },
+    { "id": "sub", "label": "Subtitle", "kind": "text", "defaultValue": "" }
+  ]
+}

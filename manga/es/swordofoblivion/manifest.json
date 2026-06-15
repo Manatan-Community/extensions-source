@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "swordofoblivion",
+  "name": "Sword Of Oblivion",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://swordofoblivion.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "swordofoblivion",
+      "name": "Sword Of Oblivion",
+      "lang": "es",
+      "baseUrl": "https://swordofoblivion.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://swordofoblivion.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

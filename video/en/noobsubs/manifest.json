@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "noobsubs",
+  "name": "NoobSubs",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": [
+    "https://noobftp1.noobsubs.com"
+  ],
+  "sources": [
+    {
+      "id": "noobsubs",
+      "name": "NoobSubs",
+      "lang": "en",
+      "baseUrl": "https://noobftp1.noobsubs.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Directory" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://noobftp1.noobsubs.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "packageId": "onetwothreecine",
+  "name": "123Cine",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://123cine.to",
+      "https://enc-dec.app"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "network": [
+    "https://123cine.to",
+    "https://enc-dec.app"
+  ],
+  "capabilities": {
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "onetwothreecine",
+      "name": "123Cine",
+      "lang": "en",
+      "baseUrl": "https://123cine.to",
+      "contentType": "video",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Trending" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://123cine.to/watch/*", "kind": "item" }
+      ]
+    }
+  ]
+}

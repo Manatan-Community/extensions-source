@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "packageId": "kayoanime",
+  "name": "Kayoanime",
+  "version": "0.1.0",
+  "versionCode": 13,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://kayoanime.com",
+    "https://drive.google.com",
+    "https://clients6.google.com",
+    "https://tinyurl.com"
+  ],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [
+    {
+      "id": "203922289858257167",
+      "name": "Kayoanime",
+      "lang": "en",
+      "baseUrl": "https://kayoanime.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Ongoing Animes" },
+        { "id": "latest", "name": "Recent" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kayoanime.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

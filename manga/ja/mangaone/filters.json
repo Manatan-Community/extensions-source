@@ -1,0 +1,11 @@
+[
+  {
+    "id": "tag_id",
+    "type": "select",
+    "label": "ジャンル",
+    "default": "",
+    "options": [
+      { "label": "All", "value": "" }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangareadersite",
+  "name": "MangaReader.site",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangareader.site", "https://api.mghcdn.com", "https://thumb.mghcdn.com", "https://imgx.mghcdn.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangareadersite",
+      "name": "MangaReader.site",
+      "lang": "en",
+      "baseUrl": "https://mangareader.site",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

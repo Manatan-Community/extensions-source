@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tumanhwasclub",
+  "name": "ManhwasMe",
+  "version": "0.1.0",
+  "versionCode": 3,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhwas.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tumanhwasclub",
+      "name": "ManhwasMe",
+      "lang": "es",
+      "baseUrl": "https://manhwas.me",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://manhwas.me/*", "kind": "item" }
+      ]
+    }
+  ]
+}

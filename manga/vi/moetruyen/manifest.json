@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "moetruyen",
+  "name": "MoeTruyen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://moetruyen.net", "https://truyen.moe"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "moetruyen",
+      "name": "MoeTruyen",
+      "lang": "vi",
+      "baseUrl": "https://moetruyen.net",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://moetruyen.net/manga/*", "kind": "item" },
+        { "pattern": "https://truyen.moe/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

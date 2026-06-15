@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "nhattruyen",
+  "name": "NhatTruyen",
+  "version": "0.1.0",
+  "versionCode": 21,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://nhattruyenqq.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "nhattruyen",
+      "name": "NhatTruyen",
+      "lang": "vi",
+      "baseUrl": "https://nhattruyenqq.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://nhattruyenqq.com/truyen-tranh/*", "kind": "item" }
+      ]
+    }
+  ]
+}

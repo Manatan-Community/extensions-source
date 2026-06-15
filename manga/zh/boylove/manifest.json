@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "boylove",
+  "name": "香香腐宅",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "zh",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://boylove1.mobi", "https://blcnimghost2.cc"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "boylove",
+      "name": "香香腐宅",
+      "lang": "zh",
+      "baseUrl": "https://boylove1.mobi",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://boylove1.mobi/home/book/index/id/*", "kind": "item" }
+      ]
+    }
+  ]
+}

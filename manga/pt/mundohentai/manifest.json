@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mundohentai",
+  "name": "Mundo Hentai",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mundohentaioficial.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mundohentai",
+      "name": "Mundo Hentai",
+      "lang": "pt-BR",
+      "baseUrl": "https://mundohentaioficial.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Doujinshi" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mundohentaioficial.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "packageId": "franime",
+  "name": "FRAnime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://franime.fr", "https://api.franime.fr"],
+  "sources": [{
+    "id": "franime",
+    "name": "FRAnime",
+    "lang": "fr",
+    "baseUrl": "https://franime.fr",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": false,
+      "preferences": false,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Popular" },
+      { "id": "latest", "name": "Latest" }
+    ],
+    "urlPatterns": [{ "pattern": "https://franime.fr/anime/*", "kind": "item" }]
+  }]
+}

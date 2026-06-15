@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwabuddy",
+  "name": "ManhwaBuddy",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://manhwabuddy.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhwabuddy",
+      "name": "ManhwaBuddy",
+      "lang": "en",
+      "baseUrl": "https://manhwabuddy.com",
+      "contentType": "manga",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangalector",
+  "name": "MangaLector",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://mangalector.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangalector",
+      "name": "MangaLector",
+      "lang": "es",
+      "baseUrl": "https://mangalector.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" },
+        { "id": "latest", "name": "Recientes" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangalector.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

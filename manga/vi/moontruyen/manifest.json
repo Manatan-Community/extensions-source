@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "moontruyen",
+  "name": "MoonTruyen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "vi",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": ["https://moontruyen.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "moontruyen",
+      "name": "MoonTruyen",
+      "lang": "vi",
+      "baseUrl": "https://moontruyen.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://moontruyen.com/truyen/*", "kind": "item" }
+      ]
+    }
+  ]
+}

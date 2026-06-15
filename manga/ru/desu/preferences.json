@@ -1,0 +1,15 @@
+[
+  {
+    "id": "titleLanguage",
+    "type": "select",
+    "label": "Выбор языка на обложке",
+    "options": ["eng", "rus"],
+    "default": "eng"
+  },
+  {
+    "id": "domain",
+    "type": "text",
+    "label": "Домен",
+    "default": "https://desu.uno"
+  }
+]

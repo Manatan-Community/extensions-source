@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "mangasnosekai",
+  "name": "Mangas No Sekai",
+  "version": "0.1.0",
+  "versionCode": 18,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "permissions": {
+    "network": ["https://mangasnosekai.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "mangasnosekai",
+      "name": "Mangas No Sekai",
+      "lang": "es",
+      "baseUrl": "https://mangasnosekai.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangasnosekai.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

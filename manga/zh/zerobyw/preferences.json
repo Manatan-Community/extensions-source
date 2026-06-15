@@ -1,0 +1,8 @@
+[
+  {
+    "id": "baseUrl",
+    "type": "text",
+    "name": "网址",
+    "default": "http://www.zerobywgbo2.com"
+  }
+]

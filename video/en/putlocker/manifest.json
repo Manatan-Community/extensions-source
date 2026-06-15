@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "putlocker",
+  "name": "PutLocker",
+  "version": "0.1.0",
+  "versionCode": 17,
+  "lang": "en",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "preferences": "preferences.json",
+  "network": ["https://ww7.putlocker.vip"],
+  "sources": [
+    {
+      "id": "putlocker",
+      "name": "PutLocker",
+      "lang": "en",
+      "baseUrl": "https://ww7.putlocker.vip",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://ww7.putlocker.vip/*", "kind": "item" }
+      ]
+    }
+  ]
+}

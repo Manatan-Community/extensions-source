@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "seimanga",
+  "name": "SeiManga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ru",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "permissions": {
+    "network": ["https://1.seimanga.me"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [{
+    "id": "seimanga",
+    "name": "SeiManga",
+    "lang": "ru",
+    "baseUrl": "https://1.seimanga.me",
+    "contentType": "manga",
+    "contentRating": "adult",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Популярное" },
+      { "id": "latest", "name": "Обновления" }
+    ],
+    "urlPatterns": [{ "pattern": "https://1.seimanga.me/*", "kind": "item" }]
+  }]
+}

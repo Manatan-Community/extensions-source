@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "akaya",
+  "name": "AKAYA",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://akaya.io", "https://api.akayamedia.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "akaya",
+      "name": "AKAYA",
+      "lang": "es",
+      "baseUrl": "https://akaya.io",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Populares" },
+        { "id": "latest", "name": "Recientes" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://akaya.io/serie/*", "kind": "item" }
+      ]
+    }
+  ]
+}

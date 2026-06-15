@@ -1,0 +1,14 @@
+[
+  { "id": "match", "type": "select", "label": "Match against", "options": ["", "tdtu", "tdt", "td", "t", "d"] },
+  { "id": "exact", "type": "checkbox", "label": "Exact matches" },
+  { "id": "any", "type": "checkbox", "label": "Match any words" },
+  { "id": "user", "type": "text", "label": "Author" },
+  { "id": "genre", "type": "select", "label": "Genre", "options": ["", "45", "60", "61", "47", "49", "48", "50", "51", "55"] },
+  { "id": "min_length", "type": "text", "label": "Min length" },
+  { "id": "max_length", "type": "text", "label": "Max length" },
+  { "id": "frontpaged", "type": "checkbox", "label": "Frontpaged" },
+  { "id": "after", "type": "text", "label": "On or after" },
+  { "id": "before", "type": "text", "label": "Before" },
+  { "id": "sort", "type": "select", "label": "Sort", "options": ["", "date-desc", "date-asc", "score-desc", "score-asc", "views-desc", "views-asc"] },
+  { "id": "tags", "type": "text", "label": "Tags" }
+]

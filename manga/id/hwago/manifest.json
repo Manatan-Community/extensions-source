@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "hwago",
+  "name": "Hwago",
+  "version": "0.1.0",
+  "versionCode": 4,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://01.hwago.xyz"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "hwago",
+      "name": "Hwago",
+      "lang": "id",
+      "baseUrl": "https://01.hwago.xyz",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://01.hwago.xyz/*", "kind": "item" }
+      ]
+    }
+  ]
+}

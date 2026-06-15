@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "tsundokutraducoes",
+  "name": "Tsundoku Traduções",
+  "version": "0.1.0",
+  "versionCode": 9,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://tsundoku.com.br"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "tsundokutraducoes",
+      "name": "Tsundoku Traduções",
+      "lang": "pt-BR",
+      "baseUrl": "https://tsundoku.com.br",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://tsundoku.com.br/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

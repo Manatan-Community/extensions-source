@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animesama-video",
+  "name": "Anime-Sama",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://anime-sama.to"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "animesama-video",
+    "name": "Anime-Sama",
+    "lang": "fr",
+    "baseUrl": "https://anime-sama.to",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Pepites" },
+      { "id": "latest", "name": "Ajouts animes" }
+    ],
+    "urlPatterns": [{ "pattern": "https://anime-sama.to/catalogue/*", "kind": "item" }]
+  }]
+}

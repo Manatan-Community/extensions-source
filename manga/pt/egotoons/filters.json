@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "multiselect",
+      "id": "genres",
+      "name": "Gêneros",
+      "options": [
+        { "label": "Ação", "value": "Ação" },
+        { "label": "Aventura", "value": "Aventura" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Escolar", "value": "Escolar" },
+        { "label": "Fantasia", "value": "Fantasia" },
+        { "label": "Ficção", "value": "Ficção" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Reencarnação", "value": "Reencarnação" },
+        { "label": "Romance", "value": "Romance" }
+      ]
+    },
+    {
+      "type": "multiselect",
+      "id": "tags",
+      "name": "Tags",
+      "options": [
+        { "label": "Ação", "value": "Ação" },
+        { "label": "Artes Marciais", "value": "Artes Marciais" },
+        { "label": "Aventura", "value": "Aventura" },
+        { "label": "Comédia", "value": "Comédia" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Escolar", "value": "Escolar" },
+        { "label": "Fantasia", "value": "Fantasia" },
+        { "label": "Ficção", "value": "Ficção" },
+        { "label": "Harem", "value": "Harem" },
+        { "label": "Magia", "value": "Magia" },
+        { "label": "Murim", "value": "Murim" },
+        { "label": "Reencarnação", "value": "Reencarnação" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "shounen", "value": "shounen" },
+        { "label": "Sobrenatural", "value": "Sobrenatural" }
+      ]
+    }
+  ]
+}

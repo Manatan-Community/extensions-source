@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "crotpedia",
+  "name": "CrotPedia",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://crotpedia.net"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "crotpedia",
+      "name": "CrotPedia",
+      "lang": "id",
+      "baseUrl": "https://crotpedia.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://crotpedia.net/*", "kind": "item" }
+      ]
+    }
+  ]
+}

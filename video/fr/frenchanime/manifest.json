@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "packageId": "frenchanime",
+  "name": "French Anime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "fr",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://french-anime.com"],
+  "preferences": "preferences.json",
+  "filters": "filters.json",
+  "sources": [{
+    "id": "frenchanime",
+    "name": "French Anime",
+    "lang": "fr",
+    "baseUrl": "https://french-anime.com",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {
+      "search": true,
+      "latest": true,
+      "filters": true,
+      "preferences": true,
+      "home": true,
+      "hosterResolution": false,
+      "urlResolution": true
+    },
+    "listings": [
+      { "id": "popular", "name": "Animes VOSTFR" },
+      { "id": "latest", "name": "Derniers ajouts" }
+    ],
+    "urlPatterns": [{ "pattern": "https://french-anime.com/*", "kind": "item" }]
+  }]
+}

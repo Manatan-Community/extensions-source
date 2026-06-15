@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ranking",
+    "type": "select",
+    "title": "Ranking",
+    "default": "K/P/0",
+    "options": [
+      { "label": "(Manga) All", "value": "K/P/0" },
+      { "label": "(Manga) Fantasy", "value": "K/P/2" },
+      { "label": "(Manga) Romance", "value": "K/P/1" },
+      { "label": "(Manga) Action", "value": "K/P/5" },
+      { "label": "(Manga) Drama", "value": "K/P/3" },
+      { "label": "(Manga) Horror/Mystery", "value": "K/P/7" },
+      { "label": "(Manga) Underground", "value": "K/P/9" },
+      { "label": "(Manga) Sports", "value": "K/P/6" },
+      { "label": "(Manga) Gourmet", "value": "K/P/10" },
+      { "label": "(Manga) Daily Life", "value": "K/P/4" },
+      { "label": "(Manga) Magazine", "value": "K/P/16" },
+      { "label": "(Manga) TL", "value": "K/P/13" },
+      { "label": "(Manga) BL", "value": "K/P/14" },
+      { "label": "(Smartoon) All", "value": "S/P/0" },
+      { "label": "(Smartoon) Fantasy", "value": "S/P/2" },
+      { "label": "(Smartoon) Romance", "value": "S/P/1" },
+      { "label": "(Smartoon) Action", "value": "S/P/5" },
+      { "label": "(Smartoon) Drama", "value": "S/P/3" },
+      { "label": "(Smartoon) Horror/Mystery", "value": "S/P/7" },
+      { "label": "(Smartoon) Underground", "value": "S/P/9" },
+      { "label": "(Smartoon) Sports", "value": "S/P/6" },
+      { "label": "(Smartoon) Gourmet", "value": "S/P/10" },
+      { "label": "(Smartoon) Daily Life", "value": "S/P/4" },
+      { "label": "(Smartoon) TL", "value": "S/P/13" },
+      { "label": "(Smartoon) BL", "value": "S/P/14" }
+    ]
+  }
+]

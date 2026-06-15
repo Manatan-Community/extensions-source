@@ -1,0 +1,73 @@
+[
+  {
+    "id": "sort",
+    "type": "select",
+    "title": "Sort",
+    "default": "popular",
+    "options": [
+      { "label": "Popular", "value": "popular" },
+      { "label": "Newest", "value": "new" },
+      { "label": "Most Reports", "value": "report_num" },
+      { "label": "Newest Publication", "value": "publish" },
+      { "label": "Kana", "value": "kana" }
+    ]
+  },
+  {
+    "id": "category",
+    "type": "select",
+    "title": "Category",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Women", "value": "34" },
+      { "label": "Shojo", "value": "3" },
+      { "label": "Seinen", "value": "1" },
+      { "label": "Shonen", "value": "2" },
+      { "label": "Adult", "value": "104" },
+      { "label": "TL", "value": "31" },
+      { "label": "BL", "value": "20" }
+    ]
+  },
+  {
+    "id": "finished_flag",
+    "type": "select",
+    "title": "Completion",
+    "default": "0",
+    "options": [
+      { "label": "Any", "value": "0" },
+      { "label": "Completed", "value": "1" },
+      { "label": "Ongoing", "value": "2" }
+    ]
+  },
+  {
+    "id": "free_campaign_type",
+    "type": "select",
+    "title": "Free Campaign",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Trial Read", "value": "1" },
+      { "label": "Limited Time", "value": "2" },
+      { "label": "1+ Free", "value": "3" },
+      { "label": "2+ Free", "value": "4" },
+      { "label": "3+ Free", "value": "5" }
+    ]
+  },
+  {
+    "id": "pvfv_flag",
+    "type": "select",
+    "title": "Distribution",
+    "default": "0",
+    "options": [
+      { "label": "Any", "value": "0" },
+      { "label": "Volumes", "value": "1" },
+      { "label": "Chapters", "value": "2" }
+    ]
+  },
+  {
+    "id": "without_sexy_title",
+    "type": "boolean",
+    "title": "Exclude Adult/TL/BL",
+    "default": false
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "items": [
+    { "id": "showAuthorsNotes", "type": "toggle", "name": "Show author's notes", "default": false }
+  ]
+}

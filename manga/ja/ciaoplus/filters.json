@@ -1,0 +1,26 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "label": "Category",
+    "default": "ranking|1",
+    "options": [
+      { "label": "(ランキング) まんが総合", "value": "ranking|1" },
+      { "label": "(ランキング) 急上昇", "value": "ranking|2" },
+      { "label": "(ランキング) 読切", "value": "ranking|3" },
+      { "label": "(ランキング) ラブ", "value": "ranking|4" },
+      { "label": "(ランキング) ホラー・ミステリー", "value": "ranking|5" },
+      { "label": "(ランキング) ファンタジー", "value": "ranking|6" },
+      { "label": "(ランキング) ギャグ・エッセイ", "value": "ranking|7" },
+      { "label": "ギャグ・エッセイ", "value": "genre|1" },
+      { "label": "ラブ", "value": "genre|2" },
+      { "label": "ホラー・ミステリー", "value": "genre|3" },
+      { "label": "家族", "value": "genre|4" },
+      { "label": "青春・学園", "value": "genre|5" },
+      { "label": "友情", "value": "genre|6" },
+      { "label": "ファンタジー", "value": "genre|7" },
+      { "label": "ドリーム・サクセス", "value": "genre|8" },
+      { "label": "異世界", "value": "genre|9" }
+    ]
+  }
+]

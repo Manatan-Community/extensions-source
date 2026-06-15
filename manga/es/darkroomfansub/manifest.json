@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "packageId": "darkroomfansub",
+  "name": "Dark Room Fansub",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://lector-darkroomfansub.blogspot.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "darkroomfansub",
+      "name": "Dark Room Fansub",
+      "lang": "es",
+      "baseUrl": "https://lector-darkroomfansub.blogspot.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lector-darkroomfansub.blogspot.com/*", "kind": "item" }
+      ]
+    }
+  ]
+}

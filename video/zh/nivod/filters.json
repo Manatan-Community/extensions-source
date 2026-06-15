@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "channel", "label": "分类", "kind": "select", "defaultValue": "anime", "options": ["anime", "movie", "tv", "show"] },
+    { "id": "region", "label": "地区", "kind": "text", "defaultValue": "" },
+    { "id": "showtype", "label": "类型", "kind": "text", "defaultValue": "" },
+    { "id": "year", "label": "年份", "kind": "text", "defaultValue": "" }
+  ]
+}

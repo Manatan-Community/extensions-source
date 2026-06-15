@@ -1,0 +1,8 @@
+[
+  {
+    "id": "popular_weekly_schedule",
+    "type": "toggle",
+    "label": "热门动画显示番剧周表",
+    "default": false
+  }
+]

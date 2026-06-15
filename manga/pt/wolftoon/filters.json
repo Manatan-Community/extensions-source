@@ -1,0 +1,51 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "label": "Status",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Em andamento", "value": "Em Andamento" },
+      { "label": "Completo", "value": "Completo" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "select",
+    "label": "Tipo",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Manhwa", "value": "Manhwa" },
+      { "label": "Manhua", "value": "Manhua" },
+      { "label": "Manga", "value": "Manga" },
+      { "label": "Webtoon", "value": "Webtoon" }
+    ]
+  },
+  {
+    "id": "order",
+    "type": "select",
+    "label": "Ordenar",
+    "options": [
+      { "label": "Mais populares", "value": "popular" },
+      { "label": "Mais recentes", "value": "latest" },
+      { "label": "Melhor avaliados", "value": "rating" }
+    ]
+  },
+  {
+    "id": "genre",
+    "type": "select",
+    "label": "Genero",
+    "options": [
+      { "label": "Todos", "value": "" },
+      { "label": "Acao", "value": "Ação" },
+      { "label": "Adulto", "value": "Adulto" },
+      { "label": "Aventura", "value": "Aventura" },
+      { "label": "Comedia", "value": "Comédia" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Fantasia", "value": "Fantasia" },
+      { "label": "Harem", "value": "Harem" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Sobrenatural", "value": "Sobrenatural" }
+    ]
+  }
+]

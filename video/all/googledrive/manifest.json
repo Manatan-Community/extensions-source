@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "googledrive",
+  "name": "Google Drive",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "all",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://drive.google.com",
+    "https://docs.google.com",
+    "https://clients6.google.com",
+    "https://drive.usercontent.google.com"
+  ],
+  "sources": [
+    {
+      "id": "googledrive",
+      "name": "Google Drive",
+      "lang": "all",
+      "baseUrl": "https://drive.google.com",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": true,
+        "home": true,
+        "hosterResolution": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Configured folder" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://drive.google.com/drive/folders/*", "kind": "item" },
+        { "pattern": "https://docs.google.com/drive/folders/*", "kind": "item" },
+        { "pattern": "https://drive.google.com/uc?id=*", "kind": "episode" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "select",
+      "id": "sort",
+      "name": "Sort",
+      "default": "most-popular",
+      "options": [
+        { "label": "Newest", "value": "newest" },
+        { "label": "Most Popular", "value": "most-popular" },
+        { "label": "Last Updated", "value": "last-updated" },
+        { "label": "Most Viewed", "value": "most-viewed" },
+        { "label": "Alphabetical", "value": "alphabetical" },
+        { "label": "Staff Pick", "value": "staff-pick" },
+        { "label": "Popular (Monthly)", "value": "last-month" },
+        { "label": "Popular (Weekly)", "value": "last-week" },
+        { "label": "Popular (Daily)", "value": "yesterday" },
+        { "label": "Trending", "value": "trending" }
+      ]
+    },
+    { "type": "text", "id": "startsWith", "name": "Starts with" },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Status",
+      "default": "",
+      "options": [
+        { "label": "All", "value": "" },
+        { "label": "Ongoing", "value": "ongoing" },
+        { "label": "Completed", "value": "completed" }
+      ]
+    },
+    { "type": "text", "id": "category", "name": "Category id" }
+  ]
+}

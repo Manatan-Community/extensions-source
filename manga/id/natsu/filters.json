@@ -1,0 +1,46 @@
+[
+  {
+    "id": "order",
+    "type": "select",
+    "title": "Sort",
+    "default": "popular",
+    "options": [
+      { "label": "Popular", "value": "popular" },
+      { "label": "Rating", "value": "rating" },
+      { "label": "Updated", "value": "updated" },
+      { "label": "Bookmarked", "value": "bookmarked" },
+      { "label": "Title", "value": "title" }
+    ]
+  },
+  {
+    "id": "type",
+    "type": "multiselect",
+    "title": "Type",
+    "default": [],
+    "options": [
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" }
+    ]
+  },
+  {
+    "id": "status",
+    "type": "multiselect",
+    "title": "Status",
+    "default": [],
+    "options": [
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Cancelled", "value": "cancelled" },
+      { "label": "On Hiatus", "value": "on-hiatus" },
+      { "label": "Unknown", "value": "unknown" }
+    ]
+  },
+  {
+    "id": "genres",
+    "type": "string",
+    "title": "Genres",
+    "summary": "Comma-separated genre slugs",
+    "default": ""
+  }
+]

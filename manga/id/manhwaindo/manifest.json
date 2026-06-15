@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "manhwaindo",
+  "name": "Manhwa Indo",
+  "version": "0.1.0",
+  "versionCode": 10,
+  "lang": "id",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://www.manhwaindo.my"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "manhwaindo",
+      "name": "Manhwa Indo",
+      "lang": "id",
+      "baseUrl": "https://www.manhwaindo.my",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.manhwaindo.my/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

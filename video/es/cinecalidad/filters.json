@@ -1,0 +1,18 @@
+[
+  {
+    "id": "genre",
+    "type": "select",
+    "name": "Generos",
+    "options": [
+      { "label": "Seleccionar", "value": "" },
+      { "label": "Series", "value": "ver-serie" },
+      { "label": "Estrenos", "value": "fecha-de-lanzamiento" },
+      { "label": "Accion", "value": "genero-de-la-pelicula/accion" },
+      { "label": "Anime", "value": "genero-de-la-pelicula/anime" },
+      { "label": "Aventura", "value": "genero-de-la-pelicula/aventura" },
+      { "label": "Comedia", "value": "genero-de-la-pelicula/comedia" },
+      { "label": "Drama", "value": "genero-de-la-pelicula/drama" },
+      { "label": "Terror", "value": "genero-de-la-pelicula/terror" }
+    ]
+  }
+]

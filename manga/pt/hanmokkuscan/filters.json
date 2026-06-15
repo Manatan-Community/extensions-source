@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "multiselect",
+      "id": "genres",
+      "name": "Gêneros",
+      "options": [
+        { "label": "Ação", "value": "Ação" },
+        { "label": "Adulto", "value": "Adulto" },
+        { "label": "Aventura", "value": "Aventura" },
+        { "label": "Comédia", "value": "Comédia" },
+        { "label": "Drama", "value": "Drama" },
+        { "label": "Ecchi", "value": "Ecchi" },
+        { "label": "Esporte", "value": "Esporte" },
+        { "label": "Fantasia", "value": "Fantasia" },
+        { "label": "Harém", "value": "Harém" },
+        { "label": "Horror", "value": "Horror" },
+        { "label": "Isekai", "value": "Isekai" },
+        { "label": "Mistério", "value": "Mistério" },
+        { "label": "Musical", "value": "Musical" },
+        { "label": "Psicológico", "value": "Psicológico" },
+        { "label": "Romance", "value": "Romance" },
+        { "label": "Sci-Fi", "value": "Sci-Fi" },
+        { "label": "Slice of Life", "value": "Slice of life" },
+        { "label": "Sobrenatural", "value": "Sobrenatural" }
+      ]
+    }
+  ]
+}

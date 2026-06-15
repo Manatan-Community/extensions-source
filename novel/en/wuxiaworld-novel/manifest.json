@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "packageId": "wuxiaworld-novel",
+  "name": "WuxiaWorld",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "novel",
+  "contentRating": "suggestive",
+  "icon": "assets/icon.png",
+  "network": [
+    "https://www.wuxiaworld.com",
+    "https://cdn.wuxiaworld.com"
+  ],
+  "sources": [
+    {
+      "id": "wuxiaworld-novel",
+      "name": "WuxiaWorld",
+      "lang": "en",
+      "baseUrl": "https://www.wuxiaworld.com",
+      "contentType": "novel",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": false,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Novels" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://www.wuxiaworld.com/novel/*", "kind": "item" }
+      ]
+    }
+  ]
+}

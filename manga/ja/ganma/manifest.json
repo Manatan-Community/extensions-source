@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ganma",
+  "name": "GANMA!",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "ganma",
+      "name": "GANMA!",
+      "lang": "ja",
+      "baseUrl": "https://ganma.jp",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://ganma.jp/web/magazine/*", "kind": "item" },
+        { "pattern": "https://ganma.jp/web/reader/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

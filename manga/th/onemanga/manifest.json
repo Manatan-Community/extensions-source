@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "packageId": "onemanga",
+  "name": "One-Manga",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "th",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://one-manga.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "onemanga",
+      "name": "One-Manga",
+      "lang": "th",
+      "baseUrl": "https://one-manga.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://one-manga.com/manga/*", "kind": "item" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+name: Source request
+description: Request a new Manatan source.
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Source name
+    validations:
+      required: true
+  - type: dropdown
+    id: media
+    attributes:
+      label: Media kind
+      options: [manga, video, novel]
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: en
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Site URL
+    validations:
+      required: true

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "filters": [
+    { "type": "text", "id": "author", "name": "Author" },
+    { "type": "text", "id": "year", "name": "Year" },
+    { "type": "select", "id": "status", "name": "Status", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" }
+    ] },
+    { "type": "select", "id": "type", "name": "Type", "default": "", "options": [
+      { "label": "All", "value": "" },
+      { "label": "Manga", "value": "manga" },
+      { "label": "Manhwa", "value": "manhwa" },
+      { "label": "Manhua", "value": "manhua" }
+    ] },
+    { "type": "select", "id": "order", "name": "Order", "default": "popular", "options": [
+      { "label": "Popular", "value": "popular" },
+      { "label": "Updated", "value": "update" },
+      { "label": "Latest", "value": "latest" },
+      { "label": "A-Z", "value": "title" }
+    ] },
+    { "type": "text", "id": "genres", "name": "Genre slugs" }
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "tag",
+    "type": "text",
+    "title": "Tag",
+    "default": ""
+  },
+  {
+    "id": "category",
+    "type": "select",
+    "title": "Category",
+    "default": "恋愛",
+    "options": [
+      { "label": "Romance", "value": "恋愛" },
+      { "label": "Animals", "value": "動物" },
+      { "label": "Gourmet", "value": "グルメ" },
+      { "label": "Fantasy", "value": "ファンタジー" },
+      { "label": "Horror/Mystery", "value": "ホラー・ミステリー" },
+      { "label": "Action", "value": "アクション" },
+      { "label": "Essay", "value": "エッセイ" },
+      { "label": "Comedy", "value": "ギャグ・コメディ" },
+      { "label": "Daily Life", "value": "日常" },
+      { "label": "Drama", "value": "ヒューマンドラマ" },
+      { "label": "Sports", "value": "スポーツ" },
+      { "label": "Work", "value": "お仕事" },
+      { "label": "BL", "value": "BL" },
+      { "label": "TL", "value": "TL" },
+      { "label": "Yuri", "value": "百合" },
+      { "label": "Exclusive", "value": "pixivコミック限定" },
+      { "label": "Adapted", "value": "映像化" },
+      { "label": "Comicalized", "value": "コミカライズ" },
+      { "label": "Vertical", "value": "タテヨミ" },
+      { "label": "One-shot", "value": "読み切り" },
+      { "label": "Other", "value": "その他" }
+    ]
+  }
+]

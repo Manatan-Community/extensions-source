@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "packageId": "ichicomi",
+  "name": "Ichicomi",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://ichicomi.com", "https://cdn-img.ichicomi.com", "https://cdn-scissors.gigaviewer.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "ichicomi",
+      "name": "Ichicomi",
+      "lang": "ja",
+      "baseUrl": "https://ichicomi.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": false, "filters": true, "preferences": true, "home": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }],
+      "urlPatterns": [
+        { "pattern": "https://ichicomi.com/episode/*", "kind": "chapter" },
+        { "pattern": "https://ichicomi.com/series/*", "kind": "item" },
+        { "pattern": "https://ichicomi.com/title/*", "kind": "item" }
+      ]
+    }
+  ]
+}

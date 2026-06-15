@@ -1,0 +1,4 @@
+[
+  { "id": "season", "type": "select", "label": "Season", "options": ["all", "spring", "summer", "fall", "winter"] },
+  { "id": "format", "type": "multiSelect", "label": "Format", "options": ["subbed", "dubbed", "raw"] }
+]

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packageId": "lycantoons",
+  "name": "Lycan Toons",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "lang": "pt-BR",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "filters": "filters.json",
+  "permissions": {
+    "network": [
+      "https://lycantoons.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "lycantoons",
+      "name": "Lycan Toons",
+      "lang": "pt-BR",
+      "baseUrl": "https://lycantoons.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lycantoons.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

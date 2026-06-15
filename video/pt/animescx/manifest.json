@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animescx",
+  "name": "Animes CX",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "pt-BR",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animescx.com.br"],
+  "preferences": "preferences.json",
+  "sources": [{
+    "id": "animescx",
+    "name": "Animes CX",
+    "lang": "pt-BR",
+    "baseUrl": "https://animescx.com.br",
+    "contentType": "video",
+    "contentRating": "safe",
+    "capabilities": {"search": true, "latest": true, "filters": false, "preferences": true, "home": true, "hosterResolution": false, "urlResolution": true},
+    "listings": [
+      { "id": "popular", "name": "Doramas legendados" },
+      { "id": "latest", "name": "Em lancamento" }
+    ],
+    "urlPatterns": [
+      { "pattern": "https://animescx.com.br/*", "kind": "item" }
+    ]
+  }]
+}

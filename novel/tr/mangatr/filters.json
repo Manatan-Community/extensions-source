@@ -1,0 +1,7 @@
+[
+  { "id": "status", "type": "select", "label": "Status", "default": "", "options": ["", "1", "2", "3"] },
+  { "id": "age", "type": "select", "label": "Age", "default": "", "options": ["", "1", "2", "3"] },
+  { "id": "genre", "type": "select", "label": "Genre", "default": "", "options": ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"] },
+  { "id": "sort", "type": "select", "label": "Sort", "default": "puan", "options": ["puan", "last_update", "manga_name", "created"] },
+  { "id": "sort_type", "type": "select", "label": "Direction", "default": "DESC", "options": ["DESC", "ASC"] }
+]

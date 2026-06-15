@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "type": "text",
+      "id": "author",
+      "name": "Auteur"
+    },
+    {
+      "type": "text",
+      "id": "yearx",
+      "name": "Annee"
+    },
+    {
+      "type": "select",
+      "id": "status",
+      "name": "Statut",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "En cours", "value": "ongoing" },
+        { "label": "Termine", "value": "completed" },
+        { "label": "En pause", "value": "hiatus" },
+        { "label": "Abandonne", "value": "dropped" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "type",
+      "name": "Type",
+      "default": "",
+      "options": [
+        { "label": "Tous", "value": "" },
+        { "label": "Manga", "value": "Manga" },
+        { "label": "Manhwa", "value": "Manhwa" },
+        { "label": "Manhua", "value": "Manhua" },
+        { "label": "Comic", "value": "Comic" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "order",
+      "name": "Trier par",
+      "default": "",
+      "options": [
+        { "label": "Defaut", "value": "" },
+        { "label": "A-Z", "value": "title" },
+        { "label": "Z-A", "value": "titlereverse" },
+        { "label": "Derniere mise a jour", "value": "update" },
+        { "label": "Derniers ajouts", "value": "latest" },
+        { "label": "Populaires", "value": "popular" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "genres",
+      "name": "Genres",
+      "description": "Identifiants de genres separes par des virgules. Prefixer par - pour exclure."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "category",
+    "type": "select",
+    "name": "カテゴリ・キーワード",
+    "default": "",
+    "options": [
+      { "label": "指定なし", "value": "" },
+      { "label": "試し読み", "value": "category_id=3" },
+      { "label": "連載中", "value": "category_id=1" },
+      { "label": "リバイバル連載", "value": "category_id=2" },
+      { "label": "連載終了", "value": "category_id=4" },
+      { "label": "今だけ無料", "value": "tag_id=147" },
+      { "label": "オリジナル作品", "value": "tag_id=1" },
+      { "label": "ドラマ化", "value": "tag_id=8" },
+      { "label": "女性向け", "value": "tag_id=2" },
+      { "label": "グルメ", "value": "tag_id=49" },
+      { "label": "男性向け", "value": "tag_id=3" },
+      { "label": "エッセイ", "value": "tag_id=4" },
+      { "label": "TL", "value": "tag_id=5" },
+      { "label": "BL", "value": "tag_id=6" },
+      { "label": "コミカライズ", "value": "tag_id=152" },
+      { "label": "美少女", "value": "tag_id=12" },
+      { "label": "異世界", "value": "tag_id=20" },
+      { "label": "#DOELO", "value": "tag_id=26" },
+      { "label": "転生", "value": "tag_id=29" },
+      { "label": "恋愛", "value": "tag_id=110" },
+      { "label": "ファンタジー", "value": "tag_id=114" }
+    ]
+  }
+]

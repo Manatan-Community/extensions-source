@@ -1,0 +1,8 @@
+[
+  { "id": "preferred_quality", "type": "select", "label": "Qualidade preferida", "default": "720p", "options": [
+    { "label": "1080p", "value": "1080p" },
+    { "label": "720p", "value": "720p" },
+    { "label": "480p", "value": "480p" },
+    { "label": "360p", "value": "360p" }
+  ] }
+]

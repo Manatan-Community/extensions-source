@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packageId": "raw1001",
+  "name": "Raw1001",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://raw1001.net"],
+    "cookies": true,
+    "webview": true
+  },
+  "sources": [
+    {
+      "id": "raw1001",
+      "name": "Raw1001",
+      "lang": "ja",
+      "baseUrl": "https://raw1001.net",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://raw1001.net/manga/*", "kind": "item" },
+        { "pattern": "https://raw1001.net/*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

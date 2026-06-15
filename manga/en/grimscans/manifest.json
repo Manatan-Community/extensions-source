@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "grimscans",
+  "name": "Grim Scans",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "en",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "sources": [
+    {
+      "id": "grimscans",
+      "name": "Grim Scans",
+      "lang": "en",
+      "baseUrl": "https://grimscans.com",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://grimscans.com/series/*", "kind": "item" }
+      ]
+    }
+  ]
+}

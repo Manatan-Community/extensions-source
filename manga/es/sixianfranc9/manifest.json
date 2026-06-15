@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "packageId": "sixianfranc9",
+  "name": "6ianfranc9",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "es",
+  "contentType": "manga",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": [
+      "https://capibaratraductor.com",
+      "https://r2.capibaratraductor.com"
+    ],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "sixianfranc9",
+      "name": "6ianfranc9",
+      "lang": "es",
+      "baseUrl": "https://capibaratraductor.com/6ianfranc9",
+      "contentType": "manga",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": false,
+        "home": false,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://capibaratraductor.com/6ianfranc9/manga/*",
+          "kind": "item"
+        }
+      ]
+    }
+  ]
+}

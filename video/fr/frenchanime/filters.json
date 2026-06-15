@@ -1,0 +1,16 @@
+[
+  {
+    "key": "category",
+    "title": "Categorie",
+    "type": "select",
+    "default": "",
+    "values": ["", "/animes-vf/", "/animes-vostfr/", "/films-vf-vostfr/"]
+  },
+  {
+    "key": "genre",
+    "title": "Genre",
+    "type": "select",
+    "default": "",
+    "values": ["", "/genre/action/", "/genre/aventure/", "/genre/comedie/", "/genre/drame/", "/genre/fantastique/", "/genre/romance/", "/genre/sci-fi/", "/genre/surnaturel/"]
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "filters": [
+    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "action", "adventure", "comedy", "drama", "fantasy", "romance", "school", "shounen", "slice-of-life"] }
+  ]
+}

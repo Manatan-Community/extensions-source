@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "packageId": "gorakuweb",
+  "name": "Goraku Web",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "ja",
+  "contentType": "manga",
+  "contentRating": "adult",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": ["https://gorakuweb.com"],
+    "webview": true,
+    "cookies": true
+  },
+  "sources": [
+    {
+      "id": "gorakuweb",
+      "name": "Goraku Web",
+      "lang": "ja",
+      "baseUrl": "https://gorakuweb.com",
+      "contentType": "manga",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "home": true,
+        "urlResolution": true,
+        "processedPages": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://gorakuweb.com/series/*", "kind": "item" },
+        { "pattern": "https://gorakuweb.com/episode/*", "kind": "item" }
+      ]
+    }
+  ]
+}

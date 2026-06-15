@@ -1,0 +1,85 @@
+[
+  {
+    "id": "status",
+    "type": "select",
+    "title": "Status",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Ongoing", "value": "ongoing" },
+      { "label": "Completed", "value": "completed" },
+      { "label": "Upcoming", "value": "upcoming" },
+      { "label": "Hiatus", "value": "hiatus" },
+      { "label": "Cancelled", "value": "cancelled" }
+    ]
+  },
+  {
+    "id": "country",
+    "type": "select",
+    "title": "Type",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "Manga", "value": "JP" },
+      { "label": "Manhwa", "value": "KR" },
+      { "label": "Manhua", "value": "CN" }
+    ]
+  },
+  {
+    "id": "language",
+    "type": "select",
+    "title": "Language",
+    "default": "",
+    "options": [
+      { "label": "Any", "value": "" },
+      { "label": "English", "value": "en" },
+      { "label": "Arabic", "value": "ar" },
+      { "label": "Spanish", "value": "es" },
+      { "label": "Spanish (Latin America)", "value": "es-419" },
+      { "label": "French", "value": "fr" },
+      { "label": "Italian", "value": "it" },
+      { "label": "Polish", "value": "pl" },
+      { "label": "Portuguese (Brazil)", "value": "pt-br" },
+      { "label": "German", "value": "de" },
+      { "label": "Japanese", "value": "ja" },
+      { "label": "Korean", "value": "ko" },
+      { "label": "Chinese", "value": "zh" },
+      { "label": "Russian", "value": "ru" },
+      { "label": "Turkish", "value": "tr" },
+      { "label": "Thai", "value": "th" },
+      { "label": "Vietnamese", "value": "vi" },
+      { "label": "Indonesian", "value": "id" }
+    ]
+  },
+  { "id": "year", "type": "text", "title": "Year", "default": "" },
+  {
+    "id": "genres",
+    "type": "multiSelect",
+    "title": "Genres",
+    "default": [],
+    "options": [
+      { "label": "Action", "value": "Action" },
+      { "label": "Adventure", "value": "Adventure" },
+      { "label": "Boys' Love", "value": "Boys' Love" },
+      { "label": "Comedy", "value": "Comedy" },
+      { "label": "Drama", "value": "Drama" },
+      { "label": "Ecchi", "value": "Ecchi" },
+      { "label": "Fantasy", "value": "Fantasy" },
+      { "label": "Girls' Love", "value": "Girls' Love" },
+      { "label": "Horror", "value": "Horror" },
+      { "label": "Romance", "value": "Romance" },
+      { "label": "Sci-Fi", "value": "Sci-Fi" },
+      { "label": "Slice of Life", "value": "Slice of Life" },
+      { "label": "Supernatural", "value": "Supernatural" },
+      { "label": "Thriller", "value": "Thriller" },
+      { "label": "Mystery", "value": "Mystery" },
+      { "label": "Psychological", "value": "Psychological" },
+      { "label": "Sports", "value": "Sports" },
+      { "label": "Music", "value": "Music" },
+      { "label": "Josei", "value": "Josei" },
+      { "label": "Seinen", "value": "Seinen" },
+      { "label": "Shoujo", "value": "Shoujo" },
+      { "label": "Shounen", "value": "Shounen" }
+    ]
+  }
+]

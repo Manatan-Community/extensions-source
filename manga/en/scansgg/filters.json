@@ -1,0 +1,26 @@
+[
+  {
+    "id": "types",
+    "type": "multiselect",
+    "label": "Type",
+    "options": [
+      { "id": "1", "label": "Comic" },
+      { "id": "2", "label": "Manga" },
+      { "id": "3", "label": "Manhwa" },
+      { "id": "4", "label": "Manhua" },
+      { "id": "5", "label": "Webtoon" }
+    ]
+  },
+  {
+    "id": "statuses",
+    "type": "multiselect",
+    "label": "Status",
+    "options": [
+      { "id": "1", "label": "Ongoing" },
+      { "id": "2", "label": "Completed" },
+      { "id": "3", "label": "Hiatus" },
+      { "id": "4", "label": "Cancelled" },
+      { "id": "5", "label": "Dropped" }
+    ]
+  }
+]

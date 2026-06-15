@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "packageId": "animeindo",
+  "name": "AnimeIndo",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "lang": "id",
+  "contentType": "video",
+  "contentRating": "safe",
+  "icon": "assets/icon.png",
+  "network": ["https://animeindo.skin"],
+  "filters": "filters.json",
+  "preferences": "preferences.json",
+  "sources": [
+    {
+      "id": "animeindo",
+      "name": "AnimeIndo",
+      "lang": "id",
+      "baseUrl": "https://animeindo.skin",
+      "contentType": "video",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": true, "preferences": true, "home": true, "hosterResolution": true, "urlResolution": true },
+      "listings": [{ "id": "popular", "name": "Popular" }, { "id": "latest", "name": "Latest" }],
+      "urlPatterns": [{ "pattern": "https://animeindo.skin/*", "kind": "item" }]
+    }
+  ]
+}
