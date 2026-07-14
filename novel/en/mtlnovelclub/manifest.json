@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "mtlnovelclub",
   "name": "MTLNovelClub",
-  "version": "0.1.0",
-  "versionCode": 2,
+  "version": "0.1.1",
+  "versionCode": 3,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -16,7 +16,7 @@
   "permissions": {
     "network": {
       "allow": [
-        "mtlnovel.club"
+        "https://mtlnovel.club"
       ]
     }
   },

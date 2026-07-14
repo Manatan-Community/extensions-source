@@ -293,15 +293,25 @@ fn validate_extension(extension: &ExtensionDir) -> Result<()> {
 }
 
 fn validate_network_pattern(pattern: &str) -> Result<()> {
+    let (scheme, authority) = pattern
+        .split_once("://")
+        .context("network entries must be URL origins such as https://example.com")?;
     ensure!(
-        !pattern.contains("/"),
-        "network entries are hostnames, not URLs"
+        matches!(scheme, "http" | "https"),
+        "network entry scheme must be http or https"
     );
     ensure!(
-        pattern != "*" && pattern != "*.*",
+        !authority.contains(['/', '?', '#', '@']),
+        "network entries must be origins without paths, queries, fragments, or credentials"
+    );
+    let host = authority
+        .rsplit_once(':')
+        .map_or(authority, |(host, _port)| host);
+    ensure!(
+        host != "*" && host != "*.*",
         "broad wildcards are forbidden"
     );
-    let host = pattern.strip_prefix("*.").unwrap_or(pattern);
+    let host = host.strip_prefix("*.").unwrap_or(host);
     ensure!(
         host.contains('.'),
         "hostname must contain a registrable suffix"
@@ -318,6 +328,26 @@ fn validate_network_pattern(pattern: &str) -> Result<()> {
         "hostname labels are invalid"
     );
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_network_pattern;
+
+    #[test]
+    fn validates_network_url_origins() {
+        assert!(validate_network_pattern("https://example.com").is_ok());
+        assert!(validate_network_pattern("https://*.example.com").is_ok());
+        assert!(validate_network_pattern("http://example.com:8080").is_ok());
+    }
+
+    #[test]
+    fn rejects_non_origin_network_permissions() {
+        assert!(validate_network_pattern("example.com").is_err());
+        assert!(validate_network_pattern("ftp://example.com").is_err());
+        assert!(validate_network_pattern("https://example.com/path").is_err());
+        assert!(validate_network_pattern("https://*").is_err());
+    }
 }
 
 fn validate_matrix() -> Result<()> {

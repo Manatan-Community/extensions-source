@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "cat300",
   "name": "Cat300",
-  "version": "1.0.0",
-  "versionCode": 1,
+  "version": "1.0.1",
+  "versionCode": 2,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -14,7 +14,11 @@
   "license": "Apache-2.0",
   "icon": "assets/icon.png",
   "permissions": {
-    "network": { "allow": ["cat-300.com"] },
+    "network": {
+      "allow": [
+        "https://cat-300.com"
+      ]
+    },
     "cookies": false,
     "webview": false,
     "storage": false,
@@ -36,13 +40,30 @@
       "contentType": "manga",
       "baseUrl": "https://cat-300.com",
       "contentRating": "adult",
-      "capabilities": { "search": true, "latest": true, "filters": true },
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true
+      },
       "listings": [
-        { "id": "popular", "name": "Popular" },
-        { "id": "latest", "name": "Latest" }
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
       ],
-      "urlPatterns": [ { "pattern": "https://cat-300.com/manga/*", "kind": "manga" } ],
-      "tags": ["madara"]
+      "urlPatterns": [
+        {
+          "pattern": "https://cat-300.com/manga/*",
+          "kind": "manga"
+        }
+      ],
+      "tags": [
+        "madara"
+      ]
     }
   ]
 }

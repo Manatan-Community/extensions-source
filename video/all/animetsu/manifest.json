@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animetsu",
   "name": "Animetsu",
-  "version": "0.1.0",
-  "versionCode": 1,
+  "version": "0.1.1",
+  "versionCode": 2,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -16,12 +16,12 @@
   "permissions": {
     "network": {
       "allow": [
-        "animetsu.net",
-        "animetsu.live",
-        "animetsu.bz",
-        "animetsu.cc",
-        "s4.anilist.co",
-        "swiftstream.top"
+        "https://animetsu.net",
+        "https://animetsu.live",
+        "https://animetsu.bz",
+        "https://animetsu.cc",
+        "https://s4.anilist.co",
+        "https://swiftstream.top"
       ]
     },
     "cookies": true,
@@ -55,20 +55,52 @@
         "mediaProcessing": true
       },
       "listings": [
-        { "id": "popular", "name": "Popular" },
-        { "id": "latest", "name": "Latest" }
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://animetsu.net/anime/*", "kind": "item" },
-        { "pattern": "https://animetsu.net/watch/*", "kind": "item-or-episode" },
-        { "pattern": "https://animetsu.live/anime/*", "kind": "item" },
-        { "pattern": "https://animetsu.live/watch/*", "kind": "item-or-episode" },
-        { "pattern": "https://animetsu.bz/anime/*", "kind": "item" },
-        { "pattern": "https://animetsu.bz/watch/*", "kind": "item-or-episode" },
-        { "pattern": "https://animetsu.cc/anime/*", "kind": "item" },
-        { "pattern": "https://animetsu.cc/watch/*", "kind": "item-or-episode" }
+        {
+          "pattern": "https://animetsu.net/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://animetsu.net/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://animetsu.live/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://animetsu.live/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://animetsu.bz/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://animetsu.bz/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://animetsu.cc/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://animetsu.cc/watch/*",
+          "kind": "item-or-episode"
+        }
       ],
-      "tags": ["animetsu"]
+      "tags": [
+        "animetsu"
+      ]
     }
   ]
 }

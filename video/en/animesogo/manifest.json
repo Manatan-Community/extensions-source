@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animesogo",
   "name": "AnimeSogo",
-  "version": "0.1.0",
-  "versionCode": 1,
+  "version": "0.1.1",
+  "versionCode": 2,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -16,28 +16,28 @@
   "permissions": {
     "network": {
       "allow": [
-        "animesogo.to",
-        "cdn.anipixcdn.co",
-        "mapper.nekostream.site",
-        "*.nekostream.site",
-        "mewcdn.online",
-        "*.mewcdn.online",
-        "*.ibyteimg.com",
-        "*.tiktokcdn.com",
-        "vidplay.site",
-        "*.vidplay.site",
-        "vidplay.org",
-        "*.vidplay.org",
-        "megacloud.blog",
-        "*.megacloud.blog",
-        "megacloud.club",
-        "*.megacloud.club",
-        "rabbitstream.net",
-        "*.rabbitstream.net",
-        "kwik.cx",
-        "*.kwik.cx",
-        "vidstream.pro",
-        "*.vidstream.pro"
+        "https://animesogo.to",
+        "https://cdn.anipixcdn.co",
+        "https://mapper.nekostream.site",
+        "https://*.nekostream.site",
+        "https://mewcdn.online",
+        "https://*.mewcdn.online",
+        "https://*.ibyteimg.com",
+        "https://*.tiktokcdn.com",
+        "https://vidplay.site",
+        "https://*.vidplay.site",
+        "https://vidplay.org",
+        "https://*.vidplay.org",
+        "https://megacloud.blog",
+        "https://*.megacloud.blog",
+        "https://megacloud.club",
+        "https://*.megacloud.club",
+        "https://rabbitstream.net",
+        "https://*.rabbitstream.net",
+        "https://kwik.cx",
+        "https://*.kwik.cx",
+        "https://vidstream.pro",
+        "https://*.vidstream.pro"
       ]
     },
     "cookies": true
@@ -67,13 +67,24 @@
         "mediaProcessing": true
       },
       "listings": [
-        { "id": "popular", "name": "Popular" },
-        { "id": "latest", "name": "Latest" }
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://animesogo.to/watch/*", "kind": "item-or-episode" }
+        {
+          "pattern": "https://animesogo.to/watch/*",
+          "kind": "item-or-episode"
+        }
       ],
-      "tags": ["anikoto"]
+      "tags": [
+        "anikoto"
+      ]
     }
   ]
 }

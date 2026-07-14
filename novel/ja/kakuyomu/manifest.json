@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "kakuyomu",
   "name": "kakuyomu",
-  "version": "1.0.0",
-  "versionCode": 1,
+  "version": "1.0.1",
+  "versionCode": 2,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -16,9 +16,9 @@
   "permissions": {
     "network": {
       "allow": [
-        "kakuyomu.jp",
-        "cdn-static.kakuyomu.jp",
-        "cdn-ak.f.st-hatena.com"
+        "https://kakuyomu.jp",
+        "https://cdn-static.kakuyomu.jp",
+        "https://cdn-ak.f.st-hatena.com"
       ]
     },
     "cookies": false,
@@ -48,10 +48,16 @@
         "urlResolution": true
       },
       "listings": [
-        { "id": "popular", "name": "Popular" }
+        {
+          "id": "popular",
+          "name": "Popular"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://kakuyomu.jp/works/*", "kind": "item-or-chapter" }
+        {
+          "pattern": "https://kakuyomu.jp/works/*",
+          "kind": "item-or-chapter"
+        }
       ]
     }
   ]
