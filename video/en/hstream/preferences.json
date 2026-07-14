@@ -1,3 +1,0 @@
-[
-  { "id": "pref_quality_key", "type": "select", "label": "Preferred quality", "default": "720p", "options": [{ "label": "720p (HD)", "value": "720p" }, { "label": "1080p (FULLHD)", "value": "1080p" }, { "label": "2160p (4K)", "value": "2160p" }] }
-]

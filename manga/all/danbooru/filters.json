@@ -1,9 +1,0 @@
-{
-  "groups": [
-    { "id": "description", "type": "text", "name": "Description" },
-    { "id": "tags", "type": "text", "name": "Tags" },
-    { "id": "isDeleted", "type": "toggle", "name": "Deleted" },
-    { "id": "category", "type": "select", "name": "Category", "options": ["Series", "Collection"] },
-    { "id": "order", "type": "select", "name": "Order", "options": ["Last updated", "Name", "Recently created", "Post count"] }
-  ]
-}

@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": 7668016,
+      "number": 352,
+      "name": "The Puppet Nobody Wants",
+      "language": "es-la",
+      "type": "unofficial",
+      "createdAt": 1783305123
+    }
+  ],
+  "meta": {
+    "lastPage": 2,
+    "hasNext": false
+  }
+}

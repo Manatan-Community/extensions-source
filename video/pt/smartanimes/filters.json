@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "order", "label": "Ordem", "kind": "select", "defaultValue": "popular", "options": ["popular", "update"] },
-    { "id": "status", "label": "Status", "kind": "text", "defaultValue": "" },
-    { "id": "type", "label": "Tipo", "kind": "text", "defaultValue": "" },
-    { "id": "sub", "label": "Legenda", "kind": "text", "defaultValue": "" }
-  ]
-}

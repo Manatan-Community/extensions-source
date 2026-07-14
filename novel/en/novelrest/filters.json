@@ -1,4 +1,0 @@
-[
-  { "id": "status", "type": "select", "label": "Status", "options": ["", "ONGOING", "COMPLETED", "HIATUS"] },
-  { "id": "sort", "type": "select", "label": "Sort by", "options": ["latest", "popular", "rating", "updated"] }
-]

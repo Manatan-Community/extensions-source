@@ -1,3 +1,0 @@
-{ "schemaVersion": 1, "filters": [
-  { "id": "genre", "label": "Genero", "kind": "select", "defaultValue": "", "options": ["", "Acao:acao", "Aventura:aventura", "Comedia:comedia", "Drama:drama", "Fantasia:fantasia", "Romance:romance"] }
-] }

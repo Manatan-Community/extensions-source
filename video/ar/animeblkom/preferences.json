@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "720p", "options": ["1080p", "720p", "480p", "360p", "240p"] },
-    { "id": "domain", "label": "Preferred domain", "kind": "select", "defaultValue": "https://animeblkom.net", "options": ["https://animeblkom.net", "https://animeblkom.tv", "https://blkom.com"] }
-  ]
-}

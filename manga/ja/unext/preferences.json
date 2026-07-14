@@ -1,3 +1,0 @@
-[
-  { "id": "hide_paid", "type": "boolean", "label": "Hide paid chapters", "default": true }
-]

@@ -1,1 +1,0 @@
-[{"id":"sort","type":"select","name":"Sort by","default":"score","options":[{"label":"Latest","value":"created"},{"label":"Popular","value":"hits"},{"label":"Recommended","value":"score"},{"label":"Best","value":"likes"}]},{"id":"keyword","type":"text","name":"Keyword","default":""}]

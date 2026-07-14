@@ -1,21 +1,40 @@
 [workspace]
-members = [
-  "shared/manatan-shared",
-  "tools/xtask"
-]
-exclude = [
-  "manga/*/*",
-  "video/*/*",
-  "novel/*/*"
-]
 resolver = "2"
+members = [
+    "manga/*/*",
+    "video/*/*",
+    "novel/*/*",
+    "shared/*",
+    "tools/xtask",
+]
 
 [workspace.package]
-edition = "2024"
-license = "MIT"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/Manatan-Community/extensions-source"
 
 [workspace.dependencies]
 anyhow = "1"
+manatan-sdk = "0.3.0"
+manatan-common = { path = "shared/manatan-common" }
+anikoto-theme = { path = "shared/anikoto-theme" }
+madara-manga = { path = "shared/madara-manga" }
+madara-novel = { path = "shared/madara-novel" }
+base64 = "0.22"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+regex = "1"
+scraper = "0.25"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-manatan-extension = { git = "https://github.com/KolbyML/manatan-rs", default-features = false }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+toml = "0.8"
+url = "2.5"
+walkdir = "2"
+zip = { version = "2.4", default-features = false, features = ["deflate"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1

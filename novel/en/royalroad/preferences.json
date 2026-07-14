@@ -1,8 +1,0 @@
-[
-  {
-    "id": "enableVol",
-    "type": "checkbox",
-    "label": "Enable Pagination / Volume view (not recommended)",
-    "default": false
-  }
-]

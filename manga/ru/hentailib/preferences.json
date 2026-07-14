@@ -1,9 +1,0 @@
-[
-  { "id": "domain", "type": "text", "label": "Домен", "default": "https://hentailib.me" },
-  { "id": "apiDomain", "type": "select", "label": "Выбор домена API", "options": ["https://api.cdnlibs.org", "https://api2.mangalib.me", "https://hapi.hentaicdn.org", "https://api.imglib.info"], "default": "https://api.cdnlibs.org" },
-  { "id": "imageServer", "type": "select", "label": "Сервер изображений", "options": ["auto", "main", "secondary", "compress"], "default": "compress" },
-  { "id": "titleLanguage", "type": "select", "label": "Выбор языка на обложке", "options": ["eng", "rus"], "default": "eng" },
-  { "id": "showPaidChapters", "type": "checkbox", "label": "Показывать все платные главы", "default": false },
-  { "id": "bearerToken", "type": "text", "label": "Bearer Token", "default": "" },
-  { "id": "userId", "type": "text", "label": "User ID", "default": "" }
-]

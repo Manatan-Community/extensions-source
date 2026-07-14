@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "id": "kmansin09",
+  "name": "Kmansin09",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "manga",
+  "description": "Japanese manga from Kmansin09.",
+  "author": "Manatan Community",
+  "homepage": "https://kmansin09.top",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": { "allow": ["kmansin09.top", "post-phinf.pstatic.net"] },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "b0cc2af071c7c0762edefe33ccd8dfb1553997fade1164186401dd6f7a194f0f"
+    }
+  ],
+  "sources": [
+    {
+      "id": "kmansin09",
+      "name": "Kmansin09",
+      "lang": "ja",
+      "contentType": "manga",
+      "baseUrl": "https://kmansin09.top",
+      "contentRating": "safe",
+      "capabilities": { "search": true, "latest": true, "filters": true },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [ { "pattern": "https://kmansin09.top/manga/*", "kind": "manga" } ],
+      "tags": ["madara"]
+    }
+  ]
+}

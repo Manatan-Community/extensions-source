@@ -1,8 +1,0 @@
-[
-  {
-    "id": "domain",
-    "type": "text",
-    "label": "Домен",
-    "default": "https://mangahub.ru"
-  }
-]

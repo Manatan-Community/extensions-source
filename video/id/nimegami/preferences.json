@@ -1,3 +1,0 @@
-[
-  { "key": "preferred_quality", "type": "select", "title": "Preferred quality", "default": "720p", "entries": ["1080p", "720p", "480p", "360p"], "values": ["1080p", "720p", "480p", "360p"] }
-]

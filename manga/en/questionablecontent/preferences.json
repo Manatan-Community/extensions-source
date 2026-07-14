@@ -1,8 +1,0 @@
-[
-  {
-    "id": "show_authors_notes",
-    "type": "toggle",
-    "label": "Show author's notes",
-    "default": false
-  }
-]

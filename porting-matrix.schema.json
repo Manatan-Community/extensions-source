@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Manatan extension porting matrix",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "sources"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["upstreamRepository", "upstreamPath", "sourceId", "language", "mediaKind", "framework", "requiredCapabilities", "status", "tests", "packagePath", "license"],
+        "properties": {
+          "upstreamRepository": { "type": "string" },
+          "upstreamPath": { "type": "string" },
+          "sourceId": { "type": "string" },
+          "language": { "type": "string" },
+          "mediaKind": { "enum": ["manga", "video", "novel"] },
+          "framework": { "type": "string" },
+          "requiredCapabilities": { "type": "array", "items": { "type": "string" } },
+          "status": { "enum": ["inventoried", "framework-ready", "implemented", "component-valid", "runtime-tested", "live-verified", "blocked-upstream"] },
+          "tests": { "type": "array", "items": { "type": "string" } },
+          "packagePath": { "type": ["string", "null"] },
+          "knownSiteFailure": { "type": ["string", "null"] },
+          "license": { "type": "string" },
+          "attribution": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+

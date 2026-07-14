@@ -1,9 +1,0 @@
-[
-  {
-    "id": "removePremiumChapters",
-    "type": "toggle",
-    "title": "Hide paid chapters",
-    "summary": "Hide chapters that require site currency.",
-    "default": true
-  }
-]

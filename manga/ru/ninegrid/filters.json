@@ -1,6 +1,0 @@
-[
-  { "id": "sort", "type": "select", "name": "Сортировка", "options": ["popular:По популярности", "latest:По новизне", "name:По названию", "year:По году"] },
-  { "id": "publisher", "type": "text", "name": "Издатель" },
-  { "id": "year", "type": "text", "name": "Год начала" },
-  { "id": "genre", "type": "multiSelect", "name": "Жанры", "options": ["Adult:Adult", "Crime:Crime", "Espionage:Espionage", "Fantasy:Fantasy", "Historical:Historical", "Horror:Horror", "Humor:Humor", "Manga:Manga", "Martial Arts:Martial Arts", "Math & Science:Math & Science", "Military:Military", "Mystery:Mystery", "Mythology:Mythology", "Political:Political", "Post-Apocalyptic:Post-Apocalyptic", "Psychological:Psychological", "Pulp:Pulp", "Romance:Romance", "School Life:School Life", "Sci-Fi:Sci-Fi", "Slice of Life:Slice of Life", "Spy:Spy", "Superhero:Superhero", "Supernatural:Supernatural", "Thriller:Thriller", "War:War", "Western:Western"] }
-]

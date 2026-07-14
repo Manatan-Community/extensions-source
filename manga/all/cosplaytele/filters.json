@@ -1,5 +1,0 @@
-{
-  "groups": [
-    { "id": "category", "type": "select", "name": "Category", "options": ["All", "Cosplay Nude", "Cosplay Ero", "Cosplay"] }
-  ]
-}

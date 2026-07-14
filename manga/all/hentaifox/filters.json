@@ -1,5 +1,0 @@
-{
-  "groups": [
-    { "id": "query", "type": "text", "name": "Search terms" }
-  ]
-}

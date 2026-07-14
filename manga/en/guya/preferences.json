@@ -1,8 +1,0 @@
-[
-  {
-    "id": "preferred_scanlator",
-    "type": "text",
-    "label": "Preferred scanlator ID",
-    "default": "1"
-  }
-]

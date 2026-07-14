@@ -1,9 +1,0 @@
-[
-  { "id": "sort", "type": "select", "label": "Sort results by", "default": "1", "options": ["1", "2", "3", "4", "5"] },
-  { "id": "status", "type": "select", "label": "Content status", "default": "0", "options": ["0", "1", "2"] },
-  { "id": "genresGender", "type": "select", "label": "Genres", "default": "1", "options": ["1", "2"] },
-  { "id": "genresMale", "type": "select", "label": "Male genres", "default": "1", "options": ["1", "novel-action-male", "novel-acg-male", "novel-eastern-male", "novel-fantasy-male", "novel-games-male", "novel-history-male", "novel-horror-male", "novel-realistic-male", "novel-scifi-male", "novel-sports-male", "novel-urban-male", "novel-war-male"] },
-  { "id": "genresFemale", "type": "select", "label": "Female genres", "default": "2", "options": ["2", "novel-fantasy-female", "novel-general-female", "novel-history-female", "novel-lgbt-female", "novel-scifi-female", "novel-teen-female", "novel-urban-female"] },
-  { "id": "type", "type": "select", "label": "Content type", "default": "0", "options": ["0", "1", "2", "3"] },
-  { "id": "fanficSearch", "type": "text", "label": "Search fanfics" }
-]

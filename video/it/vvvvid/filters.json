@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "page", "label": "Pagina principale", "kind": "select", "defaultValue": "anime", "options": ["Anime:anime", "Film:film", "Serie TV:series", "Show:show", "Kids:kids"] },
-    { "id": "channel", "label": "Canale", "kind": "string", "defaultValue": "" }
-  ]
-}

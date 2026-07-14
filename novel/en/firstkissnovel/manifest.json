@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "id": "firstkissnovel",
+  "name": "FirstKissNovel",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "description": "English web novels from FirstKissNovel.",
+  "author": "Manatan Community",
+  "homepage": "https://1stkissnovel.love",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MPL-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "1stkissnovel.love"
+      ]
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "ae5836cd8b597c9c5f29df403785cde11a94e0ebe77dc986a1b2b192b7d9b0c1"
+    }
+  ],
+  "sources": [
+    {
+      "id": "firstkissnovel",
+      "name": "FirstKissNovel",
+      "lang": "en",
+      "contentType": "novel",
+      "baseUrl": "https://1stkissnovel.love",
+      "contentRating": "safe",
+      "capabilities": {
+        "operations": [
+          "commands.describe",
+          "commands.detail.fetch",
+          "commands.chapter.fetch",
+          "commands.content.fetch"
+        ],
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://1stkissnovel.love/novel/*",
+          "kind": "item-or-chapter"
+        }
+      ]
+    }
+  ]
+}

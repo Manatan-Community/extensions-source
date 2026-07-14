@@ -1,4 +1,0 @@
-[
-  { "key": "preferred_quality", "title": "Preferred quality", "type": "list", "default": "1080p", "entries": ["360p", "480p", "720p", "1080p"], "entryValues": ["360p", "480p", "720p", "1080p"] },
-  { "key": "preferred_server", "title": "Preferred server", "type": "list", "default": "Amazon", "entries": ["YourUpload", "SendVid", "BurstCloud", "StreamTape", "Filemoon", "Okru", "Amazon"], "entryValues": ["YourUpload", "SendVid", "BurstCloud", "StreamTape", "Filemoon", "Okru", "Amazon"] }
-]

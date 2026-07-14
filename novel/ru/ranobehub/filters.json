@@ -1,7 +1,0 @@
-[
-  { "id": "sort", "type": "select", "label": "Sort", "default": "computed_rating", "options": ["computed_rating", "last_chapter_at", "created_at", "name_rus", "views", "count_chapters", "count_of_symbols"] },
-  { "id": "status", "type": "select", "label": "Status", "default": "", "options": ["", "1", "2", "3", "4"] },
-  { "id": "country", "type": "multiSelect", "label": "Type", "default": [], "options": ["1", "2", "3", "4"] },
-  { "id": "tagsInclude", "type": "multiSelect", "label": "Include tags", "default": [], "options": ["338", "25", "28", "314", "285", "117", "211", "369", "422", "336", "224"] },
-  { "id": "tagsExclude", "type": "multiSelect", "label": "Exclude tags", "default": [], "options": ["338", "25", "28", "314", "285", "117", "211", "369", "422", "336", "224"] }
-]

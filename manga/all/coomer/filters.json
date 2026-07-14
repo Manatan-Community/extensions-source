@@ -1,6 +1,0 @@
-{
-  "groups": [
-    { "id": "sort", "type": "select", "name": "Sort by", "options": ["Popularity", "Date Indexed", "Date Updated", "Alphabetical Order", "Service"] },
-    { "id": "types", "type": "text", "name": "Types" }
-  ]
-}

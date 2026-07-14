@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "genre", "label": "Generi", "kind": "select", "defaultValue": "", "options": ["", "3D", "Ahegao", "Anal", "BDSM", "Big Boobs", "Blow Job", "Bondage", "Censored", "Comedy", "Cosplay", "Creampie", "Fantasy", "Futanari", "Gangbang", "Harem", "HD", "Horror", "Incest", "Loli", "Maid", "Milf", "NTR", "Nurse", "Orgy", "POV", "School Girl", "Shota", "Softcore", "Tentacle", "Threesome", "Uncensored", "Yaoi", "Yuri"] },
-    { "id": "year", "label": "Anno di Uscita", "kind": "select", "defaultValue": "", "options": ["", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010"] },
-    { "id": "state", "label": "Stato", "kind": "select", "defaultValue": "", "options": ["", "In corso:0", "Finito:1", "Non rilasciato:2", "Droppato:3"] },
-    { "id": "language", "label": "Lingua", "kind": "select", "defaultValue": "", "options": ["", "Subbato:0", "Doppiato:1"] }
-  ]
-}

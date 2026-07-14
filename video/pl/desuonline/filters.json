@@ -1,9 +1,0 @@
-[
-  {
-    "key": "order",
-    "title": "Kolejnosc",
-    "type": "select",
-    "default": "popular",
-    "values": ["popular", "update"]
-  }
-]

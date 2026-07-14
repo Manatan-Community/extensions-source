@@ -1,6 +1,0 @@
-{
-  "groups": [
-    { "id": "username", "type": "text", "name": "Username" },
-    { "id": "password", "type": "text", "name": "Password" }
-  ]
-}

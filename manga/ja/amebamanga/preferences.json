@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "hide_locked", "label": "Hide locked chapters", "kind": "toggle", "defaultValue": "false" }
-  ]
-}

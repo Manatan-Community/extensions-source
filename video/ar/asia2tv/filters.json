@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "type", "label": "نوع الدراما", "kind": "select", "defaultValue": "", "options": ["", "korean", "japanese", "chinese-taiwanese", "thai", "kshow"] },
-    { "id": "status", "label": "حالة الدراما", "kind": "select", "defaultValue": "", "options": ["", "status/ongoing-drama", "completed-dramas", "status/upcoming-drama"] }
-  ]
-}

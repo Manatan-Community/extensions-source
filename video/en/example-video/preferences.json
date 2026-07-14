@@ -1,4 +1,0 @@
-[
-  { "id": "preferDebrid", "type": "toggle", "label": "Prefer debrid streams", "default": false },
-  { "id": "webviewToken", "type": "text", "label": "WebView token", "default": "" }
-]

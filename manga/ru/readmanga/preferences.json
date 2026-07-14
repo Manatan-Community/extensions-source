@@ -1,4 +1,0 @@
-[
-  { "id": "domain", "type": "text", "label": "Домен", "default": "https://a.zazaza.me" },
-  { "id": "userAgent", "type": "text", "label": "User-Agent(для некоторых стран)", "default": "arora" }
-]

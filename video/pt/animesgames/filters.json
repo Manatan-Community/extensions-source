@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "audio", "label": "Audio", "kind": "select", "defaultValue": "0", "options": ["Todos:0", "Legendado:legendado", "Dublado:dublado"] },
-    { "id": "order", "label": "Ordenar por", "kind": "select", "defaultValue": "name", "options": ["Nome:name", "Nota:new"] },
-    { "id": "letter", "label": "Primeira letra", "kind": "select", "defaultValue": "0", "options": ["Selecione:0", "A:A", "B:B", "C:C", "D:D", "E:E", "F:F", "G:G", "H:H", "I:I", "J:J", "K:K", "L:L", "M:M", "N:N", "O:O", "P:P", "Q:Q", "R:R", "S:S", "T:T", "U:U", "V:V", "W:W", "X:X", "Y:Y", "Z:Z"] }
-  ]
-}

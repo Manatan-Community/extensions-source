@@ -1,9 +1,0 @@
-{
-  "groups": [
-    { "id": "sort", "type": "select", "name": "Sort by", "options": ["Upload Date", "Title", "Pages", "Favorites", "Popularity"] },
-    { "id": "order", "type": "select", "name": "Order", "options": ["Descending", "Ascending"] },
-    { "id": "duration", "type": "select", "name": "Duration", "options": ["Today", "This Week", "This Month", "This Year", "All Time"] },
-    { "id": "attributes", "type": "multiSelect", "name": "Attributes", "options": ["translated", "speechless", "rewritten"] },
-    { "id": "statuses", "type": "multiSelect", "name": "Status", "options": ["ongoing", "complete", "onhold", "canceled"] }
-  ]
-}

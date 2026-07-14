@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "type", "label": "النوع", "kind": "select", "defaultValue": "", "options": ["", "movie", "ova", "ona", "special"] },
-    { "id": "status", "label": "الحالة", "kind": "select", "defaultValue": "", "options": ["", "uploading", "completed", "ongoing", "upcoming"] }
-  ]
-}

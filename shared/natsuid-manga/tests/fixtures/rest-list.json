@@ -1,0 +1,30 @@
+[
+  {
+    "id": 101,
+    "slug": "alpha",
+    "title": { "rendered": "Alpha &amp; Beta" },
+    "content": { "rendered": "<p>First line.</p><p>Second line.</p>" },
+    "_embedded": {
+      "wp:featuredmedia": [{ "source_url": "https://rawkuma.net/wp-content/uploads/alpha.jpg" }],
+      "wp:term": [
+        [{ "name": "Action", "slug": "action", "taxonomy": "genre" }],
+        [{ "name": "Manga", "slug": "manga", "taxonomy": "type" }],
+        [{ "name": "Ongoing", "slug": "ongoing", "taxonomy": "status" }],
+        [{ "name": "Jane Doe", "slug": "jane-doe", "taxonomy": "series-author" }],
+        [{ "name": "John Doe", "slug": "john-doe", "taxonomy": "artist" }]
+      ]
+    }
+  },
+  {
+    "id": 202,
+    "slug": "novel-entry",
+    "title": { "rendered": "Novel Entry" },
+    "content": { "rendered": "<p>Novel text</p>" },
+    "_embedded": {
+      "wp:featuredmedia": [],
+      "wp:term": [
+        [{ "name": "Novel", "slug": "novel", "taxonomy": "type" }]
+      ]
+    }
+  }
+]

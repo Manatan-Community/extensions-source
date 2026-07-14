@@ -1,7 +1,0 @@
-[
-  { "id": "imageQuality", "type": "select", "label": "Image quality", "options": ["50", "75", "100"], "default": "75" },
-  { "id": "imageType", "type": "select", "label": "Image type", "options": ["webp", "jpeg"], "default": "webp" },
-  { "id": "imageWidth", "type": "select", "label": "Image width", "options": ["700", "1200", "1600"], "default": "1600" },
-  { "id": "branchMode", "type": "select", "label": "Режим веток глав", "options": ["all", "latest", "preferred"], "default": "all" },
-  { "id": "preferredBranch", "type": "text", "label": "Предпочитаемая ветка", "default": "" }
-]

@@ -1,0 +1,54 @@
+{
+  "current_page": 1,
+  "last_page": 500,
+  "results": [
+    {
+      "id": "6a480b7984c21874db80ac89",
+      "type": "anime",
+      "title": {
+        "romaji": "Snack HAZAMA",
+        "english": "Snack Hazama",
+        "native": "スナックはざま-HAZAMA-"
+      },
+      "status": "RELEASING",
+      "is_adult": false,
+      "cover_image": {
+        "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx213831-jrH7JR6feW1q.png",
+        "medium": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx213831-jrH7JR6feW1q.png",
+        "small": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx213831-jrH7JR6feW1q.png"
+      },
+      "banner": null,
+      "description": "A weekly mini anime.",
+      "year": 2026,
+      "format": "TV_SHORT",
+      "duration": 12,
+      "genres": ["Comedy", "Ecchi", "Supernatural"],
+      "average_score": 48,
+      "season": "SUMMER"
+    },
+    {
+      "id": "6a3ee67c945a0b6281a283be",
+      "type": "anime",
+      "title": {
+        "romaji": "Ushiro no Shoumen Kamui-san",
+        "english": "KAMUI ---He's behind you",
+        "native": "うしろの正面カムイさん"
+      },
+      "status": "RELEASING",
+      "is_adult": false,
+      "cover_image": {
+        "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx207674-BT8lFAwH1WrL.jpg",
+        "medium": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx207674-BT8lFAwH1WrL.jpg",
+        "small": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx207674-BT8lFAwH1WrL.jpg"
+      },
+      "banner": "/img/ep/ABwdGgoGGAZuEQYGBg8UFgQCAQRCBxUdGyUXHUwETV8RWggdBgkAW0JEeFJfUUVIXwdJEwsMAwYVA1p2BFtTQUhFFRgCClBVSx4DEg",
+      "description": "A schoolgirl sees ghosts and works with a psychic.",
+      "year": 2026,
+      "format": "TV_SHORT",
+      "duration": 12,
+      "genres": ["Comedy", "Ecchi", "Supernatural"],
+      "average_score": 56,
+      "season": "SUMMER"
+    }
+  ]
+}

@@ -1,7 +1,0 @@
-[
-  {"id":"preferred_language","type":"select","name":"Preferred language","default":"[LAT]","options":[{"label":"[LAT]","value":"[LAT]"},{"label":"[CAST]","value":"[CAST]"},{"label":"[SUB]","value":"[SUB]"}]},
-  {"id":"preferred_quality","type":"select","name":"Preferred quality","default":"1080","options":[{"label":"1080","value":"1080"},{"label":"720","value":"720"},{"label":"480","value":"480"},{"label":"360","value":"360"}]},
-  {"id":"preferred_server","type":"select","name":"Preferred server","default":"Voe","options":[
-    {"label":"YourUpload","value":"YourUpload"},{"label":"BurstCloud","value":"BurstCloud"},{"label":"Voe","value":"Voe"},{"label":"Mp4Upload","value":"Mp4Upload"},{"label":"Doodstream","value":"Doodstream"},{"label":"Upstream","value":"Upstream"},{"label":"StreamTape","value":"StreamTape"},{"label":"Amazon","value":"Amazon"},{"label":"Fastream","value":"Fastream"},{"label":"Filemoon","value":"Filemoon"},{"label":"StreamWish","value":"StreamWish"},{"label":"Okru","value":"Okru"},{"label":"Streamlare","value":"Streamlare"},{"label":"StreamHideVid","value":"StreamHideVid"}
-  ]}
-]

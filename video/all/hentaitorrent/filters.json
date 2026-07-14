@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "category", "label": "Category", "kind": "select", "defaultValue": "0", "options": ["0", "Cartoons", "2D%20video%20Hentai", "3D%20video%20Hentai", "Hentai%20DVD%20HD", "Main%20Subsection%20Hentai"] }
-  ]
-}

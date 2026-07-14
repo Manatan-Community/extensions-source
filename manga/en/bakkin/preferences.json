@@ -1,3 +1,0 @@
-[
-  { "id": "quality", "type": "select", "label": "Image quality", "options": ["", "?fullsize"], "default": "" }
-]

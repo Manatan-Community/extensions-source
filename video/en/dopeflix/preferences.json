@@ -1,6 +1,0 @@
-[
-  { "id": "preferred_popular_type", "type": "select", "label": "Popular type", "default": "Movies", "options": [{ "label": "Movies", "value": "Movies" }, { "label": "TV Shows", "value": "TV Shows" }] },
-  { "id": "preferred_quality", "type": "select", "label": "Preferred quality", "default": "1080p", "options": [{ "label": "1080p", "value": "1080p" }, { "label": "720p", "value": "720p" }, { "label": "480p", "value": "480p" }, { "label": "360p", "value": "360p" }] },
-  { "id": "preferred_server", "type": "select", "label": "Preferred server", "default": "UpCloud", "options": [{ "label": "UpCloud", "value": "UpCloud" }, { "label": "MegaCloud", "value": "MegaCloud" }, { "label": "Vidcloud", "value": "Vidcloud" }, { "label": "AKCloud", "value": "AKCloud" }] },
-  { "id": "hoster_selection", "type": "multiselect", "label": "Enable hosts", "default": ["UpCloud", "MegaCloud", "Vidcloud", "AKCloud"], "options": [{ "label": "UpCloud", "value": "UpCloud" }, { "label": "MegaCloud", "value": "MegaCloud" }, { "label": "Vidcloud", "value": "Vidcloud" }, { "label": "AKCloud", "value": "AKCloud" }] }
-]

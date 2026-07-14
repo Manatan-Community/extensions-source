@@ -1,6 +1,0 @@
-{
-  "groups": [
-    { "id": "sort", "type": "select", "name": "Sort by", "options": ["Trending", "Newest", "Popular"] },
-    { "id": "tag", "type": "text", "name": "Tag slug" }
-  ]
-}

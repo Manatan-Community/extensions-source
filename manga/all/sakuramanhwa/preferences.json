@@ -1,9 +1,0 @@
-[
-  { "id": "focusLanguage", "type": "select", "label": "Default search language", "default": "", "options": [
-    { "label": "All", "value": "" },
-    { "label": "English", "value": "eng" },
-    { "label": "Spanish", "value": "esp" },
-    { "label": "Chinese", "value": "ch" },
-    { "label": "Raw", "value": "raw" }
-  ] }
-]

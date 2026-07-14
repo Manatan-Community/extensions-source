@@ -1,9 +1,0 @@
-[
-  { "key": "preferred_domain", "type": "select", "title": "Preferred domain", "default": "https://hianime.ws", "entries": ["hianime.ws"], "values": ["https://hianime.ws"] },
-  { "key": "preferred_title_lang", "type": "select", "title": "Preferred title language", "default": "English", "entries": ["Romaji", "English"], "values": ["Romaji", "English"] },
-  { "key": "preferred_quality", "type": "select", "title": "Preferred quality", "default": "1080p", "entries": ["1080p", "720p", "480p", "360p"], "values": ["1080p", "720p", "480p", "360p"] },
-  { "key": "preferred_server", "type": "select", "title": "Preferred Server", "default": "Server 1", "entries": ["Server 1", "Server 2"], "values": ["Server 1", "Server 2"] },
-  { "key": "preferred_type", "type": "select", "title": "Preferred Type", "default": "[Soft Sub]", "entries": ["[Hard Sub]", "[Soft Sub]", "[Dub & S-Sub]"], "values": ["[Hard Sub]", "[Soft Sub]", "[Dub & S-Sub]"] },
-  { "key": "hoster_selection", "type": "multiselect", "title": "Enable/Disable Hosts", "default": ["Server 1", "Server 2"], "entries": ["Server 1", "Server 2"], "values": ["Server 1", "Server 2"] },
-  { "key": "type_selection", "type": "multiselect", "title": "Enable/Disable Types", "default": ["sub", "softsub", "dub"], "entries": ["[Hard Sub]", "[Soft Sub]", "[Dub & S-Sub]"], "values": ["sub", "softsub", "dub"] }
-]

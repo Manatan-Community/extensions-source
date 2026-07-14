@@ -1,6 +1,0 @@
-[
-  { "id": "order", "type": "select", "label": "Orden", "options": [
-    { "label": "Popular", "value": "popular" },
-    { "label": "Actualizado", "value": "update" }
-  ] }
-]

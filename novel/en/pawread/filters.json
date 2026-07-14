@@ -1,7 +1,0 @@
-[
-  { "id": "status", "type": "select", "label": "Status", "default": "", "options": ["", "wanjie", "lianzai", "hiatus"] },
-  { "id": "lang", "type": "select", "label": "Languages", "default": "", "options": ["", "chinese", "korean", "japanese"] },
-  { "id": "genre", "type": "select", "label": "Genres", "default": "", "options": ["", "Fantasy", "Action", "Xuanhuan", "Romance", "Comedy", "Mystery", "Mature", "Harem", "Wuxia", "Xianxia", "Tragedy", "Scifi", "Historical", "Ecchi", "Adventure", "Adult", "Supernatural", "Psychological", "Drama", "Horror", "Josei", "Mecha", "Seinen", "Shoujo", "Shounen", "Smut", "Yaoi", "Yuri", "MartialArts", "SchoolLife", "ShoujoAi", "ShounenAi", "SliceofLife", "GenderBender", "Sports", "Urban", "Adventurer"] },
-  { "id": "sort", "type": "select", "label": "Sort By", "default": "click", "options": ["update", "post", "click"] },
-  { "id": "order", "type": "checkbox", "label": "Ascending order", "default": false }
-]

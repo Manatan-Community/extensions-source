@@ -1,6 +1,0 @@
-{ "schemaVersion": 1, "filters": [
-  { "id": "animation", "label": "Animacao", "kind": "select", "defaultValue": "undefined", "options": ["Todos:undefined", "2D:2D", "3D:3D"] },
-  { "id": "status", "label": "Status", "kind": "select", "defaultValue": "0", "options": ["Todos:0", "Completo:completo", "Em lancamento:em-lancamento", "Em pausa:em-pausa"] },
-  { "id": "order", "label": "Ordem", "kind": "select", "defaultValue": "nome", "options": ["Nome:nome", "Recentes:recentes", "Popular:popular"] },
-  { "id": "letter", "label": "Letra", "kind": "select", "defaultValue": "0", "options": ["Todas:0", "A:a", "B:b", "C:c", "D:d", "E:e", "F:f", "G:g", "H:h", "I:i", "J:j", "K:k", "L:l", "M:m", "N:n", "O:o", "P:p", "Q:q", "R:r", "S:s", "T:t", "U:u", "V:v", "W:w", "X:x", "Y:y", "Z:z"] }
-] }

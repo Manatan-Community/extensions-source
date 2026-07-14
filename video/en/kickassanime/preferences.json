@@ -1,9 +1,0 @@
-[
-  { "key": "preferred_domain", "type": "select", "title": "Preferred domain", "default": "https://kaa.lt", "entries": ["kaa.lt", "kickass-anime.ru", "kickass-anime.ro", "kaa.to", "kaa.rs"], "values": ["https://kaa.lt", "https://kickass-anime.ru", "https://kickass-anime.ro", "https://kaa.to", "https://kaa.rs"] },
-  { "key": "pref_use_english", "type": "boolean", "title": "Use English titles", "default": false },
-  { "key": "preferred_audio_lang", "type": "select", "title": "Preferred audio language", "default": "ja-JP", "entries": ["Japanese", "English", "Spanish (Espana)", "Korean", "Chinese (Simplified)"], "values": ["ja-JP", "en-US", "es-ES", "ko-KR", "zh-CN"] },
-  { "key": "preferred_audio_lang_2nd", "type": "select", "title": "Secondary preferred audio language", "default": "en-US", "entries": ["Japanese", "English", "Spanish (Espana)", "Korean", "Chinese (Simplified)"], "values": ["ja-JP", "en-US", "es-ES", "ko-KR", "zh-CN"] },
-  { "key": "preferred_quality", "type": "select", "title": "Preferred quality", "default": "1080p", "entries": ["240p", "360p", "480p", "720p", "1080p", "2160p"], "values": ["240p", "360p", "480p", "720p", "1080p", "2160p"] },
-  { "key": "preferred_server", "type": "select", "title": "Preferred server", "default": "VidStreaming", "entries": ["VidStreaming", "CatStream", "BirdStream", "DuckStream"], "values": ["VidStreaming", "CatStream", "BirdStream", "DuckStream"] },
-  { "key": "hoster_exclusion", "type": "multiselect", "title": "Excluded Hosts", "default": [], "entries": ["VidStreaming", "CatStream", "BirdStream", "DuckStream"], "values": ["VidStreaming", "CatStream", "BirdStream", "DuckStream"] }
-]

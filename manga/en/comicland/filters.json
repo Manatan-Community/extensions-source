@@ -1,9 +1,0 @@
-[
-  {
-    "id": "category",
-    "type": "select",
-    "label": "Category",
-    "options": ["recommended", "official", "ongoing", "popular"],
-    "default": "popular"
-  }
-]

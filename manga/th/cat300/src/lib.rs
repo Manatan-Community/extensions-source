@@ -1,38 +1,64 @@
-use manatan_extension::export_manga_source;
-use manatan_shared::{impl_madara_source, manga, manga::MadaraConfig};
+use madara_manga::MadaraMangaConfig;
+#[cfg(target_arch = "wasm32")]
+use madara_manga::MadaraMangaSource;
 
-const SOURCE: Cat300 = Cat300;
-
+#[cfg_attr(not(target_arch = "wasm32"), allow(dead_code))]
 struct Cat300;
 
-impl manga::MadaraSource for Cat300 {
-    fn madara_config(&self, _request: &serde_json::Value) -> MadaraConfig {
-        MadaraConfig {
-            base_url: "https://cat-300.com",
-            lang: "th",
-            content_rating: "adult",
-            manga_path: "manga",
-            popular_url_marker: "post-title",
-            use_load_more: false,
-            latest_enabled: true,
-        }
-    }
-
-    fn madara_list_fixture(&self) -> &'static str {
-        LIST_FIXTURE
-    }
-    fn madara_details_fixture(&self) -> &'static str {
-        DETAILS_FIXTURE
-    }
-    fn madara_pages_fixture(&self) -> &'static str {
-        PAGES_FIXTURE
-    }
+impl MadaraMangaConfig for Cat300 {
+    const BASE_URL: &'static str = "https://cat-300.com";
 }
 
-impl_madara_source!(Cat300);
-export_manga_source!(SOURCE);
+#[cfg(target_arch = "wasm32")]
+manatan_sdk::export_extension!(
+    manatan_sdk::Extension::new().manga("cat300", MadaraMangaSource::<Cat300>::default())
+);
 
-const LIST_FIXTURE: &str = r#"<div class="page-item-detail"><h3 class="post-title"><a href="/manga/sample/">Sample Manga</a></h3><img src="/cover.jpg"></div><div class="nav-previous"></div>"#;
-const DETAILS_FIXTURE: &str = r#"<h1 class="post-title">Sample Manga</h1><div class="summary_image"><img src="/cover.jpg"></div><ul><li class="wp-manga-chapter"><a href="/manga/sample/chapter-1/">Chapter 1</a><span class="chapter-release-date">01/01/2024</span></li></ul>"#;
-const PAGES_FIXTURE: &str =
-    r#"<div class="reading-content"><img class="wp-manga-chapter-img" src="/page1.jpg"></div>"#;
+#[cfg(test)]
+mod tests {
+    use serde_json::{json, Value};
+    use sha2::{Digest, Sha256};
+
+    const MANIFEST: &str = include_str!("../manifest.json");
+    const ICON: &[u8] = include_bytes!("../assets/icon.png");
+    const ICON_SHA256: &str = "54599cd7486d4c979888c34520b65c9894dcce1c6fe054a35cd47dee962167dc";
+
+    #[test]
+    fn metadata_matches_expected_configuration() {
+        let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
+
+        assert_eq!(manifest["id"], "cat300");
+        assert_eq!(manifest["contentType"], "manga");
+        assert_eq!(manifest["license"], "Apache-2.0");
+        assert_eq!(
+            manifest["permissions"]["network"]["allow"],
+            json!(["cat-300.com"])
+        );
+        assert_eq!(
+            manifest["sources"],
+            json!([{
+                "id": "cat300",
+                "name": "Cat300",
+                "lang": "th",
+                "contentType": "manga",
+                "baseUrl": "https://cat-300.com",
+                "contentRating": "adult",
+                "capabilities": { "search": true, "latest": true, "filters": true },
+                "listings": [
+                    { "id": "popular", "name": "Popular" },
+                    { "id": "latest", "name": "Latest" }
+                ],
+                "urlPatterns": [{ "pattern": "https://cat-300.com/manga/*", "kind": "manga" }],
+                "tags": ["madara"]
+            }])
+        );
+    }
+
+    #[test]
+    fn icon_digest_matches_manifest() {
+        let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
+
+        assert_eq!(manifest["assets"][0]["sha256"], ICON_SHA256);
+        assert_eq!(format!("{:x}", Sha256::digest(ICON)), ICON_SHA256);
+    }
+}

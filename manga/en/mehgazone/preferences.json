@@ -1,4 +1,0 @@
-[
-  { "id": "WORDPRESS_USERNAME", "type": "text", "label": "WordPress username", "default": "" },
-  { "id": "WORDPRESS_APP_PASSWORD", "type": "password", "label": "WordPress app password", "default": "" }
-]

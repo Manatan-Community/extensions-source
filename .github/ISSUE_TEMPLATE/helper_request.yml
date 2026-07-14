@@ -14,3 +14,10 @@ body:
       label: Helper request
     validations:
       required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Upstream behavior and capability gap
+      description: Include source paths, request flow, and why existing typed APIs or generic dispatch are insufficient.
+    validations:
+      required: true

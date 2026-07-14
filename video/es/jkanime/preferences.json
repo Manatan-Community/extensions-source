@@ -1,6 +1,0 @@
-[
-  {"id":"preferred_language","type":"select","name":"Preferred language","default":"[JAP]","options":[{"label":"[JAP]","value":"[JAP]"},{"label":"[LAT]","value":"[LAT]"}]},
-  {"id":"preferred_quality","type":"select","name":"Preferred quality","default":"1080","options":[{"label":"1080","value":"1080"},{"label":"720","value":"720"},{"label":"480","value":"480"},{"label":"360","value":"360"}]},
-  {"id":"preferred_server","type":"select","name":"Preferred server","default":"Okru","options":[{"label":"Okru","value":"Okru"},{"label":"Voe","value":"Voe"},{"label":"Filemoon","value":"Filemoon"},{"label":"StreamTape","value":"StreamTape"},{"label":"Mp4Upload","value":"Mp4Upload"},{"label":"Mixdrop","value":"Mixdrop"},{"label":"Streamwish","value":"Streamwish"},{"label":"DoodStream","value":"DoodStream"},{"label":"VidHide","value":"VidHide"},{"label":"Mediafire","value":"Mediafire"},{"label":"Desuka","value":"Desuka"},{"label":"Nozomi","value":"Nozomi"},{"label":"Desu","value":"Desu"},{"label":"Magi","value":"Magi"}]},
-  {"id":"pref_episodes_info","type":"select","name":"Episode info","default":"0","options":[{"label":"Poblacion rapida","value":"0"},{"label":"Solicitar informacion de la fuente","value":"1"}]}
-]

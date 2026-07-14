@@ -1,9 +1,0 @@
-[
-  {
-    "id": "gpu_renderer",
-    "type": "text",
-    "title": "Unmasked GPU renderer",
-    "summary": "GPU renderer string used by the Scan-Manga reader API fingerprint.",
-    "default": ""
-  }
-]

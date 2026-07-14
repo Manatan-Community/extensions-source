@@ -1,4 +1,0 @@
-[
-  { "key": "preferred_quality", "title": "Preferred quality", "type": "list", "default": "1080p", "entries": ["480p", "720p", "1080p"], "entryValues": ["480p", "720p", "1080p"] },
-  { "key": "preferred_server", "title": "Preferred server", "type": "list", "default": "StreamWish", "entries": ["Filemoon", "StreamWish", "External"], "entryValues": ["Filemoon", "StreamWish", "External"] }
-]

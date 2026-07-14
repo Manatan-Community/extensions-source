@@ -1,9 +1,0 @@
-[
-  {
-    "key": "genre",
-    "title": "Genre",
-    "type": "select",
-    "default": "",
-    "values": ["", "action", "aventure", "comedie", "drame", "fantastique", "horreur", "romance", "science-fiction", "thriller"]
-  }
-]

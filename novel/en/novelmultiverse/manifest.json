@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "id": "novelmultiverse",
+  "name": "NovelMultiverse",
+  "version": "0.1.0",
+  "versionCode": 2,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "description": "English web novels from NovelMultiverse.",
+  "author": "Manatan Community",
+  "homepage": "https://www.novelmultiverse.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MPL-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "www.novelmultiverse.com"
+      ]
+    }
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "98fec61eda85282ed2f27d1ea68995bbf2d4867eefdaac8146906872caf707b8"
+    }
+  ],
+  "sources": [
+    {
+      "id": "novelmultiverse",
+      "name": "NovelMultiverse",
+      "lang": "en",
+      "contentType": "novel",
+      "baseUrl": "https://www.novelmultiverse.com",
+      "contentRating": "safe",
+      "capabilities": {
+        "operations": [
+          "commands.describe",
+          "commands.detail.fetch",
+          "commands.chapter.fetch",
+          "commands.content.fetch"
+        ],
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://www.novelmultiverse.com/novel/*",
+          "kind": "item-or-chapter"
+        }
+      ]
+    }
+  ]
+}

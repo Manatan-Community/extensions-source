@@ -1,6 +1,0 @@
-{
-  "version": 1,
-  "filters": [
-    { "type": "text", "id": "genre", "name": "Genre URL or slug" }
-  ]
-}

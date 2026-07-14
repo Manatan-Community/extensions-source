@@ -1,4 +1,4 @@
-name: Validate
+name: Validate components
 
 on:
   pull_request:
@@ -13,18 +13,13 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
-      - run: cargo fmt --check
-      - run: cargo check
-      - run: cargo test
+      - uses: taiki-e/install-action@wasm-tools
+      - run: cargo fmt --all -- --check
+      - run: cargo test --workspace
       - run: cargo run -p xtask -- validate
-      - run: cargo run -p xtask -- test-examples
       - run: cargo run -p xtask -- build-all
-      - run: cargo run -p xtask -- generate-index
       - run: cargo run -p xtask -- validate-packages
-      - run: cargo run -p xtask -- smoke-test
-      - name: Ensure generated indexes are current
-        run: git diff --exit-code -- dist
       - uses: actions/upload-artifact@v4
         with:
-          name: manatan-example-packages
-          path: dist/**/*.manatan
+          name: manatan2-packages
+          path: dist/**/*.manatan2

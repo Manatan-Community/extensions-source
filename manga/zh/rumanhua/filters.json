@@ -1,1 +1,0 @@
-[{"id":"ranking","type":"select","name":"排行榜","default":"","options":[{"label":"默认","value":""},{"label":"人气榜","value":"1"},{"label":"更新榜","value":"5"}]},{"id":"category","type":"text","name":"分类 ID","default":""}]

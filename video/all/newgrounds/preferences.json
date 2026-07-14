@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "popular_section", "label": "Popular section", "kind": "select", "defaultValue": "movies/popular", "options": ["movies/popular", "movies/featured", "movies/browse"] },
-    { "id": "latest_section", "label": "Latest section", "kind": "select", "defaultValue": "movies/browse", "options": ["movies/browse", "movies/featured", "movies/popular"] },
-    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "720p", "options": ["1080p", "720p", "480p", "360p", "auto"] }
-  ]
-}

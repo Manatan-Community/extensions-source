@@ -1,0 +1,20 @@
+{
+  "data": {
+    "hid": "kw9j9",
+    "slug": "blue-lockk",
+    "title": "Blue Lock",
+    "type": "manga",
+    "status": "releasing",
+    "rating": 4.8,
+    "contentRating": "safe",
+    "poster": {
+      "large": "https://static.mfcdn.nl/4b71/i/f/0c/poster.jpg"
+    },
+    "synopsisHtml": "<p>Japan chases the perfect striker.</p><p>Victory demands ego.</p>",
+    "altTitles": ["Buruu Rokku", "Blue Lock"],
+    "authors": [{ "title": "KANESHIRO Muneyuki" }],
+    "artists": [{ "title": "NOMURA Yusuke" }],
+    "genres": [{ "title": "Sports" }, { "title": "Drama" }],
+    "themes": [{ "title": "School" }]
+  }
+}

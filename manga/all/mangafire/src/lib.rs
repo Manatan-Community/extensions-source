@@ -1,688 +1,1309 @@
-use manatan_extension::{
-    CatalogItem, Context, HomeSection, HomeSectionStyle, ItemStatus, MangaChapter, MangaPage,
-    PageContent, Paged, ProcessedImage, SearchRequest, UrlResolveResult, abi::ExtensionResult,
-    export_manga_source, source::MangaSource,
+use std::collections::BTreeSet;
+
+use manatan_sdk::{
+    client::Client, context, CatalogItem, Error, FilterDefinition, MangaChapter, MangaPage,
+    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, Result, UrlResolveResult,
 };
-use manatan_shared::{html, manga, manga_image, sdk::http::HttpClient, url};
-use serde_json::{Value, json};
-use std::collections::BTreeMap;
+use scraper::Html;
+use serde::de::DeserializeOwned;
+use serde::Deserialize;
+use serde_json::{json, Value};
+use url::Url;
 
-mod vrf;
-
-use vrf::VrfGenerator;
-
-const SOURCE: MangaFire = MangaFire;
 const BASE_URL: &str = "https://mangafire.to";
-const VOLUME_SUFFIX: &str = "#vol";
-const VOLUME_PREFIX: &str = "[VOL] ";
+const REFERER: &str = "https://mangafire.to/";
+const REQUEST_LIMIT_MS: u32 = 500;
+const PAGE_SIZE: u32 = 50;
+const CHAPTER_PAGE_SIZE: u32 = 200;
+const LANGUAGE_PREFERENCE_KEY: &str = "chapter_language";
+const DEFAULT_SORT: &str = "relevance:desc";
+const DEFAULT_GENRE_MODE: &str = "and";
 
-struct MangaFire;
+pub struct MangaFireSource {
+    client: Client,
+}
 
-impl MangaSource for MangaFire {
-    fn list(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
-        let sort = if request.get("listingId").and_then(Value::as_str) == Some("latest") {
-            "recently_updated"
-        } else {
-            "most_viewed"
-        };
-        Ok(parse_search_page(&fetch_document(
-            &filter_url(
-                "",
-                page(&request),
-                source_lang_code(&request),
-                sort,
-                &request,
-            ),
-            SEARCH_FIXTURE,
-        )))
+impl Default for MangaFireSource {
+    fn default() -> Self {
+        Self {
+            client: Client::browser()
+                .header("Referer", REFERER)
+                .header("Accept", "application/json"),
+        }
+    }
+}
+
+impl MangaFireSource {
+    fn get_json<T: DeserializeOwned>(&self, url: &str) -> Result<T> {
+        let response = self
+            .client
+            .get(url)
+            .rate_limit("mangafire", REQUEST_LIMIT_MS)
+            .send()?
+            .error_for_status()?;
+        let body = response.text()?;
+        serde_json::from_str(&body).map_err(json_error)
     }
 
-    fn search(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
-        let query = request
-            .get("query")
-            .and_then(Value::as_str)
-            .unwrap_or_default()
-            .replace('"', " ")
-            .trim()
-            .to_string();
-        if let Some(key) = key_from_url(&query) {
-            return Ok(Paged {
-                entries: vec![details_by_key(&key)],
-                has_next_page: false,
+    fn selected_language(&self) -> LanguageVariant {
+        let preferred = context::preference::<String>(LANGUAGE_PREFERENCE_KEY)
+            .ok()
+            .flatten()
+            .unwrap_or_else(|| LanguageVariant::default().source_code.to_owned());
+        LanguageVariant::from_source_code(&preferred)
+    }
+}
+
+impl MangaSource for MangaFireSource {
+    fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
+        let url = listing_url("views_30d", "desc", page)?;
+        let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
+        parse_catalog_page(payload)
+    }
+
+    fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
+        let url = listing_url("chapter_updated_at", "desc", page)?;
+        let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
+        parse_catalog_page(payload)
+    }
+
+    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        let author_id = match author_filter(filters) {
+            Some(author_query) if !author_query.is_empty() => {
+                let tags: TagResponse = self.get_json(&tag_lookup_url(author_query)?)?;
+                let Some(author_id) = select_author_tag(&tags) else {
+                    return Ok(Paged {
+                        entries: Vec::new(),
+                        has_next_page: false,
+                    });
+                };
+                Some(author_id)
+            }
+            _ => None,
+        };
+
+        let url = search_url(query, page, filters, author_id.as_deref())?;
+        let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
+        parse_catalog_page(payload)
+    }
+
+    fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
+        let hid = title_hid(item.url.as_deref().unwrap_or(&item.key))?;
+        let payload: MangaDetailsResponse =
+            self.get_json(&format!("{BASE_URL}/api/titles/{hid}"))?;
+        let mut parsed = payload.data.to_catalog_item()?;
+        parsed.key = item.key;
+        parsed.url = item.url.or(Some(absolute_url(BASE_URL, &parsed.key)?));
+        Ok(parsed)
+    }
+
+    fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
+        let manga_path = title_path(item.url.as_deref().unwrap_or(&item.key))?;
+        let language = self.selected_language();
+        let mut page = 1;
+        let mut source_order = 0_i32;
+        let mut chapters = Vec::new();
+
+        loop {
+            let url = chapters_url(&manga_path, language.api_code, page)?;
+            let payload: ApiResponse<ChapterDto> = self.get_json(&url)?;
+            let last_page = payload
+                .meta
+                .as_ref()
+                .map(|meta| meta.last_page)
+                .unwrap_or(1)
+                .max(1);
+            for chapter in payload.items {
+                chapters.push(chapter.to_manga_chapter(&manga_path, language, source_order)?);
+                source_order += 1;
+            }
+            if page >= last_page {
+                break;
+            }
+            page += 1;
+        }
+
+        Ok(chapters)
+    }
+
+    fn pages(&mut self, _item: CatalogItem, chapter: MangaChapter) -> Result<Vec<MangaPage>> {
+        let chapter_id = chapter_id(&chapter)?;
+        let payload: PagesResponse =
+            self.get_json(&format!("{BASE_URL}/api/chapters/{chapter_id}"))?;
+        payload
+            .data
+            .pages
+            .into_iter()
+            .enumerate()
+            .map(|(index, page)| page.to_manga_page(index))
+            .collect()
+    }
+
+    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
+        Ok(filters())
+    }
+
+    fn preferences(&mut self) -> Result<Vec<PreferenceDefinition>> {
+        Ok(preferences())
+    }
+
+    fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
+        Ok(Some(absolute_url(
+            BASE_URL,
+            item.url.as_deref().unwrap_or(&item.key),
+        )?))
+    }
+
+    fn chapter_url(
+        &mut self,
+        _item: &CatalogItem,
+        chapter: &MangaChapter,
+    ) -> Result<Option<String>> {
+        Ok(Some(absolute_url(
+            BASE_URL,
+            chapter.url.as_deref().unwrap_or(&chapter.key),
+        )?))
+    }
+
+    fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
+        let base = Url::parse(BASE_URL).map_err(url_error)?;
+        let url = Url::parse(candidate).map_err(url_error)?;
+        if base.scheme() != url.scheme()
+            || base.host_str() != url.host_str()
+            || base.port_or_known_default() != url.port_or_known_default()
+            || !url.path().starts_with("/title/")
+        {
+            return Ok(None);
+        }
+
+        let item_path = item_path_from_candidate(url.path())?;
+        let item_url = absolute_url(BASE_URL, &item_path)?;
+        let mut result = UrlResolveResult {
+            item: Some(CatalogItem {
+                key: item_path.clone(),
+                url: Some(item_url),
+                language: Some("all".to_owned()),
+                ..CatalogItem::default()
+            }),
+            ..UrlResolveResult::default()
+        };
+
+        if let Some(chapter_path) = chapter_path_from_candidate(url.path()) {
+            let chapter_number = chapter_number_from_path(&chapter_path);
+            let api_lang = chapter_api_language_from_path(&chapter_path)
+                .unwrap_or_else(|| LanguageVariant::default().api_code.to_owned());
+            result.chapter_key = Some(chapter_path.clone());
+            result.manga_chapter = Some(MangaChapter {
+                key: chapter_path.clone(),
+                url: Some(absolute_url(BASE_URL, &chapter_path)?),
+                chapter_number,
+                language: Some(
+                    LanguageVariant::from_api_code(&api_lang)
+                        .source_code
+                        .to_owned(),
+                ),
+                extra: chapter_extra(chapter_id_from_path(&chapter_path)?, &api_lang),
+                ..MangaChapter::default()
             });
         }
-        let mut target = filter_url(
-            &query,
-            page(&request),
-            source_lang_code(&request),
-            &filter_string(&request, "sort").unwrap_or_else(|| "most_relevance".into()),
-            &request,
+
+        Ok(Some(result))
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+manatan_sdk::export_extension!(
+    manatan_sdk::Extension::new().manga("mangafire", MangaFireSource::default())
+);
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct LanguageVariant {
+    source_code: &'static str,
+    api_code: &'static str,
+    label: &'static str,
+}
+
+impl Default for LanguageVariant {
+    fn default() -> Self {
+        Self::from_source_code("en")
+    }
+}
+
+impl LanguageVariant {
+    const ALL: [Self; 7] = [
+        Self {
+            source_code: "en",
+            api_code: "en",
+            label: "English",
+        },
+        Self {
+            source_code: "es",
+            api_code: "es",
+            label: "Spanish",
+        },
+        Self {
+            source_code: "es-419",
+            api_code: "es-la",
+            label: "Spanish (Latin America)",
+        },
+        Self {
+            source_code: "fr",
+            api_code: "fr",
+            label: "French",
+        },
+        Self {
+            source_code: "ja",
+            api_code: "ja",
+            label: "Japanese",
+        },
+        Self {
+            source_code: "pt",
+            api_code: "pt",
+            label: "Portuguese",
+        },
+        Self {
+            source_code: "pt-BR",
+            api_code: "pt-br",
+            label: "Portuguese (Brazil)",
+        },
+    ];
+
+    fn from_source_code(code: &str) -> Self {
+        Self::ALL
+            .into_iter()
+            .find(|variant| variant.source_code.eq_ignore_ascii_case(code))
+            .unwrap_or(Self::ALL[0])
+    }
+
+    fn from_api_code(code: &str) -> Self {
+        Self::ALL
+            .into_iter()
+            .find(|variant| variant.api_code.eq_ignore_ascii_case(code))
+            .unwrap_or(Self::ALL[0])
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ApiResponse<T> {
+    #[serde(default)]
+    items: Vec<T>,
+    meta: Option<ApiMeta>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ApiMeta {
+    #[serde(default = "one")]
+    last_page: u32,
+    #[serde(default)]
+    has_next: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+struct PosterDto {
+    small: Option<String>,
+    medium: Option<String>,
+    large: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+struct MangaDto {
+    hid: String,
+    slug: Option<String>,
+    title: String,
+    poster: Option<PosterDto>,
+}
+
+impl MangaDto {
+    fn to_catalog_item(self) -> CatalogItem {
+        let key = manga_path(&self.hid, self.slug.as_deref());
+        CatalogItem {
+            key: key.clone(),
+            title: self.title,
+            cover: self.poster.and_then(select_poster).map(Into::into),
+            url: absolute_url(BASE_URL, &key).ok(),
+            language: Some("all".to_owned()),
+            initialized: false,
+            ..CatalogItem::default()
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MangaDetailsResponse {
+    data: MangaDetailsDto,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MangaDetailsDto {
+    hid: String,
+    slug: Option<String>,
+    title: String,
+    #[serde(default)]
+    r#type: Option<String>,
+    #[serde(default)]
+    status: Option<String>,
+    #[serde(default)]
+    rating: Option<f32>,
+    #[serde(default)]
+    content_rating: Option<String>,
+    poster: Option<PosterDto>,
+    #[serde(default)]
+    synopsis_html: Option<String>,
+    #[serde(default)]
+    alt_titles: Vec<String>,
+    #[serde(default)]
+    authors: Vec<EntityDto>,
+    #[serde(default)]
+    artists: Vec<EntityDto>,
+    #[serde(default)]
+    genres: Vec<EntityDto>,
+    #[serde(default)]
+    themes: Vec<EntityDto>,
+}
+
+impl MangaDetailsDto {
+    fn to_catalog_item(self) -> Result<CatalogItem> {
+        let key = manga_path(&self.hid, self.slug.as_deref());
+        let mut tags = Vec::new();
+        if let Some(kind) = self.r#type.as_deref() {
+            tags.push(title_case(kind));
+        }
+        tags.extend(self.genres.iter().map(|entry| entry.title.clone()));
+        tags.extend(self.themes.iter().map(|entry| entry.title.clone()));
+        dedupe(&mut tags);
+
+        let mut item = CatalogItem {
+            key: key.clone(),
+            title: self.title,
+            cover: self.poster.and_then(select_poster).map(Into::into),
+            url: Some(absolute_url(BASE_URL, &key)?),
+            authors: self.authors.into_iter().map(|entry| entry.title).collect(),
+            artists: self.artists.into_iter().map(|entry| entry.title).collect(),
+            description: self.synopsis_html.as_deref().map(html_to_text),
+            tags,
+            language: Some("all".to_owned()),
+            rating: self.rating,
+            content_rating: self.content_rating,
+            status: Some(json!(status_from_api(self.status.as_deref()))),
+            initialized: true,
+            ..CatalogItem::default()
+        };
+        let mut alternate_titles = self.alt_titles;
+        dedupe(&mut alternate_titles);
+        if !alternate_titles.is_empty() {
+            item.extra
+                .insert("aliases".to_owned(), json!(alternate_titles));
+        }
+        Ok(item)
+    }
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct EntityDto {
+    title: String,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct TagResponse {
+    #[serde(default)]
+    data: Vec<TagDto>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct TagDto {
+    id: u64,
+    #[serde(rename = "type")]
+    tag_type: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ChapterDto {
+    id: u64,
+    number: f32,
+    #[serde(default)]
+    name: Option<String>,
+    language: String,
+    #[serde(default)]
+    created_at: Option<i64>,
+}
+
+impl ChapterDto {
+    fn to_manga_chapter(
+        self,
+        manga_path: &str,
+        selected_language: LanguageVariant,
+        source_order: i32,
+    ) -> Result<MangaChapter> {
+        let api_language = if self.language.trim().is_empty() {
+            selected_language.api_code
+        } else {
+            self.language.as_str()
+        };
+        let source_language = LanguageVariant::from_api_code(api_language).source_code;
+        let number = chapter_number_string(self.number);
+        let chapter_path = format!(
+            "{manga_path}/{}-chapter-{}-{}",
+            self.id, number, api_language
         );
-        if !query.is_empty() {
-            target.push_str("&vrf=");
-            target.push_str(&url::query_escape(&VrfGenerator::generate(&query)));
-        }
-        let mut page = parse_search_page(&fetch_document(&target, SEARCH_FIXTURE));
-        if preference_bool(&request, "show_volume") {
-            page.entries = with_volume_entries(page.entries);
-        }
-        Ok(page)
-    }
-
-    fn details(&self, request: Value) -> ExtensionResult<CatalogItem> {
-        let key = manga::request_key(&request, "manga").unwrap_or_else(|| "/manga/sample.1".into());
-        Ok(details_by_key(&key))
-    }
-
-    fn chapters(&self, request: Value) -> ExtensionResult<Vec<MangaChapter>> {
-        let key = manga::request_key(&request, "manga").unwrap_or_else(|| "/manga/sample.1".into());
-        let is_volume = key.ends_with(VOLUME_SUFFIX);
-        let manga_id = manga_id(&key).unwrap_or_else(|| "1".into());
-        let kind = if is_volume { "volume" } else { "chapter" };
-        let lang_code = source_lang_code(&request);
-        let target = format!("{BASE_URL}/ajax/manga/{manga_id}/{kind}/{lang_code}",);
-        let read_vrf = VrfGenerator::generate(&format!("{manga_id}@{kind}@{lang_code}"));
-        let read_target =
-            format!("{BASE_URL}/ajax/read/{manga_id}/{kind}/{lang_code}?vrf={read_vrf}");
-        let manga_list = fetch_json_result(&target, CHAPTERS_FIXTURE);
-        let read_list = fetch_json_value(&read_target, READ_LIST_FIXTURE)
-            .get("html")
-            .and_then(Value::as_str)
-            .unwrap_or(READ_LIST_HTML_FIXTURE)
-            .to_string();
-        Ok(parse_chapters(
-            &manga_list,
-            &read_list,
-            is_volume,
-            lang_code,
-            &key,
-        ))
-    }
-
-    fn pages(&self, request: Value) -> ExtensionResult<Vec<MangaPage>> {
-        let key = manga::request_key(&request, "chapter").unwrap_or_else(|| "chapter/1".into());
-        let Some(read_key) = ajax_read_key(&key) else {
-            return Ok(Vec::new());
+        let title = match self.name.as_deref().map(str::trim) {
+            Some(name) if !name.is_empty() => Some(format!("Ch. {number} - {name}")),
+            _ => Some(format!("Ch. {number}")),
         };
-        let vrf = VrfGenerator::generate(&read_key.replace('/', "@"));
-        let target = format!("{BASE_URL}/ajax/read/{read_key}?vrf={vrf}");
-        let referer = request
-            .get("chapter")
-            .and_then(|chapter| chapter.get("url").or_else(|| chapter.get("realUrl")))
-            .and_then(Value::as_str)
-            .map(absolute_url)
-            .unwrap_or_else(|| format!("{BASE_URL}/"));
-        Ok(parse_pages(
-            &fetch_json_result(&target, PAGES_FIXTURE),
-            &referer,
-        ))
+        Ok(MangaChapter {
+            key: chapter_path.clone(),
+            title,
+            chapter_number: Some(self.number),
+            date_uploaded: self.created_at.map(|value| value * 1000),
+            language: Some(source_language.to_owned()),
+            url: Some(absolute_url(BASE_URL, &chapter_path)?),
+            source_order: Some(source_order),
+            extra: chapter_extra(self.id, api_language),
+            ..MangaChapter::default()
+        })
     }
+}
 
-    fn home(&self, request: Value) -> ExtensionResult<Vec<HomeSection<CatalogItem>>> {
-        let popular =
-            self.list(json!({"page": 1, "listingId": "popular", "sourceId": source_id(&request)}))?;
-        let latest =
-            self.list(json!({"page": 1, "listingId": "latest", "sourceId": source_id(&request)}))?;
-        Ok(vec![
-            HomeSection {
-                id: "popular".into(),
-                title: "Popular".into(),
-                style: Some(HomeSectionStyle::Cover),
-                has_more: popular.has_next_page,
-                entries: popular.entries,
-                ..HomeSection::default()
+#[derive(Clone, Debug, Deserialize)]
+struct PagesResponse {
+    data: ChapterDataDto,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct ChapterDataDto {
+    #[serde(default)]
+    pages: Vec<PageDto>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct PageDto {
+    url: String,
+}
+
+impl PageDto {
+    fn to_manga_page(self, index: usize) -> Result<MangaPage> {
+        Ok(MangaPage {
+            content: PageContent::Url {
+                url: self.url,
+                context: None,
             },
-            HomeSection {
-                id: "latest".into(),
-                title: "Latest".into(),
-                style: Some(HomeSectionStyle::Compact),
-                has_more: latest.has_next_page,
-                entries: latest.entries,
-                ..HomeSection::default()
-            },
-        ])
-    }
-
-    fn process_page_image(&self, request: Value) -> ExtensionResult<ProcessedImage> {
-        manga_image::MangaFireImage::process_page_image(request)
-    }
-
-    fn manga_url(&self, request: Value) -> ExtensionResult<Option<String>> {
-        Ok(manga::request_key(&request, "manga")
-            .map(|key| absolute_url(&key.replace(VOLUME_SUFFIX, ""))))
-    }
-
-    fn chapter_url(&self, request: Value) -> ExtensionResult<Option<String>> {
-        Ok(manga::request_key(&request, "chapter").map(|key| absolute_url(&key)))
-    }
-
-    fn handle_url(&self, request: Value) -> ExtensionResult<Option<UrlResolveResult>> {
-        let Some(input) = request.get("url").and_then(Value::as_str) else {
-            return Ok(None);
-        };
-        if let Some(key) = key_from_url(input) {
-            return Ok(Some(UrlResolveResult {
-                item: Some(details_by_key(&key)),
-                url: Some(input.into()),
-                ..UrlResolveResult::default()
-            }));
-        }
-        Ok(Some(UrlResolveResult {
-            search: Some(SearchRequest {
-                query: input.into(),
-                ..SearchRequest::default()
-            }),
-            url: Some(input.into()),
-            ..UrlResolveResult::default()
-        }))
+            description: Some(format!("Page {}", index + 1)),
+            ..MangaPage::default()
+        })
     }
 }
 
-fn client() -> HttpClient {
-    HttpClient::browser()
-        .with_desktop_user_agent()
-        .with_referer(format!("{BASE_URL}/"))
-        .with_cookies_for(BASE_URL)
-        .with_webview_challenge_fallback()
+fn filters() -> Vec<FilterDefinition> {
+    vec![
+        check_group(
+            "types",
+            "Type",
+            &[
+                ("Manga", "manga"),
+                ("Manhwa", "manhwa"),
+                ("Manhua", "manhua"),
+                ("Other", "other"),
+            ],
+        ),
+        FilterDefinition::Separator,
+        FilterDefinition::Select {
+            id: "genres_mode".to_owned(),
+            name: "Genre match mode".to_owned(),
+            options: vec![
+                OptionItem {
+                    label: "AND".to_owned(),
+                    value: "and".to_owned(),
+                },
+                OptionItem {
+                    label: "OR".to_owned(),
+                    value: "or".to_owned(),
+                },
+            ],
+            default_index: 0,
+        },
+        tri_state_group(
+            "genres",
+            "Genres",
+            &[
+                ("Action", "1"),
+                ("Adventure", "78"),
+                ("Avant Garde", "3"),
+                ("Boys Love", "4"),
+                ("Comedy", "5"),
+                ("Demons", "77"),
+                ("Drama", "6"),
+                ("Ecchi", "7"),
+                ("Fantasy", "79"),
+                ("Girls Love", "9"),
+                ("Gourmet", "10"),
+                ("Harem", "11"),
+                ("Horror", "530"),
+                ("Isekai", "13"),
+                ("Iyashikei", "531"),
+                ("Josei", "15"),
+                ("Kids", "532"),
+                ("Magic", "539"),
+                ("Mahou Shoujo", "533"),
+                ("Martial Arts", "534"),
+                ("Mecha", "19"),
+                ("Military", "535"),
+                ("Music", "21"),
+                ("Mystery", "22"),
+                ("Parody", "23"),
+                ("Psychological", "536"),
+                ("Reverse Harem", "25"),
+                ("Romance", "26"),
+                ("School", "73"),
+                ("Sci-Fi", "28"),
+                ("Seinen", "537"),
+                ("Shoujo", "30"),
+                ("Shounen", "31"),
+                ("Slice of Life", "538"),
+                ("Space", "33"),
+                ("Sports", "34"),
+                ("Super Power", "75"),
+                ("Supernatural", "76"),
+                ("Suspense", "37"),
+                ("Thriller", "38"),
+                ("Vampire", "39"),
+            ],
+        ),
+        FilterDefinition::Separator,
+        check_group(
+            "statuses",
+            "Status",
+            &[
+                ("Releasing", "releasing"),
+                ("Finished", "finished"),
+                ("On Hiatus", "on_hiatus"),
+                ("Discontinued", "discontinued"),
+                ("Not Yet Released", "not_yet_released"),
+            ],
+        ),
+        FilterDefinition::Separator,
+        FilterDefinition::Text {
+            id: "author".to_owned(),
+            name: "Author / Artist".to_owned(),
+            default: String::new(),
+        },
+        FilterDefinition::Text {
+            id: "year_from".to_owned(),
+            name: "Release year (From)".to_owned(),
+            default: String::new(),
+        },
+        FilterDefinition::Text {
+            id: "year_to".to_owned(),
+            name: "Release year (To)".to_owned(),
+            default: String::new(),
+        },
+        FilterDefinition::Text {
+            id: "min_chap".to_owned(),
+            name: "Minimum chapters".to_owned(),
+            default: String::new(),
+        },
+        FilterDefinition::Separator,
+        FilterDefinition::Select {
+            id: "sort".to_owned(),
+            name: "Sort by".to_owned(),
+            options: vec![
+                option("Latest update", "chapter_updated_at:desc"),
+                option("Best match", "relevance:desc"),
+                option("Recently added", "created_at:desc"),
+                option("Title (A-Z)", "title:asc"),
+                option("Title (Z-A)", "title:desc"),
+                option("Year (newest)", "year:desc"),
+                option("Year (oldest)", "year:asc"),
+                option("Highest rated", "score:desc"),
+                option("Most viewed - 7 days", "views_7d:desc"),
+                option("Most viewed - 30 days", "views_30d:desc"),
+                option("Most viewed - all time", "views_total:desc"),
+                option("Most followed", "follows_total:desc"),
+            ],
+            default_index: 1,
+        },
+    ]
 }
 
-fn fetch_document(target: &str, fixture: &str) -> String {
-    client()
-        .get(target)
-        .browser_document()
-        .send_text()
-        .unwrap_or_else(|_| fixture.to_string())
+fn preferences() -> Vec<PreferenceDefinition> {
+    vec![PreferenceDefinition::Select {
+        key: LANGUAGE_PREFERENCE_KEY.to_owned(),
+        title: "Chapter language".to_owned(),
+        options: LanguageVariant::ALL
+            .into_iter()
+            .map(|variant| OptionItem {
+                label: variant.label.to_owned(),
+                value: variant.source_code.to_owned(),
+            })
+            .collect(),
+        default: "en".to_owned(),
+    }]
 }
 
-fn fetch_json_result(target: &str, fixture: &str) -> String {
-    let body = fetch_json_value(target, fixture);
-    match body {
-        Value::String(text) => text,
-        other => other.to_string(),
-    }
-}
-
-fn fetch_json_value(target: &str, fixture: &str) -> Value {
-    let body = client()
-        .get(target)
-        .xhr()
-        .header("Accept", "application/json, text/javascript, */*; q=0.01")
-        .header("X-Requested-With", "XMLHttpRequest")
-        .send_text()
-        .unwrap_or_else(|_| fixture.to_string());
-    serde_json::from_str::<Value>(&body)
-        .ok()
-        .and_then(|root| root.get("result").cloned())
-        .or_else(|| serde_json::from_str::<Value>(fixture).ok())
-        .unwrap_or(Value::String(body))
-}
-
-fn filter_url(query: &str, page: u64, lang_code: &str, sort: &str, request: &Value) -> String {
-    let mut params = Vec::<(String, String)>::new();
-    if !query.is_empty() {
-        params.push(("keyword".into(), query.into()));
-    }
-    for value in filter_array(request, "type") {
-        params.push(("type[]".into(), value));
-    }
-    for value in filter_array(request, "genre") {
-        params.push(("genre[]".into(), value));
-    }
-    if preference_bool(request, "genre_mode") || filter_bool(request, "genre_mode") {
-        params.push(("genre_mode".into(), "and".into()));
-    }
-    for value in filter_array(request, "status") {
-        params.push(("status[]".into(), value));
-    }
-    if let Some(minchap) = filter_string(request, "minchap").filter(|value| !value.is_empty()) {
-        params.push(("minchap".into(), minchap));
-    }
-    params.push(("language[]".into(), lang_code.into()));
-    params.push(("sort".into(), sort.into()));
-    params.push(("page".into(), page.to_string()));
-    format!("{BASE_URL}/filter?{}", encode_params(&params))
-}
-
-fn parse_search_page(body: &str) -> Paged<CatalogItem> {
-    let entries = body
-        .split("original card-lg")
-        .skip(1)
-        .flat_map(|chunk| chunk.split("class=\"unit").skip(1))
-        .filter_map(search_item)
-        .fold(Vec::new(), push_unique);
-    Paged {
-        entries,
-        has_next_page: body.contains("page-item active")
-            && body.contains("page-item")
-            && body.contains("page-link"),
-    }
-}
-
-fn search_item(chunk: &str) -> Option<CatalogItem> {
-    let info = chunk.split("class=\"info").nth(1).unwrap_or(chunk);
-    let href =
-        html::attr_after(info, "<a", "href").or_else(|| html::attr_after(chunk, "<a", "href"))?;
-    let key = normalize_key(&href);
-    Some(CatalogItem {
-        key: key.clone(),
-        title: html::text_between(info, "<a", "</a>")
-            .map(|value| html::strip_tags(&value))
-            .or_else(|| html::attr_after(chunk, "<img", "alt"))
-            .filter(|value| !value.is_empty())
-            .unwrap_or_else(|| url::slug_from_url(&key).unwrap_or_else(|| "MangaFire".into())),
-        cover: html::attr_after(chunk, "<img", "src").map(|value| absolute_url(&value)),
-        url: Some(absolute_url(&key)),
-        language: Some("all".into()),
-        content_rating: Some("adult".into()),
-        initialized: false,
-        ..CatalogItem::default()
+fn parse_catalog_page(payload: ApiResponse<MangaDto>) -> Result<Paged<CatalogItem>> {
+    Ok(Paged {
+        entries: payload
+            .items
+            .into_iter()
+            .map(MangaDto::to_catalog_item)
+            .collect(),
+        has_next_page: payload.meta.map(|meta| meta.has_next).unwrap_or(false),
     })
 }
 
-fn with_volume_entries(entries: Vec<CatalogItem>) -> Vec<CatalogItem> {
-    entries
-        .into_iter()
-        .flat_map(|item| {
-            let mut volume = item.clone();
-            volume.key = format!("{}{}", item.key, VOLUME_SUFFIX);
-            volume.title = format!("{VOLUME_PREFIX}{}", item.title);
-            vec![item, volume]
-        })
-        .collect()
+fn listing_url(order_field: &str, direction: &str, page: u32) -> Result<String> {
+    let mut url = Url::parse(&format!("{BASE_URL}/api/titles")).map_err(url_error)?;
+    url.query_pairs_mut()
+        .append_pair(&format!("order[{order_field}]"), direction)
+        .append_pair("page", &page.max(1).to_string())
+        .append_pair("limit", &PAGE_SIZE.to_string());
+    Ok(url.to_string())
 }
 
-fn details_by_key(key: &str) -> CatalogItem {
-    parse_details(
-        &fetch_document(
-            &absolute_url(&key.replace(VOLUME_SUFFIX, "")),
-            DETAILS_FIXTURE,
-        ),
-        key,
-    )
-}
+fn search_url(query: &str, page: u32, filters: &Value, author_id: Option<&str>) -> Result<String> {
+    let mut url = Url::parse(&format!("{BASE_URL}/api/titles")).map_err(url_error)?;
+    let mut pairs = url.query_pairs_mut();
+    let trimmed = query.trim();
+    if !trimmed.is_empty() {
+        pairs.append_pair("keyword", trimmed);
+    }
+    pairs
+        .append_pair("page", &page.max(1).to_string())
+        .append_pair("limit", &PAGE_SIZE.to_string())
+        .append_pair(
+            "genres_mode",
+            select_value(filters, "genres_mode").unwrap_or(DEFAULT_GENRE_MODE),
+        );
 
-fn parse_details(body: &str, key: &str) -> CatalogItem {
-    let main = body.split("main-inner").nth(1).unwrap_or(body);
-    let mut description = html::text_between(body, "id=\"synopsis\"", "</div>")
-        .or_else(|| html::text_between(body, "id='synopsis'", "</div>"))
-        .map(|value| html::strip_tags(&value))
-        .unwrap_or_default();
-    for label in ["Published", "Mangazine", "MAL"] {
-        if let Some(value) = labeled_text(main, label) {
-            if !description.is_empty() {
-                description.push('\n');
-            }
-            description.push_str(label);
-            description.push_str(": ");
-            description.push_str(&value);
+    if let Some(author_id) = author_id {
+        pairs.append_pair("authors[]", author_id);
+    }
+
+    for value in group_values(filters, "types") {
+        pairs.append_pair("types[]", &value);
+    }
+
+    let (genres_in, genres_ex) = tri_state_values(filters, "genres");
+    for value in genres_in {
+        pairs.append_pair("genres_in[]", &value);
+    }
+    for value in genres_ex {
+        pairs.append_pair("genres_ex[]", &value);
+    }
+
+    for value in group_values(filters, "statuses") {
+        pairs.append_pair("statuses[]", &value);
+    }
+
+    for (key, value) in [
+        ("year_from", text_value(filters, "year_from")),
+        ("year_to", text_value(filters, "year_to")),
+        ("min_chap", positive_int_value(filters, "min_chap")),
+    ] {
+        if let Some(value) = value {
+            pairs.append_pair(key, &value);
         }
     }
-    let title = html::text_between(main, "<h1", "</h1>")
-        .map(|value| html::strip_tags(&value))
-        .filter(|value| !value.is_empty())
-        .unwrap_or_else(|| url::slug_from_url(key).unwrap_or_else(|| "MangaFire".into()));
-    CatalogItem {
-        key: normalize_key(key),
-        title: if key.ends_with(VOLUME_SUFFIX) {
-            format!("{VOLUME_PREFIX}{title}")
-        } else {
-            title
-        },
-        cover: html::attr_after(main, "poster", "src")
-            .or_else(|| html::attr_after(main, "<img", "src"))
-            .map(|value| absolute_url(&value)),
-        authors: labeled_text(main, "Author:")
-            .into_iter()
-            .flat_map(|value| split_csv(&value))
-            .collect(),
-        description: (!description.is_empty()).then_some(description),
-        tags: labeled_text(main, "Genres:")
-            .into_iter()
-            .flat_map(|value| split_csv(&value))
-            .collect(),
-        status: match labeled_text(main, "Status:")
-            .unwrap_or_default()
-            .to_ascii_lowercase()
-            .as_str()
-        {
-            value if value.contains("releasing") => ItemStatus::Ongoing,
-            value if value.contains("completed") => ItemStatus::Completed,
-            value if value.contains("hiatus") => ItemStatus::Hiatus,
-            value if value.contains("discontinued") => ItemStatus::Cancelled,
-            _ => ItemStatus::Unknown,
-        },
-        language: Some("all".into()),
-        content_rating: Some("adult".into()),
-        url: Some(absolute_url(&key.replace(VOLUME_SUFFIX, ""))),
-        initialized: true,
-        ..CatalogItem::default()
-    }
+
+    let sort = select_value(filters, "sort").unwrap_or(DEFAULT_SORT);
+    let (field, direction) = sort
+        .split_once(':')
+        .unwrap_or(("chapter_updated_at", "desc"));
+    pairs.append_pair(&format!("order[{field}]"), direction);
+
+    drop(pairs);
+    Ok(url.to_string())
 }
 
-fn labeled_text(body: &str, label: &str) -> Option<String> {
-    let start = body.find(label)?;
-    let chunk = &body[start + label.len()..];
-    html::text_between(chunk, "<span", "</span>")
-        .or_else(|| html::text_between(chunk, "<a", "</a>"))
-        .map(|value| html::strip_tags(&value))
-        .filter(|value| !value.is_empty())
+fn tag_lookup_url(query: &str) -> Result<String> {
+    let mut url = Url::parse(&format!("{BASE_URL}/api/tags")).map_err(url_error)?;
+    url.query_pairs_mut().append_pair("keyword", query.trim());
+    Ok(url.to_string())
 }
 
-fn parse_chapters(
-    manga_body: &str,
-    read_body: &str,
-    is_volume: bool,
-    lang_code: &str,
-    manga_key: &str,
-) -> Vec<MangaChapter> {
-    let selector = if is_volume { "vol-list" } else { "<li" };
-    let full_prefix = if is_volume { "Volume" } else { "Chapter" };
-    let abbr_prefix = if is_volume { "Vol" } else { "Chap" };
-    let kind = if is_volume { "volume" } else { "chapter" };
-    let manga_pieces = if is_volume {
-        manga_body.split("class=\"item").skip(1).collect::<Vec<_>>()
-    } else {
-        manga_body.split(selector).skip(1).collect::<Vec<_>>()
-    };
-    let read_pieces = if is_volume {
-        read_body.split("<li").skip(1).collect::<Vec<_>>()
-    } else {
-        read_body.split("<li").skip(1).collect::<Vec<_>>()
-    };
-    let total = manga_pieces.len();
-    manga_pieces
-        .into_iter()
-        .zip(read_pieces)
-        .enumerate()
-        .filter_map(|(index, (manga_chunk, read_chunk))| {
-            let read_id = html::attr(read_chunk, "data-id")?;
-            let number = html::attr(manga_chunk, "data-number")
-                .or_else(|| html::attr(read_chunk, "data-number"))
-                .unwrap_or_default();
-            let href = html::attr_after(read_chunk, "<a", "href")
-                .or_else(|| html::attr_after(manga_chunk, "<a", "href"))
-                .unwrap_or_else(|| public_read_path(manga_key, kind, lang_code, &number));
-            if let Some(read_number) = html::attr(read_chunk, "data-number")
-                && !number.is_empty()
-                && read_number != number
-            {
-                return None;
-            }
-            let raw_name = html::text_between(manga_chunk, "<span", "</span>")
-                .map(|value| html::strip_tags(&value))
-                .filter(|value| !value.is_empty())
-                .unwrap_or_else(|| format!("{full_prefix} {number}"));
-            let prefix = format!("{abbr_prefix} {number}: ");
-            let title = if raw_name.starts_with(&prefix) {
-                let real = raw_name.trim_start_matches(&prefix);
-                if real.contains(&number) {
-                    raw_name
-                } else {
-                    format!("{full_prefix} {number}: {real}")
-                }
-            } else {
-                raw_name
-            };
-            Some(MangaChapter {
-                key: format!("{kind}/{read_id}"),
-                title: Some(title),
-                chapter_number: number.parse::<f32>().ok(),
-                date_uploaded: parse_date(manga_chunk),
-                language: Some(lang_code.into()),
-                url: Some(absolute_url(&href)),
-                source_order: Some((total.saturating_sub(index)) as i32),
-                ..MangaChapter::default()
-            })
-        })
-        .collect()
+fn chapters_url(manga_path: &str, language: &str, page: u32) -> Result<String> {
+    let hid = title_hid(manga_path)?;
+    let mut url =
+        Url::parse(&format!("{BASE_URL}/api/titles/{hid}/chapters")).map_err(url_error)?;
+    url.query_pairs_mut()
+        .append_pair("language", language)
+        .append_pair("sort", "number")
+        .append_pair("order", "desc")
+        .append_pair("page", &page.max(1).to_string())
+        .append_pair("limit", &CHAPTER_PAGE_SIZE.to_string());
+    Ok(url.to_string())
 }
 
-fn parse_pages(body: &str, referer: &str) -> Vec<MangaPage> {
-    let root = serde_json::from_str::<Value>(body)
-        .unwrap_or_else(|_| serde_json::from_str(PAGES_FIXTURE).expect("pages fixture"));
-    root.get("images")
-        .and_then(Value::as_array)
-        .into_iter()
-        .flatten()
-        .enumerate()
-        .filter_map(|(index, image)| {
-            let tuple = image.as_array()?;
-            let image_url = tuple.first().and_then(Value::as_str)?.to_string();
-            let offset = tuple.get(2).and_then(Value::as_u64).unwrap_or(0);
-            let extra = if offset > 0 {
-                BTreeMap::from([("mangaFireOffset".into(), json!(offset))])
-            } else {
-                BTreeMap::new()
-            };
-            Some(MangaPage {
-                content: PageContent::Url {
-                    url: image_url,
-                    context: Some(image_context(referer)),
-                },
-                headers: image_context(referer),
-                extra,
-                description: Some(format!("Page {}", index + 1)),
-                ..MangaPage::default()
-            })
-        })
-        .collect()
-}
-
-fn image_context(referer: &str) -> Context {
-    manga::image_headers(referer)
-}
-
-fn source_id(request: &Value) -> String {
-    request
-        .get("sourceId")
-        .or_else(|| request.get("source_id"))
-        .and_then(Value::as_str)
-        .unwrap_or("mangafire-en")
-        .to_string()
-}
-
-fn source_lang_code(request: &Value) -> &'static str {
-    match source_id(request).as_str() {
-        "mangafire-es" => "es",
-        "mangafire-es-419" => "es-la",
-        "mangafire-fr" => "fr",
-        "mangafire-ja" => "ja",
-        "mangafire-pt" => "pt",
-        "mangafire-pt-br" => "pt-br",
-        _ => "en",
-    }
-}
-
-fn page(request: &Value) -> u64 {
-    request
-        .get("page")
-        .and_then(Value::as_u64)
-        .unwrap_or(1)
-        .max(1)
-}
-
-fn filter_string(request: &Value, id: &str) -> Option<String> {
-    request
-        .get("filters")
-        .and_then(Value::as_array)
-        .into_iter()
-        .flatten()
-        .find(|filter| filter.get("id").and_then(Value::as_str) == Some(id))
-        .and_then(|filter| filter.get("value").and_then(Value::as_str))
-        .map(ToOwned::to_owned)
-}
-
-fn filter_bool(request: &Value, id: &str) -> bool {
-    request
-        .get("filters")
-        .and_then(Value::as_array)
-        .into_iter()
-        .flatten()
-        .find(|filter| filter.get("id").and_then(Value::as_str) == Some(id))
-        .and_then(|filter| filter.get("value"))
-        .and_then(Value::as_bool)
-        .unwrap_or(false)
-}
-
-fn filter_array(request: &Value, id: &str) -> Vec<String> {
-    request
-        .get("filters")
-        .and_then(Value::as_array)
-        .into_iter()
-        .flatten()
-        .find(|filter| filter.get("id").and_then(Value::as_str) == Some(id))
-        .and_then(|filter| filter.get("value"))
-        .and_then(Value::as_array)
-        .into_iter()
-        .flatten()
-        .filter_map(Value::as_str)
-        .map(ToOwned::to_owned)
-        .collect()
-}
-
-fn preference_bool(request: &Value, id: &str) -> bool {
-    request
-        .get("preferences")
-        .and_then(Value::as_object)
-        .and_then(|prefs| prefs.get(id))
-        .and_then(|value| {
-            value
-                .as_bool()
-                .or_else(|| value.as_str().map(|text| text == "true"))
-        })
-        .unwrap_or(false)
-}
-
-fn ajax_read_key(value: &str) -> Option<String> {
-    let normalized = normalize_key(value);
-    let trimmed = normalized.trim_start_matches('/');
-    if trimmed.starts_with("chapter/") || trimmed.starts_with("volume/") {
-        return Some(trimmed.to_string());
-    }
-    None
-}
-
-fn encode_params(params: &[(String, String)]) -> String {
-    params
+fn select_author_tag(payload: &TagResponse) -> Option<String> {
+    payload
+        .data
         .iter()
-        .map(|(key, value)| format!("{}={}", url::query_escape(key), url::query_escape(value)))
-        .collect::<Vec<_>>()
-        .join("&")
+        .find(|entry| entry.tag_type == "author" || entry.tag_type == "artist")
+        .map(|entry| entry.id.to_string())
 }
 
-fn key_from_url(input: &str) -> Option<String> {
-    input.starts_with(BASE_URL).then(|| normalize_key(input))
+fn select_poster(poster: PosterDto) -> Option<String> {
+    poster.large.or(poster.medium).or(poster.small)
 }
 
-fn normalize_key(value: &str) -> String {
-    let suffix = value
-        .ends_with(VOLUME_SUFFIX)
-        .then_some(VOLUME_SUFFIX)
-        .unwrap_or("");
-    let without_suffix = value.trim_end_matches(VOLUME_SUFFIX);
-    let path = without_suffix
-        .strip_prefix(BASE_URL)
-        .unwrap_or(without_suffix)
-        .split('?')
+fn absolute_url(base: &str, candidate: &str) -> Result<String> {
+    Url::parse(base)
+        .and_then(|base| base.join(candidate))
+        .map(|url| {
+            let mut canonical = url;
+            canonical.set_query(None);
+            canonical.set_fragment(None);
+            canonical.to_string()
+        })
+        .map_err(url_error)
+}
+
+fn title_hid(candidate: &str) -> Result<String> {
+    let path = title_path(candidate)?;
+    let segment = path
+        .trim_end_matches('/')
+        .split('/')
+        .nth(2)
+        .ok_or_else(|| Error::new("MangaFire title path is missing the hid segment"))?;
+    Ok(segment
+        .split(['.', '-'])
         .next()
-        .unwrap_or(without_suffix)
-        .trim_end_matches('/');
-    format!("/{}{}", path.trim_start_matches('/'), suffix)
+        .unwrap_or_default()
+        .to_owned())
 }
 
-fn absolute_url(value: &str) -> String {
-    url::join_url(BASE_URL, value)
+fn title_path(candidate: &str) -> Result<String> {
+    let path = parse_path(candidate)?;
+    let mut segments = path
+        .trim_end_matches('/')
+        .split('/')
+        .filter(|segment| !segment.is_empty());
+    let Some(first) = segments.next() else {
+        return Err(Error::new("MangaFire URL is missing a path"));
+    };
+    let Some(second) = segments.next() else {
+        return Err(Error::new(
+            "MangaFire title URL is missing its slug segment",
+        ));
+    };
+    if first != "title" {
+        return Err(Error::new("MangaFire URL does not point at a title"));
+    }
+    Ok(format!("/{first}/{second}"))
 }
 
-fn public_read_path(manga_key: &str, kind: &str, lang_code: &str, number: &str) -> String {
-    let slug = normalize_key(manga_key)
-        .replace(VOLUME_SUFFIX, "")
-        .trim_start_matches("/manga/")
-        .to_string();
-    format!("/read/{slug}/{lang_code}/{kind}-{number}")
+fn item_path_from_candidate(path: &str) -> Result<String> {
+    title_path(path)
 }
 
-fn manga_id(key: &str) -> Option<String> {
-    key.replace(VOLUME_SUFFIX, "")
-        .rsplit('.')
+fn chapter_path_from_candidate(path: &str) -> Option<String> {
+    let path = parse_path(path).ok()?;
+    let parts: Vec<_> = path
+        .trim_end_matches('/')
+        .split('/')
+        .filter(|segment| !segment.is_empty())
+        .collect();
+    (parts.len() >= 3 && parts[0] == "title").then(|| format!("/{}", parts.join("/")))
+}
+
+fn chapter_id(chapter: &MangaChapter) -> Result<u64> {
+    if let Some(id) = chapter.extra.get("id").and_then(Value::as_u64) {
+        return Ok(id);
+    }
+    chapter_id_from_path(chapter.url.as_deref().unwrap_or(&chapter.key))
+}
+
+fn chapter_id_from_path(candidate: &str) -> Result<u64> {
+    let path = parse_path(candidate)?;
+    let segment = path
+        .trim_end_matches('/')
+        .split('/')
+        .next_back()
+        .ok_or_else(|| Error::new("MangaFire chapter URL is missing its chapter segment"))?;
+    let id = segment
+        .split("-chapter-")
         .next()
-        .filter(|value| !value.is_empty())
-        .map(ToOwned::to_owned)
+        .unwrap_or_default()
+        .parse::<u64>()
+        .map_err(|error| Error::new(format!("Invalid MangaFire chapter id: {error}")))?;
+    Ok(id)
 }
 
-fn split_csv(value: &str) -> Vec<String> {
-    value
-        .split(',')
+fn chapter_number_from_path(candidate: &str) -> Option<f32> {
+    let path = parse_path(candidate).ok()?;
+    let segment = path.trim_end_matches('/').split('/').next_back()?;
+    let after = segment.split("-chapter-").nth(1)?;
+    let number = after.rsplit_once('-')?.0;
+    number.parse::<f32>().ok()
+}
+
+fn chapter_api_language_from_path(candidate: &str) -> Option<String> {
+    let path = parse_path(candidate).ok()?;
+    let segment = path.trim_end_matches('/').split('/').next_back()?;
+    segment
+        .rsplit_once('-')
+        .map(|(_, language)| language.to_owned())
+}
+
+fn chapter_extra(id: u64, api_language: &str) -> std::collections::BTreeMap<String, Value> {
+    [
+        ("id".to_owned(), Value::from(id)),
+        ("apiLanguage".to_owned(), Value::from(api_language)),
+    ]
+    .into_iter()
+    .collect()
+}
+
+fn parse_path(candidate: &str) -> Result<String> {
+    if candidate.starts_with("http://") || candidate.starts_with("https://") {
+        let url = Url::parse(candidate).map_err(url_error)?;
+        Ok(url.path().to_owned())
+    } else {
+        Ok(candidate.to_owned())
+    }
+}
+
+fn manga_path(hid: &str, slug: Option<&str>) -> String {
+    match slug.filter(|value| !value.trim().is_empty()) {
+        Some(slug) => format!("/title/{hid}-{slug}"),
+        None => format!("/title/{hid}"),
+    }
+}
+
+fn chapter_number_string(value: f32) -> String {
+    if value.fract() == 0.0 {
+        format!("{value:.0}")
+    } else {
+        let rendered = value.to_string();
+        rendered
+            .trim_end_matches('0')
+            .trim_end_matches('.')
+            .to_owned()
+    }
+}
+
+fn html_to_text(value: &str) -> String {
+    let fragment = Html::parse_fragment(value);
+    normalize_space(&fragment.root_element().text().collect::<Vec<_>>().join(" "))
+}
+
+fn normalize_space(value: &str) -> String {
+    value.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+fn title_case(value: &str) -> String {
+    let mut chars = value.chars();
+    match chars.next() {
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+        None => String::new(),
+    }
+}
+
+fn dedupe(values: &mut Vec<String>) {
+    let mut seen = BTreeSet::new();
+    values.retain(|value| seen.insert(value.clone()));
+}
+
+fn status_from_api(value: Option<&str>) -> &'static str {
+    match value.unwrap_or_default().to_ascii_lowercase().as_str() {
+        "releasing" => "ongoing",
+        "finished" => "completed",
+        "on_hiatus" => "hiatus",
+        "discontinued" => "cancelled",
+        _ => "unknown",
+    }
+}
+
+fn option(label: &str, value: &str) -> OptionItem {
+    OptionItem {
+        label: label.to_owned(),
+        value: value.to_owned(),
+    }
+}
+
+fn check_group(id: &str, name: &str, values: &[(&str, &str)]) -> FilterDefinition {
+    FilterDefinition::Group {
+        id: id.to_owned(),
+        name: name.to_owned(),
+        filters: values
+            .iter()
+            .map(|(label, value)| FilterDefinition::CheckBox {
+                id: (*value).to_owned(),
+                name: (*label).to_owned(),
+                default: false,
+            })
+            .collect(),
+    }
+}
+
+fn tri_state_group(id: &str, name: &str, values: &[(&str, &str)]) -> FilterDefinition {
+    FilterDefinition::Group {
+        id: id.to_owned(),
+        name: name.to_owned(),
+        filters: values
+            .iter()
+            .map(|(label, value)| FilterDefinition::TriState {
+                id: (*value).to_owned(),
+                name: (*label).to_owned(),
+                default: 0,
+            })
+            .collect(),
+    }
+}
+
+fn text_value(filters: &Value, key: &str) -> Option<String> {
+    filters
+        .get(key)
+        .and_then(Value::as_str)
         .map(str::trim)
         .filter(|value| !value.is_empty())
-        .map(ToOwned::to_owned)
-        .collect()
+        .map(str::to_owned)
 }
 
-fn parse_date(chunk: &str) -> Option<i64> {
-    let text = chunk
-        .split("<span")
-        .nth(2)
-        .and_then(|value| html::text_between(value, ">", "</span>"))
-        .map(|value| html::strip_tags(&value))?;
-    parse_us_date(&text)
+fn positive_int_value(filters: &Value, key: &str) -> Option<String> {
+    text_value(filters, key).and_then(|value| {
+        value
+            .parse::<u32>()
+            .ok()
+            .filter(|number| *number > 0)
+            .map(|number| number.to_string())
+    })
 }
 
-fn parse_us_date(value: &str) -> Option<i64> {
-    let normalized = value.replace(',', "");
-    let mut parts = normalized.split_whitespace();
-    let month = match parts.next()? {
-        "Jan" => 1,
-        "Feb" => 2,
-        "Mar" => 3,
-        "Apr" => 4,
-        "May" => 5,
-        "Jun" => 6,
-        "Jul" => 7,
-        "Aug" => 8,
-        "Sep" => 9,
-        "Oct" => 10,
-        "Nov" => 11,
-        "Dec" => 12,
-        _ => return None,
-    };
-    let day = parts.next()?.parse::<u32>().ok()?;
-    let year = parts.next()?.parse::<i32>().ok()?;
-    if parts.next().is_some() {
-        return None;
+fn select_value<'a>(filters: &'a Value, key: &str) -> Option<&'a str> {
+    filters
+        .get(key)
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty())
+}
+
+fn author_filter(filters: &Value) -> Option<&str> {
+    filters.get("author").and_then(Value::as_str).map(str::trim)
+}
+
+fn group_values(filters: &Value, key: &str) -> Vec<String> {
+    match filters.get(key) {
+        Some(Value::Object(entries)) => entries
+            .iter()
+            .filter_map(|(entry, selected)| {
+                selected.as_bool().unwrap_or(false).then(|| entry.clone())
+            })
+            .collect(),
+        Some(Value::Array(entries)) => entries
+            .iter()
+            .filter_map(Value::as_str)
+            .map(str::to_owned)
+            .collect(),
+        _ => Vec::new(),
     }
-    manatan_shared::dates::parse_ymd(&format!("{year:04}-{month:02}-{day:02}"))
 }
 
-fn push_unique(mut entries: Vec<CatalogItem>, item: CatalogItem) -> Vec<CatalogItem> {
-    if !entries.iter().any(|existing| existing.key == item.key) {
-        entries.push(item);
+fn tri_state_values(filters: &Value, key: &str) -> (Vec<String>, Vec<String>) {
+    let mut include = Vec::new();
+    let mut exclude = Vec::new();
+    if let Some(Value::Object(entries)) = filters.get(key) {
+        for (entry, state) in entries {
+            match state {
+                Value::Bool(true) => include.push(entry.clone()),
+                Value::Bool(false) => exclude.push(entry.clone()),
+                _ => {}
+            }
+        }
     }
-    entries
+    (include, exclude)
 }
 
-export_manga_source!(SOURCE);
+fn one() -> u32 {
+    1
+}
 
-const SEARCH_FIXTURE: &str = r#"
-<div class="original card-lg"><div class="unit"><div class="inner"><img src="/cover.jpg"><div class="info"><a href="/manga/sample.1">Sample MangaFire</a></div></div></div></div>
-"#;
+fn json_error(error: serde_json::Error) -> Error {
+    Error::new(format!("MangaFire JSON parse error: {error}"))
+}
 
-const DETAILS_FIXTURE: &str = r#"
-<div class="main-inner"><h1>Sample MangaFire</h1><div class="poster"><img src="/cover.jpg"></div><div class="meta"><span>Author:</span><span>Sample Author</span><span>Status:</span><span>Releasing</span><span>Genres:</span><span>Action, Fantasy</span></div></div><div id="synopsis"><div class="modal-content">Sample description.</div></div>
-"#;
+fn url_error(error: url::ParseError) -> Error {
+    Error::new(error.to_string())
+}
 
-const CHAPTERS_FIXTURE: &str = r#"
-<ul><li data-number="1"><a href="/read/sample.1/en/chapter-1"><span>Chap 1: Beginning</span><span>Jan 01, 2024</span></a></li></ul>
-"#;
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::{json, Value};
+    use sha2::{Digest, Sha256};
 
-const READ_LIST_HTML_FIXTURE: &str = r#"
-<ul><li data-id="1" data-number="1"><a href="/read/sample.1/en/chapter-1">Chapter 1</a></li></ul>
-"#;
+    const MANIFEST: &str = include_str!("../manifest.json");
+    const ICON: &[u8] = include_bytes!("../assets/icon.png");
+    const ICON_SHA256: &str = "b1543e7b1238f29306ba24e9f48e0046dc6c47fc157c3703650bed73f16acf8e";
+    const POPULAR_FIXTURE: &str = include_str!("../fixtures/popular.json");
+    const DETAILS_FIXTURE: &str = include_str!("../fixtures/details.json");
+    const TAGS_FIXTURE: &str = include_str!("../fixtures/tags.json");
+    const CHAPTERS_PAGE_1_FIXTURE: &str = include_str!("../fixtures/chapters-page-1.json");
+    const CHAPTERS_PAGE_2_FIXTURE: &str = include_str!("../fixtures/chapters-page-2.json");
+    const PAGES_FIXTURE: &str = include_str!("../fixtures/pages.json");
 
-const READ_LIST_FIXTURE: &str = r#"
-{"html":"<ul><li data-id=\"1\" data-number=\"1\"><a href=\"/read/sample.1/en/chapter-1\">Chapter 1</a></li></ul>"}
-"#;
+    #[test]
+    fn metadata_matches_expected_configuration() {
+        let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
 
-const PAGES_FIXTURE: &str = r#"
-{"images":[["https://mangafire.to/image-1.jpg",1,0],["https://mangafire.to/image-2.jpg",2,3]]}
-"#;
+        assert_eq!(manifest["id"], "mangafire");
+        assert_eq!(manifest["contentType"], "manga");
+        assert_eq!(manifest["license"], "Apache-2.0");
+        assert_eq!(
+            manifest["permissions"]["network"]["allow"],
+            json!([
+                "mangafire.to",
+                "static.mfcdn.nl",
+                "k99.mfcdn1.xyz",
+                "k99.mfcdn2.xyz",
+                "l1n.mfcdn3.xyz",
+                "m3z.mfcdn2.xyz",
+                "m3z.mfcdn3.xyz",
+                "nw8.mfcdn1.xyz",
+                "nw8.mfcdn3.xyz",
+                "o48.mfcdn1.xyz",
+                "o48.mfcdn2.xyz"
+            ])
+        );
+        assert_eq!(
+            manifest["sources"],
+            json!([{
+                "id": "mangafire",
+                "name": "MangaFire",
+                "lang": "all",
+                "contentType": "manga",
+                "baseUrl": "https://mangafire.to",
+                "contentRating": "adult",
+                "capabilities": {
+                    "search": true,
+                    "latest": true,
+                    "filters": true,
+                    "preferences": true,
+                    "urlResolution": true
+                },
+                "listings": [
+                    { "id": "popular", "name": "Popular" },
+                    { "id": "latest", "name": "Latest" }
+                ],
+                "urlPatterns": [{ "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }],
+                "tags": ["json-api"]
+            }])
+        );
+    }
+
+    #[test]
+    fn icon_digest_matches_manifest() {
+        let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
+
+        assert_eq!(manifest["assets"][0]["sha256"], ICON_SHA256);
+        assert_eq!(format!("{:x}", Sha256::digest(ICON)), ICON_SHA256);
+    }
+
+    #[test]
+    fn language_mapping_matches_upstream_variants() {
+        assert_eq!(
+            LanguageVariant::from_source_code("es-419").api_code,
+            "es-la"
+        );
+        assert_eq!(LanguageVariant::from_source_code("pt-BR").api_code, "pt-br");
+        assert_eq!(
+            LanguageVariant::from_api_code("es-la").source_code,
+            "es-419"
+        );
+        assert_eq!(LanguageVariant::from_api_code("pt-br").source_code, "pt-BR");
+        assert_eq!(LanguageVariant::from_source_code("pt").api_code, "pt");
+    }
+
+    #[test]
+    fn serializes_search_filters_and_author_preflight() {
+        let filters = json!({
+            "types": { "manga": true, "manhwa": true, "other": false },
+            "genres_mode": "and",
+            "genres": { "1": true, "5": false, "39": null },
+            "statuses": { "finished": true, "releasing": false },
+            "author": "Kishimoto",
+            "year_from": "2010",
+            "year_to": "2024",
+            "min_chap": "10",
+            "sort": "views_total:desc"
+        });
+
+        let tag_url = tag_lookup_url("Kishimoto").expect("tag url");
+        assert_eq!(
+            Url::parse(&tag_url)
+                .expect("url")
+                .query_pairs()
+                .collect::<Vec<_>>(),
+            vec![("keyword".into(), "Kishimoto".into())]
+        );
+
+        let url = search_url("Naruto", 2, &filters, Some("150932")).expect("search url");
+        let query = Url::parse(&url)
+            .expect("url")
+            .query_pairs()
+            .map(|(key, value)| (key.into_owned(), value.into_owned()))
+            .collect::<Vec<_>>();
+
+        assert!(query.contains(&("keyword".into(), "Naruto".into())));
+        assert!(query.contains(&("page".into(), "2".into())));
+        assert!(query.contains(&("limit".into(), "50".into())));
+        assert!(query.contains(&("authors[]".into(), "150932".into())));
+        assert!(query.contains(&("types[]".into(), "manga".into())));
+        assert!(query.contains(&("types[]".into(), "manhwa".into())));
+        assert!(query.contains(&("genres_mode".into(), "and".into())));
+        assert!(query.contains(&("genres_in[]".into(), "1".into())));
+        assert!(query.contains(&("genres_ex[]".into(), "5".into())));
+        assert!(query.contains(&("statuses[]".into(), "finished".into())));
+        assert!(query.contains(&("year_from".into(), "2010".into())));
+        assert!(query.contains(&("year_to".into(), "2024".into())));
+        assert!(query.contains(&("min_chap".into(), "10".into())));
+        assert!(query.contains(&("order[views_total]".into(), "desc".into())));
+    }
+
+    #[test]
+    fn uses_default_genre_mode_and_sort_when_filters_are_empty() {
+        let url = search_url("Blue Lock", 1, &json!({}), None).expect("search url");
+        let query = Url::parse(&url)
+            .expect("url")
+            .query_pairs()
+            .map(|(key, value)| (key.into_owned(), value.into_owned()))
+            .collect::<Vec<_>>();
+
+        assert!(query.contains(&("genres_mode".into(), "and".into())));
+        assert!(query.contains(&("order[relevance]".into(), "desc".into())));
+    }
+
+    #[test]
+    fn maps_catalog_and_details_fixtures() {
+        let popular: ApiResponse<MangaDto> =
+            serde_json::from_str(POPULAR_FIXTURE).expect("popular fixture parses");
+        let page = parse_catalog_page(popular).expect("catalog page");
+        assert_eq!(page.entries.len(), 2);
+        assert_eq!(page.entries[0].key, "/title/kw9j9-blue-lockk");
+        assert_eq!(page.entries[0].title, "Blue Lock");
+        assert_eq!(
+            page.entries[0]
+                .cover
+                .as_ref()
+                .map(|request| request.url.as_str()),
+            Some("https://static.mfcdn.nl/4b71/i/f/0c/poster.jpg")
+        );
+        assert!(page.has_next_page);
+
+        let details: MangaDetailsResponse =
+            serde_json::from_str(DETAILS_FIXTURE).expect("details fixture parses");
+        let item = details.data.to_catalog_item().expect("details mapping");
+        assert_eq!(item.key, "/title/kw9j9-blue-lockk");
+        assert_eq!(item.authors, vec!["KANESHIRO Muneyuki"]);
+        assert_eq!(item.artists, vec!["NOMURA Yusuke"]);
+        assert_eq!(item.status, Some(json!("ongoing")));
+        assert_eq!(
+            item.description.as_deref(),
+            Some("Japan chases the perfect striker. Victory demands ego.")
+        );
+        assert_eq!(item.tags, vec!["Manga", "Sports", "Drama", "School"]);
+        assert_eq!(
+            item.extra.get("aliases"),
+            Some(&json!(["Buruu Rokku", "Blue Lock"]))
+        );
+    }
+
+    #[test]
+    fn selects_author_tag_before_artist() {
+        let tags: TagResponse = serde_json::from_str(TAGS_FIXTURE).expect("tags fixture parses");
+        assert_eq!(select_author_tag(&tags).as_deref(), Some("150932"));
+    }
+
+    #[test]
+    fn maps_paginated_chapters_and_pages() {
+        let page_one: ApiResponse<ChapterDto> =
+            serde_json::from_str(CHAPTERS_PAGE_1_FIXTURE).expect("chapter page 1 parses");
+        let page_two: ApiResponse<ChapterDto> =
+            serde_json::from_str(CHAPTERS_PAGE_2_FIXTURE).expect("chapter page 2 parses");
+        let language = LanguageVariant::from_source_code("en");
+
+        let mut chapters = Vec::new();
+        for (index, chapter) in page_one.items.into_iter().chain(page_two.items).enumerate() {
+            chapters.push(
+                chapter
+                    .to_manga_chapter("/title/kw9j9-blue-lockk", language, index as i32)
+                    .expect("chapter maps"),
+            );
+        }
+
+        assert_eq!(chapters.len(), 3);
+        assert_eq!(
+            chapters[0].key,
+            "/title/kw9j9-blue-lockk/8981099-chapter-353-en"
+        );
+        assert_eq!(chapters[0].chapter_number, Some(353.0));
+        assert_eq!(chapters[0].language.as_deref(), Some("en"));
+        assert_eq!(
+            chapters[2].key,
+            "/title/kw9j9-blue-lockk/7668016-chapter-352-es-la"
+        );
+        assert_eq!(chapters[2].language.as_deref(), Some("es-419"));
+        assert_eq!(
+            chapters[2].title.as_deref(),
+            Some("Ch. 352 - The Puppet Nobody Wants")
+        );
+
+        let pages: PagesResponse =
+            serde_json::from_str(PAGES_FIXTURE).expect("pages fixture parses");
+        let mapped = pages
+            .data
+            .pages
+            .into_iter()
+            .enumerate()
+            .map(|(index, page)| page.to_manga_page(index).expect("page maps"))
+            .collect::<Vec<_>>();
+        assert_eq!(mapped.len(), 2);
+        match &mapped[0].content {
+            PageContent::Url { url, .. } => {
+                assert_eq!(url, "https://nw8.mfcdn1.xyz/mf/abc/h/p.jpg");
+            }
+            other => panic!("expected direct page url, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn deep_link_parsing_covers_item_and_chapter_urls() {
+        assert_eq!(
+            item_path_from_candidate("/title/kw9j9-blue-lockk/8981099-chapter-353-en")
+                .expect("item path"),
+            "/title/kw9j9-blue-lockk"
+        );
+        assert_eq!(
+            chapter_id_from_path("/title/kw9j9-blue-lockk/8981099-chapter-353-en")
+                .expect("chapter id"),
+            8981099
+        );
+        assert_eq!(
+            chapter_number_from_path("/title/kw9j9-blue-lockk/8981099-chapter-353-en"),
+            Some(353.0)
+        );
+        assert_eq!(
+            chapter_api_language_from_path("/title/kw9j9-blue-lockk/8981099-chapter-353-en"),
+            Some("en".to_owned())
+        );
+    }
+
+    #[test]
+    fn malformed_payloads_are_rejected() {
+        assert!(serde_json::from_str::<ApiResponse<MangaDto>>(
+            r#"{"items":[{"hid":123,"title":"Broken"}]}"#
+        )
+        .is_err());
+        assert!(serde_json::from_str::<MangaDetailsResponse>(
+            r#"{"data":{"hid":"kw9j9","title":42}}"#
+        )
+        .is_err());
+        assert!(
+            serde_json::from_str::<PagesResponse>(r#"{"data":{"pages":[{"url":1}]}}"#).is_err()
+        );
+        assert!(chapter_id_from_path("/title/kw9j9-blue-lockk/not-a-chapter").is_err());
+    }
+}

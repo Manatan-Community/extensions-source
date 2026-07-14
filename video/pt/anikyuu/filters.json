@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "order", "label": "Ordem", "kind": "select", "defaultValue": "popular", "options": ["Popular:popular", "Atualizados:update"] }
-  ]
-}

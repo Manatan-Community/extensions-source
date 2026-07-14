@@ -1,4 +1,0 @@
-[
-  {"id":"preferred_server","type":"select","label":"Preferred server","default":"Voe","options":["YourUpload","Voe","VidGuard","Okru","MixDrop","External"]},
-  {"id":"preferred_quality","type":"select","label":"Preferred quality","default":"1080","options":["1080","720","480","360"]}
-]

@@ -1,5 +1,0 @@
-[
-  { "key": "preferred_language", "type": "select", "title": "Preferred language", "default": "[SUBBED]", "entries": ["[SUBBED]", "[DUBBED]", "[RAW]"], "values": ["[SUBBED]", "[DUBBED]", "[RAW]"] },
-  { "key": "preferred_server", "type": "select", "title": "Preferred server", "default": "AnimeGG", "entries": ["AnimeGG"], "values": ["AnimeGG"] },
-  { "key": "preferred_quality", "type": "select", "title": "Preferred quality", "default": "1080", "entries": ["1080", "720", "480", "360"], "values": ["1080", "720", "480", "360"] }
-]

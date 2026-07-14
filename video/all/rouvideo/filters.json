@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "sort", "label": "Sort", "kind": "select", "defaultValue": "createdAt", "options": ["createdAt", "viewCount", "likeCount"] },
-    { "id": "category", "label": "Category", "kind": "select", "defaultValue": "", "options": ["", "featured", "watching", "國產AV", "中文字幕", "麻豆傳媒", "自拍流出", "探花", "OnlyFans", "日本", "all-videos"] },
-    { "id": "tag", "label": "Tag", "kind": "text", "defaultValue": "" },
-    { "id": "hot_search", "label": "Hot search", "kind": "text", "defaultValue": "" }
-  ]
-}

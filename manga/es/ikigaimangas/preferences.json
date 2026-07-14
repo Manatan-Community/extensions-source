@@ -1,4 +1,0 @@
-[
-  { "id": "SHOW_NSFW", "type": "boolean", "label": "Show NSFW content", "default": false },
-  { "id": "BASE_URL", "type": "text", "label": "Source URL", "default": "https://zonaikigai.gamesview.shop" }
-]

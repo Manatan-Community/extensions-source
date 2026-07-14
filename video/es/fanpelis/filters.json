@@ -1,7 +1,0 @@
-[
-  {"id":"genre","type":"select","name":"Generos","options":[
-    {"label":"<Selecionar>","value":""},
-    {"label":"Peliculas","value":"movies-hd"},
-    {"label":"Series","value":"series"}
-  ]}
-]

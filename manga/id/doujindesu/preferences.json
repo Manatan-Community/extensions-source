@@ -1,9 +1,0 @@
-[
-  {
-    "id": "base_url",
-    "type": "string",
-    "title": "Base URL",
-    "summary": "Default: https://doujindesu.tv",
-    "default": "https://doujindesu.tv"
-  }
-]

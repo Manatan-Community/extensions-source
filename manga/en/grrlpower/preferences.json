@@ -1,8 +1,0 @@
-[
-  {
-    "id": "showAuthorsNotes",
-    "type": "toggle",
-    "label": "Show author's notes",
-    "defaultValue": false
-  }
-]

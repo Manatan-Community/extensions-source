@@ -1,24 +1,20 @@
 # Contributing
 
-Use the examples as the source shape for new Manatan extensions.
+Contributions must target the `.manatan2` WebAssembly Component Model format.
+Use a shared family crate when multiple sources have the same behavior; keep
+leaf crates limited to configuration and genuine source-specific overrides.
 
 Before opening a pull request:
 
 ```sh
-cargo fmt --check
-cargo test
+cargo fmt --all -- --check
+cargo test --workspace
 cargo run -p xtask -- validate
-cargo run -p xtask -- test-examples
-cargo run -p xtask -- build-all
-cargo run -p xtask -- generate-index
-cargo run -p xtask -- validate-packages
+cargo run -p xtask -- build <media>/<lang>/<source>
 ```
 
-Rules:
-
-- Keep one media kind per package.
-- Use stable lowercase source IDs.
-- Include fixture tests for parsing behavior.
-- Include an icon when `manifest.json` declares one.
-- Do not add generated package paths by hand. Use `xtask`.
-- Keep public documentation Manatan-native.
+Include parsing fixtures, the smallest required network permissions, upstream
+license attribution, and an updated `porting-matrix.json` row. A compiling core
+module is not sufficient: the component and package must validate, and a
+representative operation must execute through Manatan's production Wasmtime
+runner.

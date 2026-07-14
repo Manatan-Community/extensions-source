@@ -1,9 +1,0 @@
-[
-  {
-    "id": "show_premium_chapters",
-    "type": "toggle",
-    "title": "Afficher les chapitres premium",
-    "summary": "Afficher les chapitres payants dans la liste.",
-    "default": false
-  }
-]

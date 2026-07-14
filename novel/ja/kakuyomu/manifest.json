@@ -1,31 +1,58 @@
 {
-  "schemaVersion": 1,
-  "packageId": "kakuyomu",
-  "name": "Kakuyomu",
-  "version": "0.1.0",
+  "schemaVersion": 2,
+  "id": "kakuyomu",
+  "name": "kakuyomu",
+  "version": "1.0.0",
   "versionCode": 1,
-  "lang": "ja",
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
   "contentType": "novel",
-  "contentRating": "safe",
+  "description": "Japanese web novels from Kakuyomu.",
+  "author": "Manatan Community",
+  "homepage": "https://kakuyomu.jp",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MIT",
   "icon": "assets/icon.png",
-  "filters": "filters.json",
   "permissions": {
-    "network": ["https://kakuyomu.jp"],
-    "webview": true,
-    "cookies": true
+    "network": {
+      "allow": [
+        "kakuyomu.jp",
+        "cdn-static.kakuyomu.jp",
+        "cdn-ak.f.st-hatena.com"
+      ]
+    },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
   },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "96c9cf322d47707de76595cb900cafd64e23883c3a188924797dd06f5268bd84"
+    }
+  ],
   "sources": [
     {
       "id": "kakuyomu",
-      "name": "Kakuyomu",
+      "name": "kakuyomu",
       "lang": "ja",
-      "baseUrl": "https://kakuyomu.jp",
       "contentType": "novel",
+      "baseUrl": "https://kakuyomu.jp",
       "contentRating": "safe",
       "capabilities": {
+        "search": true,
         "filters": true,
-        "preferences": false
-      }
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://kakuyomu.jp/works/*", "kind": "item-or-chapter" }
+      ]
     }
   ]
 }

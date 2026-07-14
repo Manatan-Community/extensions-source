@@ -1,8 +1,0 @@
-[
-  {
-    "id": "show_locked_chapters",
-    "type": "toggle",
-    "label": "Show locked chapters",
-    "default": false
-  }
-]

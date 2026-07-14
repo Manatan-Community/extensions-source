@@ -1,8 +1,0 @@
-[
-  {
-    "id": "pref_show_paid_chap",
-    "type": "toggle",
-    "label": "Show paid chapters",
-    "default": false
-  }
-]

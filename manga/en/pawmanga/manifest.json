@@ -1,38 +1,48 @@
 {
-  "schemaVersion": 1,
-  "packageId": "pawmanga",
+  "schemaVersion": 2,
+  "id": "pawmanga",
   "name": "Paw Manga",
-  "version": "0.1.0",
-  "versionCode": 2,
-  "lang": "en",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
   "contentType": "manga",
-  "contentRating": "adult",
+  "description": "English manga and manhwa from Paw Manga.",
+  "author": "Manatan Community",
+  "homepage": "https://pawmanga.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
   "icon": "assets/icon.png",
   "permissions": {
-    "network": ["https://pawmanga.com"],
-    "webview": true,
-    "cookies": true
+    "network": { "allow": ["pawmanga.com", "image.pawmanga.com"] },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
   },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "4c859be0f73827e700d29433524225c792b8534a74d9dc4db25f69b6517cf8c8"
+    }
+  ],
   "sources": [
     {
       "id": "pawmanga",
       "name": "Paw Manga",
       "lang": "en",
-      "baseUrl": "https://pawmanga.com",
       "contentType": "manga",
+      "baseUrl": "https://pawmanga.com",
       "contentRating": "adult",
-      "capabilities": {
-        "search": true,
-        "latest": true,
-        "filters": false,
-        "preferences": false,
-        "home": true,
-        "urlResolution": true
-      },
+      "capabilities": { "search": true, "latest": true, "filters": true },
       "listings": [
         { "id": "popular", "name": "Popular" },
         { "id": "latest", "name": "Latest" }
-      ]
+      ],
+      "urlPatterns": [ { "pattern": "https://pawmanga.com/manga/*", "kind": "manga" } ],
+      "tags": ["madara"]
     }
   ]
 }

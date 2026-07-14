@@ -1,9 +1,0 @@
-[
-  { "key": "preferred_title_lang", "type": "select", "title": "Preferred title language", "default": "Romaji", "entries": ["Romaji", "English"], "values": ["Romaji", "English"] },
-  { "key": "mark_fillers", "type": "boolean", "title": "Mark filler episodes", "default": true },
-  { "key": "preferred_quality", "type": "select", "title": "Preferred quality", "default": "1080", "entries": ["360", "480", "720", "1080"], "values": ["360", "480", "720", "1080"] },
-  { "key": "preferred_type", "type": "select", "title": "Preferred Type", "default": "Sub", "entries": ["Sub", "Dub", "Mixed", "Raw"], "values": ["Sub", "Dub", "Mixed", "Raw"] },
-  { "key": "preferred_server", "type": "select", "title": "Preferred Server", "default": "Vidstreaming", "entries": ["Vidstreaming", "Vidcloud"], "values": ["Vidstreaming", "Vidcloud"] },
-  { "key": "hoster_selection", "type": "multiselect", "title": "Enable/Disable Hosts", "default": ["Vidstreaming", "Vidcloud"], "entries": ["Vidstreaming", "Vidcloud"], "values": ["Vidstreaming", "Vidcloud"] },
-  { "key": "type_selection", "type": "multiselect", "title": "Enable/Disable Types", "default": ["servers-sub", "servers-dub", "servers-mixed", "servers-raw"], "entries": ["Sub", "Dub", "Mixed", "Raw"], "values": ["servers-sub", "servers-dub", "servers-mixed", "servers-raw"] }
-]

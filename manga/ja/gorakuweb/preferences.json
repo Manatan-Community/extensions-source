@@ -1,8 +1,0 @@
-[
-  {
-    "id": "hide_locked",
-    "type": "switch",
-    "name": "Hide locked chapters",
-    "default": false
-  }
-]

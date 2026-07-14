@@ -1,34 +1,48 @@
 {
-  "schemaVersion": 1,
-  "packageId": "manhuahot",
+  "schemaVersion": 2,
+  "id": "manhuahot",
   "name": "ManhuaHot",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "versionCode": 1,
-  "lang": "en",
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
   "contentType": "manga",
-  "contentRating": "safe",
+  "description": "English manga and manhwa from ManhuaHot.",
+  "author": "Manatan Community",
+  "homepage": "https://manhuahot.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
   "icon": "assets/icon.png",
   "permissions": {
-    "network": ["https://manhuahot.com"],
-    "webview": true,
-    "cookies": true
+    "network": { "allow": ["manhuahot.com", "cdn.manhuahot.com"] },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
   },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "c26907a7500d99917658c61ba0e10a954c80a9e6dcfbb9eb7947de3daa095fc4"
+    }
+  ],
   "sources": [
     {
       "id": "manhuahot",
       "name": "ManhuaHot",
       "lang": "en",
-      "baseUrl": "https://manhuahot.com",
       "contentType": "manga",
+      "baseUrl": "https://manhuahot.com",
       "contentRating": "safe",
-      "capabilities": {
-        "search": true,
-        "latest": true,
-        "filters": false,
-        "preferences": false,
-        "home": true,
-        "urlResolution": true
-      }
+      "capabilities": { "search": true, "latest": true, "filters": true },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [ { "pattern": "https://manhuahot.com/manga/*", "kind": "manga" } ],
+      "tags": ["madara"]
     }
   ]
 }

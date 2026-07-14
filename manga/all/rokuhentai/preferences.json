@@ -1,3 +1,0 @@
-[
-  { "id": "thumbnails", "type": "toggle", "label": "Use page thumbnails", "default": false }
-]

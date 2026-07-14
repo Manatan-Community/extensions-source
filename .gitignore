@@ -1,4 +1,9 @@
 .DS_Store
 target/
+dist/
+*.manatan2
+*.core.wasm
+*.component.wasm
+.DS_Store
 **/target/
 **/Cargo.lock

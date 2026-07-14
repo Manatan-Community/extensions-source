@@ -1,5 +1,0 @@
-{
-  "items": [
-    { "id": "artistInTitle", "type": "select", "name": "Artist name in manga title", "options": ["Only in All galleries", "Always", "Never"], "default": "Only in All galleries" }
-  ]
-}

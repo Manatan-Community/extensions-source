@@ -1,7 +1,0 @@
-[
-  { "id": "keyword", "type": "text", "label": "Keyword" },
-  { "id": "novel_type", "type": "multiSelect", "label": "Novel Type", "options": ["Web Novel", "Light Novel", "Chinese Novel", "Korean Novel"] },
-  { "id": "language", "type": "multiSelect", "label": "Language", "options": ["Chinese", "Japanese", "Korean"] },
-  { "id": "genre", "type": "multiSelect", "label": "Genre", "options": ["4", "1", "39", "12", "6", "47", "2", "14", "45", "22", "31", "21", "18", "46", "30", "7", "8", "9", "10", "3", "23", "35", "11", "34", "5", "32", "13", "33", "25", "24", "17", "20", "38", "16", "27"] },
-  { "id": "completed", "type": "select", "label": "Completed", "options": ["", "yes", "no"] }
-]

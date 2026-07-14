@@ -1,0 +1,6 @@
+[
+  { "id": "kite", "default": true, "tip": "Soft sub, Multi quality" },
+  { "id": "dio", "default": false, "tip": "Hard sub, Multi quality" },
+  { "id": "sage", "default": false, "tip": "Hard sub, Multi quality" },
+  { "id": "meg", "default": false, "tip": "Hard sub, Multi quality" }
+]

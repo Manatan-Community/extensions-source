@@ -1,429 +1,561 @@
-use manatan_extension::{
-    CatalogItem, HomeSection, HomeSectionStyle, ItemStatus, NovelChapter, NovelChapterPage,
-    NovelText, Paged, UrlResolveResult, abi::ExtensionResult, export_novel_source,
-    source::NovelSource,
+// Adapted from LNReader/lnreader-plugins under the MIT license.
+
+use chrono::{NaiveDate, NaiveDateTime};
+use manatan_common::{absolute_url, attr, normalize_space, require, selector};
+use manatan_sdk::{
+    client::Client,
+    html::{self, Html},
+    model::{
+        CatalogItem, FilterDefinition, ImageRequestContext, NovelChapter, NovelChapterPage,
+        NovelContentBlock, NovelText, OptionItem, Paged, UrlResolveResult,
+    },
+    Error, NovelSource, Result,
 };
-use manatan_shared::{
-    html, novel,
-    sdk::{SearchRequest, http::HttpClient},
-    url,
-};
-use serde_json::Value;
-use std::collections::{BTreeMap, BTreeSet};
+use serde_json::{json, Value};
+use url::Url;
 
-const SOURCE: Syosetu = Syosetu;
-const YOMOU_URL: &str = "https://yomou.syosetu.com";
-const NCODE_URL: &str = "https://ncode.syosetu.com";
+#[cfg(target_arch = "wasm32")]
+const SOURCE_ID: &str = "yomou.syosetu";
+const RANKING_URL: &str = "https://yomou.syosetu.com";
+const NOVEL_URL: &str = "https://ncode.syosetu.com";
+const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
-struct Syosetu;
+pub struct SyosetuSource {
+    client: Client,
+}
 
-impl NovelSource for Syosetu {
-    fn list(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
-        if request.as_object().is_some_and(|object| object.is_empty()) {
-            return Ok(Paged {
-                entries: parse_rankings(RANKING_FIXTURE),
-                has_next_page: false,
+impl Default for SyosetuSource {
+    fn default() -> Self {
+        Self {
+            client: Client::new().header("User-Agent", USER_AGENT),
+        }
+    }
+}
+
+impl SyosetuSource {
+    fn document(&self, url: &str) -> Result<(Html, String)> {
+        let response = self.client.get(url).send()?.error_for_status()?;
+        Ok((
+            html::document(response.text()?),
+            response.final_url().to_owned(),
+        ))
+    }
+
+    fn ranking_url(page: u32, filters: &Value) -> String {
+        let ranking = filter(filters, "ranking", "total");
+        let genre = filter(filters, "genre", "");
+        let modifier = filter(filters, "modifier", "total");
+        let path = if genre.is_empty() {
+            format!("rank/list/type/{ranking}_{modifier}")
+        } else {
+            let family = if genre.len() == 1 {
+                "isekailist"
+            } else {
+                "genrelist"
+            };
+            let suffix = (modifier != "total")
+                .then(|| format!("_{modifier}"))
+                .unwrap_or_default();
+            format!("rank/{family}/type/{ranking}_{genre}{suffix}")
+        };
+        format!("{RANKING_URL}/{path}/?p={}", page.clamp(1, 100))
+    }
+
+    fn parse_ranking(document: &Html, requested_page: u32) -> Result<Paged<CatalogItem>> {
+        let current = text_for(document, ".c-pager__item.is-current")?
+            .and_then(|value| value.parse::<u32>().ok())
+            .unwrap_or(1);
+        if current != requested_page.clamp(1, 100) {
+            return Ok(Paged::default());
+        }
+        let items = parse_items(document, ".c-card", ".p-ranklist-item__title a")?;
+        Ok(Paged::new(items, current < last_page(document)?))
+    }
+
+    fn search_url(query: &str, page: u32) -> Result<String> {
+        let mut url = Url::parse(&format!("{RANKING_URL}/search.php"))
+            .map_err(|error| Error::new(error.to_string()))?;
+        url.query_pairs_mut()
+            .append_pair("order", "hyoka")
+            .append_pair("p", &page.clamp(1, 100).to_string())
+            .append_pair("word", query);
+        Ok(url.to_string())
+    }
+
+    fn parse_search(document: &Html) -> Result<Paged<CatalogItem>> {
+        let items = parse_items(document, ".searchkekka_box", ".novel_h a")?;
+        let current = text_for(document, ".c-pager__item.is-current")?
+            .and_then(|value| value.parse::<u32>().ok())
+            .unwrap_or(1);
+        Ok(Paged::new(items, current < last_page(document)?))
+    }
+
+    fn parse_details(document: &Html, page_url: &str) -> Result<CatalogItem> {
+        let title = require(
+            text_for(document, ".p-novel__title")?,
+            "Syosetu work has no title",
+        )?;
+        let author = text_for(document, ".p-novel__author")?
+            .map(|value| value.trim_start_matches("作者：").trim().to_owned())
+            .filter(|value| !value.is_empty());
+        let announcement = text_for(document, ".c-announce")?.unwrap_or_default();
+        let status = if announcement.contains("更新されていません") {
+            "hiatus"
+        } else if announcement.contains("連載中") || announcement.contains("未完結") {
+            "ongoing"
+        } else if announcement.contains("完結") {
+            "completed"
+        } else {
+            "unknown"
+        };
+        let description = html_for(document, "#novel_ex")?;
+        let meta = selector("meta[property=\"og:description\"]")?;
+        let tags = document
+            .select(&meta)
+            .next()
+            .and_then(|element| attr(element, "content"))
+            .map(|value| {
+                value
+                    .split_whitespace()
+                    .filter(|value| !value.is_empty())
+                    .map(str::to_owned)
+                    .collect()
+            })
+            .unwrap_or_default();
+        let mut item = CatalogItem::new(page_url, title);
+        item.url = Some(page_url.to_owned());
+        item.description = description;
+        item.authors = author.into_iter().collect();
+        item.tags = tags;
+        item.status = Some(json!(status));
+        item.initialized = true;
+        item.language = Some("ja".into());
+        Ok(item)
+    }
+
+    fn parse_chapter_page(document: &Html, page: u32) -> Result<NovelChapterPage> {
+        let rows = selector(".p-eplist__sublist")?;
+        let link = selector("a")?;
+        let updated = selector(".p-eplist__update")?;
+        let mut entries = Vec::new();
+        for row in document.select(&rows) {
+            let Some(anchor) = row.select(&link).next() else {
+                continue;
+            };
+            let Some(href) = attr(anchor, "href") else {
+                continue;
+            };
+            let title = normalize_space(&html::text(anchor));
+            if title.is_empty() {
+                continue;
+            }
+            let url = absolute_url(NOVEL_URL, &href)?;
+            let date = row
+                .select(&updated)
+                .next()
+                .map(html::text)
+                .and_then(|value| parse_date(&value));
+            entries.push(NovelChapter {
+                key: url.clone(),
+                title: Some(title),
+                chapter_number: chapter_number_from_url(&url),
+                date_uploaded: date,
+                url: Some(url),
+                language: Some("ja".into()),
+                source_order: Some(entries.len() as i32),
+                page: Some(page),
+                ..NovelChapter::default()
             });
         }
-
-        let page = request.get("page").and_then(Value::as_u64).unwrap_or(1);
-        let listing = request
-            .get("listing")
-            .or_else(|| request.get("listingId"))
-            .and_then(Value::as_str)
-            .unwrap_or("popular");
-        let target = if listing == "latest" {
-            format!("{YOMOU_URL}/search.php?order=new&notnizi=1&p={}", bounded_page(page))
-        } else {
-            ranking_url(&request, page)
-        };
-        let body = fetch_yomou(&target, RANKING_FIXTURE);
-        let entries = if listing == "latest" {
-            parse_search_results(&body)
-        } else {
-            parse_rankings(&body)
-        };
-        Ok(Paged {
-            has_next_page: has_next_page(&body, page),
-            entries,
-        })
-    }
-
-    fn search(&self, request: Value) -> ExtensionResult<Paged<CatalogItem>> {
-        let query = request
-            .get("query")
-            .and_then(Value::as_str)
-            .unwrap_or_default()
-            .trim();
-        if let Some(key) = key_from_url(query) {
-            return Ok(Paged {
-                entries: vec![fetch_details(&key)],
-                has_next_page: false,
-            });
-        }
-
-        let page = request.get("page").and_then(Value::as_u64).unwrap_or(1);
-        let target = format!(
-            "{YOMOU_URL}/search.php?order=hyoka&word={}&notnizi=1&p={}",
-            url::query_escape(query),
-            bounded_page(page)
-        );
-        let body = fetch_yomou(&target, SEARCH_FIXTURE);
-        Ok(Paged {
-            entries: parse_search_results(&body),
-            has_next_page: has_next_page(&body, page),
-        })
-    }
-
-    fn details(&self, request: Value) -> ExtensionResult<CatalogItem> {
-        let key = novel::request_key(&request, "novel").unwrap_or_else(|| "n0000aa".to_string());
-        Ok(fetch_details(&key))
-    }
-
-    fn chapters(&self, request: Value) -> ExtensionResult<Vec<NovelChapter>> {
-        let key = novel::request_key(&request, "novel").unwrap_or_else(|| "n0000aa".to_string());
-        Ok(fetch_chapters(&key))
-    }
-
-    fn chapters_page(&self, request: Value) -> ExtensionResult<NovelChapterPage> {
+        let count = last_page(document)?;
         Ok(NovelChapterPage {
-            entries: self.chapters(request)?,
-            has_next_page: false,
-            ..NovelChapterPage::default()
+            entries,
+            has_next_page: page < count,
+            page_count: Some(count),
         })
     }
 
-    fn text(&self, request: Value) -> ExtensionResult<NovelText> {
-        let key =
-            novel::request_key(&request, "chapter").unwrap_or_else(|| "n0000aa/1".to_string());
-        let body = fetch_ncode(&format!("{NCODE_URL}/{}", key.trim_start_matches('/')), TEXT_FIXTURE);
-        let title = html::text_between(&body, "p-novel__title", "</").map(|text| html::strip_tags(&text));
-        let body_html = html::text_between(&body, "p-novel__body", "</div>")
-            .or_else(|| html::text_between(&body, "js-novel-text", "</div>"))
-            .unwrap_or(body);
-        let chapter_html = if let Some(title) = &title {
-            format!("<h1>{title}</h1>{}", novel::normalize_reader_html(&body_html))
-        } else {
-            novel::normalize_reader_html(&body_html)
-        };
+    fn parse_text(document: &Html, page_url: &str) -> Result<NovelText> {
+        let title = text_for(document, ".p-novel__title")?;
+        let body = html_for(
+            document,
+            ".p-novel__body .p-novel__text:not([class*=\"p-novel__text--\"])",
+        )?
+        .ok_or_else(|| Error::new("Syosetu chapter has no readable body"))?;
+        let mut rendered = String::new();
+        if let Some(title) = title.as_ref().filter(|value| !value.is_empty()) {
+            rendered.push_str("<h1>");
+            rendered.push_str(title);
+            rendered.push_str("</h1>");
+        }
+        rendered.push_str(&body);
         Ok(NovelText {
+            html: Some(rendered.clone()),
             title,
-            html: Some(chapter_html.clone()),
-            text: Some(novel::cleanup_text(&chapter_html)),
-            base_url: Some(NCODE_URL.to_string()),
-            css: Some("body { line-height: 1.8; } img { max-width: 100%; height: auto; }".to_string()),
-            image_headers: novel::image_headers(NCODE_URL),
+            base_url: Some(page_url.to_owned()),
+            image_context: Some(ImageRequestContext {
+                headers: [
+                    ("Referer".to_owned(), page_url.to_owned()),
+                    ("User-Agent".to_owned(), USER_AGENT.to_owned()),
+                ]
+                .into_iter()
+                .collect(),
+                cookie_url: None,
+            }),
+            blocks: vec![NovelContentBlock::Text {
+                text: rendered,
+                html: true,
+            }],
             ..NovelText::default()
         })
     }
 
-    fn home(&self, request: Value) -> ExtensionResult<Vec<HomeSection<CatalogItem>>> {
-        let popular = self.list(request.clone())?;
-        let latest = self.list(with_listing(request, "latest"))?;
+    fn work_url(item: &CatalogItem) -> Result<String> {
+        let candidate = item.url.as_deref().unwrap_or(&item.key);
+        let mut url = Url::parse(&absolute_url(NOVEL_URL, candidate)?)
+            .map_err(|error| Error::new(error.to_string()))?;
+        let code = url
+            .path_segments()
+            .and_then(|mut parts| parts.next().map(str::to_owned))
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| Error::new("Syosetu URL has no novel code"))?;
+        url.set_path(&format!("/{code}/"));
+        url.set_query(None);
+        url.set_fragment(None);
+        Ok(url.to_string())
+    }
+}
+
+impl NovelSource for SyosetuSource {
+    fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
+        self.listing("popular", page, &json!({}))
+    }
+
+    fn listing(&mut self, listing: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        if listing != "popular" {
+            return Err(Error::new(format!("unknown novel listing {listing:?}")));
+        }
+        let requested_page = page.clamp(1, 100);
+        let (document, _) = self.document(&Self::ranking_url(requested_page, filters))?;
+        Self::parse_ranking(&document, requested_page)
+    }
+
+    fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
+        let (document, _) = self.document(&Self::search_url(query, page)?)?;
+        Self::parse_search(&document)
+    }
+
+    fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
+        let url = Self::work_url(&item)?;
+        let (document, final_url) = self.document(&url)?;
+        Self::parse_details(&document, &final_url)
+    }
+
+    fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
+        let url = Self::work_url(&item)?;
+        let (first, final_url) = self.document(&url)?;
+        let first_page = Self::parse_chapter_page(&first, 1)?;
+        let page_count = first_page.page_count.unwrap_or(1);
+        let mut entries = first_page.entries;
+        for page in 2..=page_count {
+            let page_url = format!("{final_url}?p={page}");
+            let (document, _) = self.document(&page_url)?;
+            entries.extend(Self::parse_chapter_page(&document, page)?.entries);
+        }
+        for (index, chapter) in entries.iter_mut().enumerate() {
+            chapter.source_order = Some(index as i32);
+        }
+        Ok(entries)
+    }
+
+    fn chapters_page(&mut self, item: CatalogItem, page: u32) -> Result<NovelChapterPage> {
+        let work_url = Self::work_url(&item)?;
+        let page = page.max(1);
+        let url = if page == 1 {
+            work_url
+        } else {
+            format!("{work_url}?p={page}")
+        };
+        let (document, _) = self.document(&url)?;
+        Self::parse_chapter_page(&document, page)
+    }
+
+    fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
+        let url = absolute_url(NOVEL_URL, chapter.url.as_deref().unwrap_or(&chapter.key))?;
+        let (document, final_url) = self.document(&url)?;
+        Self::parse_text(&document, &final_url)
+    }
+
+    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
         Ok(vec![
-            HomeSection {
-                id: "popular".to_string(),
-                title: "Rankings".to_string(),
-                style: Some(HomeSectionStyle::Cover),
-                entries: popular.entries,
-                has_more: popular.has_next_page,
-                ..HomeSection::default()
-            },
-            HomeSection {
-                id: "latest".to_string(),
-                title: "Latest".to_string(),
-                style: Some(HomeSectionStyle::Cover),
-                entries: latest.entries,
-                has_more: latest.has_next_page,
-                ..HomeSection::default()
-            },
+            select_filter("ranking", "Ranked by", RANKING, 5),
+            select_filter("genre", "Ranking Genre", GENRES, 0),
+            select_filter("modifier", "Modifier", MODIFIERS, 0),
         ])
     }
 
-    fn handle_url(&self, request: Value) -> ExtensionResult<Option<UrlResolveResult>> {
-        let Some(input) = request.get("url").and_then(Value::as_str) else {
+    fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
+        let url = Url::parse(candidate).map_err(|error| Error::new(error.to_string()))?;
+        if url.host_str() != Some("ncode.syosetu.com") {
+            return Ok(None);
+        }
+        let parts = url
+            .path_segments()
+            .map(|parts| parts.filter(|part| !part.is_empty()).collect::<Vec<_>>())
+            .unwrap_or_default();
+        let Some(code) = parts.first() else {
             return Ok(None);
         };
-        if let Some(key) = key_from_url(input) {
-            return Ok(Some(UrlResolveResult {
-                item: Some(fetch_details(&key)),
-                url: Some(input.to_string()),
-                ..UrlResolveResult::default()
-            }));
-        }
+        let work_url = format!("{NOVEL_URL}/{code}/");
+        let mut item = CatalogItem::new(work_url.clone(), "");
+        item.url = Some(work_url);
+        item.language = Some("ja".into());
+        let novel_chapter = (parts.len() > 1).then(|| NovelChapter {
+            key: candidate.to_owned(),
+            url: Some(candidate.to_owned()),
+            chapter_number: parts.get(1).and_then(|value| value.parse().ok()),
+            language: Some("ja".into()),
+            ..NovelChapter::default()
+        });
         Ok(Some(UrlResolveResult {
-            search: Some(SearchRequest {
-                query: input.to_string(),
-                ..SearchRequest::default()
-            }),
-            url: Some(input.to_string()),
+            item: Some(item),
+            novel_chapter,
             ..UrlResolveResult::default()
         }))
     }
 }
 
-fn client(base_url: &str) -> HttpClient {
-    HttpClient::browser()
-        .with_desktop_user_agent()
-        .with_referer(base_url)
-        .with_cookies_for(base_url)
-        .with_webview_challenge_fallback()
-}
-
-fn fetch_yomou(target: &str, fixture: &str) -> String {
-    client(YOMOU_URL)
-        .get(target)
-        .browser_document()
-        .send_text()
-        .unwrap_or_else(|_| fixture.to_string())
-}
-
-fn fetch_ncode(target: &str, fixture: &str) -> String {
-    client(NCODE_URL)
-        .get(target)
-        .browser_document()
-        .send_text()
-        .unwrap_or_else(|_| fixture.to_string())
-}
-
-fn ranking_url(request: &Value, page: u64) -> String {
-    let filters = request.get("filters");
-    let ranking = filter_string(filters, "ranking", "total");
-    let genre = filter_string(filters, "genre", "");
-    let modifier = filter_string(filters, "modifier", "total");
-    let page = bounded_page(page);
-    if genre.is_empty() {
-        format!("{YOMOU_URL}/rank/list/type/{ranking}_{modifier}/?p={page}")
-    } else {
-        let list = if genre.len() == 1 { "isekailist" } else { "genrelist" };
-        let modifier_suffix = if modifier == "total" {
-            String::new()
-        } else {
-            format!("_{modifier}")
+fn parse_items(document: &Html, row_query: &str, link_query: &str) -> Result<Vec<CatalogItem>> {
+    let rows = selector(row_query)?;
+    let links = selector(link_query)?;
+    let mut entries = Vec::new();
+    for row in document.select(&rows) {
+        let Some(anchor) = row.select(&links).next() else {
+            continue;
         };
-        format!("{YOMOU_URL}/rank/{list}/type/{ranking}_{genre}{modifier_suffix}/?p={page}")
+        let Some(href) = attr(anchor, "href") else {
+            continue;
+        };
+        let title = normalize_space(&html::text(anchor));
+        if title.is_empty() {
+            continue;
+        }
+        let url = absolute_url(NOVEL_URL, &href)?;
+        let mut item = CatalogItem::new(url.clone(), title);
+        item.url = Some(url);
+        item.language = Some("ja".into());
+        entries.push(item);
     }
+    Ok(entries)
 }
 
-fn filter_string(filters: Option<&Value>, key: &str, default: &str) -> String {
-    filters
-        .and_then(|filters| filters.get(key))
-        .and_then(|value| value.get("value").or(Some(value)))
-        .and_then(Value::as_str)
-        .filter(|value| !value.is_empty())
-        .unwrap_or(default)
-        .to_string()
+fn text_for(document: &Html, query: &str) -> Result<Option<String>> {
+    let selector = selector(query)?;
+    Ok(document
+        .select(&selector)
+        .next()
+        .map(html::text)
+        .map(|value| normalize_space(&value))
+        .filter(|value| !value.is_empty()))
 }
 
-fn bounded_page(page: u64) -> u64 {
-    page.clamp(1, 100)
+fn html_for(document: &Html, query: &str) -> Result<Option<String>> {
+    let selector = selector(query)?;
+    Ok(document
+        .select(&selector)
+        .next()
+        .map(|element| element.inner_html())
+        .filter(|value| !value.trim().is_empty()))
 }
 
-fn parse_rankings(body: &str) -> Vec<CatalogItem> {
-    parse_anchor_items(body, &["p-ranklist-item__title", "c-card"])
-}
-
-fn parse_search_results(body: &str) -> Vec<CatalogItem> {
-    parse_anchor_items(body, &["searchkekka_box", "novel_h", "p-searchResult__title"])
-}
-
-fn parse_anchor_items(body: &str, markers: &[&str]) -> Vec<CatalogItem> {
-    let mut seen = BTreeSet::new();
-    body.split("<a")
-        .skip(1)
-        .filter_map(|chunk| {
-            if !markers.iter().any(|marker| chunk.contains(marker)) && !chunk.contains(NCODE_URL) {
-                return None;
-            }
-            let href = html::attr(chunk, "href")?;
-            let key = key_from_url(&href)?;
-            if !seen.insert(key.clone()) {
-                return None;
-            }
-            let title = html::attr(chunk, "title")
-                .or_else(|| html::text_between(chunk, ">", "</a>").map(|value| html::strip_tags(&value)))
-                .filter(|value| !value.is_empty())
-                .unwrap_or_else(|| key.clone());
-            Some(CatalogItem {
-                key: key.clone(),
-                title,
-                cover: None,
-                url: Some(format!("{NCODE_URL}/{key}/")),
-                language: Some("ja".to_string()),
-                content_rating: Some("safe".to_string()),
-                initialized: false,
-                ..CatalogItem::default()
-            })
+fn last_page(document: &Html) -> Result<u32> {
+    let last = selector(".c-pager__item--last")?;
+    let page = document
+        .select(&last)
+        .next()
+        .and_then(|element| attr(element, "href"))
+        .and_then(|href| Url::parse(&absolute_url(RANKING_URL, &href).ok()?).ok())
+        .and_then(|url| {
+            url.query_pairs()
+                .find(|(key, _)| key == "p")
+                .and_then(|(_, value)| value.parse().ok())
+        });
+    if let Some(page) = page {
+        return Ok(page);
+    }
+    let current = text_for(document, ".c-pager__item.is-current")?
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(1);
+    let links = selector(".c-pager__item[href]")?;
+    Ok(document
+        .select(&links)
+        .filter_map(|element| attr(element, "href"))
+        .filter_map(|href| Url::parse(&absolute_url(RANKING_URL, &href).ok()?).ok())
+        .filter_map(|url| {
+            url.query_pairs()
+                .find(|(key, _)| key == "p")
+                .and_then(|(_, value)| value.parse::<u32>().ok())
         })
-        .take(40)
-        .collect()
-}
-
-fn fetch_details(key: &str) -> CatalogItem {
-    let key = normalize_ncode_key(key);
-    let body = fetch_ncode(&format!("{NCODE_URL}/{key}/"), DETAILS_FIXTURE);
-    let chapters = parse_chapters(&body);
-    let mut extra = BTreeMap::new();
-    extra.insert(
-        "chapterCount".to_string(),
-        serde_json::json!(chapters.len()),
-    );
-    CatalogItem {
-        key: key.clone(),
-        title: first_text(&body, &["p-novel__title", "<title"]).unwrap_or_else(|| key.clone()),
-        cover: None,
-        url: Some(format!("{NCODE_URL}/{key}/")),
-        authors: first_text(&body, &["p-novel__author"])
-            .map(|author| author.replace("作者：", "").trim().to_string())
-            .filter(|author| !author.is_empty())
-            .into_iter()
-            .collect(),
-        description: html::text_between(&body, "id=\"novel_ex\"", "</div>")
-            .map(|value| html::strip_tags(&value))
-            .filter(|value| !value.is_empty()),
-        tags: html::attr_after(&body, "property=\"og:description\"", "content")
-            .map(|value| value.split_whitespace().map(ToString::to_string).collect())
-            .unwrap_or_default(),
-        status: parse_status(&body),
-        language: Some("ja".to_string()),
-        content_rating: Some("safe".to_string()),
-        initialized: true,
-        extra,
-        ..CatalogItem::default()
-    }
-}
-
-fn fetch_chapters(key: &str) -> Vec<NovelChapter> {
-    let key = normalize_ncode_key(key);
-    let first_page = fetch_ncode(&format!("{NCODE_URL}/{key}/"), DETAILS_FIXTURE);
-    let mut chapters = parse_chapters(&first_page);
-    let last_page = last_chapter_page(&first_page);
-    for page in 2..=last_page {
-        let page_body = fetch_ncode(&format!("{NCODE_URL}/{key}/?p={page}"), DETAILS_FIXTURE);
-        chapters.extend(parse_chapters(&page_body));
-    }
-    dedupe_chapters(chapters)
-}
-
-fn parse_chapters(body: &str) -> Vec<NovelChapter> {
-    body.split("p-eplist__sublist")
-        .skip(1)
-        .filter_map(|chunk| {
-            let href = html::attr_after(chunk, "<a", "href")?;
-            let key = key_from_url(&href)?;
-            let title = html::text_between(chunk, "<a", "</a>")
-                .map(|value| html::strip_tags(&value))
-                .filter(|value| !value.is_empty());
-            Some(NovelChapter {
-                key: key.clone(),
-                title,
-                chapter_number: key
-                    .trim_end_matches('/')
-                    .rsplit('/')
-                    .next()
-                    .and_then(|part| part.parse::<f32>().ok()),
-                url: Some(format!("{NCODE_URL}/{key}/")),
-                language: Some("ja".to_string()),
-                ..NovelChapter::default()
-            })
-        })
-        .collect()
-}
-
-fn dedupe_chapters(chapters: Vec<NovelChapter>) -> Vec<NovelChapter> {
-    let mut seen = BTreeSet::new();
-    chapters
-        .into_iter()
-        .filter(|chapter| seen.insert(chapter.key.clone()))
-        .collect()
-}
-
-fn last_chapter_page(body: &str) -> u64 {
-    body.split("<a")
-        .skip(1)
-        .filter_map(|chunk| html::attr(chunk, "href"))
-        .filter_map(|href| href.split("?p=").nth(1).and_then(|page| page.parse::<u64>().ok()))
         .max()
-        .unwrap_or(1)
-        .min(100)
+        .unwrap_or(current))
 }
 
-fn first_text(body: &str, markers: &[&str]) -> Option<String> {
-    markers
-        .iter()
-        .find_map(|marker| html::text_between(body, marker, "</").map(|value| html::strip_tags(&value)))
-        .filter(|value| !value.is_empty())
+fn parse_date(value: &str) -> Option<i64> {
+    let value = value.trim();
+    NaiveDateTime::parse_from_str(value, "%Y/%m/%d %H:%M")
+        .ok()
+        .map(|value| value.and_utc().timestamp_millis())
+        .or_else(|| {
+            NaiveDate::parse_from_str(value.split_whitespace().next()?, "%Y/%m/%d")
+                .ok()
+                .and_then(|value| value.and_hms_opt(0, 0, 0))
+                .map(|value| value.and_utc().timestamp_millis())
+        })
 }
 
-fn parse_status(body: &str) -> ItemStatus {
-    let announce = html::text_between(body, "c-announce", "</div>")
-        .map(|value| html::strip_tags(&value))
-        .unwrap_or_else(|| html::strip_tags(body));
-    if announce.contains("完結") {
-        ItemStatus::Completed
-    } else if announce.contains("更新されていません") {
-        ItemStatus::Hiatus
-    } else {
-        ItemStatus::Ongoing
+fn chapter_number_from_url(value: &str) -> Option<f32> {
+    Url::parse(value)
+        .ok()?
+        .path_segments()?
+        .filter(|part| !part.is_empty())
+        .nth(1)?
+        .parse()
+        .ok()
+}
+
+fn filter(filters: &Value, key: &str, default: &str) -> String {
+    filters
+        .get(key)
+        .and_then(Value::as_str)
+        .unwrap_or(default)
+        .to_owned()
+}
+
+fn select_filter(
+    id: &str,
+    name: &str,
+    values: &[(&str, &str)],
+    default_index: u32,
+) -> FilterDefinition {
+    FilterDefinition::Select {
+        id: id.into(),
+        name: name.into(),
+        options: values
+            .iter()
+            .map(|(label, value)| OptionItem {
+                label: (*label).into(),
+                value: (*value).into(),
+            })
+            .collect(),
+        default_index,
     }
 }
 
-fn key_from_url(input: &str) -> Option<String> {
-    let trimmed = input.trim();
-    let path = trimmed
-        .strip_prefix(NCODE_URL)
-        .or_else(|| trimmed.strip_prefix("http://ncode.syosetu.com"))
-        .unwrap_or(trimmed)
-        .trim_start_matches('/');
-    let mut parts = path.split('/').filter(|part| !part.is_empty());
-    let novel = parts.next()?;
-    if !novel.to_ascii_lowercase().starts_with('n') {
-        return None;
+const RANKING: &[(&str, &str)] = &[
+    ("日間", "daily"),
+    ("週間", "weekly"),
+    ("月間", "monthly"),
+    ("四半期", "quarter"),
+    ("年間", "yearly"),
+    ("累計", "total"),
+];
+
+const GENRES: &[(&str, &str)] = &[
+    ("総ジャンル", ""),
+    ("異世界転生/転移〔恋愛〕", "1"),
+    ("異世界転生/転移〔ファンタジー〕", "2"),
+    ("異世界転生/転移〔文芸・SF・その他〕", "o"),
+    ("異世界〔恋愛〕", "101"),
+    ("現実世界〔恋愛〕", "102"),
+    ("ハイファンタジー〔ファンタジー〕", "201"),
+    ("ローファンタジー〔ファンタジー〕", "202"),
+    ("純文学〔文芸〕", "301"),
+    ("ヒューマンドラマ〔文芸〕", "302"),
+    ("歴史〔文芸〕", "303"),
+    ("推理〔文芸〕", "304"),
+    ("ホラー〔文芸〕", "305"),
+    ("アクション〔文芸〕", "306"),
+    ("コメディー〔文芸〕", "307"),
+    ("VRゲーム〔SF〕", "401"),
+    ("宇宙〔SF〕", "402"),
+    ("空想科学〔SF〕", "403"),
+    ("パニック〔SF〕", "404"),
+    ("童話〔その他〕", "9901"),
+    ("詩〔その他〕", "9902"),
+    ("エッセイ〔その他〕", "9903"),
+    ("その他〔その他〕", "9999"),
+];
+
+const MODIFIERS: &[(&str, &str)] = &[
+    ("すべて", "total"),
+    ("連載中", "r"),
+    ("完結済", "er"),
+    ("短編", "t"),
+];
+
+#[cfg(target_arch = "wasm32")]
+fn extension() -> manatan_sdk::Extension {
+    manatan_sdk::Extension::new().novel(SOURCE_ID, SyosetuSource::default())
+}
+
+#[cfg(target_arch = "wasm32")]
+manatan_sdk::export_extension!(extension());
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn builds_every_ranking_url_shape() {
+        assert_eq!(
+            SyosetuSource::ranking_url(2, &json!({})),
+            "https://yomou.syosetu.com/rank/list/type/total_total/?p=2"
+        );
+        assert_eq!(
+            SyosetuSource::ranking_url(
+                3,
+                &json!({"ranking":"weekly", "genre":"201", "modifier":"r"}),
+            ),
+            "https://yomou.syosetu.com/rank/genrelist/type/weekly_201_r/?p=3"
+        );
     }
-    let mut key = novel.to_ascii_lowercase();
-    if let Some(chapter) = parts.next().filter(|part| part.chars().all(|ch| ch.is_ascii_digit())) {
-        key.push('/');
-        key.push_str(chapter);
+
+    #[test]
+    fn parses_ranking_fixture() {
+        let document = html::document(include_str!("../tests/fixtures/ranking.html"));
+        let page = SyosetuSource::parse_ranking(&document, 1).unwrap();
+        assert_eq!(page.entries[0].title, "Fixture Novel");
+        assert!(page.has_next_page);
     }
-    Some(key)
-}
 
-fn normalize_ncode_key(key: &str) -> String {
-    key_from_url(key).unwrap_or_else(|| key.trim_matches('/').to_ascii_lowercase())
-}
-
-fn has_next_page(body: &str, page: u64) -> bool {
-    body.contains(&format!("?p={}", page + 1))
-        || body.contains(&format!("&p={}", page + 1))
-        || body.contains("c-pager__item--next")
-}
-
-fn with_listing(mut request: Value, listing: &str) -> Value {
-    if let Some(object) = request.as_object_mut() {
-        object.insert("listing".to_string(), Value::String(listing.to_string()));
+    #[test]
+    fn parses_details_and_chapters_fixture() {
+        let document = html::document(include_str!("../tests/fixtures/work.html"));
+        let item =
+            SyosetuSource::parse_details(&document, "https://ncode.syosetu.com/n1234ab/").unwrap();
+        assert_eq!(item.title, "Fixture Novel");
+        assert_eq!(item.status, Some(json!("completed")));
+        let page = SyosetuSource::parse_chapter_page(&document, 1).unwrap();
+        assert_eq!(page.entries[0].title.as_deref(), Some("Chapter One"));
+        assert_eq!(page.page_count, Some(2));
     }
-    request
+
+    #[test]
+    fn parses_episode_fixture() {
+        let document = html::document(include_str!("../tests/fixtures/episode.html"));
+        let text =
+            SyosetuSource::parse_text(&document, "https://ncode.syosetu.com/n1234ab/1/").unwrap();
+        assert!(text.html.unwrap().contains("Fixture body."));
+    }
+
+    #[test]
+    fn exposes_all_upstream_filters() {
+        let filters = SyosetuSource::default().filters().unwrap();
+        assert_eq!(filters.len(), 3);
+        match &filters[1] {
+            FilterDefinition::Select { options, .. } => assert_eq!(options.len(), 23),
+            other => panic!("unexpected filter: {other:?}"),
+        }
+    }
 }
-
-const RANKING_FIXTURE: &str = r#"
-<div class="c-card"><a class="p-ranklist-item__title" href="https://ncode.syosetu.com/n0000aa/">Sample Syosetu</a></div>
-"#;
-
-const SEARCH_FIXTURE: &str = r#"
-<div class="searchkekka_box"><div class="novel_h"><a href="https://ncode.syosetu.com/n0000aa/">Sample Syosetu</a></div></div>
-"#;
-
-const DETAILS_FIXTURE: &str = r#"
-<h1 class="p-novel__title">Sample Syosetu</h1>
-<div class="p-novel__author">作者：Sample Author</div>
-<div id="novel_ex">Sample summary.</div>
-<div class="c-announce">連載中</div>
-<div class="p-eplist__sublist"><a href="/n0000aa/1/">Episode 1</a><div class="p-eplist__update">2024/01/01</div></div>
-"#;
-
-const TEXT_FIXTURE: &str = r#"
-<h1 class="p-novel__title">Episode 1</h1>
-<div class="p-novel__body"><div class="p-novel__text">First paragraph.</div></div>
-"#;
-
-export_novel_source!(SOURCE);

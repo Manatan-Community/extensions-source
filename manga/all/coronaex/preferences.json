@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "hide_locked", "label": "Hide paid chapters", "kind": "toggle", "defaultValue": "false" },
-    { "id": "email", "label": "E-mail", "kind": "text", "defaultValue": "" },
-    { "id": "password", "label": "Password", "kind": "password", "defaultValue": "" },
-    { "id": "refresh_token", "label": "Refresh token", "kind": "text", "defaultValue": "" }
-  ]
-}

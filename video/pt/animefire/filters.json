@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "genre", "label": "Genero", "kind": "select", "defaultValue": "todos", "options": ["Todos:todos", "Acao:acao", "Aventura:aventura", "Comedia:comedia", "Drama:drama", "Fantasia:fantasia", "Romance:romance"] },
-    { "id": "season", "label": "Temporada", "kind": "select", "defaultValue": "", "options": ["", "Inverno 2024:inverno-2024", "Primavera 2024:primavera-2024", "Verao 2024:verao-2024", "Outono 2024:outono-2024"] }
-  ]
-}

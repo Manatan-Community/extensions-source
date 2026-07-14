@@ -1,4 +1,0 @@
-[
-  { "id": "domain", "type": "text", "label": "Домен", "default": "https://ru.com-x.life" },
-  { "id": "imageDomain", "type": "text", "label": "Домен картинок", "default": "" }
-]

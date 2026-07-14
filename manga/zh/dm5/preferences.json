@@ -1,1 +1,0 @@
-[{"id":"mirror","type":"select","name":"使用镜像网址","default":"https://www.dm5.cn","options":[{"label":"https://www.dm5.cn","value":"https://www.dm5.cn"},{"label":"https://www.dm5.com","value":"https://www.dm5.com"}]},{"id":"sortChapter","type":"boolean","name":"依照上傳時間排序章節","default":false}]

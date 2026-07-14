@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "preferred_domain", "label": "Preferred domain", "kind": "select", "defaultValue": "https://missav.live", "options": ["https://missav.live", "https://missav.ai", "https://missav.ws"] },
-    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "720", "options": ["720", "480", "360"] }
-  ]
-}

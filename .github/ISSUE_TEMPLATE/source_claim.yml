@@ -20,3 +20,16 @@ body:
       label: Implementation plan
     validations:
       required: true
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream repository and path
+    validations:
+      required: true
+  - type: input
+    id: framework
+    attributes:
+      label: Shared framework
+      description: Name the existing family or explain why this is standalone.
+    validations:
+      required: true

@@ -1,0 +1,123 @@
+{
+  "id": "6a480b7984c21874db80ac89",
+  "status": "RELEASING",
+  "is_adult": false,
+  "title": {
+    "romaji": "Snack HAZAMA",
+    "english": "Snack Hazama",
+    "native": "スナックはざま-HAZAMA-"
+  },
+  "description": "A weekly mini anime shown with each episode of <i>Ushiro no Shoumen Kamui-san</i>.",
+  "total_eps": 12,
+  "start_date": "Jul 4, 2026",
+  "end_date": "Sep 19, 2026",
+  "next_airing_ep": {
+    "airing_at": 1784306520,
+    "ep_num": 3,
+    "time_left": 595845
+  },
+  "rank": 253,
+  "year": 2026,
+  "format": "TV_SHORT",
+  "duration": 12,
+  "genres": ["Comedy", "Ecchi", "Supernatural"],
+  "tags": ["Bar", "Chibi", "Meta"],
+  "average_score": 48,
+  "trailer": null,
+  "season": "SUMMER",
+  "anilist_id": 213831,
+  "mal_id": null,
+  "country": "JP",
+  "source": "MANGA",
+  "hashtag": "#アニメカムイさん",
+  "mean_score": 55,
+  "popularity": 475,
+  "favourites": 4,
+  "trending": 10,
+  "synonyms": [
+    "うしろの正面カムイさんミニアニメ",
+    "Ushiro no Shoumen Kamui-san Mini Anime"
+  ],
+  "studios": [
+    {
+      "name": "WWWave",
+      "anilist_id": 7353,
+      "is_main": false
+    },
+    {
+      "name": "Front Wing",
+      "anilist_id": 7195,
+      "is_main": true
+    }
+  ],
+  "relations": [
+    {
+      "id": "6a3ee67c945a0b6281a283be",
+      "anilist_id": 207674,
+      "title": {
+        "romaji": "Ushiro no Shoumen Kamui-san",
+        "english": "KAMUI ---He's behind you",
+        "native": "うしろの正面カムイさん"
+      },
+      "format": "TV_SHORT",
+      "season": "SUMMER",
+      "year": 2026,
+      "relation_type": "PARENT",
+      "total_eps": 12,
+      "status": "RELEASING"
+    }
+  ],
+  "characters": [
+    {
+      "anilist_id": 397413,
+      "name": "Shizuka Mimizuka",
+      "image": "https://s4.anilist.co/file/anilistcdn/character/large/b397413-Ii7zHQoYPhDg.png",
+      "role": "MAIN",
+      "voice_actor": {
+        "anilist_id": 350108,
+        "name": "Riko Aono",
+        "image": "https://s4.anilist.co/file/anilistcdn/staff/large/n350108-I28BcHkzW6tc.jpg",
+        "language": "Japanese"
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "6989be6f29cf95f4eb03fd83",
+      "anilist_id": 20870,
+      "title": {
+        "romaji": "selector infected WIXOSS: Midoriko-san to Piruluk-tan",
+        "english": null,
+        "native": "selector infected WIXOSS 『緑子さんとピルルクたん』"
+      },
+      "format": "SPECIAL",
+      "season": "SUMMER",
+      "year": 2014,
+      "total_eps": 3,
+      "status": "FINISHED"
+    }
+  ],
+  "staff": [
+    {
+      "anilist_id": 138495,
+      "name": "Shinko Konoshiro",
+      "image": "https://s4.anilist.co/file/anilistcdn/staff/large/n138495-KyGqLKdMrxHA.jpg",
+      "language": "Japanese",
+      "role": "Original Creator"
+    },
+    {
+      "anilist_id": 188517,
+      "name": "EROKI",
+      "image": "https://s4.anilist.co/file/anilistcdn/staff/large/n188517-D9mYIqNP3hOL.jpg",
+      "language": "Japanese",
+      "role": "Original Story"
+    }
+  ],
+  "banner": null,
+  "cover_image": {
+    "large": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx213831-jrH7JR6feW1q.png",
+    "medium": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx213831-jrH7JR6feW1q.png",
+    "small": "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx213831-jrH7JR6feW1q.png"
+  },
+  "users": 15
+}

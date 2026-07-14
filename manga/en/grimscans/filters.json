@@ -1,8 +1,0 @@
-[
-  {
-    "id": "genres",
-    "type": "text",
-    "label": "Genre tags",
-    "default": ""
-  }
-]

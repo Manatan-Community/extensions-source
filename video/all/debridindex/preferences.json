@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "token", "label": "Debrid token", "kind": "text", "defaultValue": "" },
-    { "id": "debrid_provider", "label": "Debrid provider", "kind": "select", "defaultValue": "RealDebrid", "options": ["RealDebrid", "Premiumize", "AllDebrid", "DebridLink"] },
-    { "id": "filename", "label": "Only display filename", "kind": "toggle", "defaultValue": "false" }
-  ]
-}

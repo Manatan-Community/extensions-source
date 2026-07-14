@@ -1,6 +1,0 @@
-{
-  "groups": [
-    { "id": "query", "type": "text", "name": "Search terms" },
-    { "id": "sort", "type": "select", "name": "Sort by", "options": ["Popular", "Latest", "Downloads", "Top Rated"] }
-  ]
-}

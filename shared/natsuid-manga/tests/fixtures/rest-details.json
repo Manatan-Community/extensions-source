@@ -1,0 +1,15 @@
+{
+  "id": 101,
+  "slug": "alpha",
+  "title": { "rendered": "Alpha &amp; Beta" },
+  "content": { "rendered": "<p>Detail body.</p>" },
+  "_embedded": {
+    "wp:featuredmedia": [{ "source_url": "https://rawkuma.net/wp-content/uploads/alpha.jpg" }],
+    "wp:term": [
+      [{ "name": "Action", "slug": "action", "taxonomy": "genre" }],
+      [{ "name": "Manga", "slug": "manga", "taxonomy": "type" }],
+      [{ "name": "Completed", "slug": "completed", "taxonomy": "status" }],
+      [{ "name": "Jane Doe", "slug": "jane-doe", "taxonomy": "series-author" }]
+    ]
+  }
+}

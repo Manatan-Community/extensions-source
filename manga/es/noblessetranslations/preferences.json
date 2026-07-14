@@ -1,9 +1,0 @@
-[
-  {
-    "id": "overrideBaseUrl",
-    "type": "text",
-    "title": "Source URL",
-    "summary": "Temporary source URL override for this site.",
-    "default": "https://nobledicion.yoveo.xyz"
-  }
-]

@@ -1,7 +1,0 @@
-{
-  "groups": [
-    { "id": "orderby", "type": "select", "name": "Order by", "options": ["author", "date", "id", "include", "modified", "parent", "relevance", "title", "rand"] },
-    { "id": "ck_genre", "type": "text", "name": "Genres" },
-    { "id": "ck_genre_exclude", "type": "text", "name": "Excluded genres" }
-  ]
-}

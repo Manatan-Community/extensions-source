@@ -1,8 +1,0 @@
-[
-  {
-    "id": "hideLocked",
-    "type": "checkbox",
-    "label": "Hide locked chapters",
-    "default": false
-  }
-]

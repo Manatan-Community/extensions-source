@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "hid": "kw9j9",
+      "slug": "blue-lockk",
+      "title": "Blue Lock",
+      "poster": {
+        "small": "https://static.mfcdn.nl/4b71/i/f/0c/poster@100.jpg",
+        "medium": "https://static.mfcdn.nl/4b71/i/f/0c/poster@280.jpg",
+        "large": "https://static.mfcdn.nl/4b71/i/f/0c/poster.jpg"
+      }
+    },
+    {
+      "hid": "4q91m",
+      "slug": "the-exiled-heavy-knight-knows-how-to-game-the-system",
+      "title": "The Exiled Heavy Knight Knows How to Game the System",
+      "poster": {
+        "medium": "https://static.mfcdn.nl/c148/i/3/3b/poster@280.jpg"
+      }
+    }
+  ],
+  "meta": {
+    "lastPage": 78696,
+    "hasNext": true
+  }
+}

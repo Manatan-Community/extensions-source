@@ -1,0 +1,4 @@
+[
+  { "name": "Action", "slug": "action", "taxonomy": "genre" },
+  { "name": "Drama", "slug": "drama", "taxonomy": "genre" }
+]

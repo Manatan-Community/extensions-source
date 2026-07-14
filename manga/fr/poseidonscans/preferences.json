@@ -1,3 +1,0 @@
-[
-  { "id": "show_premium_chapters", "type": "boolean", "name": "Afficher les chapitres premium", "default": false }
-]

@@ -1,4 +1,0 @@
-[
-  {"key":"preferred_server","title":"Preferred server","type":"select","default":"FileLions","values":["StreamWish","Voe","Okru","YourUpload","FileLions","StreamHideVid"]},
-  {"key":"preferred_quality","title":"Preferred quality","type":"select","default":"1080","values":["1080","720","480","360"]}
-]

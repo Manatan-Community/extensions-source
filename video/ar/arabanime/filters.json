@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "order", "label": "ترتيب", "kind": "select", "defaultValue": "", "options": ["", "2", "1", "0"] },
-    { "id": "type", "label": "النوع", "kind": "select", "defaultValue": "", "options": ["", "0", "1"] },
-    { "id": "stat", "label": "الحالة", "kind": "select", "defaultValue": "", "options": ["", "1", "0"] }
-  ]
-}

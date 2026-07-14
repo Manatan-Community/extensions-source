@@ -1,5 +1,0 @@
-{
-  "groups": [
-    { "id": "hideNsfw", "label": "Hide adult content", "type": "boolean", "default": false }
-  ]
-}

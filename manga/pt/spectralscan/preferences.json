@@ -1,3 +1,0 @@
-[
-  { "id": "only_nsfw", "type": "toggle", "label": "Mostrar apenas conteudo +18", "default": false }
-]

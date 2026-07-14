@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "url": "/oppai/kite/AgoHQwgRBAY0FwsCH1cSAVAbQQgDDBkWWiZdV1pDSkkQTFQLWF1QTUBMdlFdUkZIRREdVl4KWwEQXBYlB1lQRxwWTR0DWFkLUxBLQHNUXlJCQUVHHlRdXVgHWx4UMxELEVwUQwES",
+      "quality": "master",
+      "old_hls": false,
+      "type": "video/mpegurl",
+      "need_proxy": true
+    }
+  ],
+  "subs": [
+    {
+      "url": "https://swiftstream.top/proxy/oppai/kite/UAEMQwkbAAEwFwEJFxoEWkkNGwtCBBoaGCVKCFtLQEFHEwUIXAhUREZMc1xYV0FIREUfBFleXQZCFxFvBgsBRUpFEUxYWQtbVRJFEXhQXVJCSEBMH1JaXF5RQRFaMxAMFxsNHBFZTgpfVVIVQk10UAhSSkBGFxoFDFlUAxYQFHQEX1AUTBESdVBdXV1cRCwGNQcxBhweXUQEFxod",
+      "lang": "English"
+    }
+  ],
+  "skips": {
+    "intro": { "start": 0.0, "end": 0.0 },
+    "outro": { "start": 0.0, "end": 0.0 }
+  },
+  "server": "kite"
+}

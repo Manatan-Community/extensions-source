@@ -1,3 +1,0 @@
-[
-  { "id": "sort", "type": "select", "label": "Sort", "default": "popular", "options": ["popular", "new", "lastPublishedChapter", "completed"] }
-]

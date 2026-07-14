@@ -1,9 +1,0 @@
-[
-  {
-    "id": "order",
-    "type": "select",
-    "label": "Order by",
-    "options": ["popularity", "newest"],
-    "default": "popularity"
-  }
-]

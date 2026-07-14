@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "tag", "label": "Tag", "kind": "text", "defaultValue": "" }
-  ]
-}

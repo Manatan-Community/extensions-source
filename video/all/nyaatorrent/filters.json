@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "sort", "label": "Sort", "kind": "select", "defaultValue": "id", "options": ["id", "seeders", "leechers", "downloads"] },
-    { "id": "direction", "label": "Direction", "kind": "select", "defaultValue": "desc", "options": ["desc", "asc"] },
-    { "id": "filter", "label": "Filter", "kind": "select", "defaultValue": "0", "options": ["0", "1", "2"] },
-    { "id": "category", "label": "Category", "kind": "select", "defaultValue": "1_0", "options": ["1_0", "1_1", "1_2", "1_3", "1_4", "2_2"] }
-  ]
-}

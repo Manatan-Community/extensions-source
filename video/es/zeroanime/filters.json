@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "genre", "label": "Genero", "kind": "multiselect", "defaultValue": [], "options": ["Accion:5", "Artes marciales:4", "Aventuras:24", "Carreras:6", "Ciencia ficcion:27", "Comedia:7", "Demencia:9", "Demonios:41", "Deportes:10", "Drama:11", "Ecchi:12", "Escolar:13", "Espacial:14", "Fantasia:8", "Gore:37", "Harem:15", "Historico:16", "Horror:30", "Infantil:17", "Isekai:29", "Josei:18", "Juegos:19", "Magia:20", "Mecha:21", "Militar:32", "Musica:38", "Parodia:33", "Psicologico:39", "Recuerdos de la vida:42", "Romance:1", "Samurai:36", "Sci-Fi:28", "Seinen:3", "Shoujo:34", "Shounen:2", "Sobre Natural:25", "SuperPoderes:26", "Suspenso:23", "Terror:22", "Vampiros:40", "Yaoi:43", "Yuri:35", "Zombies:31"] },
-    { "id": "years", "label": "Ano", "kind": "select", "defaultValue": "ALL", "options": ["Todos:ALL", "2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991", "1990"] },
-    { "id": "estado", "label": "Estado", "kind": "select", "defaultValue": "2", "options": ["Todos:2", "En emision:1", "Finalizado:0"] }
-  ]
-}

@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "pref_quality", "label": "Preferred video quality", "kind": "select", "defaultValue": "720p", "options": ["1080p", "720p", "480p", "360p"] }
-  ]
-}

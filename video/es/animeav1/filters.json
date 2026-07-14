@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "category", "label": "Tipo", "kind": "select", "defaultValue": "", "options": ["", "Anime:tv-anime", "Pelicula:pelicula", "OVA:ova", "Especial:especial"] },
-    { "id": "genre", "label": "Genero", "kind": "select", "defaultValue": "", "options": ["", "Accion:accion", "Aventura:aventura", "Ciencia Ficcion:ciencia-ficcion", "Comedia:comedia", "Deportes:deportes", "Drama:drama", "Fantasia:fantasia", "Misterio:misterio", "Romance:romance", "Seinen:seinen", "Shoujo:shoujo", "Shounen:shounen", "Sobrenatural:sobrenatural", "Suspenso:suspenso", "Terror:terror", "Ecchi:ecchi", "Escolares:escolares", "Isekai:isekai", "Mecha:mecha", "Musica:musica", "Psicologico:psicologico"] },
-    { "id": "status", "label": "Estado", "kind": "select", "defaultValue": "", "options": ["", "En Emision:emision", "Finalizado:finalizado", "Proximamente:proximamente"] },
-    { "id": "order", "label": "Orden", "kind": "select", "defaultValue": "popular", "options": ["Predeterminado:", "Puntuacion:score", "Populares:popular", "Titulo:title", "Ultimos agregados:latest_added", "Ultimos estrenos:latest_released"] }
-  ]
-}

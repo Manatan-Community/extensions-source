@@ -1,4 +1,0 @@
-[
-  { "id": "use_alt_title", "type": "toggle", "label": "Use alternative titles", "default": false },
-  { "id": "direct_mp4", "type": "toggle", "label": "Prefer direct MP4", "default": false }
-]

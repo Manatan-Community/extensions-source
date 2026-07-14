@@ -1,9 +1,0 @@
-[
-  {
-    "id": "sort",
-    "type": "select",
-    "label": "Sort",
-    "options": ["Latest"],
-    "default": "Latest"
-  }
-]

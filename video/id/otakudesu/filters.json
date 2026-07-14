@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "genre", "label": "Genre", "kind": "select", "defaultValue": "", "options": ["", "action", "adventure", "comedy", "demons", "drama", "ecchi", "fantasy", "harem", "historical", "horror", "romance", "school", "shounen", "slice-of-life"] }
-  ]
-}

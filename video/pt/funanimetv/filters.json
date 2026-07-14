@@ -1,3 +1,0 @@
-{ "schemaVersion": 1, "filters": [
-  { "id": "genre", "label": "Categoria", "kind": "text", "defaultValue": "" }
-] }

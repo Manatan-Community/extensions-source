@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "filters": [
-    { "id": "section", "label": "اقسام الموقع", "kind": "select", "defaultValue": "", "options": ["", "aflam-online", "netflix-movies", "indian-movies", "asian-aflam", "cartoon-movies", "anime-movies", "english-series", "netflix-series", "asian-series", "anime-series", "netflix-anime"] },
-    { "id": "category", "label": "النوع", "kind": "select", "defaultValue": "", "options": ["", "movies", "series"] },
-    { "id": "genre", "label": "التصنيف", "kind": "select", "defaultValue": "Action", "options": ["Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Horror", "Romance", "Science-fiction", "Thriller", "Western"] }
-  ]
-}

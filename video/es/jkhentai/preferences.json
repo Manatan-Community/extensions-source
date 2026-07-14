@@ -1,6 +1,0 @@
-[
-  {"id":"preferred_quality","type":"select","name":"Preferred quality","default":"StreamTape","options":[
-    {"label":"StreamTape","value":"StreamTape"},
-    {"label":"YourUpload","value":"YourUpload"}
-  ]}
-]

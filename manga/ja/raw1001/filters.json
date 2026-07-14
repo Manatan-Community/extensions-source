@@ -1,5 +1,0 @@
-[
-  { "id": "genre", "type": "text", "name": "Genre" },
-  { "id": "status", "type": "text", "name": "Status" },
-  { "id": "sort", "type": "text", "name": "Sort" }
-]

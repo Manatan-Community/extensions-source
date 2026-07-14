@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "preferences": [
-    { "id": "preferred_quality", "label": "Preferred quality", "kind": "select", "defaultValue": "HLS", "options": ["High", "Low", "HLS"] }
-  ]
-}

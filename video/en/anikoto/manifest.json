@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "id": "anikoto",
+  "name": "Anikoto",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "description": "English anime catalog and streams from Anikoto.",
+  "author": "Manatan Community",
+  "homepage": "https://anikototv.to",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "anikototv.to", "anikoto.bz", "anikoto.cz", "anikoto.me", "anikoto.net", "anikototv.se",
+        "cdn.anipixcdn.co", "mapper.nekostream.site", "*.nekostream.site", "mewcdn.online", "*.mewcdn.online",
+        "*.ibyteimg.com", "*.tiktokcdn.com", "vidplay.site", "*.vidplay.site", "vidplay.org", "*.vidplay.org",
+        "megacloud.blog", "*.megacloud.blog", "megacloud.club", "*.megacloud.club", "rabbitstream.net", "*.rabbitstream.net",
+        "kwik.cx", "*.kwik.cx", "vidstream.pro", "*.vidstream.pro"
+      ]
+    },
+    "cookies": true
+  },
+  "assets": [
+    { "path": "assets/icon.png", "mimeType": "image/png", "sha256": "ce02daff90382ac3b69053d0b912f3d3484080d02bf32022610558d7e5540bae" }
+  ],
+  "sources": [
+    {
+      "id": "anikoto",
+      "name": "Anikoto",
+      "lang": "en",
+      "contentType": "video",
+      "baseUrl": "https://anikototv.to",
+      "contentRating": "safe",
+      "capabilities": {
+        "search": true, "latest": true, "filters": true, "preferences": true,
+        "hosterResolution": true, "urlResolution": true, "mediaProcessing": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://anikototv.to/watch/*", "kind": "item-or-episode" }
+      ],
+      "tags": ["anikoto"]
+    }
+  ]
+}
+
