@@ -15,6 +15,7 @@ license = "Apache-2.0"
 repository = "https://github.com/Manatan-Community/extensions-source"
 
 [workspace.dependencies]
+aes-gcm = { version = "0.10", default-features = false, features = ["aes", "alloc"] }
 anyhow = "1"
 manatan-sdk = "=1.0.0"
 manatan-common = { path = "shared/manatan-common" }

@@ -39086,6 +39086,93 @@
       "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Adapted from LNReader plugins/chinese/linovelib_tw.ts; runtime is reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/lnori.ts",
+      "sourceId": "lnori",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "production-runner-filters",
+        "live-popular-search-details-chapters",
+        "live-all-19-chapters",
+        "live-first-middle-last-text",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/lnori.manatan2",
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Ported from LNReader/lnreader-plugins."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/wtrlab.ts",
+      "sourceId": "wtr-lab",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "encrypted-content",
+        "web-translation"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-parser-tests",
+        "aes-gcm-decryption-test",
+        "component-validated",
+        "live-popular-latest-search-details-chapters",
+        "live-313-chapter-pagination",
+        "live-first-middle-last-text",
+        "live-encrypted-web-translation",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/wtrlab.manatan2",
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Ported from LNReader/lnreader-plugins."
+    },
+    {
+      "upstreamRepository": "https://cyrisia.com",
+      "upstreamPath": "api/bookshelf",
+      "sourceId": "cyrisia",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone-epub",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "epub-processing"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-epub-render-test",
+        "archive-path-safety",
+        "component-validated",
+        "live-bookshelf-search-details-chapters",
+        "live-epub-download-and-render",
+        "live-139-inline-images",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/cyrisia.manatan2",
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Independent integration with Cyrisia's public bookshelf and EPUB endpoints."
     }
   ]
 }
