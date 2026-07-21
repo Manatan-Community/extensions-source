@@ -1193,22 +1193,6 @@ fn validate_package(extension: &ExtensionDir, path: &Path) -> Result<()> {
 
 fn generate_indexes() -> Result<()> {
     let extensions = discover_extensions()?;
-    let matrix: PortingMatrix =
-        serde_json::from_slice(&fs::read(root().join("porting-matrix.json"))?)?;
-    let statuses = matrix
-        .sources
-        .iter()
-        .map(|row| {
-            (
-                (
-                    row.media_kind.as_str(),
-                    row.language.as_str(),
-                    row.source_id.as_str(),
-                ),
-                row.status.as_str(),
-            )
-        })
-        .collect::<BTreeMap<_, _>>();
     let mut catalog = Vec::new();
     let mut summaries = Vec::new();
     for media in MEDIA {
@@ -1254,13 +1238,6 @@ fn generate_indexes() -> Result<()> {
                 .iter()
                 .map(|source| source.name.clone())
                 .collect::<Vec<_>>();
-            let verified = statuses
-                .get(&(
-                    extension.media.as_str(),
-                    extension.lang.as_str(),
-                    first_source.id.as_str(),
-                ))
-                .is_some_and(|status| matches!(*status, "runtime-tested" | "live-verified"));
             let entry = json!({
                 "schemaVersion": 2,
                 "pkgName": format!("manatan:{}", packaged_manifest.id),
@@ -1285,14 +1262,11 @@ fn generate_indexes() -> Result<()> {
                 "iconUrl": icon_url,
                 "sourceIds": source_ids,
                 "sourceNames": source_names,
-                "verified": verified,
                 "publisher": packaged_manifest.publisher,
                 "sources": packaged_manifest.sources,
                 "manifest": packaged_manifest,
             });
-            if verified {
-                entries.push(entry.clone());
-            }
+            entries.push(entry.clone());
             catalog.push(entry);
         }
         write_json_pair(&root().join("dist"), media, &entries)?;
@@ -1300,7 +1274,6 @@ fn generate_indexes() -> Result<()> {
             "media": media,
             "index": format!("{media}.min.json"),
             "count": entries.len(),
-            "verifiedOnly": true,
         }));
     }
     catalog.sort_by(|left, right| {

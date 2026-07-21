@@ -1,4 +1,8 @@
-# Verification levels
+# Testing and release readiness
+
+Published extension sources are expected to work and are included directly in
+their media index. The states below track implementation and test progress;
+they do not control whether a published package appears in an index.
 
 The porting matrix uses these ordered states:
 
@@ -16,4 +20,3 @@ The porting matrix uses these ordered states:
 Validation checks the component world, manifest/media agreement, asset hashes,
 package contents, URL permissions, and absence of undeclared files. Completion
 is never inferred from compilation alone.
-

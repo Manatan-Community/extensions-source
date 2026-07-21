@@ -50,7 +50,7 @@ cargo run -p xtask -- build-components
 ```
 
 See [authoring](docs/AUTHORING.md), [porting](docs/PORTING.md), and
-[verification](docs/VERIFICATION.md) before contributing.
+[testing requirements](docs/VERIFICATION.md) before contributing.
 
 ## Community
 
