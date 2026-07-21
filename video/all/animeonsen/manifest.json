@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "id": "animeonsen",
+  "name": "AnimeOnsen",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "minimumManatanVersion": "0.3.1",
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "All-language anime catalog and streams from AnimeOnsen with Play-safe catalog filtering.",
+  "author": "Manatan Community",
+  "homepage": "https://www.animeonsen.xyz",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://www.animeonsen.xyz",
+        "https://auth.animeonsen.xyz",
+        "https://api.animeonsen.xyz",
+        "https://search.animeonsen.xyz",
+        "https://cdn.animeonsen.xyz"
+      ]
+    },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "sources": [
+    {
+      "id": "animeonsen",
+      "name": "AnimeOnsen",
+      "lang": "all",
+      "contentType": "video",
+      "baseUrl": "https://www.animeonsen.xyz",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": false,
+        "filters": true,
+        "preferences": false,
+        "hosterResolution": false,
+        "urlResolution": true,
+        "mediaProcessing": false
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://www.animeonsen.xyz/details/*",
+          "kind": "item"
+        }
+      ],
+      "tags": [
+        "animeonsen",
+        "subtitles"
+      ]
+    }
+  ]
+}

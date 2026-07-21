@@ -1,0 +1,18 @@
+{
+  "result": "ok",
+  "response": "entity",
+  "data": {
+    "id": "33333333-3333-4333-8333-333333333333",
+    "type": "manga",
+    "attributes": {
+      "title": { "en": "Rejected Adult Fixture" },
+      "altTitles": [],
+      "description": {},
+      "originalLanguage": "en",
+      "status": "ongoing",
+      "contentRating": "erotica",
+      "tags": []
+    },
+    "relationships": []
+  }
+}

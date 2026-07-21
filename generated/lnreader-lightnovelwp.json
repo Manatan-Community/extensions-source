@@ -1,0 +1,164 @@
+{
+  "family": "lightnovelwp",
+  "generated": [
+    {
+      "id": "lightnovelfr",
+      "path": "novel/fr/lightnovelfr",
+      "baseUrl": "https://novel-fr.net/"
+    },
+    {
+      "id": "kolnovel",
+      "path": "novel/ar/kolnovel",
+      "baseUrl": "https://kolnovel.com/"
+    },
+    {
+      "id": "bacalightnovel",
+      "path": "novel/id/bacalightnovel",
+      "baseUrl": "https://bacalightnovel.co/"
+    },
+    {
+      "id": "daotranslate",
+      "path": "novel/en/daotranslate",
+      "baseUrl": "https://daotranslate.com/"
+    },
+    {
+      "id": "novelsparadise",
+      "path": "novel/ar/novelsparadise",
+      "baseUrl": "https://novelsparadise.site/"
+    },
+    {
+      "id": "centralnovel",
+      "path": "novel/pt/centralnovel",
+      "baseUrl": "https://centralnovel.com/"
+    },
+    {
+      "id": "sektenovel",
+      "path": "novel/id/sektenovel",
+      "baseUrl": "https://sektenovel.web.id/"
+    },
+    {
+      "id": "requiemtls",
+      "path": "novel/en/requiemtls",
+      "baseUrl": "https://requiemtls.com/"
+    },
+    {
+      "id": "arcane",
+      "path": "novel/en/arcane",
+      "baseUrl": "https://arcanetranslations.com/"
+    },
+    {
+      "id": "namevt",
+      "path": "novel/tr/namevt",
+      "baseUrl": "https://namevt.com/"
+    },
+    {
+      "id": "kodekslibrary",
+      "path": "novel/tr/kodekslibrary",
+      "baseUrl": "https://www.kodekslibrary.com/"
+    },
+    {
+      "id": "lazygirltranslations",
+      "path": "novel/en/lazygirltranslations",
+      "baseUrl": "https://lazygirltranslations.com"
+    },
+    {
+      "id": "tcsega",
+      "path": "novel/es/tcsega",
+      "baseUrl": "https://teamchmantranslations.com"
+    },
+    {
+      "id": "transweaver",
+      "path": "novel/en/transweaver",
+      "baseUrl": "https://transweaver.com/"
+    },
+    {
+      "id": "kdtnovels",
+      "path": "novel/en/kdtnovels",
+      "baseUrl": "https://kdtnovels.net/"
+    }
+  ],
+  "blocked": [
+    {
+      "id": "freekolnovel",
+      "reason": "The source now redirects to kolnovel.com and no longer exposes an independent Free Kol Novel catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "knoxt",
+      "reason": "The catalog endpoint returns a fixed HTTP 403 response with no LightNovelWP catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "allnovelread",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212954)."
+    },
+    {
+      "id": "universalnovel",
+      "reason": "The catalog endpoint returns a fixed HTTP 403 response with no LightNovelWP catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "noveltr",
+      "reason": "The domain now serves an unrelated travel website and /series/ returns 404 (verified 2026-07-19)."
+    },
+    {
+      "id": "noblemtl",
+      "reason": "The domain now serves a text romanization tool rather than a novel catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "pandamtl",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212928)."
+    },
+    {
+      "id": "novelsknight",
+      "reason": "The source host returns Cloudflare 521 Web server is down (verified 2026-07-19)."
+    },
+    {
+      "id": "whitemoonlightnovels",
+      "reason": "The source redirects to a parked advertising endpoint and has no novel catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "systemtranslation",
+      "reason": "The source has an expired TLS certificate and cannot be reached through the HTTPS-only runtime (verified 2026-07-19)."
+    },
+    {
+      "id": "moonlightnovel",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212919)."
+    },
+    {
+      "id": "lightnovelbrasil",
+      "reason": "The source resolves to a parked loading page and has no novel catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "ellotl",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212947)."
+    },
+    {
+      "id": "ippotranslations",
+      "reason": "The source explicitly says it moved and no longer exposes a catalog; the replacement is a separate source (verified 2026-07-19)."
+    },
+    {
+      "id": "cpunovel",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212904)."
+    },
+    {
+      "id": "betternovels",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212945)."
+    },
+    {
+      "id": "vandytranslate",
+      "reason": "The domain now serves an unrelated games/FAQ site and has no LightNovelWP catalog (verified 2026-07-19)."
+    },
+    {
+      "id": "keopi",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212914)."
+    }
+  ],
+  "skipped": [
+    {
+      "id": "hyacinthbloom",
+      "reason": "not requested"
+    },
+    {
+      "id": "blumeverse",
+      "reason": "not requested"
+    }
+  ]
+}

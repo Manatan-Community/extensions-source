@@ -21,6 +21,9 @@ use serde::Deserialize;
 use serde_json::{json, Value};
 use url::Url;
 
+const PLAY_ALLOWED_RATINGS: &[&str] = &["G", "PG", "PG-13", "R", "R+"];
+const BLOCKED_CONTENT_TAGS: &[&str] = &["adult", "hentai", "porn", "smut", "ecchi"];
+
 pub trait AnikotoConfig: 'static {
     const NAME: &'static str;
     const LANG: &'static str;
@@ -144,7 +147,12 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
     }
 
     fn fetch_listing(&self, section: &str, page: u32) -> Result<Paged<CatalogItem>> {
-        let url = listing_url(&self.base_url(), section, page)?;
+        let url = search_url_for::<C>(
+            &self.base_url(),
+            "",
+            page,
+            &json!({"sort": section, "rating": PLAY_ALLOWED_RATINGS}),
+        )?;
         let (body, final_url) =
             self.get_text(&url, Some(&format!("{}/", self.base_url())), false)?;
         parse_listing_html_for::<C>(&body, &final_url)
@@ -440,7 +448,8 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
-        let url = search_url_for::<C>(&self.base_url(), query, page, filters)?;
+        let filters = play_safe_filters(filters)?;
+        let url = search_url_for::<C>(&self.base_url(), query, page, &filters)?;
         let (body, final_url) =
             self.get_text(&url, Some(&format!("{}/", self.base_url())), false)?;
         parse_listing_html_for::<C>(&body, &final_url)
@@ -452,11 +461,13 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         let (body, final_url) =
             self.get_text(&url, Some(&format!("{}/", self.base_url())), false)?;
         let mut parsed = parse_details_html_for::<C>(&body, &final_url)?;
+        reject_blocked_details(&parsed)?;
         parsed.key = item.key;
         Ok(parsed)
     }
 
     fn episodes(&mut self, item: CatalogItem) -> Result<Vec<VideoEpisode>> {
+        let item = self.details(item)?;
         let (id, item_url) = self.anime_id(&item)?;
         let endpoint = format!(
             "{}/ajax/episode/list/{}?vrf={}",
@@ -469,7 +480,8 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
     }
 
     fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
-        let hosters = self.hosters(item.clone(), episode.clone())?;
+        let item = self.details(item)?;
+        let hosters = self.server_hosters(&episode)?;
         let mut streams = Vec::new();
         let mut errors = Vec::new();
         for hoster in hosters {
@@ -484,7 +496,8 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         Ok(sort_streams(streams))
     }
 
-    fn hosters(&mut self, _item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
+    fn hosters(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
+        self.details(item)?;
         self.server_hosters(&episode)
     }
 
@@ -517,11 +530,11 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         _item: &CatalogItem,
         episode: &VideoEpisode,
     ) -> Result<Option<String>> {
-        Ok(episode
+        episode
             .url
             .as_deref()
             .map(|url| absolute_url(&self.base_url(), url))
-            .transpose()?)
+            .transpose()
     }
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
@@ -532,13 +545,14 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         }
         let (item_path, episode_number) = split_episode_path(url.path());
         let item_url = absolute_url(&self.base_url(), &item_path)?;
+        let item = self.details(CatalogItem {
+            key: item_path.clone(),
+            url: Some(item_url),
+            language: Some(C::LANG.to_owned()),
+            ..CatalogItem::default()
+        })?;
         let mut result = UrlResolveResult {
-            item: Some(CatalogItem {
-                key: item_path.clone(),
-                url: Some(item_url),
-                language: Some(C::LANG.to_owned()),
-                ..CatalogItem::default()
-            }),
+            item: Some(item),
             ..UrlResolveResult::default()
         };
         if let Some(number) = episode_number {
@@ -575,9 +589,11 @@ pub fn search_url_for<C: AnikotoConfig>(
 ) -> Result<String> {
     let mut url = Url::parse(base).map_err(url_error)?;
     url.set_path("/filter");
-    let vrf = C::should_generate_search_vrf(query)
-        .then(|| vrf_encrypt(query))
-        .unwrap_or_default();
+    let vrf = if C::should_generate_search_vrf(query) {
+        vrf_encrypt(query)
+    } else {
+        String::new()
+    };
     let mut pairs = url.query_pairs_mut();
     pairs
         .append_pair("keyword", query)
@@ -616,11 +632,24 @@ fn filter_values(filters: &Value, key: &str) -> Vec<String> {
             .collect(),
         Some(Value::Object(values)) => values
             .iter()
-            .filter_map(|(key, value)| value.as_bool().unwrap_or(false).then(|| key.clone()))
+            .filter(|(_, value)| value.as_bool().unwrap_or(false))
+            .map(|(key, _)| key.clone())
             .collect(),
         Some(Value::String(value)) if !value.is_empty() => vec![value.clone()],
         _ => Vec::new(),
     }
+}
+
+fn play_safe_filters(filters: &Value) -> Result<Value> {
+    let mut filters = filters
+        .as_object()
+        .cloned()
+        .ok_or_else(|| Error::new("Anikoto search filters must be a JSON object"))?;
+    filters.insert("rating".into(), json!(PLAY_ALLOWED_RATINGS));
+    if let Some(Value::Array(genres)) = filters.get_mut("genre") {
+        genres.retain(|value| value.as_str() != Some("214"));
+    }
+    Ok(Value::Object(filters))
 }
 
 pub fn parse_listing_html(source: &str, base: &str) -> Result<Paged<CatalogItem>> {
@@ -658,6 +687,9 @@ pub fn parse_listing_html_for<C: AnikotoConfig>(
         let mut item = CatalogItem::new(key, title);
         item.url = Some(href);
         item.cover = cover.map(Into::into);
+        // The request that produced this listing is forced to the
+        // non-explicit ratings accepted by the Play-safe package.
+        item.content_rating = Some("suggestive".to_owned());
         entries.push(item);
     }
     Ok(Paged::new(entries, document.select(&next).next().is_some()))
@@ -702,7 +734,25 @@ pub fn parse_details_html_for<C: AnikotoConfig>(
         item.extra.insert("animeId".into(), json!(id));
     }
     item.initialized = true;
+    item.content_rating = Some("suggestive".to_owned());
     Ok(item)
+}
+
+fn reject_blocked_details(item: &CatalogItem) -> Result<()> {
+    let blocked = item.tags.iter().find(|tag| {
+        let normalized = tag.trim().to_ascii_lowercase();
+        BLOCKED_CONTENT_TAGS.iter().any(|blocked| {
+            normalized == *blocked
+                || normalized.contains(&format!("{blocked} "))
+                || normalized.contains(&format!(" {blocked}"))
+        })
+    });
+    if let Some(tag) = blocked {
+        return Err(Error::new(format!(
+            "content tagged {tag:?} is unavailable in this package"
+        )));
+    }
+    Ok(())
 }
 
 pub fn parse_episodes_json(source: &str, anime_url: &str) -> Result<Vec<VideoEpisode>> {
@@ -760,7 +810,8 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
             (attr(anchor, "data-dub").as_deref() == Some("1"), "Dub"),
         ]
         .into_iter()
-        .filter_map(|(present, label)| present.then(|| label.to_owned()))
+        .filter(|(present, _)| *present)
+        .map(|(_, label)| label.to_owned())
         .collect();
         entries.push(VideoEpisode {
             key: format!("{ids}&epurl={episode_path}"),
@@ -1000,7 +1051,6 @@ pub fn anikoto_filters(current_year: i32) -> Vec<FilterDefinition> {
                 ("Adventure", "2"),
                 ("Comedy", "8"),
                 ("Drama", "62"),
-                ("Ecchi", "214"),
                 ("Fantasy", "3"),
                 ("Harem", "215"),
                 ("Historical", "70"),
@@ -1079,7 +1129,6 @@ pub fn anikoto_filters(current_year: i32) -> Vec<FilterDefinition> {
                 ("G", "G"),
                 ("R", "R"),
                 ("R+", "R+"),
-                ("Rx", "Rx"),
             ],
         ),
     ]
@@ -1497,12 +1546,12 @@ mod tests {
         fn canonical_server_name(raw: &str) -> String {
             if raw.to_ascii_lowercase().starts_with("server") {
                 let suffix = raw.get("Server".len()..).unwrap_or_default().trim();
-                return format!(
-                    "Kiwi-Stream{}",
-                    (!suffix.is_empty())
-                        .then(|| format!(" {suffix}"))
-                        .unwrap_or_default()
-                );
+                let suffix = if suffix.is_empty() {
+                    String::new()
+                } else {
+                    format!(" {suffix}")
+                };
+                return format!("Kiwi-Stream{suffix}");
             }
             raw.trim_end_matches(['-', ' ']).to_owned()
         }
@@ -1581,6 +1630,27 @@ mod tests {
         assert!(parse_details_html("<html></html>", "https://animewave.to/watch/missing").is_err());
         assert!(parse_episodes_json("{}", "https://animewave.to/watch/missing").is_err());
         assert!(ensure_depth(4).is_err());
+    }
+
+    #[test]
+    fn enforces_play_safe_ratings_and_rejects_adult_details() {
+        let filters = play_safe_filters(&json!({
+            "genre": ["1", "214"],
+            "rating": ["Rx"]
+        }))
+        .unwrap();
+        assert_eq!(filters["genre"], json!(["1"]));
+        assert_eq!(filters["rating"], json!(PLAY_ALLOWED_RATINGS));
+
+        let details = parse_details_html(
+            r#"<html><h1 class="title">Blocked</h1><div>Genres <span><a>Hentai</a></span></div></html>"#,
+            "https://animewave.to/watch/blocked",
+        )
+        .unwrap();
+        assert!(reject_blocked_details(&details).is_err());
+        assert!(!anikoto_filters(2027)
+            .iter()
+            .any(|filter| { serde_json::to_string(filter).unwrap().contains("Rx") }));
     }
 
     #[test]

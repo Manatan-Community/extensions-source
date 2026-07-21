@@ -2,11 +2,16 @@
   "schemaVersion": 2,
   "id": "aniwave",
   "name": "AniWave (Unoriginal)",
-  "version": "0.1.1",
-  "versionCode": 3,
+  "version": "0.1.3",
+  "versionCode": 4,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
   "description": "English anime catalog and streams from AniWave.",
   "author": "Manatan Community",
   "homepage": "https://animewave.to",
@@ -38,7 +43,10 @@
         "https://kwik.cx",
         "https://*.kwik.cx",
         "https://vidstream.pro",
-        "https://*.vidstream.pro"
+        "https://*.vidstream.pro",
+        "https://vidtube.site",
+        "https://megaplay.buzz",
+        "https://vidwish.live"
       ]
     },
     "cookies": true,
@@ -61,7 +69,7 @@
       "lang": "en",
       "contentType": "video",
       "baseUrl": "https://animewave.to",
-      "contentRating": "safe",
+      "contentRating": "suggestive",
       "capabilities": {
         "search": true,
         "latest": true,

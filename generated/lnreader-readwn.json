@@ -1,0 +1,42 @@
+{
+  "family": "readwn",
+  "generated": [
+    {
+      "id": "wuxiap",
+      "path": "novel/en/wuxiap",
+      "baseUrl": "https://www.wuxiabox.com",
+      "filterCount": 3
+    },
+    {
+      "id": "ltnovel",
+      "path": "novel/en/ltnovel",
+      "baseUrl": "https://www.ltnovels.com",
+      "filterCount": 3
+    },
+    {
+      "id": "wuxiamtl",
+      "path": "novel/en/wuxiamtl",
+      "baseUrl": "https://www.fanmtl.com",
+      "filterCount": 3
+    },
+    {
+      "id": "fannovel",
+      "path": "novel/en/fannovel",
+      "baseUrl": "https://www.fanmtl.com",
+      "filterCount": 3
+    },
+    {
+      "id": "wuxiaspace",
+      "path": "novel/en/wuxiaspace",
+      "baseUrl": "https://www.wuxiaspot.com",
+      "filterCount": 0
+    }
+  ],
+  "blocked": [
+    {
+      "id": "wuxiav",
+      "reason": "Upstream descriptor is marked down (downSince=1768289212940)."
+    }
+  ],
+  "skipped": []
+}

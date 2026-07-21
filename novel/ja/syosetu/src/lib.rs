@@ -54,9 +54,11 @@ impl SyosetuSource {
             } else {
                 "genrelist"
             };
-            let suffix = (modifier != "total")
-                .then(|| format!("_{modifier}"))
-                .unwrap_or_default();
+            let suffix = if modifier != "total" {
+                format!("_{modifier}")
+            } else {
+                String::new()
+            };
             format!("rank/{family}/type/{ranking}_{genre}{suffix}")
         };
         format!("{RANKING_URL}/{path}/?p={}", page.clamp(1, 100))
@@ -131,6 +133,7 @@ impl SyosetuSource {
         item.status = Some(json!(status));
         item.initialized = true;
         item.language = Some("ja".into());
+        item.content_rating = Some("safe".into());
         Ok(item)
     }
 
@@ -311,6 +314,7 @@ impl NovelSource for SyosetuSource {
         let mut item = CatalogItem::new(work_url.clone(), "");
         item.url = Some(work_url);
         item.language = Some("ja".into());
+        item.content_rating = Some("safe".into());
         let novel_chapter = (parts.len() > 1).then(|| NovelChapter {
             key: candidate.to_owned(),
             url: Some(candidate.to_owned()),
@@ -345,6 +349,7 @@ fn parse_items(document: &Html, row_query: &str, link_query: &str) -> Result<Vec
         let mut item = CatalogItem::new(url.clone(), title);
         item.url = Some(url);
         item.language = Some("ja".into());
+        item.content_rating = Some("safe".into());
         entries.push(item);
     }
     Ok(entries)

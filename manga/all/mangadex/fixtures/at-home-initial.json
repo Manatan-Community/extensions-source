@@ -1,0 +1,9 @@
+{
+  "result": "ok",
+  "baseUrl": "https://s1.mangadex.network",
+  "chapter": {
+    "hash": "initial-hash",
+    "data": ["page-1.jpg", "page-2.jpg"],
+    "dataSaver": ["page-1-saver.jpg", "page-2-saver.jpg"]
+  }
+}

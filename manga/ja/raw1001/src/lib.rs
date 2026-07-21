@@ -7,6 +7,7 @@ struct Raw1001;
 
 impl LilianaConfig for Raw1001 {
     const BASE_URL: &'static str = "https://raw1001.net";
+    const CONTENT_RATING: Option<&'static str> = Some("adult");
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -32,7 +33,11 @@ mod tests {
         assert_eq!(manifest["license"], "Apache-2.0");
         assert_eq!(
             manifest["permissions"]["network"]["allow"],
-            json!(["raw1001.net", "sg.cdnkk.top", "mgraw1111.wordpress.com"])
+            json!([
+                "https://raw1001.net",
+                "https://sg.cdnkk.top",
+                "https://mgraw1111.wordpress.com"
+            ])
         );
         assert_eq!(
             manifest["sources"],

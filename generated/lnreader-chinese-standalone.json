@@ -1,0 +1,203 @@
+{
+  "family": "chinese-standalone",
+  "adapter": "shared/chinese-standalone-novel",
+  "generated": [
+    {
+      "id": "shu69",
+      "path": "novel/zh/shu69",
+      "baseUrl": "https://www.69shu.xyz",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/shu69.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 32,
+        "coverBytes": 4039,
+        "chapterCount": 854,
+        "textSizes": [
+          17712,
+          19911,
+          266
+        ]
+      }
+    },
+    {
+      "id": "quanben",
+      "path": "novel/zh/quanben",
+      "baseUrl": "https://www.quanben.io",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/quanben.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 18,
+        "coverBytes": 7350,
+        "chapterCount": 3813,
+        "textSizes": [
+          21494,
+          14224,
+          23177
+        ]
+      }
+    },
+    {
+      "id": "ixdzs8",
+      "path": "novel/zh/ixdzs8",
+      "baseUrl": "https://ixdzs8.com",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/ixdzs8.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 20,
+        "coverBytes": 70335,
+        "chapterCount": 1304,
+        "textSizes": [
+          41870,
+          11444,
+          23072
+        ]
+      }
+    },
+    {
+      "id": "linovel",
+      "path": "novel/zh/linovel",
+      "baseUrl": "https://www.linovel.net",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/linovel.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 12,
+        "coverBytes": 16602,
+        "chapterCount": 42,
+        "textSizes": [
+          17928,
+          67444,
+          66321
+        ]
+      }
+    },
+    {
+      "id": "linovelib",
+      "path": "novel/zh/linovelib",
+      "baseUrl": "https://www.bilinovel.com",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/linovelib.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 31,
+        "coverBytes": 86925,
+        "chapterCount": 595,
+        "textSizes": [
+          3922,
+          11291,
+          7036
+        ]
+      }
+    },
+    {
+      "id": "linovelib_tw",
+      "path": "novel/zh/linovelib_tw",
+      "baseUrl": "https://tw.linovelib.com",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/linovelib_tw.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 31,
+        "coverBytes": 86925,
+        "chapterCount": 595,
+        "textSizes": [
+          9543,
+          19056,
+          13491
+        ]
+      }
+    },
+    {
+      "id": "novel543",
+      "path": "novel/zh/novel543",
+      "baseUrl": "https://www.novel543.com",
+      "status": "live-verified",
+      "packagePath": "packages/novel/zh/novel543.manatan2",
+      "liveVerification": {
+        "date": "2026-07-20",
+        "runner": "Manatan production ExtensionRunner",
+        "checks": [
+          "catalog",
+          "cover",
+          "details",
+          "chapters",
+          "first-text",
+          "middle-text",
+          "last-text"
+        ],
+        "catalogEntries": 13,
+        "coverBytes": 15084,
+        "chapterCount": 135,
+        "textSizes": [
+          10463,
+          12544,
+          14637
+        ]
+      }
+    }
+  ],
+  "blocked": []
+}

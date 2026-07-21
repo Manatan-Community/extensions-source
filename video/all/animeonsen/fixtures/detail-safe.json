@@ -1,0 +1,14 @@
+{
+  "content_id": "safeTitle123",
+  "content_title": "Safe title romaji",
+  "content_title_en": "Safe title",
+  "mal_id": 123,
+  "mal_data": {
+    "genres": [{ "name": "Adventure" }, { "name": "Fantasy" }],
+    "status": "finished_airing",
+    "studios": [{ "name": "Example Studio" }],
+    "synopsis": "A fixture suitable for catalog tests.",
+    "mean_score": 8.2,
+    "rating": "pg_13"
+  }
+}

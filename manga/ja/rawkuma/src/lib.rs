@@ -9,6 +9,7 @@ impl NatsuIdMangaConfig for RawkumaConfig {
     const NAME: &'static str = "Rawkuma";
     const BASE_URL: &'static str = "https://rawkuma.net";
     const LANG: &'static str = "ja";
+    const CONTENT_RATING: Option<&'static str> = Some("adult");
 }
 
 pub type RawkumaSource = NatsuIdMangaSource<RawkumaConfig>;
@@ -47,7 +48,7 @@ mod tests {
         assert_eq!(manifest["license"], "Apache-2.0");
         assert_eq!(
             manifest["permissions"]["network"]["allow"],
-            json!(["rawkuma.net"])
+            json!(["https://rawkuma.net", "https://cdn.kumacdn.club"])
         );
         assert_eq!(
             manifest["sources"],

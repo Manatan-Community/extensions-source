@@ -1,0 +1,16 @@
+<!doctype html>
+<html><body><main>
+<div wire:snapshot="{}" x-data="{ anmTitles: JSON.parse('{\u00221\u0022:\u0022Safe Adventure\u0022,\u00225\u0022:\u0022Safe Adventure Romaji\u0022}') }">
+  <div class="flex items-start"><img src="https://anizone.to/images/anime/safe.jpg"></div>
+  <h1 x-text="displayAnimeTitle"></h1>
+  <span class="inline-block">Completed</span>
+  <div><h3>Synopsis</h3><div>A family-friendly adventure story.</div></div>
+  <a href="https://anizone.to/tag/adventure">Adventure</a>
+  <a href="https://anizone.to/tag/comedy">Comedy</a>
+  <ul class="grid">
+    <li x-data="{ isUnsafe: false, epsTitles: JSON.parse('{\u00221\u0022:\u0022The Beginning\u0022}') }">
+      <a href="https://anizone.to/anime/safe1234/1"><h3>Episode 1</h3></a>
+    </li>
+  </ul>
+</div>
+</main></body></html>

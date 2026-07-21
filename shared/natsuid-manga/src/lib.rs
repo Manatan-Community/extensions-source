@@ -43,6 +43,7 @@ pub trait NatsuIdMangaConfig: Default + 'static {
     const NAME: &'static str;
     const BASE_URL: &'static str;
     const LANG: &'static str;
+    const CONTENT_RATING: Option<&'static str> = None;
 
     fn referer(&self) -> String {
         format!("{}/", base_url(Self::BASE_URL))
@@ -105,6 +106,11 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
 
     fn base_url(&self) -> String {
         base_url(C::BASE_URL)
+    }
+
+    fn classify_item(&self, mut item: CatalogItem) -> CatalogItem {
+        item.content_rating = C::CONTENT_RATING.map(str::to_owned);
+        item
     }
 
     fn get_html(&self, url: &str) -> Result<(Html, String)> {
@@ -221,6 +227,7 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
         let entries = slugs
             .into_iter()
             .filter_map(|slug| by_slug.get(&slug).cloned())
+            .map(|item| self.classify_item(item))
             .collect::<Vec<_>>();
         let has_next_page = listing_has_next_page(&document)?;
         Ok(Paged::new(entries, has_next_page))
@@ -230,7 +237,7 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
         let Some(slug) = slug_from_candidate(C::BASE_URL, query)? else {
             return Ok(None);
         };
-        let details_url = rest_manga_list_url(&self.base_url(), &[slug.clone()])?;
+        let details_url = rest_manga_list_url(&self.base_url(), std::slice::from_ref(&slug))?;
         let (json_source, _) = self.get_text(&details_url)?;
         let mut items = parse_rest_manga_list(
             &self.config.transform_json_response(&json_source),
@@ -242,7 +249,7 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
             .drain(..)
             .next()
             .ok_or_else(|| Error::new("NatsuId deep link did not resolve to a manga"))?;
-        Ok(Some(Paged::new(vec![item], false)))
+        Ok(Some(Paged::new(vec![self.classify_item(item)], false)))
     }
 
     fn detail_item(&self, item: &CatalogItem) -> Result<CatalogItem> {
@@ -253,7 +260,8 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
                 &self.config.transform_json_response(&json_source),
                 &self.base_url(),
                 C::LANG,
-            );
+            )
+            .map(|item| self.classify_item(item));
         }
 
         if let Some(slug) = item
@@ -274,6 +282,7 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
             return items
                 .into_iter()
                 .next()
+                .map(|item| self.classify_item(item))
                 .ok_or_else(|| Error::new("NatsuId details payload did not contain a manga"));
         }
 
@@ -388,6 +397,7 @@ impl<C: NatsuIdMangaConfig> MangaSource for NatsuIdMangaSource<C> {
             language: Some(C::LANG.to_owned()),
             ..CatalogItem::default()
         };
+        item.content_rating = C::CONTENT_RATING.map(str::to_owned);
         item.extra.insert("slug".to_owned(), json!(slug));
         let mut result = UrlResolveResult {
             item: Some(item),
@@ -1047,9 +1057,8 @@ fn selected_values(filters: &Value, key: &str) -> Vec<String> {
             .collect(),
         Some(Value::Object(values)) => values
             .iter()
-            .filter_map(|(value, selected)| {
-                selected.as_bool().unwrap_or(false).then(|| value.clone())
-            })
+            .filter(|(_, selected)| selected.as_bool().unwrap_or(false))
+            .map(|(value, _)| value.clone())
             .collect(),
         Some(Value::String(value)) if !value.trim().is_empty() => value
             .split(',')

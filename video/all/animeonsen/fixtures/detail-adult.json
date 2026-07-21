@@ -1,0 +1,9 @@
+{
+  "content_id": "adultTitle123",
+  "content_title": "Blocked title",
+  "content_title_en": "Blocked title",
+  "mal_data": {
+    "genres": [{ "name": "Fantasy" }],
+    "rating": "rx"
+  }
+}

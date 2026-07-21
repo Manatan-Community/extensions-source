@@ -1,0 +1,10 @@
+<!doctype html>
+<html><head><meta name="csrf-token" content="fixture-token"></head><body><main>
+<div wire:snapshot="{&quot;data&quot;:{&quot;videoKey&quot;:0},&quot;memo&quot;:{&quot;id&quot;:&quot;fixture&quot;},&quot;checksum&quot;:&quot;fixture&quot;}">
+  <media-player src="https://seiryuu.vid-cdn.xyz/video/master.m3u8">
+    <track src="https://seiryuu.vid-cdn.xyz/video/subtitles/en.ass" data-type="ass" kind="subtitles" label="English" srclang="en" default>
+  </media-player>
+  <button wire:click="setVideo(0)">Japanese</button>
+  <button wire:click="setVideo('1')">English</button>
+</div>
+</main></body></html>

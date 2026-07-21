@@ -1,0 +1,25 @@
+{
+  "family": "lightnovelworld",
+  "sharedAdapter": "shared/lightnovelworld-novel",
+  "generated": [],
+  "blocked": [
+    {
+      "id": "webnovelworld",
+      "name": "Web Novel Pub",
+      "baseUrl": "https://www.webnovelworld.org",
+      "reason": "The declared HTTPS origin fails certificate-chain validation (unable to get local issuer certificate), including its catalog endpoint; the HTTPS-only runtime therefore fails closed (verified 2026-07-19)."
+    },
+    {
+      "id": "lightnovelpubvip",
+      "name": "LightNovelPub Vip",
+      "baseUrl": "https://lightnovelpub.vip",
+      "reason": "The root redirects from HTTPS to an unrelated HTTP parking/survey host and the catalog returns a JavaScript redirect/challenge page rather than novel cards; the compiled runtime neither downgrades transport nor executes that script (verified 2026-07-19)."
+    },
+    {
+      "id": "lightnovelcave",
+      "name": "LightNovelCave",
+      "baseUrl": "https://www.lightnovelcave.com",
+      "reason": "The root and catalog currently return HTTP 403 Cloudflare challenge pages rather than novel content; the compiled runtime fails closed and does not execute the challenge scripts (verified 2026-07-19)."
+    }
+  ]
+}

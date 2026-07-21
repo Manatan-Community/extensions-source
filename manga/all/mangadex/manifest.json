@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 2,
+  "id": "mangadex",
+  "name": "MangaDex",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "manga",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "MangaDex through its public API, restricted to safe and suggestive titles.",
+  "author": "Manatan Community",
+  "homepage": "https://mangadex.org",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://api.mangadex.org",
+        "https://mangadex.org",
+        "https://canary.mangadex.dev",
+        "https://uploads.mangadex.org",
+        "https://*.mangadex.network"
+      ]
+    },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [],
+  "sources": [
+    {
+      "id": "mangadex",
+      "name": "MangaDex",
+      "lang": "all",
+      "contentType": "manga",
+      "baseUrl": "https://mangadex.org",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true,
+        "pageProcessing": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://mangadex.org/title/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://mangadex.org/chapter/*",
+          "kind": "item-or-chapter"
+        },
+        {
+          "pattern": "https://canary.mangadex.dev/title/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://canary.mangadex.dev/chapter/*",
+          "kind": "item-or-chapter"
+        }
+      ],
+      "tags": [
+        "official-api",
+        "safe-only",
+        "lazy-pages"
+      ]
+    }
+  ]
+}

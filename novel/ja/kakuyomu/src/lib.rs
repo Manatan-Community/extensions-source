@@ -3,13 +3,13 @@
 use chrono::DateTime;
 use manatan_common::{absolute_url, attr, normalize_space, require, selector};
 use manatan_sdk::{
-    client::Client,
+    client::{Client, Response},
     html::{self, Html},
     model::{
         CatalogItem, FilterDefinition, ImageRequestContext, NovelChapter, NovelContentBlock,
         NovelText, OptionItem, Paged, UrlResolveResult,
     },
-    Error, NovelSource, Result,
+    services, Error, NovelSource, Result,
 };
 use serde_json::{json, Map, Value};
 use url::Url;
@@ -17,6 +17,7 @@ use url::Url;
 #[cfg(target_arch = "wasm32")]
 const SOURCE_ID: &str = "kakuyomu";
 const BASE_URL: &str = "https://kakuyomu.jp";
+const HTML_SELECT_SERVICE: &str = "html.select.v1";
 const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
@@ -35,12 +36,20 @@ impl Default for KakuyomuSource {
 }
 
 impl KakuyomuSource {
-    fn document(&self, url: &str) -> Result<(Html, String)> {
-        let response = self.client.get(url).send()?.error_for_status()?;
-        Ok((
-            html::document(response.text()?),
-            response.final_url().to_owned(),
-        ))
+    fn response(&self, url: &str) -> Result<Response> {
+        self.client.get(url).send()?.error_for_status()
+    }
+
+    fn select(&self, response: &Response, queries: Value) -> Result<Option<Value>> {
+        if !services::is_available(HTML_SELECT_SERVICE) {
+            return Ok(None);
+        }
+        let request = json!({
+            "fragment": false,
+            "queries": queries,
+        });
+        services::invoke_binary(HTML_SELECT_SERVICE, &request, response.bytes())
+            .map(|(response, _): (Value, Vec<u8>)| Some(response))
     }
 
     fn ranking_url(page: u32, filters: &Value) -> Result<String> {
@@ -48,6 +57,7 @@ impl KakuyomuSource {
         let period = filter(filters, "period", "entire");
         let mut url = Url::parse(&format!("{BASE_URL}/rankings/{genre}/{period}"))
             .map_err(|error| Error::new(error.to_string()))?;
+        url.query_pairs_mut().append_pair("work_variation", "long");
         if page > 1 {
             url.query_pairs_mut().append_pair("page", &page.to_string());
         }
@@ -74,9 +84,36 @@ impl KakuyomuSource {
             let mut item = CatalogItem::new(url.clone(), name);
             item.url = Some(url);
             item.language = Some("ja".into());
+            item.content_rating = Some("safe".into());
             entries.push(item);
         }
         Ok(Paged::new(entries, document.select(&next).next().is_some()))
+    }
+
+    fn parse_selected_listing(selection: &Value) -> Result<Paged<CatalogItem>> {
+        let rows = selected_matches(selection, "entries")?;
+        let mut entries = Vec::with_capacity(rows.len());
+        for row in rows {
+            let Some(href) = selected_string(row, "href") else {
+                continue;
+            };
+            let Some(name) = selected_string(row, "title")
+                .map(|value| normalize_space(&value))
+                .filter(|value| !value.is_empty())
+            else {
+                continue;
+            };
+            let url = absolute_url(BASE_URL, &href)?;
+            let mut item = CatalogItem::new(url.clone(), name);
+            item.url = Some(url);
+            item.language = Some("ja".into());
+            item.content_rating = Some("safe".into());
+            entries.push(item);
+        }
+        Ok(Paged::new(
+            entries,
+            !selected_matches(selection, "next")?.is_empty(),
+        ))
     }
 
     fn apollo_state(document: &Html) -> Result<Map<String, Value>> {
@@ -87,7 +124,11 @@ impl KakuyomuSource {
             .map(|element| element.inner_html())
             .filter(|value| !value.trim().is_empty())
             .ok_or_else(|| Error::new("Kakuyomu page has no __NEXT_DATA__ payload"))?;
-        let root: Value = serde_json::from_str(&json)?;
+        Self::apollo_state_json(&json)
+    }
+
+    fn apollo_state_json(json: &str) -> Result<Map<String, Value>> {
+        let root: Value = serde_json::from_str(json)?;
         root.pointer("/props/pageProps/__APOLLO_STATE__")
             .and_then(Value::as_object)
             .cloned()
@@ -97,6 +138,13 @@ impl KakuyomuSource {
     fn parse_search(document: &Html) -> Result<Paged<CatalogItem>> {
         let state = Self::apollo_state(document)?;
         let next = selector(".widget-pagerNext, .widget-pagerNext a")?;
+        Self::parse_search_state(state, document.select(&next).next().is_some())
+    }
+
+    fn parse_search_state(
+        state: Map<String, Value>,
+        has_next_page: bool,
+    ) -> Result<Paged<CatalogItem>> {
         let mut entries = Vec::new();
         for work in state
             .values()
@@ -118,13 +166,21 @@ impl KakuyomuSource {
                 .or_else(|| string(work, "ogImageUrl"))
                 .map(Into::into);
             item.language = Some("ja".into());
+            item.content_rating = Some("safe".into());
             entries.push(item);
         }
-        Ok(Paged::new(entries, document.select(&next).next().is_some()))
+        Ok(Paged::new(entries, has_next_page))
     }
 
     fn parse_work(document: &Html, work_url: &str) -> Result<(CatalogItem, Vec<NovelChapter>)> {
         let state = Self::apollo_state(document)?;
+        Self::parse_work_state(state, work_url)
+    }
+
+    fn parse_work_state(
+        state: Map<String, Value>,
+        work_url: &str,
+    ) -> Result<(CatalogItem, Vec<NovelChapter>)> {
         let parsed_work_url =
             Url::parse(work_url).map_err(|error| Error::new(error.to_string()))?;
         let work_id = parsed_work_url
@@ -176,6 +232,7 @@ impl KakuyomuSource {
         }));
         item.initialized = true;
         item.language = Some("ja".into());
+        item.content_rating = Some("safe".into());
 
         let mut chapters = Vec::new();
         for table in state
@@ -225,6 +282,15 @@ impl KakuyomuSource {
         let episode_title = text_for(document, ".widget-episodeTitle")?;
         let body = html_for(document, ".widget-episodeBody")?
             .ok_or_else(|| Error::new("Kakuyomu episode has no readable body"))?;
+        Self::parse_text_parts(chapter_title, episode_title, body, page_url)
+    }
+
+    fn parse_text_parts(
+        chapter_title: Option<String>,
+        episode_title: Option<String>,
+        body: String,
+        page_url: &str,
+    ) -> Result<NovelText> {
         let title = episode_title.or(chapter_title.clone());
         let mut rendered = String::new();
         if let Some(section) = chapter_title.filter(|value| !value.is_empty()) {
@@ -261,8 +327,38 @@ impl NovelSource for KakuyomuSource {
         if listing != "popular" {
             return Err(Error::new(format!("unknown novel listing {listing:?}")));
         }
-        let (document, _) = self.document(&Self::ranking_url(page.max(1), filters)?)?;
-        Self::parse_listing(&document)
+        let response = self.response(&Self::ranking_url(page.max(1), filters)?)?;
+        if let Some(selection) = self.select(
+            &response,
+            json!([
+                {
+                    "id": "entries",
+                    "selector": ".widget-media-genresWorkList-right > .widget-work",
+                    "limit": 100,
+                    "fields": [
+                        {
+                            "name": "title",
+                            "selector": "a.widget-workCard-titleLabel",
+                            "value": { "type": "text" }
+                        },
+                        {
+                            "name": "href",
+                            "selector": "a.widget-workCard-titleLabel",
+                            "value": { "type": "attribute", "name": "href" }
+                        }
+                    ]
+                },
+                {
+                    "id": "next",
+                    "selector": ".widget-pagerNext, .widget-pagerNext a",
+                    "limit": 1,
+                    "fields": []
+                }
+            ]),
+        )? {
+            return Self::parse_selected_listing(&selection);
+        }
+        Self::parse_listing(&html::document(response.text()?))
     }
 
     fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -272,14 +368,24 @@ impl NovelSource for KakuyomuSource {
         if page > 1 {
             url.query_pairs_mut().append_pair("page", &page.to_string());
         }
-        let (document, _) = self.document(url.as_str())?;
-        Self::parse_search(&document)
+        let response = self.response(url.as_str())?;
+        if let Some(selection) = self.select(&response, apollo_queries(true))? {
+            let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
+            let has_next = !selected_matches(&selection, "next")?.is_empty();
+            return Self::parse_search_state(state, has_next);
+        }
+        Self::parse_search(&html::document(response.text()?))
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let url = item.url.as_deref().unwrap_or(&item.key);
-        let (document, final_url) = self.document(url)?;
-        Self::parse_work(&document, &final_url).map(|value| value.0)
+        let response = self.response(url)?;
+        let final_url = response.final_url().to_owned();
+        if let Some(selection) = self.select(&response, apollo_queries(false))? {
+            let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
+            return Self::parse_work_state(state, &final_url).map(|value| value.0);
+        }
+        Self::parse_work(&html::document(response.text()?), &final_url).map(|value| value.0)
     }
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
@@ -291,14 +397,54 @@ impl NovelSource for KakuyomuSource {
             return Ok(chapters);
         }
         let url = item.url.as_deref().unwrap_or(&item.key);
-        let (document, final_url) = self.document(url)?;
-        Self::parse_work(&document, &final_url).map(|value| value.1)
+        let response = self.response(url)?;
+        let final_url = response.final_url().to_owned();
+        if let Some(selection) = self.select(&response, apollo_queries(false))? {
+            let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
+            return Self::parse_work_state(state, &final_url).map(|value| value.1);
+        }
+        Self::parse_work(&html::document(response.text()?), &final_url).map(|value| value.1)
     }
 
     fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
         let url = chapter.url.as_deref().unwrap_or(&chapter.key);
-        let (document, final_url) = self.document(url)?;
-        Self::parse_text(&document, &final_url)
+        let response = self.response(url)?;
+        let final_url = response.final_url().to_owned();
+        if let Some(selection) = self.select(
+            &response,
+            json!([
+                {
+                    "id": "chapterTitle",
+                    "selector": ".chapterTitle",
+                    "limit": 1,
+                    "fields": [{ "name": "value", "value": { "type": "text" } }]
+                },
+                {
+                    "id": "episodeTitle",
+                    "selector": ".widget-episodeTitle",
+                    "limit": 1,
+                    "fields": [{ "name": "value", "value": { "type": "text" } }]
+                },
+                {
+                    "id": "body",
+                    "selector": ".widget-episodeBody",
+                    "limit": 1,
+                    "fields": [{ "name": "value", "value": { "type": "innerHtml" } }]
+                }
+            ]),
+        )? {
+            let chapter_title = selected_first_string(&selection, "chapterTitle", "value")
+                .map(|value| normalize_space(&value))
+                .filter(|value| !value.is_empty());
+            let episode_title = selected_first_string(&selection, "episodeTitle", "value")
+                .map(|value| normalize_space(&value))
+                .filter(|value| !value.is_empty());
+            let body = selected_first_string(&selection, "body", "value")
+                .filter(|value| !value.trim().is_empty())
+                .ok_or_else(|| Error::new("Kakuyomu episode has no readable body"))?;
+            return Self::parse_text_parts(chapter_title, episode_title, body, &final_url);
+        }
+        Self::parse_text(&html::document(response.text()?), &final_url)
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
@@ -336,9 +482,57 @@ impl NovelSource for KakuyomuSource {
         if let Some(item) = result.item.as_mut() {
             item.url = Some(work_url);
             item.language = Some("ja".into());
+            item.content_rating = Some("safe".into());
         }
         Ok(Some(result))
     }
+}
+
+fn apollo_queries(include_next: bool) -> Value {
+    let mut queries = vec![json!({
+        "id": "apollo",
+        "selector": "script#__NEXT_DATA__[type=\"application/json\"]",
+        "limit": 1,
+        "fields": [{ "name": "json", "value": { "type": "innerHtml" } }]
+    })];
+    if include_next {
+        queries.push(json!({
+            "id": "next",
+            "selector": ".widget-pagerNext, .widget-pagerNext a",
+            "limit": 1,
+            "fields": []
+        }));
+    }
+    Value::Array(queries)
+}
+
+fn selected_matches<'a>(selection: &'a Value, id: &str) -> Result<&'a [Value]> {
+    selection
+        .get("results")
+        .and_then(|results| results.get(id))
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .ok_or_else(|| Error::new(format!("HTML selection has no result {id:?}")))
+}
+
+fn selected_string(value: &Value, field: &str) -> Option<String> {
+    value.get(field).and_then(Value::as_str).map(str::to_owned)
+}
+
+fn selected_first_string(selection: &Value, id: &str, field: &str) -> Option<String> {
+    selected_matches(selection, id)
+        .ok()
+        .and_then(|matches| matches.first())
+        .and_then(|value| selected_string(value, field))
+}
+
+fn selected_apollo_json(selection: &Value) -> Result<&str> {
+    selected_matches(selection, "apollo")?
+        .first()
+        .and_then(|value| value.get("json"))
+        .and_then(Value::as_str)
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| Error::new("Kakuyomu page has no __NEXT_DATA__ payload"))
 }
 
 fn typename(value: &Value) -> Option<&str> {
@@ -453,7 +647,10 @@ mod tests {
     fn builds_filtered_ranking_urls() {
         let url = KakuyomuSource::ranking_url(2, &json!({"genre": "fantasy", "period": "weekly"}))
             .unwrap();
-        assert_eq!(url, "https://kakuyomu.jp/rankings/fantasy/weekly?page=2");
+        assert_eq!(
+            url,
+            "https://kakuyomu.jp/rankings/fantasy/weekly?work_variation=long&page=2"
+        );
     }
 
     #[test]
@@ -461,6 +658,7 @@ mod tests {
         let document = html::document(include_str!("../tests/fixtures/ranking.html"));
         let page = KakuyomuSource::parse_listing(&document).unwrap();
         assert_eq!(page.entries[0].title, "Fixture Work");
+        assert!(page.entries[0].cover.is_none());
         assert!(page.has_next_page);
     }
 

@@ -16,6 +16,7 @@ pub trait LilianaConfig: 'static {
     const BASE_URL: &'static str;
     const LANG: &'static str = "ja";
     const USES_POST_SEARCH: bool = false;
+    const CONTENT_RATING: Option<&'static str> = None;
 
     fn popular_path(page: u32) -> String {
         format!("/ranking/week/{}", page.max(1))
@@ -98,19 +99,31 @@ impl<C: LilianaConfig> LilianaMangaSource<C> {
         let candidate = item.url.as_deref().unwrap_or(&item.key);
         canonical_url(C::BASE_URL, candidate)
     }
+
+    fn classify_item(&self, mut item: CatalogItem) -> CatalogItem {
+        item.content_rating = C::CONTENT_RATING.map(str::to_owned);
+        item
+    }
+
+    fn classify_page(&self, mut page: Paged<CatalogItem>) -> Paged<CatalogItem> {
+        for item in &mut page.entries {
+            item.content_rating = C::CONTENT_RATING.map(str::to_owned);
+        }
+        page
+    }
 }
 
 impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = popular_url::<C>(page)?;
         let (document, final_url) = self.get_document(&url)?;
-        parse_catalog_html(&document, &final_url)
+        parse_catalog_html(&document, &final_url).map(|page| self.classify_page(page))
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = latest_url::<C>(page)?;
         let (document, final_url) = self.get_document(&url)?;
-        parse_catalog_html(&document, &final_url)
+        parse_catalog_html(&document, &final_url).map(|page| self.classify_page(page))
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -131,7 +144,8 @@ impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
                 &[("search", query)],
             )?;
             let payload: SearchResponseDto = serde_json::from_str(&payload).map_err(json_error)?;
-            return parse_post_search_json(&payload, &final_url);
+            return parse_post_search_json(&payload, &final_url)
+                .map(|page| self.classify_page(page));
         }
 
         let url = if query.trim().is_empty() {
@@ -140,7 +154,7 @@ impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
             search_url::<C>(query, page)?
         };
         let (document, final_url) = self.get_document(&url)?;
-        parse_catalog_html(&document, &final_url)
+        parse_catalog_html(&document, &final_url).map(|page| self.classify_page(page))
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -149,7 +163,7 @@ impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
         let mut parsed = parse_details_html(&document, &final_url)?;
         parsed.key = item.key;
         parsed.url = Some(final_url);
-        Ok(parsed)
+        Ok(self.classify_item(parsed))
     }
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
@@ -218,7 +232,12 @@ impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
     }
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
-        resolve_url(C::BASE_URL, C::LANG, candidate)
+        resolve_url(C::BASE_URL, C::LANG, candidate).map(|result| {
+            result.map(|mut result| {
+                result.item = result.item.map(|item| self.classify_item(item));
+                result
+            })
+        })
     }
 }
 

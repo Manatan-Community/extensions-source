@@ -2,12 +2,18 @@
   "schemaVersion": 2,
   "id": "mangafire",
   "name": "MangaFire",
-  "version": "1.0.1",
-  "versionCode": 2,
+  "version": "1.2.0",
+  "versionCode": 5,
+  "minimumManatanVersion": "0.3.1",
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
-  "description": "MangaFire with typed chapter language selection and direct JSON API pages.",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "MangaFire with typed chapter language selection, direct JSON API pages, bounded host-browser challenge recovery, and fail-closed content filtering.",
   "author": "Manatan Community",
   "homepage": "https://mangafire.to",
   "repository": "https://github.com/Manatan-Community/extensions-source",
@@ -29,8 +35,8 @@
         "https://o48.mfcdn2.xyz"
       ]
     },
-    "cookies": false,
-    "webview": false,
+    "cookies": true,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false
@@ -49,7 +55,7 @@
       "lang": "all",
       "contentType": "manga",
       "baseUrl": "https://mangafire.to",
-      "contentRating": "adult",
+      "contentRating": "suggestive",
       "capabilities": {
         "search": true,
         "latest": true,

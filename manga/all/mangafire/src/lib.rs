@@ -1,8 +1,9 @@
 use std::collections::BTreeSet;
 
 use manatan_sdk::{
-    client::Client, context, CatalogItem, Error, FilterDefinition, MangaChapter, MangaPage,
-    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, Result, UrlResolveResult,
+    client::{BrowserChallengePolicy, Client},
+    context, CatalogItem, Error, FilterDefinition, MangaChapter, MangaPage, MangaSource,
+    OptionItem, PageContent, Paged, PreferenceDefinition, Result, UrlResolveResult,
 };
 use scraper::Html;
 use serde::de::DeserializeOwned;
@@ -18,17 +19,32 @@ const CHAPTER_PAGE_SIZE: u32 = 200;
 const LANGUAGE_PREFERENCE_KEY: &str = "chapter_language";
 const DEFAULT_SORT: &str = "relevance:desc";
 const DEFAULT_GENRE_MODE: &str = "and";
+const PLAY_ALLOWED_CONTENT_RATINGS: [&str; 2] = ["safe", "suggestive"];
+const PLAY_BLOCKED_GENRE_IDS: [&str; 5] = ["268929", "7", "268930", "268931", "268932"];
+const PLAY_BLOCKED_LABELS: [&str; 8] = [
+    "adult",
+    "ecchi",
+    "erotica",
+    "explicit",
+    "hentai",
+    "mature",
+    "pornographic",
+    "smut",
+];
 
 pub struct MangaFireSource {
     client: Client,
+    challenge: BrowserChallengePolicy,
 }
 
 impl Default for MangaFireSource {
     fn default() -> Self {
         Self {
             client: Client::browser()
+                .cookies_for(BASE_URL)
                 .header("Referer", REFERER)
                 .header("Accept", "application/json"),
+            challenge: BrowserChallengePolicy::cloudflare(BASE_URL).profile("mangafire-cloudflare"),
         }
     }
 }
@@ -39,10 +55,10 @@ impl MangaFireSource {
             .client
             .get(url)
             .rate_limit("mangafire", REQUEST_LIMIT_MS)
-            .send()?
+            .send_with_challenge(&self.challenge)?
             .error_for_status()?;
         let body = response.text()?;
-        serde_json::from_str(&body).map_err(json_error)
+        serde_json::from_str(body).map_err(json_error)
     }
 
     fn selected_language(&self) -> LanguageVariant {
@@ -52,19 +68,51 @@ impl MangaFireSource {
             .unwrap_or_else(|| LanguageVariant::default().source_code.to_owned());
         LanguageVariant::from_source_code(&preferred)
     }
+
+    fn safe_catalog_page(&self, payload: ApiResponse<MangaDto>) -> Result<Paged<CatalogItem>> {
+        let has_next_page = payload.meta.map(|meta| meta.has_next).unwrap_or(false);
+        let mut entries = Vec::with_capacity(payload.items.len());
+        for entry in payload.items {
+            let Ok(details) = self
+                .get_json::<MangaDetailsResponse>(&format!("{BASE_URL}/api/titles/{}", entry.hid))
+            else {
+                // Catalog objects do not contain a content classification. If
+                // classification cannot be fetched, fail closed and do not
+                // expose even the title or cover.
+                continue;
+            };
+            if let Ok(content_rating) = details.data.play_content_rating() {
+                let mut item = entry.into_catalog_item();
+                item.content_rating = Some(content_rating);
+                entries.push(item);
+            }
+        }
+        Ok(Paged {
+            entries,
+            has_next_page,
+        })
+    }
+
+    fn ensure_safe_title(&self, item_key_or_url: &str) -> Result<MangaDetailsDto> {
+        let hid = title_hid(item_key_or_url)?;
+        let payload: MangaDetailsResponse =
+            self.get_json(&format!("{BASE_URL}/api/titles/{hid}"))?;
+        payload.data.ensure_play_allowed()?;
+        Ok(payload.data)
+    }
 }
 
 impl MangaSource for MangaFireSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = listing_url("views_30d", "desc", page)?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        parse_catalog_page(payload)
+        self.safe_catalog_page(payload)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = listing_url("chapter_updated_at", "desc", page)?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        parse_catalog_page(payload)
+        self.safe_catalog_page(payload)
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -84,14 +132,12 @@ impl MangaSource for MangaFireSource {
 
         let url = search_url(query, page, filters, author_id.as_deref())?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        parse_catalog_page(payload)
+        self.safe_catalog_page(payload)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
-        let hid = title_hid(item.url.as_deref().unwrap_or(&item.key))?;
-        let payload: MangaDetailsResponse =
-            self.get_json(&format!("{BASE_URL}/api/titles/{hid}"))?;
-        let mut parsed = payload.data.to_catalog_item()?;
+        let details = self.ensure_safe_title(item.url.as_deref().unwrap_or(&item.key))?;
+        let mut parsed = details.into_catalog_item()?;
         parsed.key = item.key;
         parsed.url = item.url.or(Some(absolute_url(BASE_URL, &parsed.key)?));
         Ok(parsed)
@@ -99,6 +145,7 @@ impl MangaSource for MangaFireSource {
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
         let manga_path = title_path(item.url.as_deref().unwrap_or(&item.key))?;
+        self.ensure_safe_title(&manga_path)?;
         let language = self.selected_language();
         let mut page = 1;
         let mut source_order = 0_i32;
@@ -114,7 +161,7 @@ impl MangaSource for MangaFireSource {
                 .unwrap_or(1)
                 .max(1);
             for chapter in payload.items {
-                chapters.push(chapter.to_manga_chapter(&manga_path, language, source_order)?);
+                chapters.push(chapter.into_manga_chapter(&manga_path, language, source_order)?);
                 source_order += 1;
             }
             if page >= last_page {
@@ -126,7 +173,8 @@ impl MangaSource for MangaFireSource {
         Ok(chapters)
     }
 
-    fn pages(&mut self, _item: CatalogItem, chapter: MangaChapter) -> Result<Vec<MangaPage>> {
+    fn pages(&mut self, item: CatalogItem, chapter: MangaChapter) -> Result<Vec<MangaPage>> {
+        self.ensure_safe_title(item.url.as_deref().unwrap_or(&item.key))?;
         let chapter_id = chapter_id(&chapter)?;
         let payload: PagesResponse =
             self.get_json(&format!("{BASE_URL}/api/chapters/{chapter_id}"))?;
@@ -135,7 +183,7 @@ impl MangaSource for MangaFireSource {
             .pages
             .into_iter()
             .enumerate()
-            .map(|(index, page)| page.to_manga_page(index))
+            .map(|(index, page)| page.into_manga_page(index))
             .collect()
     }
 
@@ -177,13 +225,12 @@ impl MangaSource for MangaFireSource {
         }
 
         let item_path = item_path_from_candidate(url.path())?;
+        let safe_item = self.ensure_safe_title(&item_path)?.into_catalog_item()?;
         let item_url = absolute_url(BASE_URL, &item_path)?;
         let mut result = UrlResolveResult {
             item: Some(CatalogItem {
-                key: item_path.clone(),
                 url: Some(item_url),
-                language: Some("all".to_owned()),
-                ..CatalogItem::default()
+                ..safe_item
             }),
             ..UrlResolveResult::default()
         };
@@ -316,7 +363,7 @@ struct MangaDto {
 }
 
 impl MangaDto {
-    fn to_catalog_item(self) -> CatalogItem {
+    fn into_catalog_item(self) -> CatalogItem {
         let key = manga_path(&self.hid, self.slug.as_deref());
         CatalogItem {
             key: key.clone(),
@@ -366,7 +413,34 @@ struct MangaDetailsDto {
 }
 
 impl MangaDetailsDto {
-    fn to_catalog_item(self) -> Result<CatalogItem> {
+    fn play_content_rating(&self) -> Result<String> {
+        let content_rating = self
+            .content_rating
+            .as_deref()
+            .map(|value| value.trim().to_ascii_lowercase())
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| Error::new("MangaFire title has no content classification"))?;
+        if !PLAY_ALLOWED_CONTENT_RATINGS.contains(&content_rating.as_str()) {
+            return Err(Error::new("MangaFire title is not available in this build"));
+        }
+        let blocked = self
+            .genres
+            .iter()
+            .chain(self.themes.iter())
+            .map(|entry| entry.title.trim().to_ascii_lowercase())
+            .any(|label| PLAY_BLOCKED_LABELS.contains(&label.as_str()));
+        if blocked {
+            return Err(Error::new("MangaFire title is not available in this build"));
+        }
+        Ok(content_rating)
+    }
+
+    fn ensure_play_allowed(&self) -> Result<()> {
+        self.play_content_rating().map(|_| ())
+    }
+
+    fn into_catalog_item(self) -> Result<CatalogItem> {
+        self.ensure_play_allowed()?;
         let key = manga_path(&self.hid, self.slug.as_deref());
         let mut tags = Vec::new();
         if let Some(kind) = self.r#type.as_deref() {
@@ -434,7 +508,7 @@ struct ChapterDto {
 }
 
 impl ChapterDto {
-    fn to_manga_chapter(
+    fn into_manga_chapter(
         self,
         manga_path: &str,
         selected_language: LanguageVariant,
@@ -486,7 +560,7 @@ struct PageDto {
 }
 
 impl PageDto {
-    fn to_manga_page(self, index: usize) -> Result<MangaPage> {
+    fn into_manga_page(self, index: usize) -> Result<MangaPage> {
         Ok(MangaPage {
             content: PageContent::Url {
                 url: self.url,
@@ -537,7 +611,6 @@ fn filters() -> Vec<FilterDefinition> {
                 ("Comedy", "5"),
                 ("Demons", "77"),
                 ("Drama", "6"),
-                ("Ecchi", "7"),
                 ("Fantasy", "79"),
                 ("Girls Love", "9"),
                 ("Gourmet", "10"),
@@ -644,23 +717,13 @@ fn preferences() -> Vec<PreferenceDefinition> {
     }]
 }
 
-fn parse_catalog_page(payload: ApiResponse<MangaDto>) -> Result<Paged<CatalogItem>> {
-    Ok(Paged {
-        entries: payload
-            .items
-            .into_iter()
-            .map(MangaDto::to_catalog_item)
-            .collect(),
-        has_next_page: payload.meta.map(|meta| meta.has_next).unwrap_or(false),
-    })
-}
-
 fn listing_url(order_field: &str, direction: &str, page: u32) -> Result<String> {
     let mut url = Url::parse(&format!("{BASE_URL}/api/titles")).map_err(url_error)?;
     url.query_pairs_mut()
         .append_pair(&format!("order[{order_field}]"), direction)
         .append_pair("page", &page.max(1).to_string())
         .append_pair("limit", &PAGE_SIZE.to_string());
+    append_play_safety_filters(&mut url);
     Ok(url.to_string())
 }
 
@@ -694,6 +757,12 @@ fn search_url(query: &str, page: u32, filters: &Value, author_id: Option<&str>) 
     for value in genres_ex {
         pairs.append_pair("genres_ex[]", &value);
     }
+    for value in PLAY_BLOCKED_GENRE_IDS {
+        pairs.append_pair("genres_ex[]", value);
+    }
+    for value in PLAY_ALLOWED_CONTENT_RATINGS {
+        pairs.append_pair("content_rating[]", value);
+    }
 
     for value in group_values(filters, "statuses") {
         pairs.append_pair("statuses[]", &value);
@@ -717,6 +786,16 @@ fn search_url(query: &str, page: u32, filters: &Value, author_id: Option<&str>) 
 
     drop(pairs);
     Ok(url.to_string())
+}
+
+fn append_play_safety_filters(url: &mut Url) {
+    let mut pairs = url.query_pairs_mut();
+    for value in PLAY_BLOCKED_GENRE_IDS {
+        pairs.append_pair("genres_ex[]", value);
+    }
+    for value in PLAY_ALLOWED_CONTENT_RATINGS {
+        pairs.append_pair("content_rating[]", value);
+    }
 }
 
 fn tag_lookup_url(query: &str) -> Result<String> {
@@ -989,9 +1068,8 @@ fn group_values(filters: &Value, key: &str) -> Vec<String> {
     match filters.get(key) {
         Some(Value::Object(entries)) => entries
             .iter()
-            .filter_map(|(entry, selected)| {
-                selected.as_bool().unwrap_or(false).then(|| entry.clone())
-            })
+            .filter(|(_, selected)| selected.as_bool().unwrap_or(false))
+            .map(|(entry, _)| entry.clone())
             .collect(),
         Some(Value::Array(entries)) => entries
             .iter()
@@ -1052,20 +1130,23 @@ mod tests {
         assert_eq!(manifest["id"], "mangafire");
         assert_eq!(manifest["contentType"], "manga");
         assert_eq!(manifest["license"], "Apache-2.0");
+        assert_eq!(manifest["permissions"]["cookies"], true);
+        assert_eq!(manifest["permissions"]["webview"], true);
+        assert_eq!(manifest["permissions"]["javascript"], false);
         assert_eq!(
             manifest["permissions"]["network"]["allow"],
             json!([
-                "mangafire.to",
-                "static.mfcdn.nl",
-                "k99.mfcdn1.xyz",
-                "k99.mfcdn2.xyz",
-                "l1n.mfcdn3.xyz",
-                "m3z.mfcdn2.xyz",
-                "m3z.mfcdn3.xyz",
-                "nw8.mfcdn1.xyz",
-                "nw8.mfcdn3.xyz",
-                "o48.mfcdn1.xyz",
-                "o48.mfcdn2.xyz"
+                "https://mangafire.to",
+                "https://static.mfcdn.nl",
+                "https://k99.mfcdn1.xyz",
+                "https://k99.mfcdn2.xyz",
+                "https://l1n.mfcdn3.xyz",
+                "https://m3z.mfcdn2.xyz",
+                "https://m3z.mfcdn3.xyz",
+                "https://nw8.mfcdn1.xyz",
+                "https://nw8.mfcdn3.xyz",
+                "https://o48.mfcdn1.xyz",
+                "https://o48.mfcdn2.xyz"
             ])
         );
         assert_eq!(
@@ -1076,7 +1157,7 @@ mod tests {
                 "lang": "all",
                 "contentType": "manga",
                 "baseUrl": "https://mangafire.to",
-                "contentRating": "adult",
+                "contentRating": "suggestive",
                 "capabilities": {
                     "search": true,
                     "latest": true,
@@ -1156,6 +1237,12 @@ mod tests {
         assert!(query.contains(&("genres_mode".into(), "and".into())));
         assert!(query.contains(&("genres_in[]".into(), "1".into())));
         assert!(query.contains(&("genres_ex[]".into(), "5".into())));
+        for blocked in PLAY_BLOCKED_GENRE_IDS {
+            assert!(query.contains(&("genres_ex[]".into(), blocked.into())));
+        }
+        for rating in PLAY_ALLOWED_CONTENT_RATINGS {
+            assert!(query.contains(&("content_rating[]".into(), rating.into())));
+        }
         assert!(query.contains(&("statuses[]".into(), "finished".into())));
         assert!(query.contains(&("year_from".into(), "2010".into())));
         assert!(query.contains(&("year_to".into(), "2024".into())));
@@ -1174,28 +1261,39 @@ mod tests {
 
         assert!(query.contains(&("genres_mode".into(), "and".into())));
         assert!(query.contains(&("order[relevance]".into(), "desc".into())));
+        for blocked in PLAY_BLOCKED_GENRE_IDS {
+            assert!(query.contains(&("genres_ex[]".into(), blocked.into())));
+        }
+        for rating in PLAY_ALLOWED_CONTENT_RATINGS {
+            assert!(query.contains(&("content_rating[]".into(), rating.into())));
+        }
     }
 
     #[test]
     fn maps_catalog_and_details_fixtures() {
         let popular: ApiResponse<MangaDto> =
             serde_json::from_str(POPULAR_FIXTURE).expect("popular fixture parses");
-        let page = parse_catalog_page(popular).expect("catalog page");
-        assert_eq!(page.entries.len(), 2);
-        assert_eq!(page.entries[0].key, "/title/kw9j9-blue-lockk");
-        assert_eq!(page.entries[0].title, "Blue Lock");
+        let has_next = popular.meta.as_ref().is_some_and(|meta| meta.has_next);
+        let entries = popular
+            .items
+            .into_iter()
+            .map(MangaDto::into_catalog_item)
+            .collect::<Vec<_>>();
+        assert_eq!(entries.len(), 2);
+        assert_eq!(entries[0].key, "/title/kw9j9-blue-lockk");
+        assert_eq!(entries[0].title, "Blue Lock");
         assert_eq!(
-            page.entries[0]
+            entries[0]
                 .cover
                 .as_ref()
                 .map(|request| request.url.as_str()),
             Some("https://static.mfcdn.nl/4b71/i/f/0c/poster.jpg")
         );
-        assert!(page.has_next_page);
+        assert!(has_next);
 
         let details: MangaDetailsResponse =
             serde_json::from_str(DETAILS_FIXTURE).expect("details fixture parses");
-        let item = details.data.to_catalog_item().expect("details mapping");
+        let item = details.data.into_catalog_item().expect("details mapping");
         assert_eq!(item.key, "/title/kw9j9-blue-lockk");
         assert_eq!(item.authors, vec!["KANESHIRO Muneyuki"]);
         assert_eq!(item.artists, vec!["NOMURA Yusuke"]);
@@ -1209,6 +1307,24 @@ mod tests {
             item.extra.get("aliases"),
             Some(&json!(["Buruu Rokku", "Blue Lock"]))
         );
+    }
+
+    #[test]
+    fn rejects_unknown_and_blocked_content_before_details_are_exposed() {
+        let mut safe: Value = serde_json::from_str(DETAILS_FIXTURE).expect("details fixture");
+        safe["data"]["contentRating"] = Value::Null;
+        let unknown: MangaDetailsResponse = serde_json::from_value(safe).expect("unknown details");
+        assert!(unknown.data.ensure_play_allowed().is_err());
+
+        let mut adult: Value = serde_json::from_str(DETAILS_FIXTURE).expect("details fixture");
+        adult["data"]["contentRating"] = json!("pornographic");
+        let adult: MangaDetailsResponse = serde_json::from_value(adult).expect("adult details");
+        assert!(adult.data.ensure_play_allowed().is_err());
+
+        let mut ecchi: Value = serde_json::from_str(DETAILS_FIXTURE).expect("details fixture");
+        ecchi["data"]["genres"] = json!([{ "title": "Ecchi" }]);
+        let ecchi: MangaDetailsResponse = serde_json::from_value(ecchi).expect("ecchi details");
+        assert!(ecchi.data.ensure_play_allowed().is_err());
     }
 
     #[test]
@@ -1229,7 +1345,7 @@ mod tests {
         for (index, chapter) in page_one.items.into_iter().chain(page_two.items).enumerate() {
             chapters.push(
                 chapter
-                    .to_manga_chapter("/title/kw9j9-blue-lockk", language, index as i32)
+                    .into_manga_chapter("/title/kw9j9-blue-lockk", language, index as i32)
                     .expect("chapter maps"),
             );
         }
@@ -1258,7 +1374,7 @@ mod tests {
             .pages
             .into_iter()
             .enumerate()
-            .map(|(index, page)| page.to_manga_page(index).expect("page maps"))
+            .map(|(index, page)| page.into_manga_page(index).expect("page maps"))
             .collect::<Vec<_>>();
         assert_eq!(mapped.len(), 2);
         match &mapped[0].content {

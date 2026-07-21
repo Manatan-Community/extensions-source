@@ -1,23 +1,26 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
     env,
-    ffi::OsStr,
-    fs::{self, File},
+    ffi::{OsStr, OsString},
+    fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
 use anyhow::{ensure, Context, Result};
-use manatan_sdk::manifest::{ContentType, Manifest};
+use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
+use manatan_sdk::manifest::{package_signature_payload, ContentType, Manifest};
+use rand_core::{OsRng, RngCore};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use walkdir::WalkDir;
 use zip::{write::SimpleFileOptions, CompressionMethod, DateTime, ZipArchive, ZipWriter};
 
-const SDK_GIT_URL: &str = "https://github.com/KolbyML/Manatan-SDK";
 const MEDIA: [&str; 3] = ["manga", "video", "novel"];
+const SIGNING_KEY_ENV: &str = "MANATAN_EXTENSION_SIGNING_KEY";
+const SIGNING_KEY_FILE_ENV: &str = "MANATAN_EXTENSION_SIGNING_KEY_FILE";
 
 #[derive(Clone, Debug)]
 struct ExtensionDir {
@@ -63,6 +66,10 @@ fn main() -> Result<()> {
         Some("validate") => validate_repository(),
         Some("build") => build_one(&required_arg(args.next(), "extension path")?),
         Some("build-all") => build_all(),
+        Some("build-component") => {
+            build_one_component(&required_arg(args.next(), "extension path")?)
+        }
+        Some("build-components") => build_components(),
         Some("generate-index") => generate_indexes(),
         Some("publish") => publish(&required_arg(args.next(), "generated repository path")?),
         Some("validate-packages") => validate_packages(),
@@ -75,9 +82,13 @@ fn main() -> Result<()> {
         Some("inventory-upstreams") => inventory_upstreams(args.collect()),
         Some("matrix-update") => matrix_update(args.collect()),
         Some("matrix") => validate_matrix(),
+        Some("generate-signing-key") => {
+            generate_signing_key(&required_arg(args.next(), "output key path")?)
+        }
+        Some("publisher-key") => publisher_key(&required_arg(args.next(), "signing key path")?),
         _ => {
             eprintln!(
-                "usage: cargo run -p xtask -- <validate|build PATH|build-all|generate-index|publish GENERATED_REPO|validate-packages|runtime-test PATH [RUNTIME_ROOT] [OPERATION] [REQUEST_JSON]|inventory-upstreams VIDEO_ROOT MANGA_ROOT NOVEL_ROOT|matrix-update PATH STATUS [TEST...] [--failure REASON]|matrix>"
+                "usage: cargo run -p xtask -- <validate|build PATH|build-all|build-component PATH|build-components|generate-index|publish GENERATED_REPO|validate-packages|runtime-test PATH [RUNTIME_ROOT] [OPERATION] [REQUEST_JSON]|inventory-upstreams VIDEO_ROOT MANGA_ROOT NOVEL_ROOT|matrix-update PATH STATUS [TEST...] [--failure REASON]|matrix|generate-signing-key OUTPUT|publisher-key KEY>"
             );
             Ok(())
         }
@@ -94,6 +105,83 @@ fn root() -> PathBuf {
         .nth(2)
         .expect("xtask is nested under the workspace")
         .to_path_buf()
+}
+
+fn cargo_target_dir() -> PathBuf {
+    let configured = env::var_os("CARGO_TARGET_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from("target"));
+    if configured.is_absolute() {
+        configured
+    } else {
+        root().join(configured)
+    }
+}
+
+fn generate_signing_key(output: &str) -> Result<()> {
+    let output = PathBuf::from(output);
+    if let Some(parent) = output
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent)?;
+    }
+    let mut seed = [0_u8; 32];
+    OsRng.fill_bytes(&mut seed);
+    let signing_key = SigningKey::from_bytes(&seed);
+    let mut options = OpenOptions::new();
+    options.write(true).create_new(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let mut file = options
+        .open(&output)
+        .with_context(|| format!("create signing key {}", output.display()))?;
+    writeln!(file, "{}", hex::encode(signing_key.to_bytes()))?;
+    println!("created {}", output.display());
+    println!(
+        "publisher public key: {}",
+        hex::encode(signing_key.verifying_key().to_bytes())
+    );
+    Ok(())
+}
+
+fn publisher_key(path: &str) -> Result<()> {
+    let signing_key = read_signing_key(Path::new(path))?;
+    println!("{}", hex::encode(signing_key.verifying_key().to_bytes()));
+    Ok(())
+}
+
+fn signing_key_from_environment() -> Result<SigningKey> {
+    match (
+        env::var_os(SIGNING_KEY_ENV),
+        env::var_os(SIGNING_KEY_FILE_ENV),
+    ) {
+        (Some(_), Some(_)) => {
+            anyhow::bail!("set only one of {SIGNING_KEY_ENV} or {SIGNING_KEY_FILE_ENV}")
+        }
+        (Some(value), None) => parse_signing_key(&value.to_string_lossy()),
+        (None, Some(path)) => read_signing_key(Path::new(&path)),
+        (None, None) => {
+            anyhow::bail!("package signing requires {SIGNING_KEY_FILE_ENV} or {SIGNING_KEY_ENV}")
+        }
+    }
+}
+
+fn read_signing_key(path: &Path) -> Result<SigningKey> {
+    let value =
+        fs::read_to_string(path).with_context(|| format!("read signing key {}", path.display()))?;
+    parse_signing_key(&value)
+}
+
+fn parse_signing_key(value: &str) -> Result<SigningKey> {
+    let bytes = hex::decode(value.trim()).context("signing key must be hexadecimal")?;
+    let seed: [u8; 32] = bytes
+        .try_into()
+        .map_err(|_| anyhow::anyhow!("signing key must be exactly 32 bytes (64 hex characters)"))?;
+    Ok(SigningKey::from_bytes(&seed))
 }
 
 fn discover_extensions() -> Result<Vec<ExtensionDir>> {
@@ -328,26 +416,6 @@ fn validate_network_pattern(pattern: &str) -> Result<()> {
         "hostname labels are invalid"
     );
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::validate_network_pattern;
-
-    #[test]
-    fn validates_network_url_origins() {
-        assert!(validate_network_pattern("https://example.com").is_ok());
-        assert!(validate_network_pattern("https://*.example.com").is_ok());
-        assert!(validate_network_pattern("http://example.com:8080").is_ok());
-    }
-
-    #[test]
-    fn rejects_non_origin_network_permissions() {
-        assert!(validate_network_pattern("example.com").is_err());
-        assert!(validate_network_pattern("ftp://example.com").is_err());
-        assert!(validate_network_pattern("https://example.com/path").is_err());
-        assert!(validate_network_pattern("https://*").is_err());
-    }
 }
 
 fn validate_matrix() -> Result<()> {
@@ -785,13 +853,64 @@ fn build_all() -> Result<()> {
     generate_indexes()
 }
 
+fn build_one_component(relative: &str) -> Result<()> {
+    let relative = relative.trim_matches('/');
+    let extension = discover_extensions()?
+        .into_iter()
+        .find(|extension| {
+            format!("{}/{}/{}", extension.media, extension.lang, extension.id) == relative
+        })
+        .with_context(|| format!("unknown extension {relative}"))?;
+    validate_extension(&extension)?;
+    let component = compile_component(&extension)?;
+    println!("built {}", component.display());
+    Ok(())
+}
+
+fn build_components() -> Result<()> {
+    let extensions = discover_extensions()?;
+    validate_repository()?;
+    for extension in &extensions {
+        let component = compile_component(extension)?;
+        println!("built {}", component.display());
+    }
+    Ok(())
+}
+
 fn build_extension(extension: &ExtensionDir) -> Result<PathBuf> {
+    let component = compile_component(extension)?;
+    let output = package_path(extension);
+    if let Some(parent) = output.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    write_package(extension, &component, &output)?;
+    validate_package(extension, &output)?;
+    Ok(output)
+}
+
+fn compile_component(extension: &ExtensionDir) -> Result<PathBuf> {
     let mut command = Command::new(env::var_os("CARGO").unwrap_or_else(|| "cargo".into()));
     command.current_dir(root());
+    command.env_remove("RUSTFLAGS");
+    command.env("CARGO_ENCODED_RUSTFLAGS", reproducible_guest_rustflags());
+    // Never expose a repository publisher's private key to guest build scripts
+    // or procedural macros. Signing happens only after the finalized component
+    // and declared assets have been read back by this trusted tool.
+    command.env_remove(SIGNING_KEY_ENV);
+    command.env_remove(SIGNING_KEY_FILE_ENV);
     if let Some(path) = env::var_os("MANATAN_SDK_PATH") {
         let path = PathBuf::from(path).canonicalize()?;
+        let path = if path.join("crates/manatan-sdk/Cargo.toml").is_file() {
+            path.join("crates/manatan-sdk")
+        } else {
+            path
+        };
+        ensure!(
+            path.join("Cargo.toml").is_file(),
+            "MANATAN_SDK_PATH must point to the SDK workspace or manatan-sdk crate"
+        );
         command.arg("--config").arg(format!(
-            "patch.\"{SDK_GIT_URL}\".manatan-sdk.path='{}'",
+            "patch.crates-io.manatan-sdk.path='{}'",
             path.display()
         ));
     }
@@ -806,11 +925,12 @@ fn build_extension(extension: &ExtensionDir) -> Result<PathBuf> {
     run(&mut command, "compile core WebAssembly module")?;
 
     let core_name = extension.crate_name.replace('-', "_");
-    let core = root()
-        .join("target/wasm32-unknown-unknown/release")
+    let target_dir = cargo_target_dir();
+    let core = target_dir
+        .join("wasm32-unknown-unknown/release")
         .join(format!("{core_name}.wasm"));
     ensure!(core.is_file(), "cargo did not produce {}", core.display());
-    let component_dir = root().join("target/manatan2-components");
+    let component_dir = target_dir.join("manatan2-components");
     fs::create_dir_all(&component_dir)?;
     let component = component_dir.join(format!("{}.wasm", extension.manifest.id));
     run(
@@ -840,13 +960,49 @@ fn build_extension(extension: &ExtensionDir) -> Result<PathBuf> {
         extension.id
     );
 
-    let output = package_path(extension);
-    if let Some(parent) = output.parent() {
-        fs::create_dir_all(parent)?;
+    Ok(component)
+}
+
+fn reproducible_guest_rustflags() -> OsString {
+    let mut flags = env::var_os("CARGO_ENCODED_RUSTFLAGS")
+        .map(|value| {
+            value
+                .to_string_lossy()
+                .split('\u{1f}')
+                .filter(|flag| !flag.is_empty())
+                .map(OsString::from)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_else(|| {
+            env::var_os("RUSTFLAGS")
+                .map(|value| {
+                    value
+                        .to_string_lossy()
+                        .split_whitespace()
+                        .map(OsString::from)
+                        .collect()
+                })
+                .unwrap_or_default()
+        });
+    flags.push(OsString::from(format!(
+        "--remap-path-prefix={}=/workspace/extensions-source",
+        root().display()
+    )));
+    if let Some(home) = env::var_os("HOME") {
+        flags.push(OsString::from(format!(
+            "--remap-path-prefix={}=/workspace/home",
+            PathBuf::from(home).display()
+        )));
     }
-    write_package(extension, &component, &output)?;
-    validate_package(extension, &output)?;
-    Ok(output)
+
+    let mut encoded = OsString::new();
+    for (index, flag) in flags.into_iter().enumerate() {
+        if index > 0 {
+            encoded.push("\u{1f}");
+        }
+        encoded.push(flag);
+    }
+    encoded
 }
 
 fn run(command: &mut Command, action: &str) -> Result<()> {
@@ -859,6 +1015,25 @@ fn run(command: &mut Command, action: &str) -> Result<()> {
 }
 
 fn write_package(extension: &ExtensionDir, component: &Path, output: &Path) -> Result<()> {
+    let mut entries = vec![(
+        extension.manifest.wasm.clone(),
+        fs::read(component).with_context(|| format!("read {}", component.display()))?,
+    )];
+    let mut assets = extension.manifest.assets.iter().collect::<Vec<_>>();
+    assets.sort_by(|left, right| left.path.cmp(&right.path));
+    for asset in assets {
+        entries.push((
+            asset.path.clone(),
+            fs::read(extension.path.join(&asset.path))
+                .with_context(|| format!("read package asset {}", asset.path))?,
+        ));
+    }
+    let (packaged_manifest, manifest_bytes) = signed_manifest(extension, &entries)?;
+    packaged_manifest
+        .validate()
+        .map_err(anyhow::Error::msg)
+        .context("validate signed package manifest")?;
+
     let file = File::create(output)?;
     let mut zip = ZipWriter::new(file);
     let stored = SimpleFileOptions::default()
@@ -868,17 +1043,45 @@ fn write_package(extension: &ExtensionDir, component: &Path, output: &Path) -> R
         .compression_method(CompressionMethod::Deflated)
         .last_modified_time(DateTime::default());
     zip.start_file("manifest.json", compressed)?;
-    zip.write_all(&fs::read(extension.path.join("manifest.json"))?)?;
-    zip.start_file(&extension.manifest.wasm, stored)?;
-    zip.write_all(&fs::read(component)?)?;
-    let mut assets = extension.manifest.assets.iter().collect::<Vec<_>>();
-    assets.sort_by(|left, right| left.path.cmp(&right.path));
-    for asset in assets {
-        zip.start_file(&asset.path, compressed)?;
-        zip.write_all(&fs::read(extension.path.join(&asset.path))?)?;
+    zip.write_all(&manifest_bytes)?;
+    for (name, bytes) in entries {
+        let options = if name == extension.manifest.wasm {
+            stored
+        } else {
+            compressed
+        };
+        zip.start_file(name, options)?;
+        zip.write_all(&bytes)?;
     }
     zip.finish()?;
     Ok(())
+}
+
+fn signed_manifest(
+    extension: &ExtensionDir,
+    entries: &[(String, Vec<u8>)],
+) -> Result<(Manifest, Vec<u8>)> {
+    let signing_key = signing_key_from_environment()?;
+    let public_key = hex::encode(signing_key.verifying_key().to_bytes());
+    ensure!(
+        extension.manifest.publisher.public_key == public_key,
+        "{} publisher publicKey does not match the configured signing key (expected {})",
+        extension.id,
+        public_key
+    );
+    let mut manifest_value = serde_json::to_value(&extension.manifest)?;
+    let entry_digests = entries
+        .iter()
+        .map(|(name, bytes)| (name.clone(), Sha256::digest(bytes).into()))
+        .collect::<Vec<_>>();
+    let payload = package_signature_payload(&manifest_value, &entry_digests)
+        .map_err(anyhow::Error::msg)
+        .context("build package signature payload")?;
+    let signature = signing_key.sign(&payload);
+    manifest_value["publisher"]["signature"] = json!(hex::encode(signature.to_bytes()));
+    let manifest: Manifest = serde_json::from_value(manifest_value)?;
+    let bytes = serde_json::to_vec_pretty(&manifest)?;
+    Ok((manifest, bytes))
 }
 
 fn validate_packages() -> Result<()> {
@@ -927,11 +1130,40 @@ fn validate_package(extension: &ExtensionDir, path: &Path) -> Result<()> {
         .by_name("manifest.json")?
         .read_to_end(&mut manifest_bytes)?;
     let packaged_manifest: Manifest = serde_json::from_slice(&manifest_bytes)?;
+    packaged_manifest
+        .validate()
+        .map_err(anyhow::Error::msg)
+        .with_context(|| format!("validate packaged manifest in {}", path.display()))?;
+    let mut expected_manifest = extension.manifest.clone();
+    expected_manifest.publisher.signature = packaged_manifest.publisher.signature.clone();
     ensure!(
-        packaged_manifest == extension.manifest,
+        packaged_manifest == expected_manifest,
         "{} manifest is stale",
         path.display()
     );
+    let mut entry_digests = Vec::new();
+    for name in actual
+        .iter()
+        .filter(|name| name.as_str() != "manifest.json")
+    {
+        let mut bytes = Vec::new();
+        archive.by_name(name)?.read_to_end(&mut bytes)?;
+        entry_digests.push((name.clone(), Sha256::digest(&bytes).into()));
+    }
+    let manifest_value: Value = serde_json::from_slice(&manifest_bytes)?;
+    let payload = package_signature_payload(&manifest_value, &entry_digests)
+        .map_err(anyhow::Error::msg)
+        .context("build package verification payload")?;
+    let public_key: [u8; 32] = hex::decode(&packaged_manifest.publisher.public_key)?
+        .try_into()
+        .map_err(|_| anyhow::anyhow!("invalid packaged publisher public key"))?;
+    let signature: [u8; 64] = hex::decode(&packaged_manifest.publisher.signature)?
+        .try_into()
+        .map_err(|_| anyhow::anyhow!("invalid packaged publisher signature"))?;
+    VerifyingKey::from_bytes(&public_key)?
+        .verify_strict(&payload, &Signature::from_bytes(&signature))
+        .context("verify package publisher signature")?;
+
     for asset in &extension.manifest.assets {
         let mut bytes = Vec::new();
         archive.by_name(&asset.path)?.read_to_end(&mut bytes)?;
@@ -945,7 +1177,7 @@ fn validate_package(extension: &ExtensionDir, path: &Path) -> Result<()> {
     archive
         .by_name(&extension.manifest.wasm)?
         .read_to_end(&mut component)?;
-    let component_path = root().join("target/manatan2-components/package-validation.wasm");
+    let component_path = cargo_target_dir().join("manatan2-components/package-validation.wasm");
     if let Some(parent) = component_path.parent() {
         fs::create_dir_all(parent)?;
     }
@@ -992,6 +1224,7 @@ fn generate_indexes() -> Result<()> {
                 extension.id
             );
             let package_bytes = fs::read(&package)?;
+            let packaged_manifest = read_packaged_manifest(&package)?;
             let package_relative = format!(
                 "packages/{}/{}/{}.manatan2",
                 extension.media, extension.lang, extension.manifest.id
@@ -1010,15 +1243,13 @@ fn generate_indexes() -> Result<()> {
             } else {
                 None
             };
-            let first_source = extension.manifest.sources.first().context("source")?;
-            let source_ids = extension
-                .manifest
+            let first_source = packaged_manifest.sources.first().context("source")?;
+            let source_ids = packaged_manifest
                 .sources
                 .iter()
                 .map(|source| source.id.clone())
                 .collect::<Vec<_>>();
-            let source_names = extension
-                .manifest
+            let source_names = packaged_manifest
                 .sources
                 .iter()
                 .map(|source| source.name.clone())
@@ -1032,13 +1263,13 @@ fn generate_indexes() -> Result<()> {
                 .is_some_and(|status| matches!(*status, "runtime-tested" | "live-verified"));
             let entry = json!({
                 "schemaVersion": 2,
-                "pkgName": format!("manatan:{}", extension.manifest.id),
-                "id": extension.manifest.id,
-                "packageId": extension.manifest.id,
-                "name": extension.manifest.name,
-                "versionName": extension.manifest.version,
-                "version": extension.manifest.version,
-                "versionCode": extension.manifest.version_code,
+                "pkgName": format!("manatan:{}", packaged_manifest.id),
+                "id": packaged_manifest.id,
+                "packageId": packaged_manifest.id,
+                "name": packaged_manifest.name,
+                "versionName": packaged_manifest.version,
+                "version": packaged_manifest.version,
+                "versionCode": packaged_manifest.version_code,
                 "contentType": media,
                 "media": media,
                 "mediaKind": media,
@@ -1055,8 +1286,9 @@ fn generate_indexes() -> Result<()> {
                 "sourceIds": source_ids,
                 "sourceNames": source_names,
                 "verified": verified,
-                "sources": extension.manifest.sources,
-                "manifest": extension.manifest,
+                "publisher": packaged_manifest.publisher,
+                "sources": packaged_manifest.sources,
+                "manifest": packaged_manifest,
             });
             if verified {
                 entries.push(entry.clone());
@@ -1089,6 +1321,13 @@ fn generate_indexes() -> Result<()> {
     )?;
     println!("generated indexes for {} packages", catalog.len());
     Ok(())
+}
+
+fn read_packaged_manifest(path: &Path) -> Result<Manifest> {
+    let mut archive = ZipArchive::new(File::open(path)?)?;
+    let mut bytes = Vec::new();
+    archive.by_name("manifest.json")?.read_to_end(&mut bytes)?;
+    serde_json::from_slice(&bytes).with_context(|| format!("parse {} manifest", path.display()))
 }
 
 fn publish(destination: &str) -> Result<()> {
@@ -1290,4 +1529,24 @@ fn content_type_name(content_type: ContentType) -> &'static str {
 
 fn sha256(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_network_pattern;
+
+    #[test]
+    fn validates_network_url_origins() {
+        assert!(validate_network_pattern("https://example.com").is_ok());
+        assert!(validate_network_pattern("https://*.example.com").is_ok());
+        assert!(validate_network_pattern("http://example.com:8080").is_ok());
+    }
+
+    #[test]
+    fn rejects_non_origin_network_permissions() {
+        assert!(validate_network_pattern("example.com").is_err());
+        assert!(validate_network_pattern("ftp://example.com").is_err());
+        assert!(validate_network_pattern("https://example.com/path").is_err());
+        assert!(validate_network_pattern("https://*").is_err());
+    }
 }

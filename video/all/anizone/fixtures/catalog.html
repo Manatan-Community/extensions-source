@@ -1,0 +1,17 @@
+<!doctype html>
+<html><body><main>
+<div wire:snapshot="{}">
+  <div class="grid">
+    <div x-data="{ anmTitles: JSON.parse('{\u00221\u0022:\u0022Safe Adventure\u0022,\u00225\u0022:\u0022Safe Adventure Romaji\u0022}') }">
+      <a href="https://anizone.to/anime/safe1234"><span>Safe</span></a>
+      <img src="https://anizone.to/images/anime/safe.jpg">
+      <a href="https://anizone.to/tag/adventure">Adventure</a>
+    </div>
+    <div x-data="{ isUnsafe: true, anmTitles: JSON.parse('{\u00221\u0022:\u0022Blocked Show\u0022}') }">
+      <a href="https://anizone.to/anime/blocked1">Blocked</a>
+      <img src="https://anizone.to/images/anime/blocked.jpg">
+    </div>
+  </div>
+  <div x-intersect="$wire.loadMore()"></div>
+</div>
+</main></body></html>

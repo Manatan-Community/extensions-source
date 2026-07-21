@@ -1,0 +1,32 @@
+{
+  "family": "rulate",
+  "probeDate": "2026-07-19",
+  "generated": [
+    {
+      "id": "rulate-api",
+      "path": "novel/ru/rulate-api",
+      "baseUrl": "https://tl.rulate.ru",
+      "safeGenreCount": 42
+    },
+    {
+      "id": "bllate-api",
+      "path": "novel/ru/bllate-api",
+      "baseUrl": "https://bllate.org",
+      "safeGenreCount": 41
+    }
+  ],
+  "blocked": [
+    {
+      "id": "erolate-api",
+      "reason": "The upstream returned HTTP 522 during a fresh 2026-07-19 probe and its source taxonomy is explicitly adult-only; no Play-safe leaf is generated."
+    }
+  ],
+  "notes": [
+    "Rulate returned valid API JSON during the fresh probe, then intermittently presented DDoS-Guard after repeated requests.",
+    "Bllate search, detail, chapter-list, and chapter-text endpoints returned valid API JSON during the fresh probe."
+  ],
+  "liveVerification": {
+    "bllate-api": "The signed package completed live catalog, fail-closed detail, free chapters, chapter text, and cover bytes through Manatan's production ExtensionRunner on 2026-07-19.",
+    "rulate-api": "The signed package imported and executed offline/runtime filters, but the live catalog request was blocked by HTTP 403 from server ddos-guard on 2026-07-19 after earlier successful API probes."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "family": "ifreedom",
+  "probeDate": "2026-07-19",
+  "generated": [
+    {
+      "id": "ifreedom",
+      "path": "novel/ru/ifreedom",
+      "baseUrl": "https://ifreedom.su",
+      "layout": "Modern",
+      "safeGenreCount": 40
+    },
+    {
+      "id": "bookhamster",
+      "path": "novel/ru/bookhamster",
+      "baseUrl": "https://bookhamster.ru",
+      "layout": "Classic",
+      "safeGenreCount": 40
+    }
+  ],
+  "blocked": [],
+  "notes": [
+    "Both exact HTTPS origins returned live catalog and detail HTML during the fresh probe.",
+    "Catalog entries are withheld until their detail genres are fetched and classified.",
+    "Unsafe filter options and unsafe/VIP chapter rows are removed; missing genre metadata fails closed."
+  ],
+  "liveVerification": {
+    "ifreedom": "The signed package completed live classified catalog/search, revalidated detail, cover bytes, 2,994 safe chapters, and first/middle/last chapter text through Manatan's production ExtensionRunner on 2026-07-19.",
+    "bookhamster": "The signed package completed live classified catalog/search, revalidated detail, cover bytes, 1,393 safe chapters, and first/middle/last chapter text through Manatan's production ExtensionRunner on 2026-07-19."
+  }
+}

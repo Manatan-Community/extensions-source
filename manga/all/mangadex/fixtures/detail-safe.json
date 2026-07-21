@@ -1,0 +1,37 @@
+{
+  "result": "ok",
+  "response": "entity",
+  "data": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "type": "manga",
+    "attributes": {
+      "title": { "ja-ro": "Hoshi no Tabi" },
+      "altTitles": [{ "en": "Journey of the Stars" }, { "ja": "星の旅" }],
+      "description": { "en": "A safe fixture title." },
+      "originalLanguage": "ja",
+      "lastVolume": "2",
+      "lastChapter": "12",
+      "publicationDemographic": "shounen",
+      "status": "ongoing",
+      "contentRating": "safe",
+      "tags": []
+    },
+    "relationships": [
+      {
+        "id": "44444444-4444-4444-8444-444444444444",
+        "type": "author",
+        "attributes": { "name": "Fixture Author" }
+      },
+      {
+        "id": "55555555-5555-4555-8555-555555555555",
+        "type": "artist",
+        "attributes": { "name": "Fixture Artist" }
+      },
+      {
+        "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "type": "cover_art",
+        "attributes": { "fileName": "safe-cover.jpg" }
+      }
+    ]
+  }
+}

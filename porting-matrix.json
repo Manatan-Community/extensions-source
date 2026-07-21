@@ -11,6 +11,9 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
         "filters",
         "url-resolution",
         "page-processing"
@@ -1293,11 +1296,21 @@
         "http",
         "filters",
         "url-resolution",
-        "page-processing"
+        "page-processing",
+        "preferences",
+        "aggregate",
+        "feed-pagination",
+        "lazy-page-resolution"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "runtime-tested",
+      "tests": [
+        "cargo test -p mangadex",
+        "cargo clippy -p mangadex --all-targets -- -D warnings",
+        "xtask build-component manga/all/mangadex",
+        "Android Play runtime: catalog, details, 95 chapters, 32 pages, JPEG fetch",
+        "iOS runtime: catalog, details, chapters, pages, JPEG fetch"
+      ],
+      "packagePath": "packages/manga/all/mangadex.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -1351,20 +1364,25 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
         "filters",
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
+      "status": "component-valid",
       "tests": [
-        "fixture-parsers",
-        "workspace-tests",
+        "11 fixture and policy tests",
+        "cargo clippy -p mangafire --all-targets -- -D warnings",
+        "adult-and-unknown-fail-closed",
+        "forced-safe-content-rating-and-blocked-genre-queries",
+        "sdk-cloudflare-signature-policy-tests",
+        "source-isolated-host-webview-cookie-retry",
         "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-api-probe"
+        "live catalog/detail/chapter/page/image requests"
       ],
-      "packagePath": "packages/manga/all/mangafire.manatan2",
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -6561,15 +6579,9 @@
         "cookies",
         "filters"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "fixture-parsers",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters"
-      ],
-      "packagePath": "packages/manga/en/lhtranslation.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from the LHTranslation source and Madara framework in keiyoushi/extensions-source."
@@ -7607,16 +7619,9 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/manga/en/mangamaniacs.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -8074,16 +8079,9 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/manga/en/manhuahot.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -9541,16 +9539,9 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/manga/en/pawmanga.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -18268,16 +18259,9 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/manga/ja/kmansin09.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -22369,16 +22353,9 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/manga/th/cat300.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -27145,27 +27122,6 @@
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/readnovelfull/allnovel",
-      "sourceId": "allnovel",
-      "language": "all",
-      "mediaKind": "novel",
-      "framework": "readnovelfull",
-      "requiredCapabilities": [
-        "http",
-        "filters",
-        "url-resolution",
-        "chapter-pagination",
-        "commands"
-      ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
-    },
-    {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/readnovelfull/allnovelfull",
       "sourceId": "allnovelfull",
       "language": "all",
@@ -27606,8 +27562,88 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/galaxynovels",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#arnovel",
+      "sourceId": "arnovel",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#azora",
+      "sourceId": "azora",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#freekolnovel",
+      "sourceId": "freekolnovel",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source now redirects to kolnovel.com and no longer exposes an independent Free Kol Novel catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/dilartube.ts",
+      "sourceId": "dilartube",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed third-party source descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/galaxynovels.ts",
       "sourceId": "galaxynovels",
       "language": "ar",
       "mediaKind": "novel",
@@ -27623,8 +27659,8 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed third-party source descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -27648,12 +27684,32 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/kolnovel",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#hizomanga",
+      "sourceId": "hizomanga",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#kolnovel",
       "sourceId": "kolnovel",
       "language": "ar",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "lightnovelwp-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -27665,29 +27721,28 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/markazriwayat",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#markazriwayat",
       "sourceId": "markazriwayat",
       "language": "ar",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -27753,6 +27808,47 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#novelsparadise",
+      "sourceId": "novelsparadise",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#olaoe",
+      "sourceId": "olaoe.cyou",
+      "language": "ar",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/ar/realmnovel",
       "sourceId": "realmnovel",
@@ -27774,8 +27870,8 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/rewayatclub",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/rewayatclub.ts",
       "sourceId": "rewayatclub",
       "language": "ar",
       "mediaKind": "novel",
@@ -27791,12 +27887,12 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed third-party source descriptor; runtime behavior is compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/rewayatfans",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/rewayatfans.ts",
       "sourceId": "rewayatfans",
       "language": "ar",
       "mediaKind": "novel",
@@ -27808,12 +27904,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-wordpress-api-probe-2026-07-20",
+        "play-safe-work-classification-audit"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "The live WordPress API exposes loose chapter pages but no reliable work-level detail, cover, tags, or age/content classification. The legacy adapter reconstructs titles from chapter-page names; a Play-safe catalog therefore cannot classify works and fails closed (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed third-party source descriptor; no package is emitted while work-level classification is unavailable."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -27837,29 +27936,28 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/riwyat",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#riwyat",
       "sourceId": "riwyat",
       "language": "ar",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/seanovel",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/seanovel.ts",
       "sourceId": "seanovel",
       "language": "ar",
       "mediaKind": "novel",
@@ -27875,12 +27973,12 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed third-party source descriptor; runtime behavior is compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/ar/sunovels",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/arabic/sunovels.ts",
       "sourceId": "sunovels",
       "language": "ar",
       "mediaKind": "novel",
@@ -27892,12 +27990,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "production-extension-runner-live-catalog-cover-details-chapters-2026-07-20",
+        "first-middle-last-chapter-text-probe-2026-07-20"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "The live catalog, classified details, cover, and chapter index load, but every tested chapter page returns only an Arabic lock/application-promotion message rather than readable chapter text. No functional reader package is emitted (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed third-party source descriptor; no package is emitted while readable chapter text is unavailable."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -27942,12 +28043,57 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/allnovelfull",
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#allnovel",
+      "sourceId": "allnovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readnovelfull",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
+    },
+    {
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#anf.net",
       "sourceId": "allnovelfull",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo test -p readnovelfull-novel -p allnovelfull",
+        "xtask build-component novel/en/allnovelfull"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The configured novgo.net origin timed out during the 2026-07-19 live reachability check; component and fixture tests pass.",
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/ao3.ts",
+      "sourceId": "archiveofourown",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "packaged-parser-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -27959,13 +28105,13 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader Archive of Our Own source. Network orchestration and safety classification are compiled Rust; parsing runs only from a SHA-256-pinned JavaScript asset inside the signed package. The Play-safe catalog is restricted to General Audiences, No Archive Warnings Apply, and Gen works."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/ao3",
-      "sourceId": "ao3",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/inkitt.ts",
+      "sourceId": "inkitt",
       "language": "en",
       "mediaKind": "novel",
       "framework": "standalone",
@@ -27976,12 +28122,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-https-reachability-2026-07-20",
+        "content-classification-contract-audit"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "Cloudflare returned HTTP 403 for the live trending catalog on 2026-07-20. The legacy response model exposes no reviewed per-work age rating and includes an Erotica genre, so safe classification could not be audited while the origin was unavailable.",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed LNReader Inkitt source; no package emitted because the live safety contract could not be verified."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28005,6 +28154,27 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#arcane",
+      "sourceId": "arcane",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/beautymanga",
       "sourceId": "beautymanga",
@@ -28024,6 +28194,26 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#bellereservoir",
+      "sourceId": "belle-reservoir",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28047,25 +28237,46 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/boxnovel",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#boxnovel",
       "sourceId": "boxnovel",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#cherrymistcafe",
+      "sourceId": "cherrymistcafe",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands",
+        "compiled-chapter-decoder",
+        "fail-closed-age-classification"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader Fictioneer descriptor and transform. The bounded chapter decoder, runtime behavior, and content classification are reviewed, compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28089,6 +28300,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#citrusaurora",
+      "sourceId": "citrus-aurora",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/clicknovel",
       "sourceId": "clicknovel",
@@ -28102,16 +28333,9 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "fixture-parsers",
-        "command-dispatch",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters"
-      ],
-      "packagePath": "packages/novel/en/clicknovel.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from ClickNovel and the Madara implementation in IReader-extensions."
@@ -28159,6 +28383,47 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#coralboutique",
+      "sourceId": "coral-boutique",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#cpunovel",
+      "sourceId": "cpunovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212904).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/cratenovel",
       "sourceId": "cratenovel",
@@ -28201,6 +28466,92 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#daoistquest",
+      "sourceId": "daoistquest",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-origin-and-browse-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The configured Fictioneer browse path returns 404 and the origin is now an unrelated Turkish culture/article site containing hidden gambling links; the upstream novel catalog is gone (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader Fictioneer descriptor; no package is shipped for the repurposed origin."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#daonovel",
+      "sourceId": "daonovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#daotranslate",
+      "sourceId": "daotranslate",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#dearestrosalie",
+      "sourceId": "dearestrosalie",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "upstream-down-flag-audit",
+        "fresh-live-dns-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The upstream descriptor explicitly marks this source down and the configured hostname currently fails DNS resolution (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader Fictioneer descriptor; no package is shipped while the source is down."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/divinedaolibrary",
       "sourceId": "divinedaolibrary",
@@ -28220,6 +28571,46 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#dragontea",
+      "sourceId": "dragon-tea",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#dragonholic",
+      "sourceId": "dragonholic",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28243,6 +28634,87 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#duskblossoms",
+      "sourceId": "dusk-blossoms",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#ellotl",
+      "sourceId": "ellotl",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212947).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#eternalune",
+      "sourceId": "eternalune",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#etudetranslations",
+      "sourceId": "etude-translations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/fanmtl",
       "sourceId": "fanmtl",
@@ -28262,6 +28734,47 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#fannovel",
+      "sourceId": "fannovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readwn-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#fanstranslations",
+      "sourceId": "fans-translations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28396,6 +28909,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#foxaholic",
+      "sourceId": "foxaholic",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/freefullnovel",
       "sourceId": "freefullnovel",
@@ -28459,12 +28992,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/freewebnovel",
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#FWN.com",
       "sourceId": "freewebnovel",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -28472,12 +29005,35 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo test -p readnovelfull-novel -p freewebnovel",
+        "xtask build-component novel/en/freewebnovel"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The current origin returned HTTP 403 during the 2026-07-19 live reachability check; its historical text obfuscation is not claimed live-verified.",
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#galaxytranslations",
+      "sourceId": "galaxy-translations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
       "tests": [],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28501,6 +29057,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#guavaread",
+      "sourceId": "guavaread",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/harimanga",
       "sourceId": "harimanga",
@@ -28520,6 +29096,47 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#hiraethtranslation",
+      "sourceId": "hiraeth-translation",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#ippotranslations",
+      "sourceId": "ippotranslations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source explicitly says it moved and no longer exposes a catalog; the replacement is a separate source (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28564,12 +29181,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/kdtnovels",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#kdtnovels",
       "sourceId": "kdtnovels",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "lightnovelwp-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -28581,8 +29198,29 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#keopi",
+      "sourceId": "keopi",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212914).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28627,6 +29265,48 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#knoxt",
+      "sourceId": "knoxt",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The catalog endpoint returns a fixed HTTP 403 response with no LightNovelWP catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#lazygirltranslations",
+      "sourceId": "lazygirltranslations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/leafstudio",
       "sourceId": "leafstudio",
@@ -28648,12 +29328,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/libread",
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#libread",
       "sourceId": "libread",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -28665,16 +29345,81 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/lightnovelheaven",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#LightNovelUpdates",
+      "sourceId": "light-novel-updates",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelworld/sources.json#lightnovelcave",
+      "sourceId": "lightnovelcave",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelworld-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "multipart-search",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-lightnovelworld-saved-fixtures",
+        "fresh-live-http-403-script-challenge-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The root and catalog currently return HTTP 403 Cloudflare challenge pages rather than novel content; the compiled runtime fails closed and does not execute the challenge scripts (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader LightNovelWorld descriptor; the framework adapter is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#lnheaven",
       "sourceId": "lightnovelheaven",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#lightnovelplus",
+      "sourceId": "lightnovelplus",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -28682,12 +29427,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo test -p readnovelfull-novel -p lightnovelplus",
+        "xtask build-component novel/en/lightnovelplus"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "The current site redirects legacy listing paths to a new Vue route; component and fixture tests pass, but live catalog parsing is not yet verified.",
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28709,6 +29457,31 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelworld/sources.json#lightnovelpubvip",
+      "sourceId": "lightnovelpubvip",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelworld-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "multipart-search",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-lightnovelworld-saved-fixtures",
+        "fresh-live-http-downgrade-and-script-challenge-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The root redirects from HTTPS to an unrelated HTTP parking/survey host and the catalog returns a JavaScript redirect/challenge page rather than novel cards; the compiled runtime neither downgrades transport nor executes that script (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader LightNovelWorld descriptor; the framework adapter is reviewed, compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28753,6 +29526,29 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#lilyonthevalley",
+      "sourceId": "lilyonthevalley",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands",
+        "compiled-chapter-decoder"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-origin-and-browse-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The origin and configured stories path both return HTTP 530 rather than Fictioneer content (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader Fictioneer descriptor; no package is shipped while the origin is unavailable."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/lnmtl",
       "sourceId": "lnmtl",
@@ -28774,12 +29570,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/lunarletters",
-      "sourceId": "lunarletters",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#ltnovel",
+      "sourceId": "ltnovel",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "readwn-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -28791,8 +29587,48 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#lullobox",
+      "sourceId": "lullobox",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#lunarletters",
+      "sourceId": "lunarletters",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -28942,6 +29778,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#meownovel",
+      "sourceId": "meownovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/mixednovelnet",
       "sourceId": "mixednovelnet",
@@ -28963,6 +29819,67 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#moonlightnovel",
+      "sourceId": "moonlightnovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212919).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#mostnovel",
+      "sourceId": "mostnovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#mtl-novel",
+      "sourceId": "mtl-novel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/mtlnation",
       "sourceId": "mtlnation",
@@ -28982,6 +29899,30 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel",
+      "sourceId": "mtlnovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29095,25 +30036,44 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/mysticalseries",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#mysticalmerries",
       "sourceId": "mysticalseries",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#neosekaiTLS",
+      "sourceId": "neosekai-translations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29137,6 +30097,67 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#nitromanga",
+      "sourceId": "nitro-manga",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#noblemtl",
+      "sourceId": "noblemtl",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The domain now serves a text romanization tool rather than a novel catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#noicetranslations",
+      "sourceId": "noice-translations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/noobchan",
       "sourceId": "noobchan",
@@ -29158,12 +30179,32 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/novelbin",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#novelninja",
+      "sourceId": "novel-ninja",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#novelbin",
       "sourceId": "novelbin",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -29171,12 +30212,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo test -p readnovelfull-novel -p novelbin",
+        "xtask build-component novel/en/novelbin"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "novelbin.com did not resolve during the 2026-07-19 live reachability check; component and fixture tests pass.",
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29221,12 +30265,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/novelfull",
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#novelfull",
       "sourceId": "novelfull",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -29234,12 +30278,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo test -p readnovelfull-novel -p novelfull",
+        "xtask build-component novel/en/novelfull"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "The current origin returned HTTP 403 during the 2026-07-19 live reachability check; component and fixture tests pass.",
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29282,6 +30329,27 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#novelib",
+      "sourceId": "novelib",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands",
+        "fail-closed-age-classification"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader Fictioneer descriptor. Runtime behavior and content classification are reviewed, compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29395,6 +30463,27 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#novelsknight",
+      "sourceId": "novelsknight",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source host returns Cloudflare 521 Web server is down (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/novelsonline",
       "sourceId": "novelsonline",
@@ -29464,8 +30553,8 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/novelupdates",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/novelupdates.ts",
       "sourceId": "novelupdates",
       "language": "en",
       "mediaKind": "novel",
@@ -29477,12 +30566,16 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-https-reachability-2026-07-20",
+        "dynamic-chapter-origin-audit",
+        "content-classification-contract-audit"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "Cloudflare returned HTTP 403 on 2026-07-20. Novel Updates delegates chapter text to a large changing set of third-party origins and the legacy source uses many origin-specific and WebView/captcha fallbacks; this cannot satisfy a finite exact HTTPS allowlist or a single revalidated per-work safety contract.",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed LNReader Novel Updates source; no Play-safe package emitted."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29506,6 +30599,27 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#pandamtl",
+      "sourceId": "pandamtl",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212928).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/pandanovel",
       "sourceId": "pandanovel",
@@ -29525,6 +30639,26 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#pasteltales",
+      "sourceId": "pastel-tales",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29548,6 +30682,29 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#penguinsquad",
+      "sourceId": "penguinsquad",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands",
+        "fail-closed-age-classification"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-framework-and-rating-audit-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The origin has migrated from Fictioneer to a Next.js/Supabase application, so the upstream descriptor is stale; live story data exposes no auditable age/content rating on which a Play-safe adapter can fail closed (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader Fictioneer descriptor; no adapter is fabricated for the changed unauditable site."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/pianmanga",
       "sourceId": "pianmanga",
@@ -29567,6 +30724,28 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/fictioneer/sources.json#prizmatranslation",
+      "sourceId": "prizmatranslation",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "fictioneer-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-redirect-audit-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The configured origin redirects to expireddomains.com and no longer hosts the Fictioneer catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader Fictioneer descriptor; no package is shipped for the expired domain."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29632,6 +30811,46 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#ranovel",
+      "sourceId": "ranovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#readfanfic",
+      "sourceId": "read-fanfic",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/readfrom",
       "sourceId": "readfrom",
@@ -29674,12 +30893,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/readnovelfull",
+      "upstreamRepository": "lnreader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readnovelfull/sources.json#readnovelfull",
       "sourceId": "readnovelfull",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readnovelfull",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -29691,8 +30910,8 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from lnreader/lnreader-plugins' ReadNovelFull multi-source configuration."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29737,12 +30956,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/royalroad",
-      "sourceId": "royalroad",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#requiemtls",
+      "sourceId": "requiemtls",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "lightnovelwp-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -29754,12 +30973,53 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/scribblehub",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/royalroad.ts",
+      "sourceId": "royalroad",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "packaged-parser-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader Royal Road source. Network orchestration and safety classification are compiled Rust; parsing runs only from a SHA-256-pinned JavaScript asset inside the signed package."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#salmonlatte",
+      "sourceId": "salmon-latte",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/scribblehub.ts",
       "sourceId": "scribblehub",
       "language": "en",
       "mediaKind": "novel",
@@ -29771,54 +31031,75 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-safety-filtered-https-reachability-2026-07-20",
+        "content-classification-contract-audit"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "Cloudflare returned HTTP 403 for a safety-filtered Series Finder request on 2026-07-20. Adult/Mature/Smut genres and content warnings exist, but live detail/chapter revalidation could not be audited, so no package is emitted.",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed LNReader Scribble Hub source; blocked rather than weakening fail-closed classification."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/sleepytranslations",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#sleeptTLS",
       "sourceId": "sleepytranslations",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/sonicmtl",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#sonicmtl",
       "sourceId": "sonicmtl",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "chapter-pagination"
       ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#asuralightnovel",
+      "sourceId": "srank-manga",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29842,6 +31123,47 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#sweetescape",
+      "sourceId": "sweet-escape",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#systemtranslation",
+      "sourceId": "systemtranslation",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source has an expired TLS certificate and cannot be reached through the HTTPS-only runtime (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/multisrc/madara/toonily",
       "sourceId": "toonily",
@@ -29861,6 +31183,68 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#translatinotaku",
+      "sourceId": "translatinotaku",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#transweaver",
+      "sourceId": "transweaver",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#universalnovel",
+      "sourceId": "universalnovel",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The catalog endpoint returns a fixed HTTP 403 response with no LightNovelWP catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29884,8 +31268,69 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/webnovel",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#vandytranslate",
+      "sourceId": "vandytranslate",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The domain now serves an unrelated games/FAQ site and has no LightNovelWP catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#violetlily",
+      "sourceId": "violet-lily",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#WebNovelTraslation",
+      "sourceId": "web-novel-translation",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/webnovel.ts",
       "sourceId": "webnovel",
       "language": "en",
       "mediaKind": "novel",
@@ -29897,12 +31342,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-https-reachability-2026-07-20",
+        "locked-chapter-and-content-classification-contract-audit"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "Cloudflare returned HTTP 403 for the live novel catalog on 2026-07-20. The legacy flow exposes broad catalog and locked-chapter metadata without an auditable per-work safe content rating before metadata/text.",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed LNReader Webnovel source; no package emitted while live safety classification is unavailable."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29924,6 +31372,26 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#webnovelover",
+      "sourceId": "webnovellover",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -29968,6 +31436,52 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelworld/sources.json#webnovelworld",
+      "sourceId": "webnovelworld",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelworld-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "multipart-search",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-lightnovelworld-saved-fixtures",
+        "fresh-live-https-certificate-validation-failure-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The declared HTTPS origin fails certificate-chain validation (unable to get local issuer certificate), including its catalog endpoint; the HTTPS-only runtime therefore fails closed (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Source identity is from the MIT-licensed LNReader LightNovelWorld descriptor; the framework adapter is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#whitemoonlightnovels",
+      "sourceId": "whitemoonlightnovels",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source redirects to a parked advertising endpoint and has no novel catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/en/wnmtl",
       "sourceId": "wnmtl",
@@ -29987,6 +31501,46 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#wooksteahouse",
+      "sourceId": "wook-s-teahouse",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#wordexcerpt",
+      "sourceId": "wordexcerpt",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30010,12 +31564,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/wuxiaworld",
-      "sourceId": "wuxiaworld",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#wuxiamtl",
+      "sourceId": "wuxiamtl",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "readwn-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30027,8 +31581,115 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#wuxiap",
+      "sourceId": "wuxiap",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readwn-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#wuxiaspace",
+      "sourceId": "wuxiaspace",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readwn-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/readwn/sources.json#wuxiav",
+      "sourceId": "wuxiav",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "readwn-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212940).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader ReadWN descriptor; runtime behavior is reviewed, compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/wuxiaworld.ts",
+      "sourceId": "wuxiaworld",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "fresh-live-api-audit-50-items-2026-07-20",
+        "content-classification-contract-audit"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The live API returned 50 items with HTTP 200 on 2026-07-20, but none exposed contentRating, ageRating, rating, maturity, warnings, isAdult, or adult; genres and tags were empty. reviewScore is a quality score, not a safety classification, so the Play-safe catalog must fail closed.",
+      "license": "MIT",
+      "attribution": "Audited from the MIT-licensed LNReader Wuxia World source; no package emitted because item-level safety cannot be established."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#wuxiaworld.site",
+      "sourceId": "wuxiaworld.site",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30071,6 +31732,26 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#zetroTL",
+      "sourceId": "zetro-translation",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30136,12 +31817,97 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/fr/chireads",
-      "sourceId": "chireads",
-      "language": "fr",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#allnovelread",
+      "sourceId": "allnovelread",
+      "language": "es",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212954).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#AnimesHoy12",
+      "sourceId": "animeshoy12",
+      "language": "es",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel-es",
+      "sourceId": "mtlnovel-es",
+      "language": "es",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#panchotranslations",
+      "sourceId": "pancho-translations",
+      "language": "es",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#TCSega",
+      "sourceId": "tcsega",
+      "language": "es",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30153,8 +31919,231 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#traducciones",
+      "sourceId": "traducciones-amistosas",
+      "language": "es",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/chireads.ts",
+      "sourceId": "chireads",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-and-representative-detail-probe-2026-07-20",
+        "item-level-classification-audit-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The live catalog and representative Super Gene detail page expose author/status metadata but no stable first-party work-level genre or age classification. Because the same mutable origin advertises mature/adult tags, a Play-safe package cannot classify each item and must fail closed (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against the MIT-licensed LNReader Chireads source; no package is emitted because the live origin lacks auditable item-level safety metadata."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/harkeneliwood.ts",
+      "sourceId": "harkeneliwood",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-and-representative-detail-probe-2026-07-20",
+        "item-level-classification-audit-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The live projects page and representative Rain detail expose a synopsis and author but no stable first-party work-level genre or age classification, so the Play-safe runtime cannot admit items without guessing and must fail closed (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against the MIT-licensed LNReader HarkenEliwood source; no package is emitted because the live origin lacks auditable item-level safety metadata."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/kisswood.ts",
+      "sourceId": "kisswood",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-probe-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The canonical HTTPS origin responds HTTP 403 to an ordinary reader request, preventing a reproducible catalog/detail/classification audit and production runtime verification (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against the MIT-licensed LNReader KissWood source; no package is emitted while the canonical origin is inaccessible to the constrained runtime."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/novelfrance.ts",
+      "sourceId": "novelfrance",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader NovelFrance source. Runtime behavior and fail-closed item classification are compiled Rust; only the exact first-party HTTPS API origin is permitted."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/novhell.ts",
+      "sourceId": "novhell",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-and-representative-detail-probe-2026-07-20",
+        "item-level-classification-audit-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The live catalog and representative Emperor of the Cosmos detail expose a synopsis and author but no stable mandatory work-level genre or age classification, so a Play-safe package cannot classify every item and must fail closed (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against the MIT-licensed LNReader Novhell source; no package is emitted because the live origin lacks auditable item-level safety metadata."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/warriorlegendtrad.ts",
+      "sourceId": "warriorlegendtrad",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader Warrior Legend Trad source. Runtime behavior and fail-closed first-party genre classification are compiled Rust; only the exact HTTPS origin is permitted."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/wuxialnscantrad.ts",
+      "sourceId": "wuxialnscantrad",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader WuxiaLnScantrad source. Runtime behavior and fail-closed first-party genre classification are compiled Rust; two chapter links verified as HTTP 404 are omitted explicitly."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/xiaowaz.ts",
+      "sourceId": "xiaowaz",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "french-standalone-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-and-representative-detail-probe-2026-07-20",
+        "item-level-classification-audit-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The live series catalog and representative Mother of Learning detail expose summary/author/chapter data but no stable mandatory first-party age classification across the catalog, so a Play-safe package cannot classify every item and must fail closed (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against the MIT-licensed LNReader Xiaowaz source; no package is emitted because the live origin lacks auditable item-level safety metadata."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#lightnovelfr",
+      "sourceId": "lightnovelfr",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30178,12 +32167,32 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/multisrc/madara/massnovel",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#massnovel",
       "sourceId": "massnovel",
       "language": "fr",
       "mediaKind": "novel",
-      "framework": "madara",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel-fr",
+      "sourceId": "mtlnovel-fr",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30191,12 +32200,15 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-19"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "knownSiteFailure": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30220,12 +32232,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/fr/noveldeglace",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/french/noveldeglace.ts",
       "sourceId": "noveldeglace",
       "language": "fr",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "french-standalone-lnreader-compiled-rust",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30237,8 +32249,174 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader NovelDeGlace source. Runtime behavior is compiled Rust; catalog and detail pages must declare Pour tous or R-15, while R-18 and unknown classifications fail closed. Only the exact content and first-party image HTTPS origins are permitted."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#worldnovel",
+      "sourceId": "worldnovel",
+      "language": "fr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#bacalightnovel",
+      "sourceId": "bacalightnovel",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#meionovel",
+      "sourceId": "meionovel",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel-id",
+      "sourceId": "mtlnovel-id",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#novelbookid",
+      "sourceId": "novelbookid",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#sektenovel",
+      "sourceId": "sektenovel",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#morenovel",
+      "sourceId": "vanovel",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#wbnovel",
+      "sourceId": "wbnovel",
+      "language": "id",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30352,6 +32530,25 @@
       "attribution": "Ported from LNReader/lnreader-plugins."
     },
     {
+      "upstreamRepository": "https://nyaa.si",
+      "upstreamPath": "?f=0&c=3_0&q=TMW",
+      "sourceId": "tmw-novels",
+      "language": "ja",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "torrent-epub"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Original Manatan integration for public TMW-tagged Nyaa metadata."
+    },
+    {
       "upstreamRepository": "LNReader/lnreader-plugins",
       "upstreamPath": "plugins/japanese/Syosetu.ts",
       "sourceId": "yomou.syosetu",
@@ -30377,6 +32574,26 @@
       "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Ported from LNReader/lnreader-plugins."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#fortuneeternal",
+      "sourceId": "fortune-eternal",
+      "language": "ko",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30419,6 +32636,113 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#betternovels",
+      "sourceId": "betternovels",
+      "language": "pt",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Upstream descriptor is marked down (downSince=1768289212945).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#centralnovel",
+      "sourceId": "centralnovel",
+      "language": "pt",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#kiniga",
+      "sourceId": "kiniga",
+      "language": "pt",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#lightnovelbrasil",
+      "sourceId": "lightnovelbrasil",
+      "language": "pt",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The source resolves to a parked loading page and has no novel catalog (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel-pt",
+      "sourceId": "mtlnovel-pt",
+      "language": "pt",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-19"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30484,6 +32808,190 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/rulate/sources.json#bllate-api",
+      "sourceId": "bllate-api",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "rulate-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader Rulate descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/ifreedom/sources.json#bookhamster",
+      "sourceId": "bookhamster",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "ifreedom-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader iFreedom descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/rulate/sources.json#erolate-api",
+      "sourceId": "erolate-api",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "rulate-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The upstream returned HTTP 522 during a fresh 2026-07-19 probe and its source taxonomy is explicitly adult-only; no Play-safe leaf is generated.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader Rulate descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/ifreedom/sources.json#ifreedom",
+      "sourceId": "ifreedom",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "ifreedom-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader iFreedom descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/russian/authortoday.ts",
+      "sourceId": "authortoday",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "russian-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/russian/authortoday.ts; request parsing, reader decryption, URL validation, and content-policy enforcement are reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/novelcool/sources.json#novelcool-ru",
+      "sourceId": "novelcool-ru",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "russian-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from the MIT-licensed LNReader NovelCool descriptor; API parsing, URL validation, and content-policy enforcement are reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/russian/ranoberf.ts",
+      "sourceId": "ranoberf",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "russian-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/russian/ranoberf.ts; Next-data parsing, URL validation, and content-policy enforcement are reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/ukrainian/smakolykytl.ts",
+      "sourceId": "smakolykytl",
+      "language": "uk",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-api-origin-probe-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The public projects API at https://api.smakolykytl.site/api/user/projects returned HTTP 502 with a 150-byte gateway response, so no auditable catalog or reader chain could be produced (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against LNReader plugins/ukrainian/smakolykytl.ts; no package is emitted while the canonical API is unavailable."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/russian/topliba.ts",
+      "sourceId": "topliba",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-catalog-detail-and-reader-route-probe-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "Catalog and metadata pages remain live, but historical /reader/{id} routes now redirect to metadata pages and expose no public chapter index or text reader chain under the SDK contract (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Audited against LNReader plugins/russian/topliba.ts; no package is emitted without a reproducible reader chain."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/ru/jaomix",
       "sourceId": "jaomix",
@@ -30503,6 +33011,30 @@
       "knownSiteFailure": null,
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/mtlnovel/sources.json#mtlnovel-ru",
+      "sourceId": "mtlnovel-ru",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "mtlnovel-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [
+        "cargo-test-shared-mtlnovel-saved-fixtures",
+        "live-https-origin-probe-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The HTTPS origin serves only a 478-byte Loading page whose redirect targets the insecure parked domain http://ww1.mtlnovels.com; no auditable HTTPS reader chain exists (verified 2026-07-20).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader MTLNovel descriptor; runtime behavior is compiled Rust."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30560,10 +33092,13 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-origin-and-detail-probe-2026-07-20",
+        "production-extension-runner-fail-closed-browser-check-interstitial-2026-07-20"
+      ],
       "packagePath": null,
-      "knownSiteFailure": null,
+      "knownSiteFailure": "Ranobes currently returns a script-driven Just a moment browser-check interstitial for canonical detail and search routes. The reviewed package intentionally does not execute that remote script, so no signed package is published (verified 2026-07-20).",
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
@@ -30589,6 +33124,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/rulate/sources.json#rulate-api",
+      "sourceId": "rulate-api",
+      "language": "ru",
+      "mediaKind": "novel",
+      "framework": "rulate-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader Rulate descriptor; runtime behavior is compiled Rust."
+    },
+    {
       "upstreamRepository": "IReaderorg/IReader-extensions",
       "upstreamPath": "sources/ru/zelluloza",
       "sourceId": "zelluloza",
@@ -30602,12 +33157,278 @@
         "chapter-pagination",
         "commands"
       ],
+      "status": "blocked-upstream",
+      "tests": [
+        "live-https-catalog-and-reader-session-probe-2026-07-20",
+        "production-extension-runner-fail-closed-session-nonce-http-400-2026-07-20"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The free catalog remains public, but chapter text now requires a session-bound CSRF nonce and cookie at /ajaxcall/. The production ExtensionRunner received HTTP 400 without a verified portable reader session, so no package is published (verified 2026-07-20).",
+      "license": "MPL-2.0",
+      "attribution": "Ported from IReaderorg/IReader-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#novel-lucky",
+      "sourceId": "novel-lucky",
+      "language": "th",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
       "status": "inventoried",
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#novelpdf",
+      "sourceId": "novel-pdf",
+      "language": "th",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#azraznovel",
+      "sourceId": "araz-novel",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#ekitaplar",
+      "sourceId": "e-kitaplar",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#Kakikata",
+      "sourceId": "kakikata",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#kodekslibrary",
+      "sourceId": "kodekslibrary",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#nabiscans",
+      "sourceId": "nabi-scans",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#namevt",
+      "sourceId": "namevt",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#noveloku",
+      "sourceId": "novel-oku",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "Marked unavailable by the upstream source descriptor.",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#noveltr",
+      "sourceId": "noveltr",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "lightnovelwp-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "blocked-upstream",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": "The domain now serves an unrelated travel website and /series/ returns 404 (verified 2026-07-19).",
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#ragnarscans",
+      "sourceId": "ragnar-scans",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#turkcelightnovels",
+      "sourceId": "turkcelightnovels",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/multisrc/madara/sources.json#webnoveloku",
+      "sourceId": "webnoveloku",
+      "language": "tr",
+      "mediaKind": "novel",
+      "framework": "madara-lnreader",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -30757,12 +33578,12 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/zh/ixdzs8",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/ixdzs8.ts",
       "sourceId": "ixdzs8",
       "language": "zh",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30774,16 +33595,16 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/ixdzs8.ts; runtime is reviewed compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/zh/novel543",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/novel543.ts",
       "sourceId": "novel543",
       "language": "zh",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30795,16 +33616,16 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/novel543.ts; runtime is reviewed compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/zh/quanben",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/Quanben.ts",
       "sourceId": "quanben",
       "language": "zh",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30816,16 +33637,16 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/Quanben.ts; runtime is reviewed compiled Rust."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/zh/shu69",
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/69shu.ts",
       "sourceId": "shu69",
       "language": "zh",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
       "requiredCapabilities": [
         "http",
         "filters",
@@ -30837,8 +33658,8 @@
       "tests": [],
       "packagePath": null,
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/69shu.ts; runtime is reviewed compiled Rust."
     },
     {
       "upstreamRepository": "yuzono/anime-extensions",
@@ -30854,38 +33675,15 @@
         "hoster-resolution",
         "media-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "Apache-2.0",
-      "attribution": "Ported from yuzono/anime-extensions."
-    },
-    {
-      "upstreamRepository": "yuzono/anime-extensions",
-      "upstreamPath": "src/all/animetsu",
-      "sourceId": "animetsu",
-      "language": "all",
-      "mediaKind": "video",
-      "framework": "standalone",
-      "requiredCapabilities": [
-        "http",
-        "filters",
-        "url-resolution",
-        "hoster-resolution",
-        "media-processing"
-      ],
       "status": "runtime-tested",
       "tests": [
-        "fixture-parsers",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "browser-fallback-unit-test",
-        "segment-processing-rules"
+        "cargo test -p animeonsen-video --lib",
+        "cargo clippy -p animeonsen-video --all-targets -- -D warnings",
+        "xtask build-component video/all/animeonsen",
+        "signed-package-runtime filters",
+        "live safe catalog/detail/episode/cover/stream/subtitle requests"
       ],
-      "packagePath": "packages/video/all/animetsu.manatan2",
+      "packagePath": "packages/video/all/animeonsen.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
@@ -30946,9 +33744,19 @@
         "hoster-resolution",
         "media-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "runtime-tested",
+      "tests": [
+        "fixture-parsers-and-safety-boundaries",
+        "cargo-test-published-sdk-1.0.0",
+        "cargo-clippy-all-targets-deny-warnings",
+        "live-catalog-details-episodes-stream-assets-2026-07-19",
+        "build-component-published-sdk-1.0.0",
+        "wasm-tools-component-validate-and-import-audit",
+        "signed-package-integrity",
+        "production-wasmtime-filter-export",
+        "production-wasmtime-preference-export"
+      ],
+      "packagePath": "packages/video/all/anizone.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
@@ -32212,16 +35020,9 @@
         "hoster-resolution",
         "media-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters",
-        "live-http-probe"
-      ],
-      "packagePath": "packages/video/en/animesogo.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
@@ -32646,15 +35447,9 @@
         "hoster-resolution",
         "media-processing"
       ],
-      "status": "runtime-tested",
-      "tests": [
-        "shared-family-fixtures",
-        "workspace-tests",
-        "wasm-tools-validate",
-        "package-integrity",
-        "production-wasmtime-filters"
-      ],
-      "packagePath": "packages/video/en/kotokai.manatan2",
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
@@ -36207,6 +39002,90 @@
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/69shu.ts",
+      "sourceId": "69shu",
+      "language": "zh",
+      "mediaKind": "novel",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/69shu.ts; runtime is reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/linovel.ts",
+      "sourceId": "linovel",
+      "language": "zh",
+      "mediaKind": "novel",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/linovel.ts; runtime is reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/linovelib.ts",
+      "sourceId": "linovelib",
+      "language": "zh",
+      "mediaKind": "novel",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/linovelib.ts; runtime is reviewed compiled Rust."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/chinese/linovelib_tw.ts",
+      "sourceId": "linovelib_tw",
+      "language": "zh",
+      "mediaKind": "novel",
+      "framework": "chinese-standalone-lnreader-compiled-rust",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "commands"
+      ],
+      "status": "inventoried",
+      "tests": [],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Adapted from LNReader plugins/chinese/linovelib_tw.ts; runtime is reviewed compiled Rust."
     }
   ]
 }

@@ -1,0 +1,17 @@
+<!doctype html>
+<html><body><main><div wire:snapshot="{}">
+<ul class="grid">
+  <li x-data="{ isUnsafe: false, epsTitles: JSON.parse('{\u00221\u0022:\u0022The Beginning\u0022}') }">
+    <a href="https://anizone.to/anime/safe1234/1">
+      <img src="https://seiryuu.vid-cdn.xyz/video/snapshot.webp">
+      <h3>Episode 1<span></span></h3>
+    </a>
+  </li>
+  <li x-data="{ isUnsafe: true, epsTitles: JSON.parse('{\u00221\u0022:\u0022Unsafe\u0022}') }">
+    <a href="https://anizone.to/anime/safe1234/2">
+      <img src="https://seiryuu.vid-cdn.xyz/video/unsafe.webp">
+      <h3>Episode 2</h3>
+    </a>
+  </li>
+</ul>
+</div></main></body></html>

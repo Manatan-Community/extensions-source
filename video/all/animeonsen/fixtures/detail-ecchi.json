@@ -1,0 +1,9 @@
+{
+  "content_id": "ecchiTitle123",
+  "content_title": "Blocked genre",
+  "content_title_en": "Blocked genre",
+  "mal_data": {
+    "genres": [{ "name": "Ecchi" }],
+    "rating": "pg_13"
+  }
+}

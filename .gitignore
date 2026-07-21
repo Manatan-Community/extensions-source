@@ -7,3 +7,5 @@ dist/
 .DS_Store
 **/target/
 **/Cargo.lock
+__pycache__/
+*.py[cod]

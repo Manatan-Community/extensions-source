@@ -1,0 +1,30 @@
+{
+  "family": "mtlnovel",
+  "generated": [],
+  "blocked": [
+    {
+      "id": "mtlnovel",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    },
+    {
+      "id": "mtlnovel-fr",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    },
+    {
+      "id": "mtlnovel-es",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    },
+    {
+      "id": "mtlnovel-id",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    },
+    {
+      "id": "mtlnovel-pt",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    },
+    {
+      "id": "mtlnovel-ru",
+      "reason": "The HTTPS origin serves a Loading page whose script redirects into a parked-domain flow ending at insecure http://ww1.mtlnovels.com (verified 2026-07-19)."
+    }
+  ]
+}

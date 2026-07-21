@@ -2,11 +2,16 @@
   "schemaVersion": 2,
   "id": "kakuyomu",
   "name": "kakuyomu",
-  "version": "1.0.1",
-  "versionCode": 2,
+  "version": "1.0.5",
+  "versionCode": 6,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
   "description": "Japanese web novels from Kakuyomu.",
   "author": "Manatan Community",
   "homepage": "https://kakuyomu.jp",
@@ -18,6 +23,7 @@
       "allow": [
         "https://kakuyomu.jp",
         "https://cdn-static.kakuyomu.jp",
+        "https://cdn.kdkw.jp",
         "https://cdn-ak.f.st-hatena.com"
       ]
     },
@@ -25,7 +31,10 @@
     "webview": false,
     "storage": false,
     "assets": false,
-    "javascript": false
+    "javascript": false,
+    "services": [
+      "html.select.v1"
+    ]
   },
   "assets": [
     {
