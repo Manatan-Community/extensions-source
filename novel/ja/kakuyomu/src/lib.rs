@@ -64,6 +64,21 @@ impl KakuyomuSource {
         Ok(url.to_string())
     }
 
+    fn preview_cover_url(work_url: &str) -> Option<String> {
+        let url = Url::parse(work_url).ok()?;
+        let mut segments = url.path_segments()?;
+        if segments.next()? != "works" {
+            return None;
+        }
+        let work_id = segments.next()?.trim();
+        if work_id.is_empty() {
+            return None;
+        }
+        Some(format!(
+            "https://cdn-static.kakuyomu.jp/works/{work_id}/ogimage.png"
+        ))
+    }
+
     fn parse_listing(document: &Html) -> Result<Paged<CatalogItem>> {
         let rows = selector(".widget-media-genresWorkList-right > .widget-work")?;
         let title = selector("a.widget-workCard-titleLabel")?;
@@ -82,6 +97,7 @@ impl KakuyomuSource {
             }
             let url = absolute_url(BASE_URL, &href)?;
             let mut item = CatalogItem::new(url.clone(), name);
+            item.cover = Self::preview_cover_url(&url).map(Into::into);
             item.url = Some(url);
             item.language = Some("ja".into());
             item.content_rating = Some("safe".into());
@@ -105,6 +121,7 @@ impl KakuyomuSource {
             };
             let url = absolute_url(BASE_URL, &href)?;
             let mut item = CatalogItem::new(url.clone(), name);
+            item.cover = Self::preview_cover_url(&url).map(Into::into);
             item.url = Some(url);
             item.language = Some("ja".into());
             item.content_rating = Some("safe".into());
@@ -658,8 +675,46 @@ mod tests {
         let document = html::document(include_str!("../tests/fixtures/ranking.html"));
         let page = KakuyomuSource::parse_listing(&document).unwrap();
         assert_eq!(page.entries[0].title, "Fixture Work");
-        assert!(page.entries[0].cover.is_none());
+        assert_eq!(
+            page.entries[0]
+                .cover
+                .as_ref()
+                .map(|request| request.url.as_str()),
+            Some("https://cdn-static.kakuyomu.jp/works/123/ogimage.png")
+        );
         assert!(page.has_next_page);
+    }
+
+    #[test]
+    fn derives_preview_covers_only_for_work_urls() {
+        assert_eq!(
+            KakuyomuSource::preview_cover_url("https://kakuyomu.jp/works/123/episodes/456")
+                .as_deref(),
+            Some("https://cdn-static.kakuyomu.jp/works/123/ogimage.png")
+        );
+        assert!(KakuyomuSource::preview_cover_url("https://kakuyomu.jp/rankings/all").is_none());
+        assert!(KakuyomuSource::preview_cover_url("not a URL").is_none());
+    }
+
+    #[test]
+    fn selected_ranking_results_include_preview_covers() {
+        let page = KakuyomuSource::parse_selected_listing(&json!({
+            "results": {
+                "entries": [{
+                    "title": "Fixture Work",
+                    "href": "/works/123"
+                }],
+                "next": []
+            }
+        }))
+        .unwrap();
+        assert_eq!(
+            page.entries[0]
+                .cover
+                .as_ref()
+                .map(|request| request.url.as_str()),
+            Some("https://cdn-static.kakuyomu.jp/works/123/ogimage.png")
+        );
     }
 
     #[test]
