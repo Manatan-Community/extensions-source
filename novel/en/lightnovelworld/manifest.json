@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "lightnovelworld",
+  "name": "Light Novel World",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "English web novels from Light Novel World. A free Light Novel World account is required to open chapter text.",
+  "author": "Manatan Community",
+  "homepage": "https://lightnovelworld.org",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://lightnovelworld.org"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "f5d3d95edf4006a76d11d9f04abab1fd20f704613b931cdd51b8f59ca113ffc4"
+    }
+  ],
+  "sources": [
+    {
+      "id": "lightnovelworld",
+      "name": "Light Novel World",
+      "lang": "en",
+      "contentType": "novel",
+      "baseUrl": "https://lightnovelworld.org",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://lightnovelworld.org/novel/*/", "kind": "item" },
+        { "pattern": "https://lightnovelworld.org/novel/*/chapter/*/", "kind": "chapter" }
+      ]
+    }
+  ]
+}

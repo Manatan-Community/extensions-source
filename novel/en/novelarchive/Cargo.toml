@@ -1,0 +1,16 @@
+[package]
+name = "manatan-novel-en-novelarchive"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+manatan-common.workspace = true
+manatan-sdk.workspace = true
+serde_json.workspace = true
+url.workspace = true

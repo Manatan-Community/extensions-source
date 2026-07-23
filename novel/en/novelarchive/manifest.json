@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "id": "novelarchive",
+  "name": "Novel Archive",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "English web novels from Novel Archive.",
+  "author": "Manatan Community",
+  "homepage": "https://novelarchive.cc",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://novelarchive.cc"
+      ]
+    },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "492fe39aa335dfc2be5c85784f3ebd1c7ace42bb442ec9f9c20113cbd30c15cc"
+    }
+  ],
+  "sources": [
+    {
+      "id": "novelarchive",
+      "name": "Novel Archive",
+      "lang": "en",
+      "contentType": "novel",
+      "baseUrl": "https://novelarchive.cc",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://novelarchive.cc/novel?id=*", "kind": "item" },
+        { "pattern": "https://novelarchive.cc/reader?novel=*&chapter=*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

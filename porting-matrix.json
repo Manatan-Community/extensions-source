@@ -39201,6 +39201,63 @@
       "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Independent integration with Cyrisia's public bookshelf and EPUB endpoints."
+    },
+    {
+      "upstreamRepository": "https://lightnovelworld.org",
+      "upstreamPath": "ranking, search, novel, and chapter-index endpoints",
+      "sourceId": "lightnovelworld",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "runtime-tested",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-filters",
+        "live-popular-latest-search-details-chapter-index",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/lightnovelworld.manatan2",
+      "knownSiteFailure": "Light Novel World redirects anonymous chapter requests to the novel page; chapter text requires the user to sign in through Web View.",
+      "license": "MIT",
+      "attribution": "Independent integration with Light Novel World's public pages and chapter-index API."
+    },
+    {
+      "upstreamRepository": "https://novelarchive.cc",
+      "upstreamPath": "api/novels",
+      "sourceId": "novelarchive",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone-json-api",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-contract-tests",
+        "content-rating-fail-closed-test",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-filters",
+        "live-popular-latest-search-details-chapters",
+        "live-first-middle-last-text",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/novelarchive.manatan2",
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Independent integration with Novel Archive's public catalog and chapter APIs."
     }
   ]
 }
