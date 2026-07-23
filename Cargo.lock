@@ -767,6 +767,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-ja-hameln"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "manatan-novel-ja-kakuyomu"
 version = "0.1.0"
 dependencies = [

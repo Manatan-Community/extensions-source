@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 2,
+  "id": "hameln",
+  "name": "Hameln",
+  "version": "1.0.4",
+  "versionCode": 5,
+  "minimumManatanVersion": "0.3.1",
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Japanese web novels and fan fiction from Hameln, with rankings, search, chapters, and bounded browser challenge recovery.",
+  "author": "Manatan Community",
+  "homepage": "https://syosetu.org",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://syosetu.org",
+        "https://img.syosetu.org",
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "cb6131277e8832bf894e4a23a00ea2d16958b565e12d86a34d286503ce7ca166"
+    }
+  ],
+  "sources": [
+    {
+      "id": "hameln",
+      "name": "Hameln",
+      "lang": "ja",
+      "contentType": "novel",
+      "baseUrl": "https://syosetu.org",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://syosetu.org/novel/*",
+          "kind": "item-or-chapter"
+        }
+      ],
+      "tags": [
+        "browser-challenge",
+        "fan-fiction"
+      ]
+    }
+  ]
+}

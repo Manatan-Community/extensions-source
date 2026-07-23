@@ -32530,6 +32530,34 @@
       "attribution": "Ported from LNReader/lnreader-plugins."
     },
     {
+      "upstreamRepository": "https://syosetu.org",
+      "upstreamPath": "/",
+      "sourceId": "hameln",
+      "language": "ja",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "browser-challenge",
+        "filters",
+        "url-resolution",
+        "chapter-pagination"
+      ],
+      "status": "runtime-tested",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-filters",
+        "live-site-structure-verified"
+      ],
+      "packagePath": "packages/novel/ja/hameln.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Original Manatan Community integration for the public Hameln website."
+    },
+    {
       "upstreamRepository": "https://nyaa.si",
       "upstreamPath": "?f=0&c=3_0&q=TMW",
       "sourceId": "tmw-novels",
