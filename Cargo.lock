@@ -442,6 +442,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "fucknovelpia-novel"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "futf"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -742,6 +753,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-fucknovelpia"
+version = "0.1.0"
+dependencies = [
+ "fucknovelpia-novel",
+ "manatan-sdk",
+]
+
+[[package]]
 name = "manatan-novel-en-lightnovelworld"
 version = "0.1.0"
 dependencies = [
@@ -818,6 +837,14 @@ dependencies = [
  "manatan-sdk",
  "serde_json",
  "url",
+]
+
+[[package]]
+name = "manatan-novel-ko-fucknovelpia-raw"
+version = "0.1.0"
+dependencies = [
+ "fucknovelpia-novel",
+ "manatan-sdk",
 ]
 
 [[package]]

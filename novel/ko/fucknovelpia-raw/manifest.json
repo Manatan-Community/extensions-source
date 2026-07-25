@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "id": "fucknovelpia-raw",
+  "name": "FuckNovelpia RAW",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "minimumManatanVersion": "0.3.1",
+  "wasm": "extension.wasm",
+  "contentType": "novel",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Korean original novel catalog and RAW ZIP downloads from FuckNovelpia RAW.",
+  "author": "Manatan Community",
+  "homepage": "https://raw-fucknovelpia.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "MIT",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://raw-fucknovelpia.com",
+        "https://assets.raw-fucknovelpia.com"
+      ]
+    },
+    "cookies": true,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [],
+  "sources": [
+    {
+      "id": "fucknovelpia-raw",
+      "name": "FuckNovelpia RAW",
+      "lang": "ko",
+      "contentType": "novel",
+      "baseUrl": "https://raw-fucknovelpia.com",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://raw-fucknovelpia.com/novel/*", "kind": "item" },
+        { "pattern": "https://raw-fucknovelpia.com/download.php?*", "kind": "chapter" }
+      ]
+    }
+  ]
+}

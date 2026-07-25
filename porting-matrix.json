@@ -20,7 +20,7 @@
       ],
       "status": "inventoried",
       "tests": [],
-      "packagePath": null,
+      "packagePath": "packages/novel/en/fucknovelpia.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -40,7 +40,7 @@
       ],
       "status": "inventoried",
       "tests": [],
-      "packagePath": null,
+      "packagePath": "packages/novel/ko/fucknovelpia-raw.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
@@ -32605,6 +32605,57 @@
     },
     {
       "upstreamRepository": "LNReader/lnreader-plugins",
+      "upstreamPath": "plugins/english/fucknovelpia.ts",
+      "sourceId": "fucknovelpia",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "filters",
+        "url-resolution",
+        "chapter-pagination",
+        "mixed-text-images"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "live-catalog-detail-chapter-html"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Ported from LNReader/lnreader-plugins."
+    },
+    {
+      "upstreamRepository": "https://raw-fucknovelpia.com",
+      "upstreamPath": "public catalog and RAW download pages",
+      "sourceId": "fucknovelpia-raw",
+      "language": "ko",
+      "mediaKind": "novel",
+      "framework": "standalone-download-catalog",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "filters",
+        "url-resolution",
+        "external-download-pages"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "live-catalog-detail-download-link"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": "The source publishes password-protected RAW ZIP downloads rather than HTML chapter text; entries deliberately open the source-hosted download page.",
+      "license": "MIT",
+      "attribution": "Independent Korean RAW adapter sharing the MIT-licensed FuckNovelpia catalog structure."
+    },
+    {
+      "upstreamRepository": "LNReader/lnreader-plugins",
       "upstreamPath": "plugins/multisrc/madara/sources.json#fortuneeternal",
       "sourceId": "fortune-eternal",
       "language": "ko",
@@ -32616,10 +32667,10 @@
         "url-resolution",
         "chapter-pagination"
       ],
-      "status": "inventoried",
+      "status": "blocked-upstream",
       "tests": [],
       "packagePath": null,
-      "knownSiteFailure": null,
+      "knownSiteFailure": "Support was intentionally removed because the source currently returns Cloudflare Error 1034 (Edge IP Restricted) and cannot be validated reliably.",
       "license": "MIT",
       "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
@@ -32637,10 +32688,10 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
+      "status": "blocked-upstream",
       "tests": [],
       "packagePath": null,
-      "knownSiteFailure": null,
+      "knownSiteFailure": "The configured host no longer resolves, and the original Agitoon service was seized by Korean authorities in 2024. No trustworthy successor endpoint was available to validate on 2026-07-24.",
       "license": "MPL-2.0",
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },

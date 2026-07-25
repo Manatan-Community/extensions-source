@@ -20,6 +20,7 @@ anyhow = "1"
 manatan-sdk = "=1.0.0"
 manatan-common = { path = "shared/manatan-common" }
 anikoto-theme = { path = "shared/anikoto-theme" }
+fucknovelpia-novel = { path = "shared/fucknovelpia-novel" }
 base64 = "0.22"
 chrono = { version = "0.4", default-features = false, features = ["std"] }
 ed25519-dalek = "2"

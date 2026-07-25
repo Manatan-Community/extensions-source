@@ -16,7 +16,6 @@ const BASE_URL: &str = "https://novelarchive.cc";
 const API_URL: &str = "https://novelarchive.cc/api";
 const PAGE_SIZE: u32 = 24;
 const CHAPTER_PAGE_SIZE: usize = 200;
-const EXCLUDED_GENRES: &str = "Adult,Erotica,Smut,Explicit Sex,Ecchi";
 
 pub struct NovelArchiveSource {
     client: Client,
@@ -47,7 +46,6 @@ impl NovelArchiveSource {
             let mut pairs = url.query_pairs_mut();
             pairs.append_pair("page", &page.max(1).to_string());
             pairs.append_pair("per_page", &PAGE_SIZE.to_string());
-            pairs.append_pair("genres_exclude", EXCLUDED_GENRES);
             pairs.append_pair(
                 "sort",
                 filters
@@ -81,7 +79,6 @@ impl NovelArchiveSource {
             .ok_or_else(|| Error::new("Novel Archive response has no novels"))?;
         let items = values
             .iter()
-            .filter(|value| !is_restricted(value))
             .map(Self::parse_item)
             .collect::<Result<Vec<_>>>()?;
         let has_next = response
@@ -116,7 +113,14 @@ impl NovelArchiveSource {
             .map(|status| json!(normalize_status(&status)));
         item.initialized = value.get("description").is_some();
         item.language = Some("en".into());
-        item.content_rating = Some("suggestive".into());
+        item.content_rating = Some(
+            if is_restricted(value) {
+                "adult"
+            } else {
+                "suggestive"
+            }
+            .into(),
+        );
         item.extra.insert("novelArchiveId".into(), json!(id));
         if let Some(count) = number_value(value, "total_chapters") {
             item.extra.insert("chapterCount".into(), json!(count));
@@ -237,10 +241,6 @@ impl NovelSource for NovelArchiveSource {
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let id = Self::id(&item)?;
         let value = self.details_value(&id)?;
-        require(
-            (!is_restricted(&value)).then_some(()),
-            "Novel Archive classified this title as adult content",
-        )?;
         let mut item = Self::parse_item(&value)?;
         item.initialized = true;
         Ok(item)
@@ -249,20 +249,12 @@ impl NovelSource for NovelArchiveSource {
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
         let id = Self::id(&item)?;
         let value = self.details_value(&id)?;
-        require(
-            (!is_restricted(&value)).then_some(()),
-            "Novel Archive classified this title as adult content",
-        )?;
         Self::parse_chapters(&id, &value)
     }
 
     fn chapters_page(&mut self, item: CatalogItem, page: u32) -> Result<NovelChapterPage> {
         let id = Self::id(&item)?;
         let value = self.details_value(&id)?;
-        require(
-            (!is_restricted(&value)).then_some(()),
-            "Novel Archive classified this title as adult content",
-        )?;
         let chapters = Self::parse_chapters(&id, &value)?;
         let page = page.max(1);
         let start = (page as usize - 1).saturating_mul(CHAPTER_PAGE_SIZE);
@@ -492,7 +484,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_item_and_filters_restricted_genres() {
+    fn parses_item_and_preserves_restricted_genres_as_adult_metadata() {
         let safe = json!({
             "id": "fixture",
             "title": "Fixture Novel",
@@ -505,7 +497,19 @@ mod tests {
         assert_eq!(item.title, "Fixture Novel");
         assert_eq!(item.key, "fixture");
         assert!(!is_restricted(&safe));
-        assert!(is_restricted(&json!({"genres": "Fantasy,Adult"})));
+        let adult = json!({
+            "id": "adult-fixture",
+            "title": "Adult Fixture",
+            "genres": "Fantasy,Adult"
+        });
+        assert!(is_restricted(&adult));
+        assert_eq!(
+            NovelArchiveSource::parse_item(&adult)
+                .unwrap()
+                .content_rating
+                .as_deref(),
+            Some("adult")
+        );
     }
 
     #[test]

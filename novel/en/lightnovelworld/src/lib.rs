@@ -80,9 +80,6 @@ impl LightNovelWorldSource {
                 .map(|value| normalize_space(&value))
                 .filter(|value| !value.is_empty())
                 .collect::<Vec<_>>();
-            if restricted_tags(&tags) {
-                continue;
-            }
             let page_url = absolute_url(BASE_URL, &href)?;
             let mut item = CatalogItem::new(page_url.clone(), title);
             item.url = Some(page_url.clone());
@@ -99,7 +96,7 @@ impl LightNovelWorldSource {
                 .transpose()?
                 .map(|cover| image(&cover, &page_url));
             item.language = Some("en".into());
-            item.content_rating = Some("suggestive".into());
+            item.content_rating = Some(content_rating(&item.tags).into());
             items.push(item);
         }
         Ok(items)
@@ -150,17 +147,6 @@ impl LightNovelWorldSource {
             .and_then(Value::as_array)
             .ok_or_else(|| Error::new("Light Novel World search response has no novels"))?
             .iter()
-            .filter(|value| {
-                let tags = value
-                    .get("genres")
-                    .and_then(Value::as_array)
-                    .into_iter()
-                    .flatten()
-                    .filter_map(Value::as_str)
-                    .map(str::to_owned)
-                    .collect::<Vec<_>>();
-                !restricted_tags(&tags)
-            })
             .map(|value| {
                 let slug = value
                     .get("slug")
@@ -199,7 +185,7 @@ impl LightNovelWorldSource {
                     .and_then(Value::as_str)
                     .map(|value| json!(normalize_status(value)));
                 item.language = Some("en".into());
-                item.content_rating = Some("suggestive".into());
+                item.content_rating = Some(content_rating(&item.tags).into());
                 Ok(item)
             })
             .collect()
@@ -226,10 +212,6 @@ impl LightNovelWorldSource {
         let author = first_text(document, ".novel-author")?
             .map(|value| value.trim_start_matches("Author:").trim().to_owned());
         let tags = texts(document, ".novel-genres .genre-tag")?;
-        require(
-            (!restricted_tags(&tags)).then_some(()),
-            "Light Novel World classified this title as adult content",
-        )?;
         let description = first_text(document, ".summary-content")?
             .or(first_text(document, ".description-text")?);
         let cover = first_attr(document, ".novel-cover-container img", "src")?
@@ -251,7 +233,7 @@ impl LightNovelWorldSource {
         .map(|value| json!(normalize_status(&value)));
         item.initialized = true;
         item.language = Some("en".into());
-        item.content_rating = Some("suggestive".into());
+        item.content_rating = Some(content_rating(&item.tags).into());
         Ok(item)
     }
 
@@ -573,6 +555,14 @@ fn restricted_tags(tags: &[String]) -> bool {
     })
 }
 
+fn content_rating(tags: &[String]) -> &'static str {
+    if restricted_tags(tags) {
+        "adult"
+    } else {
+        "suggestive"
+    }
+}
+
 fn normalize_status(value: &str) -> &'static str {
     match value.trim().to_ascii_lowercase().as_str() {
         "ongoing" => "ongoing",
@@ -648,5 +638,20 @@ mod tests {
         assert!(rendered.contains("Readable fixture"));
         assert!(!rendered.contains("<script"));
         assert!(!rendered.contains("onclick"));
+    }
+
+    #[test]
+    fn preserves_adult_titles_as_rated_catalog_items() {
+        let items = LightNovelWorldSource::parse_search(&json!({
+            "novels": [{
+                "slug": "adult-fixture",
+                "title": "Adult Fixture",
+                "genres": ["Fantasy", "Adult"]
+            }]
+        }))
+        .unwrap();
+
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0].content_rating.as_deref(), Some("adult"));
     }
 }
