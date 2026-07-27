@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 2,
+  "id": "nekoraw",
+  "name": "Nekoraw",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "manga",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Japanese raw manga from NekoRaw's current Kuronavi site.",
+  "author": "Manatan Community",
+  "homepage": "https://kuronavi.one",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://kuronavi.one",
+        "https://admin.mangarawad.vip",
+        "https://admin.raw18.pro",
+        "https://admin.hakiraw.net",
+        "https://iphotomg.com"
+      ]
+    },
+    "cookies": true,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "16e49143efada6f3a00ab54e882ce164562e7f595fe78778615044f8972fb35e"
+    }
+  ],
+  "sources": [
+    {
+      "id": "nekoraw",
+      "name": "Nekoraw",
+      "lang": "ja",
+      "contentType": "manga",
+      "baseUrl": "https://kuronavi.one",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        },
+        {
+          "id": "top",
+          "name": "Top"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://kuronavi.one/manga/*",
+          "kind": "item-or-chapter"
+        },
+        {
+          "pattern": "https://comiraw.net/manga/*",
+          "kind": "item-or-chapter"
+        },
+        {
+          "pattern": "https://nekoraw.blog/manga/*",
+          "kind": "item-or-chapter"
+        }
+      ],
+      "tags": [
+        "standalone",
+        "html"
+      ]
+    }
+  ]
+}

@@ -70,6 +70,10 @@ impl WtrLabSource {
 
     fn finder_url(&self, page: u32, filters: &Value) -> Result<String> {
         let build_id = self.build_id()?;
+        Self::finder_url_with_build_id(&build_id, page, filters)
+    }
+
+    fn finder_url_with_build_id(build_id: &str, page: u32, filters: &Value) -> Result<String> {
         let mut url = Url::parse(&format!(
             "{BASE_URL}/_next/data/{build_id}/en/novel-finder.json"
         ))
@@ -102,16 +106,14 @@ impl WtrLabSource {
                     query.append_pair(target, value);
                 }
             }
-            for (key, target) in [("genres", "gi"), ("tags", "ti")] {
-                if let Some(values) = filters.get(key).and_then(Value::as_array) {
-                    let value = values
-                        .iter()
-                        .filter_map(Value::as_str)
-                        .collect::<Vec<_>>()
-                        .join(",");
-                    if !value.is_empty() {
-                        query.append_pair(target, &value);
-                    }
+            for (key, target, operator_key, operator_target) in [
+                ("genres", "gi", "genre_operator", "gc"),
+                ("tags", "ti", "tag_operator", "tc"),
+            ] {
+                let values = selected_filter_values(filters, key);
+                if !values.is_empty() {
+                    query.append_pair(target, &values.join(","));
+                    query.append_pair(operator_target, string_filter(filters, operator_key, "and"));
                 }
             }
         }
@@ -622,6 +624,12 @@ impl NovelSource for WtrLabSource {
             select_filter("status", "Translation status", STATUS),
             select_filter("release_status", "Original status", STATUS),
             select_filter("addition_age", "Added", ADDITION_AGE),
+            select_filter("genre_operator", "Genre matching", BOOLEAN_OPERATOR),
+            FilterDefinition::Group {
+                id: "genres".into(),
+                name: "Genres".into(),
+                filters: checkbox_filters(GENRES),
+            },
             FilterDefinition::Text {
                 id: "min_chapters".into(),
                 name: "Minimum chapters".into(),
@@ -743,6 +751,26 @@ fn image(url: &str, referer: &str) -> ImageRequest {
 fn string_filter<'a>(filters: &'a Value, key: &str, default: &'a str) -> &'a str {
     filters.get(key).and_then(Value::as_str).unwrap_or(default)
 }
+fn selected_filter_values(filters: &Value, key: &str) -> Vec<String> {
+    match filters.get(key) {
+        Some(Value::Array(values)) => values
+            .iter()
+            .filter_map(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .map(str::to_owned)
+            .collect(),
+        Some(Value::Object(values)) => values
+            .iter()
+            .filter_map(|(value, enabled)| {
+                enabled
+                    .as_bool()
+                    .unwrap_or(false)
+                    .then_some(value.to_owned())
+            })
+            .collect(),
+        _ => Vec::new(),
+    }
+}
 fn parse_date(value: &str) -> Option<i64> {
     DateTime::parse_from_rfc3339(value)
         .ok()
@@ -782,6 +810,16 @@ fn select_filter(id: &str, name: &str, values: &[(&str, &str)]) -> FilterDefinit
         default_index: 0,
     }
 }
+fn checkbox_filters(values: &[(&str, &str)]) -> Vec<FilterDefinition> {
+    values
+        .iter()
+        .map(|(label, value)| FilterDefinition::CheckBox {
+            id: (*value).into(),
+            name: (*label).into(),
+            default: false,
+        })
+        .collect()
+}
 
 const ORDER_BY: &[(&str, &str)] = &[
     ("Update Date", "update"),
@@ -810,6 +848,49 @@ const ADDITION_AGE: &[(&str, &str)] = &[
     ("This month", "month"),
     ("This year", "year"),
 ];
+const BOOLEAN_OPERATOR: &[(&str, &str)] = &[("And", "and"), ("Or", "or")];
+const GENRES: &[(&str, &str)] = &[
+    ("Action", "1"),
+    ("Adult", "2"),
+    ("Adventure", "3"),
+    ("Comedy", "4"),
+    ("Drama", "5"),
+    ("Ecchi", "6"),
+    ("Erciyuan", "7"),
+    ("Fan-Fiction", "8"),
+    ("Fantasy", "9"),
+    ("Game", "10"),
+    ("Gender-Bender", "11"),
+    ("Harem", "12"),
+    ("Historical", "13"),
+    ("Horror", "14"),
+    ("Josei", "15"),
+    ("Martial-Arts", "16"),
+    ("Mature", "17"),
+    ("Mecha", "18"),
+    ("Military", "19"),
+    ("Mystery", "20"),
+    ("Psychological", "21"),
+    ("Romance", "22"),
+    ("School-Life", "23"),
+    ("Sci-Fi", "24"),
+    ("Seinen", "25"),
+    ("Shoujo", "26"),
+    ("Shoujo-Ai", "27"),
+    ("Shounen", "28"),
+    ("Shounen-Ai", "29"),
+    ("Slice-Of-Life", "30"),
+    ("Smut", "31"),
+    ("Sports", "32"),
+    ("Supernatural", "33"),
+    ("Tragedy", "34"),
+    ("Urban-Life", "35"),
+    ("Wuxia", "36"),
+    ("Xianxia", "37"),
+    ("Xuanhuan", "38"),
+    ("Yaoi", "39"),
+    ("Yuri", "40"),
+];
 
 #[cfg(target_arch = "wasm32")]
 fn extension() -> manatan_sdk::Extension {
@@ -829,6 +910,84 @@ mod tests {
         let item = WtrLabSource::parse_series(&json!({"raw_id":7,"slug":"fixture","data":{"title":"Fixture Novel","image":"https://img.wtr-lab.com/a.jpg"}})).unwrap();
         assert_eq!(item.title, "Fixture Novel");
         assert!(item.key.ends_with("/serie-7/fixture"));
+    }
+
+    #[test]
+    fn exposes_current_genre_filters() {
+        let filters = WtrLabSource::default().filters().unwrap();
+        let operator = filters
+            .iter()
+            .find(|filter| {
+                matches!(
+                    filter,
+                    FilterDefinition::Select { id, .. } if id == "genre_operator"
+                )
+            })
+            .expect("genre operator filter");
+        assert!(matches!(
+            operator,
+            FilterDefinition::Select {
+                options,
+                default_index: 0,
+                ..
+            } if options == &vec![
+                OptionItem {
+                    label: "And".into(),
+                    value: "and".into(),
+                },
+                OptionItem {
+                    label: "Or".into(),
+                    value: "or".into(),
+                },
+            ]
+        ));
+
+        let genres = filters
+            .iter()
+            .find_map(|filter| match filter {
+                FilterDefinition::Group { id, name, filters }
+                    if id == "genres" && name == "Genres" =>
+                {
+                    Some(filters)
+                }
+                _ => None,
+            })
+            .expect("genre group");
+        assert_eq!(genres.len(), 40);
+        assert!(matches!(
+            genres.first(),
+            Some(FilterDefinition::CheckBox { id, name, .. })
+                if id == "1" && name == "Action"
+        ));
+        assert!(matches!(
+            genres.last(),
+            Some(FilterDefinition::CheckBox { id, name, .. })
+                if id == "40" && name == "Yuri"
+        ));
+    }
+
+    #[test]
+    fn serializes_checkbox_genres_and_operator_for_finder() {
+        let url = WtrLabSource::finder_url_with_build_id(
+            "fixture-build",
+            2,
+            &json!({
+                "genres": {
+                    "1": true,
+                    "22": true,
+                    "40": false,
+                },
+                "genre_operator": "or",
+            }),
+        )
+        .unwrap();
+        let url = Url::parse(&url).unwrap();
+        let query = url
+            .query_pairs()
+            .collect::<std::collections::BTreeMap<_, _>>();
+        assert_eq!(query.get("gi").map(|value| value.as_ref()), Some("1,22"));
+        assert_eq!(query.get("gc").map(|value| value.as_ref()), Some("or"));
+        assert_eq!(query.get("page").map(|value| value.as_ref()), Some("2"));
     }
 
     #[test]

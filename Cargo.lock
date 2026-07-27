@@ -926,6 +926,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "nekoraw"
+version = "0.1.0"
+dependencies = [
+ "manatan-sdk",
+ "scraper",
+ "serde_json",
+ "sha2",
+ "url",
+]
+
+[[package]]
 name = "new_debug_unreachable"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"

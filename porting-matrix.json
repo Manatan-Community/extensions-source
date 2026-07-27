@@ -18727,6 +18727,38 @@
       "attribution": "Ported from keiyoushi/extensions-source."
     },
     {
+      "upstreamRepository": "local-unpublished-source",
+      "upstreamPath": "nekoraw",
+      "sourceId": "nekoraw",
+      "language": "ja",
+      "mediaKind": "manga",
+      "framework": "standalone-html",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "current-html-fixtures",
+        "unit-tests",
+        "workspace-tests",
+        "repository-validation",
+        "wasm-tools-validate",
+        "production-wasmtime-live-smoke",
+        "live-listings-search-pagination",
+        "live-deep-links",
+        "live-cover-decode",
+        "live-first-middle-last-pages"
+      ],
+      "packagePath": "packages/manga/ja/nekoraw.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "First-party port from the source author's local unpublished NekoRaw implementation."
+    },
+    {
       "upstreamRepository": "keiyoushi/extensions-source",
       "upstreamPath": "src/ja/nicomanga",
       "sourceId": "nicomanga",
