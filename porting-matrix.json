@@ -39389,6 +39389,32 @@
       "attribution": "Independent integration with AsianCTV's public catalog and player."
     },
     {
+      "upstreamRepository": "https://asianctv.cc",
+      "upstreamPath": "public catalog, search, title, episode, and embedded player pages",
+      "sourceId": "asianctvcc",
+      "language": "en",
+      "mediaKind": "video",
+      "framework": "standalone-headless-webview",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "filters",
+        "url-resolution",
+        "media-processing"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-contract-tests",
+        "signed-package-validation",
+        "ios-simulator-cover-and-native-playback"
+      ],
+      "packagePath": "packages/video/en/asianctvcc.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with AsiancTV's public catalog and player."
+    },
+    {
       "upstreamRepository": "https://soraraw.com",
       "upstreamPath": "public Next.js catalog, manga, chapter, and image-manifest data",
       "sourceId": "soraraw",
