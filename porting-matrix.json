@@ -33760,25 +33760,34 @@
       "attribution": "Adapted from LNReader plugins/chinese/Quanben.ts; runtime is reviewed compiled Rust."
     },
     {
-      "upstreamRepository": "LNReader/lnreader-plugins",
-      "upstreamPath": "plugins/chinese/69shu.ts",
-      "sourceId": "shu69",
+      "upstreamRepository": "https://www.69shuba.com",
+      "upstreamPath": "catalog, search, book, directory, and chapter pages",
+      "sourceId": "shuba69",
       "language": "zh",
       "mediaKind": "novel",
-      "framework": "chinese-standalone-lnreader-compiled-rust",
+      "framework": "standalone",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
         "filters",
-        "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "url-resolution"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "live-verified",
+      "tests": [
+        "fixture-parser-tests",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-filters",
+        "live-search",
+        "ios-simulator-catalog-cover-details-chapters",
+        "ios-simulator-chapter-text"
+      ],
+      "packagePath": "packages/novel/zh/shuba69.manatan2",
       "knownSiteFailure": null,
-      "license": "MIT",
-      "attribution": "Adapted from LNReader plugins/chinese/69shu.ts; runtime is reviewed compiled Rust."
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with the public 69书吧 catalog, search, book, directory, and chapter pages."
     },
     {
       "upstreamRepository": "yuzono/anime-extensions",
@@ -39121,27 +39130,6 @@
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
-    },
-    {
-      "upstreamRepository": "LNReader/lnreader-plugins",
-      "upstreamPath": "plugins/chinese/69shu.ts",
-      "sourceId": "69shu",
-      "language": "zh",
-      "mediaKind": "novel",
-      "framework": "chinese-standalone-lnreader-compiled-rust",
-      "requiredCapabilities": [
-        "http",
-        "filters",
-        "url-resolution",
-        "chapter-pagination",
-        "commands"
-      ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MIT",
-      "attribution": "Adapted from LNReader plugins/chinese/69shu.ts; runtime is reviewed compiled Rust."
     },
     {
       "upstreamRepository": "LNReader/lnreader-plugins",
