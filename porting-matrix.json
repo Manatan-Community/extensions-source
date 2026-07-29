@@ -32683,14 +32683,16 @@
         "url-resolution",
         "external-download-pages"
       ],
-      "status": "component-valid",
+      "status": "live-verified",
       "tests": [
         "fixture-parser-tests",
+        "encrypted-archive-password-test",
         "component-validated",
-        "live-catalog-detail-download-link"
+        "ios-simulator-live-catalog-cover",
+        "ios-simulator-live-epub-reader"
       ],
-      "packagePath": null,
-      "knownSiteFailure": "The source publishes password-protected RAW ZIP downloads rather than HTML chapter text; entries deliberately open the source-hosted download page.",
+      "packagePath": "packages/novel/ko/fucknovelpia-raw.manatan2",
+      "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Independent Korean RAW adapter sharing the MIT-licensed FuckNovelpia catalog structure."
     },

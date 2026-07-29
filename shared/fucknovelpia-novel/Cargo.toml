@@ -7,8 +7,11 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+base64.workspace = true
 manatan-common.workspace = true
 manatan-sdk.workspace = true
 regex.workspace = true
+roxmltree.workspace = true
 serde_json.workspace = true
 url.workspace = true
+zip.workspace = true

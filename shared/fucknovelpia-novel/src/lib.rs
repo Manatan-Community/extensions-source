@@ -1,5 +1,11 @@
-use std::{collections::HashSet, marker::PhantomData};
+use std::{
+    collections::{HashMap, HashSet},
+    io::{Cursor, Read},
+    marker::PhantomData,
+    path::{Component, Path},
+};
 
+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
 use manatan_common::{absolute_url, attr, normalize_space, require, selector};
 use manatan_sdk::{
     client::Client,
@@ -11,8 +17,14 @@ use manatan_sdk::{
     Error, NovelSource, Result,
 };
 use regex::Regex;
+use roxmltree::Document;
 use serde_json::{json, Value};
 use url::Url;
+use zip::ZipArchive;
+
+const RAW_ARCHIVE_PASSWORD: &[u8] = b"taiwanandnorthkorea";
+const MAX_RAW_ARCHIVE_BYTES: u64 = 256 * 1024 * 1024;
+const MAX_EPUB_UNCOMPRESSED_BYTES: u64 = 512 * 1024 * 1024;
 
 pub trait Config: 'static {
     const BASE_URL: &'static str;
@@ -23,6 +35,7 @@ pub trait Config: 'static {
 pub struct Source<C: Config> {
     client: Client,
     config: PhantomData<C>,
+    cached_epub: Option<CachedEpub>,
 }
 
 impl<C: Config> Default for Source<C> {
@@ -30,11 +43,42 @@ impl<C: Config> Default for Source<C> {
         Self {
             client: Client::browser(),
             config: PhantomData,
+            cached_epub: None,
         }
     }
 }
 
+#[derive(Clone, Debug)]
+struct EpubChapter {
+    path: String,
+    title: String,
+}
+
+#[derive(Clone, Debug)]
+struct CachedEpub {
+    book_url: String,
+    epub: Vec<u8>,
+    chapters: Vec<EpubChapter>,
+}
+
+#[derive(Clone, Debug)]
+struct RenderedEpubChapter {
+    html: String,
+    text: String,
+}
+
 impl<C: Config> Source<C> {
+    fn response_bytes(&self, url: &str) -> Result<Vec<u8>> {
+        self.client
+            .get(url)
+            .header("Referer", C::BASE_URL)
+            .cookies_for(C::BASE_URL)
+            .max_body_bytes(MAX_RAW_ARCHIVE_BYTES)
+            .send()?
+            .error_for_status()
+            .map(|response| response.into_bytes())
+    }
+
     fn response_text(&self, url: &str) -> Result<(String, String)> {
         let response = self
             .client
@@ -55,6 +99,120 @@ impl<C: Config> Source<C> {
     fn catalog_document(&self, url: &str) -> Result<(Html, String)> {
         let (text, final_url) = self.response_text(url)?;
         Ok((html::document(&catalog_fragment(&text)), final_url))
+    }
+
+    fn raw_download_url(document: &Html) -> Result<Option<String>> {
+        first_attr(document, "a.novel-download-link", "href")?
+            .map(|href| absolute_url(C::BASE_URL, &href))
+            .transpose()
+    }
+
+    fn download_epub(&self, book_url: &str, download_url: &str) -> Result<CachedEpub> {
+        let archive = self.response_bytes(download_url)?;
+        let epub = decrypt_epub_archive(&archive, RAW_ARCHIVE_PASSWORD)?;
+        let chapters = parse_epub_chapters(&epub)?;
+        require(
+            (!chapters.is_empty()).then_some(()),
+            "FuckNovelpia RAW EPUB has no readable chapters",
+        )?;
+        Ok(CachedEpub {
+            book_url: book_url.to_owned(),
+            epub,
+            chapters,
+        })
+    }
+
+    fn ensure_epub(&mut self, book_url: &str, download_url: &str) -> Result<&CachedEpub> {
+        if self
+            .cached_epub
+            .as_ref()
+            .is_none_or(|cached| cached.book_url != book_url)
+        {
+            self.cached_epub = Some(self.download_epub(book_url, download_url)?);
+        }
+        self.cached_epub
+            .as_ref()
+            .ok_or_else(|| Error::new("FuckNovelpia RAW EPUB cache is unavailable"))
+    }
+
+    fn raw_chapters(&mut self, document: &Html, book_url: &str) -> Result<Vec<NovelChapter>> {
+        let download_url = require(
+            Self::raw_download_url(document)?,
+            "FuckNovelpia RAW download is unavailable",
+        )?;
+        let cached = self.ensure_epub(book_url, &download_url)?;
+        Ok(cached
+            .chapters
+            .iter()
+            .enumerate()
+            .map(|(index, chapter)| NovelChapter {
+                key: format!("{book_url}#epub-{}", index + 1),
+                title: Some(chapter.title.clone()),
+                url: Some(book_url.to_owned()),
+                language: Some(C::LANGUAGE.to_owned()),
+                chapter_number: Some((index + 1) as f32),
+                source_order: Some(index as i32),
+                extra: [
+                    ("bookUrl".to_owned(), json!(book_url)),
+                    ("epubPath".to_owned(), json!(chapter.path)),
+                ]
+                .into_iter()
+                .collect(),
+                ..NovelChapter::default()
+            })
+            .collect())
+    }
+
+    fn raw_text(&mut self, item: &CatalogItem, chapter: &NovelChapter) -> Result<NovelText> {
+        let book_url = chapter
+            .extra
+            .get("bookUrl")
+            .and_then(Value::as_str)
+            .map(str::to_owned)
+            .unwrap_or(Self::item_url(item)?);
+        if self
+            .cached_epub
+            .as_ref()
+            .is_none_or(|cached| cached.book_url != book_url)
+        {
+            let (document, final_url) = self.document(&book_url)?;
+            let download_url = require(
+                Self::raw_download_url(&document)?,
+                "FuckNovelpia RAW download is unavailable",
+            )?;
+            self.ensure_epub(&final_url, &download_url)?;
+        }
+        let path = require(
+            chapter
+                .extra
+                .get("epubPath")
+                .and_then(Value::as_str)
+                .map(str::to_owned),
+            "FuckNovelpia RAW chapter has no EPUB path",
+        )?;
+        let cached = require(
+            self.cached_epub.as_ref(),
+            "FuckNovelpia RAW EPUB cache is unavailable",
+        )?;
+        let chapter = require(
+            cached
+                .chapters
+                .iter()
+                .find(|candidate| candidate.path == path),
+            "FuckNovelpia RAW EPUB chapter is unavailable",
+        )?;
+        let rendered = render_epub_chapter(&cached.epub, &chapter.path)?;
+        Ok(NovelText {
+            html: Some(rendered.html.clone()),
+            text: Some(rendered.text),
+            title: Some(chapter.title.clone()),
+            base_url: Some(book_url),
+            blocks: vec![NovelContentBlock::Text {
+                text: rendered.html,
+                html: true,
+            }],
+            ..NovelText::default()
+        })
     }
 
     fn browse(&self, page: u32, query: &str, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -227,31 +385,6 @@ impl<C: Config> Source<C> {
     }
 
     fn parse_chapters(document: &Html, page_url: &str) -> Result<Vec<NovelChapter>> {
-        if C::RAW_DOWNLOADS {
-            let download = first_attr(document, "a.novel-download-link", "href")?
-                .map(|href| absolute_url(C::BASE_URL, &href))
-                .transpose()?;
-            let Some(download) = download else {
-                return Ok(Vec::new());
-            };
-            return Ok(vec![NovelChapter {
-                key: download.clone(),
-                title: Some("Download Korean RAW ZIP".to_owned()),
-                url: Some(download.clone()),
-                language: Some(C::LANGUAGE.to_owned()),
-                source_order: Some(0),
-                section: Some("RAW download".to_owned()),
-                summary: Some(
-                    "The source publishes this work as a password-protected ZIP download."
-                        .to_owned(),
-                ),
-                extra: [("downloadUrl".to_owned(), json!(download))]
-                    .into_iter()
-                    .collect(),
-                ..NovelChapter::default()
-            }]);
-        }
-
         let rows = selector("#chapter-list li")?;
         let anchor_selector = selector("a[href]")?;
         let title_selector = selector(".chapter-item-main")?;
@@ -292,31 +425,6 @@ impl<C: Config> Source<C> {
     }
 
     fn parse_text(document: &Html, page_url: &str, chapter: &NovelChapter) -> Result<NovelText> {
-        if C::RAW_DOWNLOADS {
-            let download = chapter
-                .extra
-                .get("downloadUrl")
-                .and_then(Value::as_str)
-                .or(chapter.url.as_deref())
-                .unwrap_or(&chapter.key)
-                .to_owned();
-            return Ok(NovelText {
-                html: Some(
-                    "<p>This source publishes the Korean original as a password-protected ZIP. \
-                     Open the source download page to continue.</p>"
-                        .to_owned(),
-                ),
-                text: Some(
-                    "This source publishes the Korean original as a password-protected ZIP."
-                        .to_owned(),
-                ),
-                title: chapter.title.clone(),
-                base_url: Some(page_url.to_owned()),
-                blocks: vec![NovelContentBlock::PageUrl { url: download }],
-                ..NovelText::default()
-            });
-        }
-
         let reader = selector(".reader")?;
         let reader = require(
             document.select(&reader).next(),
@@ -412,14 +520,17 @@ impl<C: Config> NovelSource for Source<C> {
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
         let page_url = Self::item_url(&item)?;
         let (document, final_url) = self.document(&page_url)?;
+        if C::RAW_DOWNLOADS {
+            return self.raw_chapters(&document, &final_url);
+        }
         Self::parse_chapters(&document, &final_url)
     }
 
-    fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
-        let page_url = absolute_url(C::BASE_URL, chapter.url.as_deref().unwrap_or(&chapter.key))?;
+    fn text(&mut self, item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
         if C::RAW_DOWNLOADS {
-            return Self::parse_text(&html::document(""), &page_url, &chapter);
+            return self.raw_text(&item, &chapter);
         }
+        let page_url = absolute_url(C::BASE_URL, chapter.url.as_deref().unwrap_or(&chapter.key))?;
         let (document, final_url) = self.document(&page_url)?;
         Self::parse_text(&document, &final_url, &chapter)
     }
@@ -521,6 +632,310 @@ impl<C: Config> NovelSource for Source<C> {
             }));
         }
         Ok(None)
+    }
+}
+
+#[derive(Clone, Debug)]
+struct ManifestItem {
+    path: String,
+    media_type: String,
+}
+
+fn decrypt_epub_archive(archive: &[u8], password: &[u8]) -> Result<Vec<u8>> {
+    let mut archive =
+        ZipArchive::new(Cursor::new(archive)).map_err(|error| Error::new(error.to_string()))?;
+    let epub_index = archive
+        .file_names()
+        .position(|name| name.to_ascii_lowercase().ends_with(".epub"));
+    let epub_index = require(epub_index, "FuckNovelpia RAW ZIP contains no EPUB")?;
+    let mut file = archive
+        .by_index_decrypt(epub_index, password)
+        .map_err(|error| Error::new(format!("Failed to decrypt FuckNovelpia RAW ZIP: {error}")))?;
+    if file.size() > MAX_RAW_ARCHIVE_BYTES {
+        return Err(Error::new("FuckNovelpia RAW EPUB is too large"));
+    }
+    let mut epub = Vec::with_capacity(file.size() as usize);
+    file.read_to_end(&mut epub)
+        .map_err(|error| Error::new(format!("Failed to read FuckNovelpia RAW EPUB: {error}")))?;
+    Ok(epub)
+}
+
+fn parse_epub_chapters(epub: &[u8]) -> Result<Vec<EpubChapter>> {
+    let container = epub_file_text(epub, "META-INF/container.xml")?;
+    let container = strip_xml_doctype(&container);
+    let container = Document::parse(&container)
+        .map_err(|error| Error::new(format!("Invalid EPUB container: {error}")))?;
+    let opf_path = require(
+        container
+            .descendants()
+            .find(|node| node.tag_name().name() == "rootfile")
+            .and_then(|node| node.attribute("full-path"))
+            .map(str::to_owned),
+        "EPUB container has no package path",
+    )?;
+    let opf = epub_file_text(epub, &opf_path)?;
+    let opf = strip_xml_doctype(&opf);
+    let opf = Document::parse(&opf)
+        .map_err(|error| Error::new(format!("Invalid EPUB package: {error}")))?;
+    let mut manifest = HashMap::new();
+    for item in opf
+        .descendants()
+        .filter(|node| node.tag_name().name() == "item")
+    {
+        let (Some(id), Some(href)) = (item.attribute("id"), item.attribute("href")) else {
+            continue;
+        };
+        let path = normalize_epub_path(&opf_path, href)?;
+        let media_type = item.attribute("media-type").unwrap_or("").to_owned();
+        manifest.insert(
+            id.to_owned(),
+            ManifestItem {
+                path: path.clone(),
+                media_type: media_type.clone(),
+            },
+        );
+    }
+
+    let toc_titles = epub_toc_titles(epub, &manifest, &opf)?;
+    let mut chapters = Vec::new();
+    for idref in opf
+        .descendants()
+        .filter(|node| node.tag_name().name() == "itemref")
+        .filter_map(|node| node.attribute("idref"))
+    {
+        let Some(item) = manifest.get(idref) else {
+            continue;
+        };
+        if !item.media_type.contains("html") {
+            continue;
+        }
+        let title = toc_titles
+            .get(&item.path)
+            .cloned()
+            .or_else(|| epub_chapter_title(epub, &item.path).ok().flatten())
+            .unwrap_or_else(|| format!("Chapter {}", chapters.len() + 1));
+        chapters.push(EpubChapter {
+            path: item.path.clone(),
+            title,
+        });
+    }
+    Ok(chapters)
+}
+
+fn epub_chapter_title(epub: &[u8], chapter_path: &str) -> Result<Option<String>> {
+    let contents = epub_file_text(epub, chapter_path)?;
+    let document = html::document(&contents);
+    for selector_value in ["head title", "body h1", "body h2"] {
+        let title_selector = selector(selector_value)?;
+        if let Some(title) = document
+            .select(&title_selector)
+            .next()
+            .map(html::text)
+            .map(|title| normalize_space(&title))
+            .filter(|title| !title.is_empty())
+        {
+            return Ok(Some(title));
+        }
+    }
+    Ok(None)
+}
+
+fn render_epub_chapter(epub: &[u8], chapter_path: &str) -> Result<RenderedEpubChapter> {
+    let contents = epub_file_text(epub, chapter_path)?;
+    let document = html::document(&contents);
+    let body_selector = selector("body")?;
+    let body = require(
+        document.select(&body_selector).next(),
+        format!("EPUB chapter has no body: {chapter_path}"),
+    )?;
+    let html = inline_epub_images(&body.inner_html(), chapter_path, epub)?;
+    require(
+        (!html.trim().is_empty()).then_some(()),
+        format!("EPUB chapter is empty: {chapter_path}"),
+    )?;
+    Ok(RenderedEpubChapter {
+        html,
+        text: normalize_space(&html::text(body)),
+    })
+}
+
+fn epub_file_bytes(epub: &[u8], path: &str) -> Result<Vec<u8>> {
+    let mut archive = ZipArchive::new(Cursor::new(epub))
+        .map_err(|error| Error::new(format!("Invalid EPUB ZIP: {error}")))?;
+    let mut file = archive
+        .by_name(path)
+        .map_err(|error| Error::new(format!("EPUB file is missing ({path}): {error}")))?;
+    if file.size() > MAX_EPUB_UNCOMPRESSED_BYTES {
+        return Err(Error::new(format!("EPUB entry is too large: {path}")));
+    }
+    let mut bytes = Vec::with_capacity(file.size() as usize);
+    file.read_to_end(&mut bytes)
+        .map_err(|error| Error::new(format!("Failed to extract EPUB entry {path}: {error}")))?;
+    Ok(bytes)
+}
+
+fn epub_file_text(epub: &[u8], path: &str) -> Result<String> {
+    String::from_utf8(epub_file_bytes(epub, path)?)
+        .map_err(|error| Error::new(format!("EPUB file is not UTF-8 ({path}): {error}")))
+}
+
+fn epub_toc_titles(
+    epub: &[u8],
+    manifest: &HashMap<String, ManifestItem>,
+    opf: &Document<'_>,
+) -> Result<HashMap<String, String>> {
+    let toc_id = opf
+        .descendants()
+        .find(|node| node.tag_name().name() == "spine")
+        .and_then(|node| node.attribute("toc"));
+    let toc_item = toc_id.and_then(|id| manifest.get(id)).or_else(|| {
+        manifest
+            .values()
+            .find(|item| item.media_type == "application/x-dtbncx+xml")
+    });
+    let Some(toc_item) = toc_item else {
+        return Ok(HashMap::new());
+    };
+    let toc = epub_file_text(epub, &toc_item.path)?;
+    let toc = strip_xml_doctype(&toc);
+    let toc = Document::parse(&toc)
+        .map_err(|error| Error::new(format!("Invalid EPUB navigation: {error}")))?;
+    let mut titles = HashMap::new();
+    for nav_point in toc
+        .descendants()
+        .filter(|node| node.tag_name().name() == "navPoint")
+    {
+        let title = nav_point
+            .descendants()
+            .find(|node| node.tag_name().name() == "navLabel")
+            .and_then(|label| {
+                label
+                    .descendants()
+                    .find(|node| node.tag_name().name() == "text")
+            })
+            .and_then(|node| node.text())
+            .map(normalize_space)
+            .filter(|value| !value.is_empty());
+        let src = nav_point
+            .descendants()
+            .find(|node| node.tag_name().name() == "content")
+            .and_then(|node| node.attribute("src"));
+        if let (Some(title), Some(src)) = (title, src) {
+            titles.insert(normalize_epub_path(&toc_item.path, src)?, title);
+        }
+    }
+    Ok(titles)
+}
+
+fn inline_epub_images(body_html: &str, chapter_path: &str, epub: &[u8]) -> Result<String> {
+    let source = Regex::new(r#"(?i)(src|xlink:href)\s*=\s*(["'])([^"']+)(["'])"#)
+        .map_err(|error| Error::new(error.to_string()))?;
+    let mut images = HashMap::new();
+    for captures in source.captures_iter(body_html) {
+        let Some(candidate) = captures.get(3).map(|value| value.as_str()) else {
+            continue;
+        };
+        if candidate.starts_with("data:")
+            || candidate.starts_with("http://")
+            || candidate.starts_with("https://")
+        {
+            continue;
+        }
+        let Ok(path) = normalize_epub_path(chapter_path, candidate) else {
+            continue;
+        };
+        let Ok(bytes) = epub_file_bytes(epub, &path) else {
+            continue;
+        };
+        images.insert(
+            candidate.to_owned(),
+            format!(
+                "data:{};base64,{}",
+                media_type_from_path(&path),
+                BASE64_STANDARD.encode(bytes)
+            ),
+        );
+    }
+    Ok(source
+        .replace_all(body_html, |captures: &regex::Captures<'_>| {
+            let candidate = captures.get(3).map(|value| value.as_str()).unwrap_or("");
+            let Some(data_url) = images.get(candidate) else {
+                return captures[0].to_owned();
+            };
+            format!(
+                "{}={}{}{}",
+                &captures[1], &captures[2], data_url, &captures[4]
+            )
+        })
+        .into_owned())
+}
+
+fn normalize_epub_path(base_file: &str, candidate: &str) -> Result<String> {
+    let candidate = candidate
+        .split(['#', '?'])
+        .next()
+        .unwrap_or(candidate)
+        .trim_start_matches('/');
+    let joined = Path::new(base_file)
+        .parent()
+        .unwrap_or_else(|| Path::new(""))
+        .join(candidate);
+    let mut parts = Vec::new();
+    for component in joined.components() {
+        match component {
+            Component::Normal(value) => parts.push(value.to_string_lossy().into_owned()),
+            Component::ParentDir => {
+                if parts.pop().is_none() {
+                    return Err(Error::new("EPUB resource escapes the archive root"));
+                }
+            }
+            Component::CurDir => {}
+            Component::Prefix(_) | Component::RootDir => {
+                return Err(Error::new("EPUB resource path is invalid"));
+            }
+        }
+    }
+    Ok(parts.join("/"))
+}
+
+fn strip_xml_doctype(value: &str) -> String {
+    let Some(start) = value.find("<!DOCTYPE") else {
+        return value.to_owned();
+    };
+    let mut bracket_depth = 0_u32;
+    let mut end = None;
+    for (offset, character) in value[start..].char_indices() {
+        match character {
+            '[' => bracket_depth = bracket_depth.saturating_add(1),
+            ']' => bracket_depth = bracket_depth.saturating_sub(1),
+            '>' if bracket_depth == 0 => {
+                end = Some(start + offset + character.len_utf8());
+                break;
+            }
+            _ => {}
+        }
+    }
+    let Some(end) = end else {
+        return value[..start].to_owned();
+    };
+    format!("{}{}", &value[..start], &value[end..])
+}
+
+fn media_type_from_path(path: &str) -> &'static str {
+    match Path::new(path)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase()
+        .as_str()
+    {
+        "avif" => "image/avif",
+        "gif" => "image/gif",
+        "jpeg" | "jpg" => "image/jpeg",
+        "png" => "image/png",
+        "svg" => "image/svg+xml",
+        "webp" => "image/webp",
+        _ => "application/octet-stream",
     }
 }
 
@@ -695,6 +1110,8 @@ fn escape_html(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use std::io::Write;
+
     use super::*;
 
     struct English;
@@ -806,16 +1223,77 @@ mod tests {
     }
 
     #[test]
-    fn exposes_korean_raw_download_as_a_host_page() {
+    fn resolves_korean_raw_download_url() {
         let document = html::document(
             r#"<a class="novel-download-link" href="/download.php?slug=1">Download</a>"#,
         );
-        let chapters = Source::<Korean>::parse_chapters(&document, Korean::BASE_URL).unwrap();
+        assert_eq!(
+            Source::<Korean>::raw_download_url(&document)
+                .unwrap()
+                .as_deref(),
+            Some("https://raw-fucknovelpia.com/download.php?slug=1")
+        );
+    }
+
+    #[test]
+    fn parses_epub_spine_titles_text_and_inline_images() {
+        let mut writer = zip::ZipWriter::new(Cursor::new(Vec::new()));
+        let options = zip::write::SimpleFileOptions::default();
+        for (path, contents) in [
+            (
+                "META-INF/container.xml",
+                br#"<container><rootfiles><rootfile full-path="OEBPS/content.opf"/></rootfiles></container>"#
+                    .as_slice(),
+            ),
+            (
+                "OEBPS/content.opf",
+                br#"<package><manifest>
+                    <item id="toc" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+                    <item id="chapter" href="Text/chapter.xhtml" media-type="application/xhtml+xml"/>
+                    <item id="image" href="Images/art.png" media-type="image/png"/>
+                    </manifest><spine toc="toc"><itemref idref="chapter"/></spine></package>"#
+                    .as_slice(),
+            ),
+            (
+                "OEBPS/toc.ncx",
+                br#"<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+                    <ncx><navMap><navPoint><navLabel><text>EPUB chapter title</text></navLabel>
+                    <content src="Text/chapter.xhtml"/></navPoint></navMap></ncx>"#
+                    .as_slice(),
+            ),
+            (
+                "OEBPS/Text/chapter.xhtml",
+                br#"<html><head><title>Fallback</title></head><body>
+                    <h1>Heading</h1><p>Hello EPUB.</p><img src="../Images/art.png"/>
+                    </body></html>"#
+                    .as_slice(),
+            ),
+            ("OEBPS/Images/art.png", b"png".as_slice()),
+        ] {
+            writer.start_file(path, options).unwrap();
+            writer.write_all(contents).unwrap();
+        }
+        let epub = writer.finish().unwrap().into_inner();
+
+        let chapters = parse_epub_chapters(&epub).unwrap();
+        let rendered = render_epub_chapter(&epub, &chapters[0].path).unwrap();
         assert_eq!(chapters.len(), 1);
-        let text = Source::<Korean>::parse_text(&document, Korean::BASE_URL, &chapters[0]).unwrap();
-        assert!(matches!(
-            text.blocks.as_slice(),
-            [NovelContentBlock::PageUrl { .. }]
-        ));
+        assert_eq!(chapters[0].title, "EPUB chapter title");
+        assert!(rendered.text.contains("Hello EPUB."));
+        assert!(rendered.html.contains("src=\"data:image/png;base64,cG5n\""));
+    }
+
+    #[test]
+    fn decrypts_raw_archive_with_shared_password() {
+        const ENCRYPTED_FIXTURE: &str = "UEsDBBQACQAIAHl0/VwMkwwrMgIAAMoEAAAWABwAY29kZXgtZm5wLWZpeHR1cmUuZXB1YlVUCQADJWRqaiVkamp1eAsAAQT1AQAABAAAAACvK7vc3JXgfLoEuvd5xhgPQH7iOS9L82NAImOZ3QCAF4MhanKI7VNYbr/vdNxhBO57POEYEhihJUNd+24hAdo0bO/FQJXRMSpCCaJvYmb1vVpmjkDXIXRxqn3kxCtV9jCwf5EsczjlDVHnEGaWMjinXovFEF0rdewVeXowtC10ADDNRNAcK0T4umImQ6SM0ARsF6eiDZKXmMpMD16c7ybWT+egxk/D2Jbje0X77izje83jiYQ1gArrTkvdX0LKB6Bdl6wThfUoa7zlD2ZBKdx4bLFqps2oTKasqgDrPj7ZRwBpRVIgob6dYKmBMflmf5KguU8khdpmFAM1+qEHxLF67yks1a9S37FnsXsQbTDFlGC/OFU0M+tko+yJu+EsBnTi2RVXMlzFWJ2OSYbBTkQXZQ6WeNVcjJrwmqtc5RCQWdi8h4bNiHh40aK/xCdXgUpCuJBaeOotPM4Wxw82A+AMefSbi2H1sksOj0rfHxd9mDEpeQtvGXsjesB+VHNoHdHbmdZ0ov3xY4F8NziQTt0B1ZYOcKiSzVpIErspae7YyTJS1DzcJWC70MTlTYZc4s3wmNOjVBnEhkEU9re6iAgUrfIKAoZmIvMkY1UFJCbl+7lbSq3uHbrbabvTvAxU8OO79gRr8i4Hxu2dTc5DbIPULrYSv5q/P5UIlUId2DFrhJuGXxYmCJsL764Jt6PCqtKqFXFs3bNSNNIVgzhsx+AGXjzIvF5EbFMuKai9Ies6WIQgUEsHCAyTDCsyAgAAygQAAFBLAQIeAxQACQAIAHl0/VwMkwwrMgIAAMoEAAAWABgAAAAAAAAAAACkgQAAAABjb2RleC1mbnAtZml4dHVyZS5lcHViVVQFAAMlZGpqdXgLAAEE9QEAAAQAAAAAUEsFBgAAAAABAAEAXAAAAJICAAAAAA==";
+        let archive = BASE64_STANDARD.decode(ENCRYPTED_FIXTURE).unwrap();
+        let epub = decrypt_epub_archive(&archive, RAW_ARCHIVE_PASSWORD).unwrap();
+        let chapters = parse_epub_chapters(&epub).unwrap();
+        let rendered = render_epub_chapter(&epub, &chapters[0].path).unwrap();
+
+        assert_eq!(chapters.len(), 1);
+        assert_eq!(chapters[0].title, "Fixture chapter");
+        assert!(rendered.text.contains("Decrypted EPUB text."));
+        assert!(decrypt_epub_archive(&archive, b"wrong-password").is_err());
     }
 }
