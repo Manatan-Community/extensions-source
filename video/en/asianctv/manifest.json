@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 2,
+  "id": "asianctv",
+  "name": "AsianCTV",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Asian drama catalog and English-subtitled streams from AsianCTV.",
+  "author": "Manatan Community",
+  "homepage": "https://asianctv.in",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://asianctv.in",
+        "https://vidbasic.live",
+        "https://megaplay.buzz",
+        "https://api.vidbasic.live",
+        "https://pp.dramasplay.buzz",
+        "https://*.dramasplay.buzz",
+        "https://*.newdramaplay.buzz",
+        "https://*.dramaplay.click",
+        "https://*.dramaplay1.click",
+        "https://*.dramaplay2.click",
+        "https://*.dramaplay2.cfd",
+        "https://*.dramaplay2.lat",
+        "https://*.3dramaplay.asia",
+        "https://cdn.jsdelivr.net",
+        "https://code.jquery.com",
+        "https://statlytic.net"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "e849de507d2cabc63fd1b19d3884bcb6b4ea6fb915e592153ed816a3fdb3f9f9"
+    }
+  ],
+  "sources": [
+    {
+      "id": "asianctv",
+      "name": "AsianCTV",
+      "lang": "en",
+      "contentType": "video",
+      "baseUrl": "https://asianctv.in",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "webview": true,
+        "urlResolution": true,
+        "mediaProcessing": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://asianctv.in/series/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://asianctv.in/*-episode-*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "asian-drama",
+        "english-subtitles"
+      ]
+    }
+  ]
+}

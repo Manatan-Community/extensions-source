@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 2,
+  "id": "shuttletv",
+  "name": "ShuttleTV",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Movies and television from ShuttleTV.",
+  "author": "Manatan Community",
+  "homepage": "https://shuttletv.su",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://shuttletv.su",
+        "https://api.themoviedb.org",
+        "https://image.tmdb.org",
+        "https://cinesrc.st",
+        "https://a.cineflix.st",
+        "https://*.bright67.online",
+        "https://fembox.aether.bar"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "eabefbe6762d50a03097f1ea999105bec0c2b756da6c83a6c6cb64f23ad3f58d"
+    }
+  ],
+  "sources": [
+    {
+      "id": "shuttletv",
+      "name": "ShuttleTV",
+      "lang": "en",
+      "contentType": "video",
+      "baseUrl": "https://shuttletv.su",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "webview": true,
+        "urlResolution": true,
+        "mediaProcessing": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Trending Today"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://shuttletv.su/title/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://shuttletv.su/watch/*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "movies",
+        "tv"
+      ]
+    }
+  ]
+}

@@ -134,6 +134,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "asianctv-video"
+version = "0.1.0"
+dependencies = [
+ "manatan-sdk",
+ "regex",
+ "scraper",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -739,6 +750,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-ar-kolnovel"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "manatan-novel-en-cyrisia"
 version = "0.1.0"
 dependencies = [
@@ -1321,6 +1343,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "shuttletv-video"
+version = "0.1.0"
+dependencies = [
+ "manatan-sdk",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "signature"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1346,6 +1377,20 @@ name = "smallvec"
 version = "1.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
+
+[[package]]
+name = "soraraw"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "chrono",
+ "manatan-sdk",
+ "scraper",
+ "serde",
+ "serde_json",
+ "sha2",
+ "url",
+]
 
 [[package]]
 name = "spdx"

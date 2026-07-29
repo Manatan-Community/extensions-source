@@ -1,0 +1,13 @@
+<html><body>
+  <article>
+    <style>.decoy, .another-hidden { display: none; }</style>
+    <h1 class="entry-title">الفصل الأول</h1>
+    <div class="epcontent">
+      <p>هذا هو النص الحقيقي.</p>
+      <p class="decoy">نص مزيف.</p>
+      <div class="code-block">إعلان مخفي.</div>
+      <p onclick="alert('bad')">فقرة سليمة.</p>
+      <script>alert("bad")</script>
+    </div>
+  </article>
+</body></html>

@@ -27736,25 +27736,33 @@
       "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
     },
     {
-      "upstreamRepository": "LNReader/lnreader-plugins",
-      "upstreamPath": "plugins/multisrc/lightnovelwp/sources.json#kolnovel",
+      "upstreamRepository": "https://kolnovel.com",
+      "upstreamPath": "series, search, and chapter pages",
       "sourceId": "kolnovel",
       "language": "ar",
       "mediaKind": "novel",
-      "framework": "lightnovelwp-lnreader",
+      "framework": "standalone-lightnovelwp",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
         "filters",
-        "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "url-resolution"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MIT",
-      "attribution": "Generated from the MIT-licensed LNReader LightNovelWP descriptor; runtime behavior is compiled Rust."
+      "status": "live-verified",
+      "tests": [
+        "fixture-parser-tests",
+        "locked-content-fail-closed-test",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-filters",
+        "live-catalog-cover-details-chapters",
+        "live-chapter-text"
+      ],
+      "packagePath": "packages/novel/ar/kolnovel.manatan2",
+      "knownSiteFailure": "KolNovel responses are currently very slow (roughly 59-75 seconds before content in live checks); subscription-only chapters require the user to sign in through Web View.",
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with KolNovel's public catalog, series, and chapter pages."
     },
     {
       "upstreamRepository": "LNReader/lnreader-plugins",
@@ -39341,6 +39349,83 @@
       "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Independent integration with Novel Archive's public catalog and chapter APIs."
+    },
+    {
+      "upstreamRepository": "https://shuttletv.su",
+      "upstreamPath": "public TMDB catalog and CineSrc embed",
+      "sourceId": "shuttletv",
+      "language": "en",
+      "mediaKind": "video",
+      "framework": "standalone-headless-webview",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "url-resolution",
+        "media-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "fixture-contract-tests",
+        "live-cinesrc-browser-playback",
+        "ios-simulator-cover-and-native-playback"
+      ],
+      "packagePath": "packages/video/en/shuttletv.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with ShuttleTV's public catalog and player."
+    },
+    {
+      "upstreamRepository": "https://asianctv.in",
+      "upstreamPath": "public drama, series, episode, and VidBasic pages",
+      "sourceId": "asianctv",
+      "language": "en",
+      "mediaKind": "video",
+      "framework": "standalone-headless-webview",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "filters",
+        "url-resolution",
+        "media-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "fixture-parser-tests",
+        "ios-simulator-cover-and-native-playback"
+      ],
+      "packagePath": "packages/video/en/asianctv.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with AsianCTV's public catalog and player."
+    },
+    {
+      "upstreamRepository": "https://soraraw.com",
+      "upstreamPath": "public Next.js catalog, manga, chapter, and image-manifest data",
+      "sourceId": "soraraw",
+      "language": "ja",
+      "mediaKind": "manga",
+      "framework": "standalone-next-data",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "fixture-contract-tests",
+        "encrypted-image-manifest-tests",
+        "content-rating-tests",
+        "url-resolution-tests",
+        "production-runtime-popular-latest-search-details-chapters",
+        "live-cover-and-first-middle-last-pages",
+        "ios-simulator-cover-and-page-loading"
+      ],
+      "packagePath": "packages/manga/ja/soraraw.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with SoraRaw's public catalog and reader data."
     }
   ]
 }
