@@ -34703,9 +34703,15 @@
         "hoster-resolution",
         "media-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "live-verified",
+      "tests": [
+        "cargo test -p witanime-video --lib",
+        "live-browser-catalog-details-episode-player-registry",
+        "ios-simulator-live-catalog-cover-details-episodes-video",
+        "android-emulator-live-catalog-cover-details-episodes-video",
+        "ios-android-1080p-h264-aac-segment"
+      ],
+      "packagePath": "packages/video/ar/witanime.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."

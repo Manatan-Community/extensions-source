@@ -1857,6 +1857,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "witanime-video"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "manatan-sdk",
+ "regex",
+ "scraper",
+ "serde",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "writeable"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
