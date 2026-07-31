@@ -10,6 +10,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+base64.workspace = true
 manatan-sdk.workspace = true
 scraper.workspace = true
 serde.workspace = true

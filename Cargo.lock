@@ -924,6 +924,7 @@ dependencies = [
 name = "mangafire"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "manatan-sdk",
  "scraper",
  "serde",

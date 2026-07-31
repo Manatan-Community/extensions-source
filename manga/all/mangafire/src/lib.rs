@@ -1,5 +1,9 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
+use base64::{
+    engine::general_purpose::{STANDARD, URL_SAFE_NO_PAD},
+    Engine as _,
+};
 use manatan_sdk::{
     client::{BrowserChallengePolicy, Client},
     context, CatalogItem, Error, FilterDefinition, MangaChapter, MangaPage, MangaSource,
@@ -13,6 +17,8 @@ use url::Url;
 
 const BASE_URL: &str = "https://mangafire.to";
 const REFERER: &str = "https://mangafire.to/";
+const BROWSER_USER_AGENT: &str =
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/138 Safari/537.36";
 const REQUEST_LIMIT_MS: u32 = 500;
 const PAGE_SIZE: u32 = 50;
 const CHAPTER_PAGE_SIZE: u32 = 200;
@@ -31,6 +37,12 @@ const PLAY_BLOCKED_LABELS: [&str; 8] = [
     "pornographic",
     "smut",
 ];
+const VRF_TABLE_1: &str = "yINlmUNho8VYJT+ibTIP+9ESiULpVEtMOoD6U6lRE0R/xwXo/Xp9NrUgC4cw/Lmo33vUyjUE40kUoEWIr/fxfNNcq2s79ShQ5NhNrFnJ4hXPwOu/SuXzIbuTQKGFvfm08E9jvCfqAtoDqvQq3dVWPQFmJjgvkISBeXY3BgANR+yVnjGbcxZ47d6kLNfZPIayTq3/YGySb1KuVZodWp/WGNAO5pfMcpaK53Hhs0allBszaMaxuouOwdxbwgxIw6YunSsXjI05Yi0j9j4eHKfSXR8Ifo/Od+8iamRfCXTyvm7NGRGYdcQ0ywcK/u6RXhrbcCm4t2eCtrDgQVecJGkQ+A==";
+const VRF_KEY_1: &str = "0Ec58JOY3uBzJK9m3zqIOpdlF7UFiax9DmA=";
+const VRF_TABLE_2: &str = "IUFltCxD3Oc2cwCgkJffthaOg9cgPUb0LgW6H/VtfcF0kc5F25t+aWj6JH9VOhOaY0rAFdUxlDnl5BLNvwEJvQtP5qcw7vdb/K+chnbwnspSHT8mz5lqwz41TezG0hkO06FTjJZhsyNuFLDpD2ZZxQj/QIRcF90zpmQ7Byu483WsQqUE0C342HL+JXngRB6fRzxRyVTaKu83h7UYTJ0QMt6ixFh6S3F8gqkKwrGTL3jHNBsD45UnifK8+RGtishQV2K3rujLKEkiZxpr2dYcudFW4oFsDKhad3CLBvuyTqsCo4B7mL5IKQ1vXo/MOOvq1I1d8ar9X6Ttu5KF4fZgiA==";
+const VRF_KEY_2: &str = "AAdjb1iPY8CiDmq9H34tKTBF8a3oDQ==";
+const VRF_TABLE_3: &str = "NQHlu1/wVO5EmkwQymF810qqY2xG1k2obcas4Z9mCsPEIFl9pRIjFxbJ7ybMHbBckT5Ton85E0FOeHezbh/mjlEYpmpnlXOS8dgrqeq2KfxImTh1YK9y0PeMNhzA1OQzSY9brYOJq/l2QnE/hwOeZIhPixVSKIUlDb5vLcH6RWKxkIEMuP0bDwIqQ71AJJaEaMJL7A6YtyIwoRT+L5v4aZzodN/0+3nOGsfblFjgxSfPzVDjNFeNl5P26+kEC/8AHgdrpAbt3hHz3HrRN1Y6e+JHgF7ncFWnoF0y3THL1S71WgWGCa6KtSzTCCG58n68nTyj2T3Sshk7utqCtMi/ZQ==";
+const VRF_KEY_3: &str = "DELOJgPsVaCcblDtTGMdHzM=";
 
 pub struct MangaFireSource {
     client: Client,
@@ -51,9 +63,10 @@ impl Default for MangaFireSource {
 
 impl MangaFireSource {
     fn get_json<T: DeserializeOwned>(&self, url: &str) -> Result<T> {
+        let url = signed_api_url(url)?;
         let response = self
             .client
-            .get(url)
+            .get(&url)
             .rate_limit("mangafire", REQUEST_LIMIT_MS)
             .send_with_challenge(&self.challenge)?
             .error_for_status()?;
@@ -69,28 +82,16 @@ impl MangaFireSource {
         LanguageVariant::from_source_code(&preferred)
     }
 
-    fn safe_catalog_page(&self, payload: ApiResponse<MangaDto>) -> Result<Paged<CatalogItem>> {
+    fn filtered_catalog_page(payload: ApiResponse<MangaDto>) -> Paged<CatalogItem> {
         let has_next_page = payload.meta.map(|meta| meta.has_next).unwrap_or(false);
-        let mut entries = Vec::with_capacity(payload.items.len());
-        for entry in payload.items {
-            let Ok(details) = self
-                .get_json::<MangaDetailsResponse>(&format!("{BASE_URL}/api/titles/{}", entry.hid))
-            else {
-                // Catalog objects do not contain a content classification. If
-                // classification cannot be fetched, fail closed and do not
-                // expose even the title or cover.
-                continue;
-            };
-            if let Ok(content_rating) = details.data.play_content_rating() {
-                let mut item = entry.into_catalog_item();
-                item.content_rating = Some(content_rating);
-                entries.push(item);
-            }
-        }
-        Ok(Paged {
-            entries,
+        Paged {
+            entries: payload
+                .items
+                .into_iter()
+                .map(MangaDto::into_catalog_item)
+                .collect(),
             has_next_page,
-        })
+        }
     }
 
     fn ensure_safe_title(&self, item_key_or_url: &str) -> Result<MangaDetailsDto> {
@@ -106,13 +107,13 @@ impl MangaSource for MangaFireSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = listing_url("views_30d", "desc", page)?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        self.safe_catalog_page(payload)
+        Ok(Self::filtered_catalog_page(payload))
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = listing_url("chapter_updated_at", "desc", page)?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        self.safe_catalog_page(payload)
+        Ok(Self::filtered_catalog_page(payload))
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -132,7 +133,7 @@ impl MangaSource for MangaFireSource {
 
         let url = search_url(query, page, filters, author_id.as_deref())?;
         let payload: ApiResponse<MangaDto> = self.get_json(&url)?;
-        self.safe_catalog_page(payload)
+        Ok(Self::filtered_catalog_page(payload))
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -561,10 +562,15 @@ struct PageDto {
 
 impl PageDto {
     fn into_manga_page(self, index: usize) -> Result<MangaPage> {
+        let context = BTreeMap::from([
+            ("Accept".to_owned(), "application/json".to_owned()),
+            ("Referer".to_owned(), REFERER.to_owned()),
+            ("User-Agent".to_owned(), BROWSER_USER_AGENT.to_owned()),
+        ]);
         Ok(MangaPage {
             content: PageContent::Url {
                 url: self.url,
-                context: None,
+                context: Some(context),
             },
             description: Some(format!("Page {}", index + 1)),
             ..MangaPage::default()
@@ -796,6 +802,88 @@ fn append_play_safety_filters(url: &mut Url) {
     for value in PLAY_ALLOWED_CONTENT_RATINGS {
         pairs.append_pair("content_rating[]", value);
     }
+}
+
+fn signed_api_url(candidate: &str) -> Result<String> {
+    let mut url = Url::parse(candidate).map_err(url_error)?;
+    let Some(path) = url.path().strip_prefix("/api") else {
+        return Ok(candidate.to_owned());
+    };
+
+    let mut params = url
+        .query_pairs()
+        .map(|(key, value)| (key.into_owned(), value.into_owned()))
+        .collect::<Vec<_>>();
+    params.sort_by(|left, right| left.0.cmp(&right.0));
+
+    let mut canonical = path.to_owned();
+    if !params.is_empty() {
+        canonical.push('?');
+        let mut previous_array_key = "";
+        let mut array_index = 0_usize;
+        for (position, (key, value)) in params.iter().enumerate() {
+            if position > 0 {
+                canonical.push('&');
+            }
+            if let Some(base_key) = key.strip_suffix("[]") {
+                if previous_array_key != key {
+                    previous_array_key = key;
+                    array_index = 0;
+                }
+                canonical.push_str(base_key);
+                canonical.push('[');
+                canonical.push_str(&array_index.to_string());
+                canonical.push(']');
+                array_index += 1;
+            } else {
+                canonical.push_str(key);
+            }
+            canonical.push('=');
+            canonical.push_str(value);
+        }
+    }
+
+    url.set_query(None);
+    {
+        let mut query = url.query_pairs_mut();
+        for (key, value) in params {
+            query.append_pair(&key, &value);
+        }
+        query.append_pair("vrf", &vrf_sign(&canonical)?);
+    }
+    Ok(url.to_string())
+}
+
+fn vrf_sign(input: &str) -> Result<String> {
+    let mut data = input.as_bytes().to_vec();
+    for (table, key, iv) in [
+        (VRF_TABLE_1, VRF_KEY_1, 0x5A),
+        (VRF_TABLE_2, VRF_KEY_2, 0x35),
+        (VRF_TABLE_3, VRF_KEY_3, 0xBA),
+    ] {
+        let table = STANDARD
+            .decode(table)
+            .map_err(|error| Error::new(format!("Invalid MangaFire VRF table: {error}")))?;
+        let key = STANDARD
+            .decode(key)
+            .map_err(|error| Error::new(format!("Invalid MangaFire VRF key: {error}")))?;
+        if table.len() != 256 || key.is_empty() {
+            return Err(Error::new("Invalid MangaFire VRF stage"));
+        }
+        data = vrf_encrypt_stage(&data, &table, &key, iv);
+    }
+    Ok(URL_SAFE_NO_PAD.encode(data))
+}
+
+fn vrf_encrypt_stage(data: &[u8], table: &[u8], key: &[u8], iv: usize) -> Vec<u8> {
+    let mut output = Vec::with_capacity(data.len());
+    let mut previous = iv;
+    for (index, byte) in data.iter().enumerate() {
+        previous =
+            table[(*byte as usize ^ key[index % key.len()] as usize ^ previous) & 0xFF] as usize;
+        output.push(previous as u8);
+    }
+    output
 }
 
 fn tag_lookup_url(query: &str) -> Result<String> {
@@ -1270,26 +1358,49 @@ mod tests {
     }
 
     #[test]
+    fn signs_api_requests_with_upstream_sorted_array_semantics() {
+        let signed = signed_api_url(
+            "https://mangafire.to/api/titles?content_rating%5B%5D=suggestive&page=1&content_rating%5B%5D=safe&limit=50",
+        )
+        .expect("signed API URL");
+        let url = Url::parse(&signed).expect("signed URL parses");
+        let query = url
+            .query_pairs()
+            .map(|(key, value)| (key.into_owned(), value.into_owned()))
+            .collect::<Vec<_>>();
+
+        assert_eq!(
+            query,
+            vec![
+                ("content_rating[]".to_owned(), "suggestive".to_owned()),
+                ("content_rating[]".to_owned(), "safe".to_owned()),
+                ("limit".to_owned(), "50".to_owned()),
+                ("page".to_owned(), "1".to_owned()),
+                (
+                    "vrf".to_owned(),
+                    "8sK3xtqdFZdOu6WNqS1bZ0shnUDqyRXMnh4NiR8jL8tWJ0vrNk9ygltAj7dHSy6V9oIm8rqHhDViwGuQlOsQX2U3Cxyyix5QTit9"
+                        .to_owned(),
+                ),
+            ]
+        );
+    }
+
+    #[test]
     fn maps_catalog_and_details_fixtures() {
         let popular: ApiResponse<MangaDto> =
             serde_json::from_str(POPULAR_FIXTURE).expect("popular fixture parses");
-        let has_next = popular.meta.as_ref().is_some_and(|meta| meta.has_next);
-        let entries = popular
-            .items
-            .into_iter()
-            .map(MangaDto::into_catalog_item)
-            .collect::<Vec<_>>();
-        assert_eq!(entries.len(), 2);
-        assert_eq!(entries[0].key, "/title/kw9j9-blue-lockk");
-        assert_eq!(entries[0].title, "Blue Lock");
+        let page = MangaFireSource::filtered_catalog_page(popular);
+        assert_eq!(page.entries.len(), 2);
+        assert_eq!(page.entries[0].key, "/title/kw9j9-blue-lockk");
+        assert_eq!(page.entries[0].title, "Blue Lock");
         assert_eq!(
-            entries[0]
+            page.entries[0]
                 .cover
                 .as_ref()
                 .map(|request| request.url.as_str()),
             Some("https://static.mfcdn.nl/4b71/i/f/0c/poster.jpg")
         );
-        assert!(has_next);
+        assert!(page.has_next_page);
 
         let details: MangaDetailsResponse =
             serde_json::from_str(DETAILS_FIXTURE).expect("details fixture parses");
@@ -1378,8 +1489,14 @@ mod tests {
             .collect::<Vec<_>>();
         assert_eq!(mapped.len(), 2);
         match &mapped[0].content {
-            PageContent::Url { url, .. } => {
+            PageContent::Url { url, context } => {
                 assert_eq!(url, "https://nw8.mfcdn1.xyz/mf/abc/h/p.jpg");
+                let context = context.as_ref().expect("page request context");
+                assert_eq!(
+                    context.get("User-Agent").map(String::as_str),
+                    Some(BROWSER_USER_AGENT)
+                );
+                assert_eq!(context.get("Referer").map(String::as_str), Some(REFERER));
             }
             other => panic!("expected direct page url, got {other:?}"),
         }
