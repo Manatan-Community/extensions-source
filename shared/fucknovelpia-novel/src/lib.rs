@@ -25,6 +25,7 @@ use zip::ZipArchive;
 const RAW_ARCHIVE_PASSWORD: &[u8] = b"taiwanandnorthkorea";
 const MAX_RAW_ARCHIVE_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_EPUB_UNCOMPRESSED_BYTES: u64 = 512 * 1024 * 1024;
+const MATERIALIZE_BOOK_OPERATION: &str = "novel.materialize-book";
 
 pub trait Config: 'static {
     const BASE_URL: &'static str;
@@ -135,32 +136,106 @@ impl<C: Config> Source<C> {
             .ok_or_else(|| Error::new("FuckNovelpia RAW EPUB cache is unavailable"))
     }
 
-    fn raw_chapters(&mut self, document: &Html, book_url: &str) -> Result<Vec<NovelChapter>> {
-        let download_url = require(
+    fn raw_chapters(document: &Html, book_url: &str) -> Result<Vec<NovelChapter>> {
+        require(
             Self::raw_download_url(document)?,
             "FuckNovelpia RAW download is unavailable",
         )?;
-        let cached = self.ensure_epub(book_url, &download_url)?;
-        Ok(cached
+        Ok(vec![NovelChapter {
+            key: format!("{book_url}#epub"),
+            title: Some("Korean RAW EPUB".to_owned()),
+            url: Some(book_url.to_owned()),
+            language: Some(C::LANGUAGE.to_owned()),
+            chapter_number: Some(1.0),
+            source_order: Some(0),
+            section: Some("Full-book download".to_owned()),
+            summary: Some(
+                "This source publishes the novel as one archive. Adding or opening it downloads and decrypts the complete EPUB."
+                    .to_owned(),
+            ),
+            extra: [(
+                "materialization".to_owned(),
+                json!({
+                    "scope": "book",
+                    "operation": MATERIALIZE_BOOK_OPERATION,
+                }),
+            )]
+            .into_iter()
+            .collect(),
+            ..NovelChapter::default()
+        }])
+    }
+
+    fn chapters_from_epub(cached: &CachedEpub) -> Vec<NovelChapter> {
+        cached
             .chapters
             .iter()
             .enumerate()
             .map(|(index, chapter)| NovelChapter {
-                key: format!("{book_url}#epub-{}", index + 1),
+                key: format!("{}#epub-{}", cached.book_url, index + 1),
                 title: Some(chapter.title.clone()),
-                url: Some(book_url.to_owned()),
+                url: Some(cached.book_url.clone()),
                 language: Some(C::LANGUAGE.to_owned()),
                 chapter_number: Some((index + 1) as f32),
                 source_order: Some(index as i32),
                 extra: [
-                    ("bookUrl".to_owned(), json!(book_url)),
+                    ("bookUrl".to_owned(), json!(cached.book_url)),
                     ("epubPath".to_owned(), json!(chapter.path)),
                 ]
                 .into_iter()
                 .collect(),
                 ..NovelChapter::default()
             })
-            .collect())
+            .collect()
+    }
+
+    fn text_from_epub(cached: &CachedEpub, chapter: &NovelChapter) -> Result<NovelText> {
+        let path = require(
+            chapter
+                .extra
+                .get("epubPath")
+                .and_then(Value::as_str)
+                .map(str::to_owned),
+            "FuckNovelpia RAW chapter has no EPUB path",
+        )?;
+        let epub_chapter = require(
+            cached
+                .chapters
+                .iter()
+                .find(|candidate| candidate.path == path),
+            "FuckNovelpia RAW EPUB chapter is unavailable",
+        )?;
+        let rendered = render_epub_chapter(&cached.epub, &epub_chapter.path)?;
+        Ok(NovelText {
+            html: Some(rendered.html.clone()),
+            text: Some(rendered.text),
+            title: Some(epub_chapter.title.clone()),
+            base_url: Some(cached.book_url.clone()),
+            blocks: vec![NovelContentBlock::Text {
+                text: rendered.html,
+                html: true,
+            }],
+            ..NovelText::default()
+        })
+    }
+
+    fn materialize_raw(&mut self, item: &CatalogItem) -> Result<Value> {
+        let book_url = Self::item_url(item)?;
+        let (document, final_url) = self.document(&book_url)?;
+        let download_url = require(
+            Self::raw_download_url(&document)?,
+            "FuckNovelpia RAW download is unavailable",
+        )?;
+        let cached = self.ensure_epub(&final_url, &download_url)?;
+        let chapters = Self::chapters_from_epub(cached);
+        let entries = chapters
+            .into_iter()
+            .map(|chapter| {
+                let text = Self::text_from_epub(cached, &chapter)?;
+                Ok(json!({ "chapter": chapter, "text": text }))
+            })
+            .collect::<Result<Vec<_>>>()?;
+        Ok(json!({ "entries": entries }))
     }
 
     fn raw_text(&mut self, item: &CatalogItem, chapter: &NovelChapter) -> Result<NovelText> {
@@ -182,37 +257,11 @@ impl<C: Config> Source<C> {
             )?;
             self.ensure_epub(&final_url, &download_url)?;
         }
-        let path = require(
-            chapter
-                .extra
-                .get("epubPath")
-                .and_then(Value::as_str)
-                .map(str::to_owned),
-            "FuckNovelpia RAW chapter has no EPUB path",
-        )?;
         let cached = require(
             self.cached_epub.as_ref(),
             "FuckNovelpia RAW EPUB cache is unavailable",
         )?;
-        let chapter = require(
-            cached
-                .chapters
-                .iter()
-                .find(|candidate| candidate.path == path),
-            "FuckNovelpia RAW EPUB chapter is unavailable",
-        )?;
-        let rendered = render_epub_chapter(&cached.epub, &chapter.path)?;
-        Ok(NovelText {
-            html: Some(rendered.html.clone()),
-            text: Some(rendered.text),
-            title: Some(chapter.title.clone()),
-            base_url: Some(book_url),
-            blocks: vec![NovelContentBlock::Text {
-                text: rendered.html,
-                html: true,
-            }],
-            ..NovelText::default()
-        })
+        Self::text_from_epub(cached, chapter)
     }
 
     fn browse(&self, page: u32, query: &str, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -521,7 +570,7 @@ impl<C: Config> NovelSource for Source<C> {
         let page_url = Self::item_url(&item)?;
         let (document, final_url) = self.document(&page_url)?;
         if C::RAW_DOWNLOADS {
-            return self.raw_chapters(&document, &final_url);
+            return Self::raw_chapters(&document, &final_url);
         }
         Self::parse_chapters(&document, &final_url)
     }
@@ -587,6 +636,19 @@ impl<C: Config> NovelSource for Source<C> {
                 0,
             ),
         ])
+    }
+
+    fn dispatch(&mut self, operation: &str, request: &Value) -> Result<Option<Value>> {
+        if operation != MATERIALIZE_BOOK_OPERATION || !C::RAW_DOWNLOADS {
+            return Ok(None);
+        }
+        let item = require(
+            request.get("item").cloned(),
+            "FuckNovelpia RAW materialization request has no item",
+        )?;
+        let item = serde_json::from_value::<CatalogItem>(item)
+            .map_err(|error| Error::new(error.to_string()))?;
+        self.materialize_raw(&item).map(Some)
     }
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
@@ -1236,6 +1298,27 @@ mod tests {
     }
 
     #[test]
+    fn raw_catalog_exposes_one_deferred_whole_book_entry() {
+        let document = html::document(
+            r#"<a class="novel-download-link" href="/download.php?slug=1">Download</a>"#,
+        );
+        let chapters =
+            Source::<Korean>::raw_chapters(&document, "https://raw-fucknovelpia.com/novel/1")
+                .unwrap();
+
+        assert_eq!(chapters.len(), 1);
+        assert_eq!(chapters[0].key, "https://raw-fucknovelpia.com/novel/1#epub");
+        assert_eq!(
+            chapters[0].extra["materialization"],
+            json!({
+                "scope": "book",
+                "operation": MATERIALIZE_BOOK_OPERATION,
+            })
+        );
+        assert!(!chapters[0].extra.contains_key("downloadUrl"));
+    }
+
+    #[test]
     fn parses_epub_spine_titles_text_and_inline_images() {
         let mut writer = zip::ZipWriter::new(Cursor::new(Vec::new()));
         let options = zip::write::SimpleFileOptions::default();
@@ -1281,6 +1364,20 @@ mod tests {
         assert_eq!(chapters[0].title, "EPUB chapter title");
         assert!(rendered.text.contains("Hello EPUB."));
         assert!(rendered.html.contains("src=\"data:image/png;base64,cG5n\""));
+
+        let cached = CachedEpub {
+            book_url: "https://raw-fucknovelpia.com/novel/1".to_owned(),
+            epub,
+            chapters,
+        };
+        let materialized = Source::<Korean>::chapters_from_epub(&cached);
+        let text = Source::<Korean>::text_from_epub(&cached, &materialized[0]).unwrap();
+        assert_eq!(materialized[0].title.as_deref(), Some("EPUB chapter title"));
+        assert_eq!(
+            materialized[0].extra["epubPath"],
+            "OEBPS/Text/chapter.xhtml"
+        );
+        assert!(text.html.unwrap().contains("data:image/png;base64,cG5n"));
     }
 
     #[test]
