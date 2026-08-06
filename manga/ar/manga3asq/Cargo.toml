@@ -1,0 +1,20 @@
+[package]
+name = "manga3asq"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+chrono.workspace = true
+manatan-sdk.workspace = true
+scraper.workspace = true
+serde_json.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+sha2.workspace = true

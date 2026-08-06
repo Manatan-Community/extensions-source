@@ -909,6 +909,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "manga3asq"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "manatan-sdk",
+ "scraper",
+ "serde_json",
+ "sha2",
+ "url",
+]
+
+[[package]]
 name = "mangadex"
 version = "0.1.0"
 dependencies = [

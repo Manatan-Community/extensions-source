@@ -3020,9 +3020,20 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "runtime-tested",
+      "tests": [
+        "fixture-tests",
+        "strict-clippy",
+        "component-build",
+        "production-runtime",
+        "live-catalog",
+        "live-search",
+        "live-details",
+        "live-chapters",
+        "live-pages",
+        "live-images"
+      ],
+      "packagePath": "packages/manga/ar/manga3asq.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
