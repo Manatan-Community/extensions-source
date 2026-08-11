@@ -39301,32 +39301,35 @@
       "attribution": "Independent integration with Cyrisia's public bookshelf and EPUB endpoints."
     },
     {
-      "upstreamRepository": "https://lightnovelworld.org",
-      "upstreamPath": "ranking, search, novel, and chapter-index endpoints",
+      "upstreamRepository": "https://chikari.moe",
+      "upstreamPath": "api/novels, details, chapters, reader, and genres endpoints",
       "sourceId": "lightnovelworld",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "standalone",
+      "framework": "standalone-json-api",
       "requiredCapabilities": [
         "http",
         "cookies",
         "webview",
+        "filters",
         "url-resolution",
         "chapter-pagination"
       ],
-      "status": "runtime-tested",
+      "status": "live-verified",
       "tests": [
-        "fixture-parser-tests",
+        "eight-fixture-and-migration-tests",
+        "strict-clippy",
         "component-validated",
         "signed-package-validated",
-        "production-runner-filters",
-        "live-popular-latest-search-details-chapter-index",
+        "production-runner-live-filters",
+        "live-popular-filtered-search-details-chapter-pagination",
+        "live-public-chapter-render",
         "live-cover-image"
       ],
       "packagePath": "packages/novel/en/lightnovelworld.manatan2",
-      "knownSiteFailure": "Light Novel World redirects anonymous chapter requests to the novel page; chapter text requires the user to sign in through Web View.",
+      "knownSiteFailure": null,
       "license": "MIT",
-      "attribution": "Independent integration with Light Novel World's public pages and chapter-index API."
+      "attribution": "Independent integration with Chikari's public JSON API."
     },
     {
       "upstreamRepository": "https://novelarchive.cc",

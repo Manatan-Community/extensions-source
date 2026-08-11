@@ -1,0 +1,21 @@
+{
+  "id": 50,
+  "slug": "shadow-slave",
+  "title": "Shadow Slave",
+  "status": "releasing",
+  "is_nsfw": false,
+  "description": "Growing up in poverty, Sunny never expected anything good from life.",
+  "cover_url": "https://cdn.chikari.moe/novels/53/cover.webp",
+  "rating": 9.5,
+  "genres": [
+    { "slug": "action", "name": "Action" },
+    { "slug": "fantasy", "name": "Fantasy" }
+  ],
+  "tags": [
+    { "id": 1, "name": "Magic", "is_spoiler": false },
+    { "id": 2, "name": "Spoiler", "is_spoiler": true }
+  ],
+  "authors": [
+    { "name": "GuiltyThree", "slug": "guiltythree", "role": "author" }
+  ]
+}

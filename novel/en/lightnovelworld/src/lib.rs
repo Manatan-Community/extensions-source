@@ -1,10 +1,10 @@
-use manatan_common::{absolute_url, attr, normalize_space, require, selector};
+use chrono::DateTime;
+use manatan_common::{normalize_space, require};
 use manatan_sdk::{
     client::Client,
-    html::{self, Html},
     model::{
-        CatalogItem, ImageRequest, ImageRequestContext, NovelChapter, NovelChapterPage,
-        NovelContentBlock, NovelText, Paged, UrlResolveResult,
+        CatalogItem, FilterDefinition, ImageRequest, ImageRequestContext, NovelChapter,
+        NovelChapterPage, NovelContentBlock, NovelText, OptionItem, Paged, UrlResolveResult,
     },
     Error, NovelSource, Result,
 };
@@ -13,9 +13,12 @@ use url::Url;
 
 #[cfg(target_arch = "wasm32")]
 const SOURCE_ID: &str = "lightnovelworld";
-const BASE_URL: &str = "https://lightnovelworld.org";
-const SEARCH_PAGE_SIZE: usize = 36;
+const BASE_URL: &str = "https://chikari.moe";
+const LEGACY_BASE_URL: &str = "https://lightnovelworld.org";
+const PAGE_SIZE: usize = 36;
 const CHAPTER_PAGE_SIZE: u64 = 200;
+const MAX_JSON_BYTES: u64 = 16_000_000;
+const REQUEST_LIMIT_MS: u32 = 150;
 
 pub struct LightNovelWorldSource {
     client: Client,
@@ -30,264 +33,102 @@ impl Default for LightNovelWorldSource {
 }
 
 impl LightNovelWorldSource {
-    fn document(&self, url: &str) -> Result<(Html, String)> {
-        let response = self.client.get(url).send()?.error_for_status()?;
-        let final_url = response.final_url().to_owned();
-        Ok((html::document(response.text()?), final_url))
-    }
-
-    fn listing_page(&self, listing: &str, page: u32) -> Result<Paged<CatalogItem>> {
-        let page = page.max(1);
-        let url = match listing {
-            "popular" => format!("{BASE_URL}/ranking/?sort=rank&page={page}"),
-            "latest" => format!("{BASE_URL}/updates/?page={page}"),
-            _ => return Err(Error::new(format!("unknown novel listing {listing:?}"))),
-        };
-        let (document, _) = self.document(&url)?;
-        let items = match listing {
-            "popular" => Self::parse_ranking(&document)?,
-            "latest" => Self::parse_updates(&document)?,
-            _ => unreachable!(),
-        };
-        let has_next = has_next_page(&document, page)?;
-        Ok(Paged::new(items, has_next))
-    }
-
-    fn parse_ranking(document: &Html) -> Result<Vec<CatalogItem>> {
-        let cards = selector(".ranking-card")?;
-        let links = selector("a.card-link[href]")?;
-        let titles = selector(".card-title")?;
-        let covers = selector(".card-cover[data-bg-image]")?;
-        let genres = selector(".genre-tag")?;
-        let statuses = selector(".status-badge")?;
-        let mut items = Vec::new();
-        for card in document.select(&cards) {
-            let Some(href) = card.select(&links).find_map(|node| attr(node, "href")) else {
-                continue;
-            };
-            let Some(title) = card
-                .select(&titles)
-                .next()
-                .map(html::text)
-                .map(|value| normalize_space(&value))
-                .filter(|value| !value.is_empty())
-            else {
-                continue;
-            };
-            let tags = card
-                .select(&genres)
-                .map(html::text)
-                .map(|value| normalize_space(&value))
-                .filter(|value| !value.is_empty())
-                .collect::<Vec<_>>();
-            let page_url = absolute_url(BASE_URL, &href)?;
-            let mut item = CatalogItem::new(page_url.clone(), title);
-            item.url = Some(page_url.clone());
-            item.tags = tags;
-            item.status = card
-                .select(&statuses)
-                .next()
-                .map(html::text)
-                .map(|value| json!(normalize_status(&value)));
-            item.cover = card
-                .select(&covers)
-                .find_map(|node| attr(node, "data-bg-image"))
-                .map(|cover| absolute_url(BASE_URL, &cover))
-                .transpose()?
-                .map(|cover| image(&cover, &page_url));
-            item.language = Some("en".into());
-            item.content_rating = Some(content_rating(&item.tags).into());
-            items.push(item);
-        }
-        Ok(items)
-    }
-
-    fn parse_updates(document: &Html) -> Result<Vec<CatalogItem>> {
-        let cards = selector("a.ranking-item.chapter-item[href]")?;
-        let titles = selector(".ranking-item-title")?;
-        let covers = selector("img[src]")?;
-        let mut items = Vec::new();
-        for card in document.select(&cards) {
-            let Some(href) = attr(card, "href") else {
-                continue;
-            };
-            let Some(title) = card
-                .select(&titles)
-                .next()
-                .map(html::text)
-                .map(|value| normalize_space(&value))
-                .filter(|value| !value.is_empty())
-            else {
-                continue;
-            };
-            let page_url = absolute_url(BASE_URL, &href)?;
-            let mut item = CatalogItem::new(page_url.clone(), title);
-            item.url = Some(page_url.clone());
-            item.cover = card
-                .select(&covers)
-                .find_map(|node| attr(node, "src"))
-                .map(|cover| absolute_url(BASE_URL, &cover))
-                .transpose()?
-                .map(|cover| image(&cover, &page_url));
-            item.language = Some("en".into());
-            item.content_rating = Some("suggestive".into());
-            if !items
-                .iter()
-                .any(|existing: &CatalogItem| existing.key == item.key)
-            {
-                items.push(item);
-            }
-        }
-        Ok(items)
-    }
-
-    fn parse_search(value: &Value) -> Result<Vec<CatalogItem>> {
-        value
-            .get("novels")
-            .and_then(Value::as_array)
-            .ok_or_else(|| Error::new("Light Novel World search response has no novels"))?
-            .iter()
-            .map(|value| {
-                let slug = value
-                    .get("slug")
-                    .and_then(Value::as_str)
-                    .ok_or_else(|| Error::new("Light Novel World search result has no slug"))?;
-                let title = value
-                    .get("title")
-                    .and_then(Value::as_str)
-                    .ok_or_else(|| Error::new("Light Novel World search result has no title"))?;
-                let page_url = format!("{BASE_URL}/novel/{slug}/");
-                let mut item = CatalogItem::new(page_url.clone(), title);
-                item.url = Some(page_url.clone());
-                item.authors = value
-                    .get("author")
-                    .and_then(Value::as_str)
-                    .filter(|value| !value.is_empty())
-                    .map(str::to_owned)
-                    .into_iter()
-                    .collect();
-                item.tags = value
-                    .get("genres")
-                    .and_then(Value::as_array)
-                    .into_iter()
-                    .flatten()
-                    .filter_map(Value::as_str)
-                    .map(str::to_owned)
-                    .collect();
-                item.cover = value
-                    .get("cover_path")
-                    .and_then(Value::as_str)
-                    .map(|cover| absolute_url(BASE_URL, cover))
-                    .transpose()?
-                    .map(|cover| image(&cover, &page_url));
-                item.status = value
-                    .get("status")
-                    .and_then(Value::as_str)
-                    .map(|value| json!(normalize_status(value)));
-                item.language = Some("en".into());
-                item.content_rating = Some(content_rating(&item.tags).into());
-                Ok(item)
-            })
-            .collect()
-    }
-
-    fn item_url(item: &CatalogItem) -> Result<String> {
-        let candidate = item.url.as_deref().unwrap_or(&item.key);
-        let mut url = Url::parse(&absolute_url(BASE_URL, candidate)?)
-            .map_err(|error| Error::new(error.to_string()))?;
-        url.set_query(None);
-        url.set_fragment(None);
-        let path = url.path().to_owned();
-        if let Some(index) = path.find("/chapter/") {
-            url.set_path(&path[..index + 1]);
-        } else if path.ends_with("/chapters/") {
-            url.set_path(path.trim_end_matches("chapters/"));
-        }
-        Ok(url.to_string())
-    }
-
-    fn parse_details(document: &Html, page_url: &str) -> Result<CatalogItem> {
-        let title = first_text(document, ".novel-title")?
-            .ok_or_else(|| Error::new("Light Novel World novel has no title"))?;
-        let author = first_text(document, ".novel-author")?
-            .map(|value| value.trim_start_matches("Author:").trim().to_owned());
-        let tags = texts(document, ".novel-genres .genre-tag")?;
-        let description = first_text(document, ".summary-content")?
-            .or(first_text(document, ".description-text")?);
-        let cover = first_attr(document, ".novel-cover-container img", "src")?
-            .map(|cover| absolute_url(BASE_URL, &cover))
-            .transpose()?;
-        let mut item = CatalogItem::new(page_url, title);
-        item.url = Some(page_url.into());
-        item.authors = author
-            .filter(|value| !value.is_empty())
-            .into_iter()
-            .collect();
-        item.tags = tags;
-        item.description = description;
-        item.cover = cover.map(|cover| image(&cover, page_url));
-        item.status = first_text(
-            document,
-            ".novel-meta .status-badge, .card-status .status-badge",
-        )?
-        .map(|value| json!(normalize_status(&value)));
-        item.initialized = true;
-        item.language = Some("en".into());
-        item.content_rating = Some(content_rating(&item.tags).into());
-        Ok(item)
-    }
-
-    fn slug(item: &CatalogItem) -> Result<String> {
-        let url =
-            Url::parse(&Self::item_url(item)?).map_err(|error| Error::new(error.to_string()))?;
-        let segments = url
-            .path_segments()
-            .map(|segments| segments.collect::<Vec<_>>())
-            .unwrap_or_default();
-        segments
-            .windows(2)
-            .find_map(|pair| (pair[0] == "novel").then(|| pair[1].to_owned()))
-            .filter(|value| !value.is_empty())
-            .ok_or_else(|| Error::new("Light Novel World URL has no novel slug"))
-    }
-
-    fn chapter_page(&self, slug: &str, offset: u64) -> Result<Value> {
+    fn get_json(&self, url: &str) -> Result<Value> {
         self.client
-            .get(format!(
-                "{BASE_URL}/api/novel/{slug}/chapters/?offset={offset}&limit={CHAPTER_PAGE_SIZE}"
-            ))
+            .get(url)
+            .cookies_for(BASE_URL)
+            .rate_limit("chikari", REQUEST_LIMIT_MS)
+            .max_body_bytes(MAX_JSON_BYTES)
             .send()?
             .error_for_status()?
             .json()
     }
 
-    fn parse_text(document: &Html, chapter_url: &str) -> Result<NovelText> {
-        let content = first_inner_html(document, ".chapter-content")?
-            .ok_or_else(|| Error::new(
-                "Light Novel World requires a free account to read chapters. Open Web View, sign in, then retry."
-            ))?;
-        let rendered = sanitize_html(&content)?;
-        require(
-            (!normalize_space(&html::text(html::fragment(&rendered).root_element())).is_empty())
-                .then_some(()),
-            "Light Novel World chapter has no readable content",
+    fn catalog_page(
+        &self,
+        sort: &str,
+        query: &str,
+        page: u32,
+        filters: &Value,
+    ) -> Result<Paged<CatalogItem>> {
+        let page = page.max(1);
+        let offset = (usize::try_from(page)
+            .unwrap_or(usize::MAX)
+            .saturating_sub(1))
+        .saturating_mul(PAGE_SIZE);
+        let mut url = Url::parse(&format!("{BASE_URL}/api/novels"))
+            .map_err(|error| Error::new(error.to_string()))?;
+        {
+            let mut pairs = url.query_pairs_mut();
+            pairs.append_pair("sort", sort);
+            pairs.append_pair("limit", &PAGE_SIZE.to_string());
+            pairs.append_pair("offset", &offset.to_string());
+            if !query.trim().is_empty() {
+                pairs.append_pair("q", query.trim());
+            }
+            if filter_bool(filters, "adult") {
+                pairs.append_pair("adult", "true");
+            }
+            append_values(&mut pairs, filters, "genres", "genre");
+            append_values(&mut pairs, filters, "languages", "language");
+            append_values(&mut pairs, filters, "statuses", "status");
+            append_values(&mut pairs, filters, "years", "year");
+            if let Some(value) = filter_string(filters, "min_chapters") {
+                pairs.append_pair("min_chapters", value);
+            }
+        }
+        let response = self.get_json(url.as_str())?;
+        let entries = parse_catalog_items(
+            response
+                .get("items")
+                .and_then(Value::as_array)
+                .ok_or_else(|| Error::new("Chikari catalog response has no items"))?,
         )?;
-        Ok(NovelText {
-            html: Some(rendered.clone()),
-            title: first_text(document, ".chapter-title")?,
-            base_url: Some(chapter_url.into()),
-            image_context: Some(ImageRequestContext {
-                headers: [("Referer".into(), chapter_url.into())]
-                    .into_iter()
-                    .collect(),
-                cookie_url: Some(BASE_URL.into()),
-            }),
-            blocks: vec![NovelContentBlock::Text {
-                text: rendered,
-                html: true,
-            }],
-            ..NovelText::default()
-        })
+        let total = response
+            .get("total")
+            .and_then(Value::as_u64)
+            .unwrap_or((offset + entries.len()) as u64);
+        Ok(Paged::new(
+            entries,
+            (offset as u64).saturating_add(PAGE_SIZE as u64) < total,
+        ))
+    }
+
+    fn listing_page(&self, listing: &str, page: u32) -> Result<Paged<CatalogItem>> {
+        let sort = match listing {
+            "popular" => "popular",
+            "latest" => "updated",
+            other => return Err(Error::new(format!("unknown Chikari listing {other:?}"))),
+        };
+        self.catalog_page(sort, "", page, &json!({}))
+    }
+
+    fn item_url(item: &CatalogItem) -> Result<String> {
+        let slug = item_slug(item.url.as_deref().unwrap_or(&item.key))
+            .or_else(|| item_slug(&item.key))
+            .ok_or_else(|| Error::new("Chikari item has no novel slug"))?;
+        Ok(canonical_item_url(&slug))
+    }
+
+    fn slug(item: &CatalogItem) -> Result<String> {
+        item_slug(item.url.as_deref().unwrap_or(&item.key))
+            .or_else(|| item_slug(&item.key))
+            .ok_or_else(|| Error::new("Chikari item has no novel slug"))
+    }
+
+    fn chapters_value(&self, slug: &str, offset: u64, limit: u64) -> Result<Value> {
+        let mut url = Url::parse(&format!("{BASE_URL}/api/novels/{slug}/chapters"))
+            .map_err(|error| Error::new(error.to_string()))?;
+        url.query_pairs_mut()
+            .append_pair("order", "asc")
+            .append_pair("limit", &limit.to_string())
+            .append_pair("offset", &offset.to_string());
+        self.get_json(url.as_str())
+    }
+
+    fn genres(&self) -> Result<Vec<OptionItem>> {
+        let value = self.get_json(&format!("{BASE_URL}/api/novels/genres"))?;
+        parse_genres(&value)
     }
 }
 
@@ -309,83 +150,55 @@ impl NovelSource for LightNovelWorldSource {
         self.listing_page(listing, page)
     }
 
-    fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
-        let mut url = Url::parse(&format!("{BASE_URL}/api/search/"))
-            .map_err(|error| Error::new(error.to_string()))?;
-        url.query_pairs_mut()
-            .append_pair("q", query.trim())
-            .append_pair("search_type", "title");
-        let response: Value = self
-            .client
-            .get(url.as_str())
-            .send()?
-            .error_for_status()?
-            .json()?;
-        let items = Self::parse_search(&response)?;
-        let page = page.max(1) as usize;
-        let start = (page - 1) * SEARCH_PAGE_SIZE;
-        let total = items.len();
-        Ok(Paged::new(
-            items
+    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        let query = query.trim();
+        if (query.starts_with("https://") || query.starts_with("http://"))
+            && self.handle_url(query)?.is_some()
+        {
+            let entries = self
+                .handle_url(query)?
+                .and_then(|result| result.item)
                 .into_iter()
-                .skip(start)
-                .take(SEARCH_PAGE_SIZE)
-                .collect(),
-            start + SEARCH_PAGE_SIZE < total,
-        ))
+                .collect();
+            return Ok(Paged::new(entries, false));
+        }
+        let sort = filter_string(filters, "sort").unwrap_or("trending");
+        self.catalog_page(sort, query, page, filters)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
-        let url = Self::item_url(&item)?;
-        let (document, final_url) = self.document(&url)?;
-        Self::parse_details(&document, &final_url)
+        let slug = Self::slug(&item)?;
+        parse_details(
+            &self.get_json(&format!("{BASE_URL}/api/novels/{slug}"))?,
+            &slug,
+        )
     }
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
         let slug = Self::slug(&item)?;
-        let mut offset = 0u64;
         let mut chapters = Vec::new();
+        let mut offset = 0u64;
         loop {
-            let response = self.chapter_page(&slug, offset)?;
+            let response = self.chapters_value(&slug, offset, CHAPTER_PAGE_SIZE)?;
             let values = response
-                .get("chapters")
+                .get("items")
                 .and_then(Value::as_array)
-                .ok_or_else(|| Error::new("Light Novel World response has no chapters"))?;
-            for value in values {
-                let Some(number) = value.get("number").and_then(Value::as_u64) else {
-                    continue;
-                };
-                let title = value
-                    .get("title")
-                    .and_then(Value::as_str)
-                    .map(str::to_owned)
-                    .or_else(|| Some(format!("Chapter {number}")));
-                let url = format!("{BASE_URL}/novel/{slug}/chapter/{number}/");
-                chapters.push(NovelChapter {
-                    key: url.clone(),
-                    title,
-                    chapter_number: Some(number as f32),
-                    url: Some(url),
-                    language: Some("en".into()),
-                    source_order: Some((number - 1) as i32),
-                    ..NovelChapter::default()
-                });
-            }
-            if !response
-                .get("has_more")
-                .and_then(Value::as_bool)
-                .unwrap_or(false)
-            {
-                break;
-            }
-            offset += values.len() as u64;
-            if values.is_empty() {
+                .ok_or_else(|| Error::new("Chikari chapter response has no items"))?;
+            let page = parse_chapters(values, &slug, offset)?;
+            let received = page.len() as u64;
+            chapters.extend(page);
+            let total = response
+                .get("total")
+                .and_then(Value::as_u64)
+                .unwrap_or(offset + received);
+            offset = offset.saturating_add(received);
+            if received == 0 || offset >= total {
                 break;
             }
         }
         require(
             (!chapters.is_empty()).then_some(()),
-            "Light Novel World novel has no chapters",
+            "Chikari novel has no chapters",
         )?;
         Ok(chapters)
     }
@@ -394,98 +207,536 @@ impl NovelSource for LightNovelWorldSource {
         let slug = Self::slug(&item)?;
         let page = page.max(1);
         let offset = u64::from(page - 1) * CHAPTER_PAGE_SIZE;
-        let response = self.chapter_page(&slug, offset)?;
-        let values = response
-            .get("chapters")
-            .and_then(Value::as_array)
-            .ok_or_else(|| Error::new("Light Novel World response has no chapters"))?;
-        let entries = values
-            .iter()
-            .filter_map(|value| {
-                let number = value.get("number").and_then(Value::as_u64)?;
-                let title = value
-                    .get("title")
-                    .and_then(Value::as_str)
-                    .map(str::to_owned)
-                    .or_else(|| Some(format!("Chapter {number}")));
-                let url = format!("{BASE_URL}/novel/{slug}/chapter/{number}/");
-                Some(NovelChapter {
-                    key: url.clone(),
-                    title,
-                    chapter_number: Some(number as f32),
-                    url: Some(url),
-                    language: Some("en".into()),
-                    source_order: Some(number.saturating_sub(1) as i32),
-                    ..NovelChapter::default()
-                })
-            })
-            .collect::<Vec<_>>();
+        let response = self.chapters_value(&slug, offset, CHAPTER_PAGE_SIZE)?;
+        let entries = parse_chapters(
+            response
+                .get("items")
+                .and_then(Value::as_array)
+                .ok_or_else(|| Error::new("Chikari chapter response has no items"))?,
+            &slug,
+            offset,
+        )?;
         let total = response
-            .get("total_chapters")
+            .get("total")
             .and_then(Value::as_u64)
             .unwrap_or(offset + entries.len() as u64);
-        let page_count = total
-            .div_ceil(CHAPTER_PAGE_SIZE)
-            .max(u64::from(page))
-            .min(u64::from(u32::MAX)) as u32;
         Ok(NovelChapterPage {
+            has_next_page: offset.saturating_add(entries.len() as u64) < total,
+            page_count: Some(
+                total
+                    .div_ceil(CHAPTER_PAGE_SIZE)
+                    .max(u64::from(page))
+                    .min(u64::from(u32::MAX)) as u32,
+            ),
             entries,
-            has_next_page: response
-                .get("has_more")
-                .and_then(Value::as_bool)
-                .unwrap_or(offset + CHAPTER_PAGE_SIZE < total),
-            page_count: Some(page_count),
         })
     }
 
-    fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
-        let url = chapter.url.as_deref().unwrap_or(&chapter.key);
-        let (document, final_url) = self.document(url)?;
-        if !final_url.contains("/chapter/") {
-            return Err(Error::new(
-                "Light Novel World requires a free account to read chapters. Open Web View, sign in, then retry.",
-            ));
-        }
-        Self::parse_text(&document, &final_url)
+    fn text(&mut self, item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
+        let slug = Self::slug(&item)?;
+        let number = chapter_number(&chapter)
+            .ok_or_else(|| Error::new("Chikari chapter has no chapter number"))?;
+        let token = chapter_token(number);
+        let chapter_url = canonical_chapter_url(&slug, &token);
+        parse_text(
+            &self.get_json(&format!(
+                "{BASE_URL}/api/novels/{slug}/chapters/{token}/read"
+            ))?,
+            &chapter_url,
+        )
+    }
+
+    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
+        Ok(filter_definitions(self.genres()?))
+    }
+
+    fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
+        Ok(Some(Self::item_url(item)?))
+    }
+
+    fn chapter_url(
+        &mut self,
+        item: &CatalogItem,
+        chapter: &NovelChapter,
+    ) -> Result<Option<String>> {
+        let slug = Self::slug(item)?;
+        let number = chapter_number(chapter)
+            .ok_or_else(|| Error::new("Chikari chapter has no chapter number"))?;
+        Ok(Some(canonical_chapter_url(&slug, &chapter_token(number))))
     }
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
-        let url = Url::parse(candidate).map_err(|error| Error::new(error.to_string()))?;
-        if url.host_str() != Some("lightnovelworld.org") {
-            return Ok(None);
-        }
-        let segments = url
-            .path_segments()
-            .map(|segments| segments.collect::<Vec<_>>())
-            .unwrap_or_default();
-        let Some(index) = segments.iter().position(|value| *value == "novel") else {
+        let Some(location) = parse_location(candidate) else {
             return Ok(None);
         };
-        let Some(slug) = segments.get(index + 1).filter(|value| !value.is_empty()) else {
-            return Ok(None);
-        };
-        let item_url = format!("{BASE_URL}/novel/{slug}/");
-        let mut item = CatalogItem::new(item_url.clone(), "");
+        let item_url = canonical_item_url(&location.slug);
+        let mut item = CatalogItem::new(legacy_item_key(&location.slug), "");
         item.url = Some(item_url);
         item.language = Some("en".into());
-        let chapter = segments
-            .iter()
-            .position(|value| *value == "chapter")
-            .and_then(|index| segments.get(index + 1))
-            .and_then(|value| value.parse::<u64>().ok())
-            .map(|number| NovelChapter {
-                key: candidate.into(),
-                chapter_number: Some(number as f32),
-                url: Some(candidate.into()),
-                language: Some("en".into()),
-                ..NovelChapter::default()
-            });
+        let novel_chapter = location.chapter.map(|token| NovelChapter {
+            key: legacy_chapter_key(&location.slug, &token),
+            chapter_number: token.parse::<f32>().ok(),
+            url: Some(canonical_chapter_url(&location.slug, &token)),
+            language: Some("en".into()),
+            ..NovelChapter::default()
+        });
         Ok(Some(UrlResolveResult {
             item: Some(item),
-            novel_chapter: chapter,
+            novel_chapter,
             ..UrlResolveResult::default()
         }))
     }
+}
+
+struct Location {
+    slug: String,
+    chapter: Option<String>,
+}
+
+fn parse_location(candidate: &str) -> Option<Location> {
+    let url = Url::parse(candidate).ok()?;
+    let host = url.host_str()?.trim_start_matches("www.");
+    if host != "chikari.moe" && host != "lightnovelworld.org" {
+        return None;
+    }
+    let segments = url
+        .path_segments()?
+        .filter(|value| !value.is_empty())
+        .collect::<Vec<_>>();
+    match segments.as_slice() {
+        ["novels", slug] => Some(Location {
+            slug: (*slug).to_owned(),
+            chapter: None,
+        }),
+        ["novels", slug, chapter] if valid_chapter_token(chapter) => Some(Location {
+            slug: (*slug).to_owned(),
+            chapter: Some((*chapter).to_owned()),
+        }),
+        ["novel", slug] => Some(Location {
+            slug: (*slug).to_owned(),
+            chapter: None,
+        }),
+        ["novel", slug, "chapter", chapter] if valid_chapter_token(chapter) => Some(Location {
+            slug: (*slug).to_owned(),
+            chapter: Some((*chapter).to_owned()),
+        }),
+        _ => None,
+    }
+}
+
+fn item_slug(candidate: &str) -> Option<String> {
+    parse_location(candidate)
+        .map(|location| location.slug)
+        .or_else(|| {
+            let slug = candidate.trim_matches('/');
+            (!slug.is_empty() && !slug.contains('/')).then(|| slug.to_owned())
+        })
+}
+
+fn valid_chapter_token(value: &str) -> bool {
+    !value.is_empty()
+        && value
+            .chars()
+            .all(|character| character.is_ascii_digit() || character == '.')
+        && value.parse::<f64>().is_ok_and(|number| number.is_finite())
+}
+
+fn canonical_item_url(slug: &str) -> String {
+    format!("{BASE_URL}/novels/{slug}")
+}
+
+fn canonical_chapter_url(slug: &str, chapter: &str) -> String {
+    format!("{BASE_URL}/novels/{slug}/{chapter}")
+}
+
+fn legacy_item_key(slug: &str) -> String {
+    format!("{LEGACY_BASE_URL}/novel/{slug}/")
+}
+
+fn legacy_chapter_key(slug: &str, chapter: &str) -> String {
+    format!("{LEGACY_BASE_URL}/novel/{slug}/chapter/{chapter}/")
+}
+
+fn chapter_token(number: f64) -> String {
+    if number.fract() == 0.0 {
+        format!("{number:.0}")
+    } else {
+        number.to_string()
+    }
+}
+
+fn chapter_number(chapter: &NovelChapter) -> Option<f64> {
+    chapter.chapter_number.map(f64::from).or_else(|| {
+        chapter
+            .url
+            .as_deref()
+            .or(Some(chapter.key.as_str()))
+            .and_then(parse_location)
+            .and_then(|location| location.chapter)
+            .and_then(|value| value.parse().ok())
+    })
+}
+
+fn parse_catalog_items(values: &[Value]) -> Result<Vec<CatalogItem>> {
+    values
+        .iter()
+        .map(|value| {
+            let slug = required_string(value, "slug", "catalog item")?;
+            let title = required_string(value, "title", "catalog item")?;
+            let page_url = canonical_item_url(slug);
+            let mut item = CatalogItem::new(legacy_item_key(slug), title);
+            item.url = Some(page_url.clone());
+            item.cover = value
+                .get("cover_url")
+                .and_then(Value::as_str)
+                .filter(|value| !value.is_empty())
+                .map(|cover| image(cover, &page_url));
+            item.status = value
+                .get("status")
+                .and_then(Value::as_str)
+                .map(|value| json!(normalize_status(value)));
+            item.rating = value
+                .get("rating")
+                .and_then(Value::as_f64)
+                .map(|value| value as f32);
+            item.language = Some("en".into());
+            item.content_rating = Some(
+                if value
+                    .get("is_nsfw")
+                    .and_then(Value::as_bool)
+                    .unwrap_or(false)
+                {
+                    "adult"
+                } else {
+                    "suggestive"
+                }
+                .into(),
+            );
+            Ok(item)
+        })
+        .collect()
+}
+
+fn parse_details(value: &Value, slug: &str) -> Result<CatalogItem> {
+    let title = required_string(value, "title", "novel")?;
+    let page_url = canonical_item_url(slug);
+    let mut item = CatalogItem::new(legacy_item_key(slug), title);
+    item.url = Some(page_url.clone());
+    item.description = value
+        .get("description")
+        .and_then(Value::as_str)
+        .map(normalize_space)
+        .filter(|value| !value.is_empty());
+    item.authors = value
+        .get("authors")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|author| author.get("name").and_then(Value::as_str))
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned)
+        .collect();
+    item.tags = value
+        .get("genres")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .chain(
+            value
+                .get("tags")
+                .and_then(Value::as_array)
+                .into_iter()
+                .flatten()
+                .filter(|tag| {
+                    !tag.get("is_spoiler")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false)
+                }),
+        )
+        .filter_map(|tag| tag.get("name").and_then(Value::as_str))
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned)
+        .collect();
+    item.cover = value
+        .get("cover_url")
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty())
+        .map(|cover| image(cover, &page_url));
+    item.status = value
+        .get("status")
+        .and_then(Value::as_str)
+        .map(|value| json!(normalize_status(value)));
+    item.rating = value
+        .get("rating")
+        .and_then(Value::as_f64)
+        .map(|value| value as f32);
+    item.initialized = true;
+    item.language = Some("en".into());
+    item.content_rating = Some(
+        if value
+            .get("is_nsfw")
+            .and_then(Value::as_bool)
+            .unwrap_or(false)
+        {
+            "adult"
+        } else {
+            "suggestive"
+        }
+        .into(),
+    );
+    Ok(item)
+}
+
+fn parse_chapters(values: &[Value], slug: &str, offset: u64) -> Result<Vec<NovelChapter>> {
+    values
+        .iter()
+        .enumerate()
+        .map(|(index, value)| {
+            let number = value
+                .get("number")
+                .and_then(Value::as_f64)
+                .filter(|value| value.is_finite())
+                .ok_or_else(|| Error::new("Chikari chapter has no number"))?;
+            let token = chapter_token(number);
+            Ok(NovelChapter {
+                key: legacy_chapter_key(slug, &token),
+                title: value
+                    .get("title")
+                    .and_then(Value::as_str)
+                    .filter(|value| !value.is_empty())
+                    .map(str::to_owned)
+                    .or_else(|| Some(format!("Chapter {token}"))),
+                chapter_number: Some(number as f32),
+                volume_number: value
+                    .get("volume")
+                    .and_then(Value::as_str)
+                    .and_then(|value| value.parse().ok()),
+                date_uploaded: value
+                    .get("created_at")
+                    .and_then(Value::as_str)
+                    .and_then(parse_date),
+                url: Some(canonical_chapter_url(slug, &token)),
+                language: Some(
+                    value
+                        .get("lang")
+                        .and_then(Value::as_str)
+                        .filter(|value| !value.is_empty())
+                        .unwrap_or("en")
+                        .to_owned(),
+                ),
+                source_order: Some(offset.saturating_add(index as u64).min(i32::MAX as u64) as i32),
+                ..NovelChapter::default()
+            })
+        })
+        .collect()
+}
+
+fn parse_text(value: &Value, chapter_url: &str) -> Result<NovelText> {
+    if value
+        .get("locked")
+        .and_then(Value::as_bool)
+        .unwrap_or(false)
+    {
+        return Err(Error::new(
+            "This Chikari chapter is temporarily locked for early access.",
+        ));
+    }
+    let body = value
+        .get("body")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| Error::new("Chikari chapter has no readable text"))?;
+    let rendered = body_to_html(body);
+    Ok(NovelText {
+        html: Some(rendered),
+        title: value
+            .get("title")
+            .and_then(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .map(str::to_owned),
+        base_url: Some(chapter_url.into()),
+        image_context: Some(ImageRequestContext {
+            headers: [("Referer".into(), chapter_url.into())]
+                .into_iter()
+                .collect(),
+            cookie_url: Some(BASE_URL.into()),
+        }),
+        blocks: vec![NovelContentBlock::Text {
+            text: body.to_owned(),
+            html: false,
+        }],
+        ..NovelText::default()
+    })
+}
+
+fn body_to_html(body: &str) -> String {
+    body.lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .map(|line| format!("<p>{}</p>", escape_html(line)))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+fn escape_html(value: &str) -> String {
+    value
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&#39;")
+}
+
+fn parse_date(value: &str) -> Option<i64> {
+    DateTime::parse_from_rfc3339(value)
+        .ok()
+        .map(|date| date.timestamp_millis())
+}
+
+fn parse_genres(value: &Value) -> Result<Vec<OptionItem>> {
+    value
+        .as_array()
+        .ok_or_else(|| Error::new("Chikari genre response is not an array"))?
+        .iter()
+        .map(|genre| {
+            Ok(OptionItem {
+                label: required_string(genre, "name", "genre")?.to_owned(),
+                value: required_string(genre, "slug", "genre")?.to_owned(),
+            })
+        })
+        .collect()
+}
+
+fn filter_definitions(genres: Vec<OptionItem>) -> Vec<FilterDefinition> {
+    vec![
+        select_filter(
+            "sort",
+            "Sort by",
+            &[
+                ("Trending", "trending"),
+                ("Popularity", "popular"),
+                ("Top rated", "top_rated"),
+                ("Recently updated", "updated"),
+                ("Recently added", "added"),
+                ("Most bookmarked", "most_bookmarked"),
+                ("Random", "random"),
+            ],
+        ),
+        FilterDefinition::CheckBox {
+            id: "adult".into(),
+            name: "Include 18+ titles".into(),
+            default: false,
+        },
+        FilterDefinition::MultiSelect {
+            id: "statuses".into(),
+            name: "Status".into(),
+            options: [
+                ("Releasing", "releasing"),
+                ("Completed", "completed"),
+                ("Hiatus", "hiatus"),
+                ("Cancelled", "cancelled"),
+            ]
+            .into_iter()
+            .map(|(label, value)| option(label, value))
+            .collect(),
+            default: Vec::new(),
+        },
+        FilterDefinition::MultiSelect {
+            id: "languages".into(),
+            name: "Original language".into(),
+            options: [
+                ("Japanese", "ja"),
+                ("Korean", "ko"),
+                ("Chinese", "zh"),
+                ("English", "en"),
+                ("Other", "other"),
+            ]
+            .into_iter()
+            .map(|(label, value)| option(label, value))
+            .collect(),
+            default: Vec::new(),
+        },
+        FilterDefinition::MultiSelect {
+            id: "genres".into(),
+            name: "Genres".into(),
+            options: genres,
+            default: Vec::new(),
+        },
+        FilterDefinition::Text {
+            id: "years".into(),
+            name: "Year".into(),
+            default: String::new(),
+        },
+        FilterDefinition::Text {
+            id: "min_chapters".into(),
+            name: "Minimum chapters".into(),
+            default: String::new(),
+        },
+    ]
+}
+
+fn select_filter(id: &str, name: &str, values: &[(&str, &str)]) -> FilterDefinition {
+    FilterDefinition::Select {
+        id: id.into(),
+        name: name.into(),
+        options: values
+            .iter()
+            .map(|(label, value)| option(label, value))
+            .collect(),
+        default_index: 0,
+    }
+}
+
+fn option(label: &str, value: &str) -> OptionItem {
+    OptionItem {
+        label: label.into(),
+        value: value.into(),
+    }
+}
+
+fn append_values(
+    pairs: &mut url::form_urlencoded::Serializer<'_, url::UrlQuery<'_>>,
+    filters: &Value,
+    filter_id: &str,
+    query_name: &str,
+) {
+    for value in filter_values(filters, filter_id) {
+        pairs.append_pair(query_name, &value);
+    }
+}
+
+fn filter_values(filters: &Value, key: &str) -> Vec<String> {
+    match filters.get(key) {
+        Some(Value::Array(values)) => values
+            .iter()
+            .filter_map(Value::as_str)
+            .filter(|value| !value.is_empty())
+            .map(str::to_owned)
+            .collect(),
+        Some(Value::String(value)) if !value.is_empty() => vec![value.clone()],
+        _ => Vec::new(),
+    }
+}
+
+fn filter_string<'a>(filters: &'a Value, key: &str) -> Option<&'a str> {
+    filters
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+}
+
+fn filter_bool(filters: &Value, key: &str) -> bool {
+    filters.get(key).and_then(Value::as_bool).unwrap_or(false)
+}
+
+fn required_string<'a>(value: &'a Value, key: &str, kind: &str) -> Result<&'a str> {
+    value
+        .get(key)
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| Error::new(format!("Chikari {kind} has no {key}")))
 }
 
 fn image(url: &str, referer: &str) -> ImageRequest {
@@ -494,96 +745,14 @@ fn image(url: &str, referer: &str) -> ImageRequest {
         .cookies_for(BASE_URL)
 }
 
-fn first_text(document: &Html, query: &str) -> Result<Option<String>> {
-    let query = selector(query)?;
-    Ok(document
-        .select(&query)
-        .next()
-        .map(html::text)
-        .map(|value| normalize_space(&value))
-        .filter(|value| !value.is_empty()))
-}
-
-fn texts(document: &Html, query: &str) -> Result<Vec<String>> {
-    let query = selector(query)?;
-    Ok(document
-        .select(&query)
-        .map(html::text)
-        .map(|value| normalize_space(&value))
-        .filter(|value| !value.is_empty())
-        .collect())
-}
-
-fn first_attr(document: &Html, query: &str, name: &str) -> Result<Option<String>> {
-    let query = selector(query)?;
-    Ok(document
-        .select(&query)
-        .find_map(|element| attr(element, name)))
-}
-
-fn first_inner_html(document: &Html, query: &str) -> Result<Option<String>> {
-    let query = selector(query)?;
-    Ok(document.select(&query).next().map(|node| node.inner_html()))
-}
-
-fn has_next_page(document: &Html, page: u32) -> Result<bool> {
-    let links = selector(".pagination a[href]")?;
-    for link in document.select(&links) {
-        let Some(href) = attr(link, "href") else {
-            continue;
-        };
-        if let Ok(url) = Url::parse(&absolute_url(BASE_URL, &href)?) {
-            if url
-                .query_pairs()
-                .find_map(|(key, value)| (key == "page").then(|| value.into_owned()))
-                .and_then(|value| value.parse::<u32>().ok())
-                == Some(page + 1)
-            {
-                return Ok(true);
-            }
-        }
-    }
-    Ok(false)
-}
-
-fn restricted_tags(tags: &[String]) -> bool {
-    tags.iter().any(|tag| {
-        matches!(
-            tag.trim().to_ascii_lowercase().as_str(),
-            "adult" | "erotica" | "smut" | "explicit sex" | "ecchi"
-        )
-    })
-}
-
-fn content_rating(tags: &[String]) -> &'static str {
-    if restricted_tags(tags) {
-        "adult"
-    } else {
-        "suggestive"
-    }
-}
-
 fn normalize_status(value: &str) -> &'static str {
     match value.trim().to_ascii_lowercase().as_str() {
-        "ongoing" => "ongoing",
+        "releasing" | "ongoing" => "ongoing",
         "completed" | "complete" => "completed",
         "hiatus" | "on hiatus" => "hiatus",
+        "cancelled" | "canceled" => "cancelled",
         _ => "unknown",
     }
-}
-
-fn sanitize_html(value: &str) -> Result<String> {
-    let mut rendered = value.to_owned();
-    for tag in ["script", "iframe", "object", "embed", "style", "form"] {
-        let pattern = regex::Regex::new(&format!(
-            r"(?is)<{tag}\b[^>]*>.*?</{tag}\s*>|<{tag}\b[^>]*/?>"
-        ))
-        .map_err(|error| Error::new(error.to_string()))?;
-        rendered = pattern.replace_all(&rendered, "").into_owned();
-    }
-    let event = regex::Regex::new(r#"(?i)\s+on[a-z]+\s*=\s*(?:\"[^\"]*\"|'[^']*')"#)
-        .map_err(|error| Error::new(error.to_string()))?;
-    Ok(event.replace_all(&rendered, "").into_owned())
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -598,60 +767,128 @@ manatan_sdk::export_extension!(extension());
 mod tests {
     use super::*;
 
+    const CATALOG: &str = include_str!("../tests/fixtures/catalog.json");
+    const DETAILS: &str = include_str!("../tests/fixtures/details.json");
+    const CHAPTERS: &str = include_str!("../tests/fixtures/chapters.json");
+    const CHAPTER: &str = include_str!("../tests/fixtures/chapter.json");
+    const GENRES: &str = include_str!("../tests/fixtures/genres.json");
+
     #[test]
-    fn parses_ranking_and_details_fixtures() {
-        let ranking = html::document(include_str!("../tests/fixtures/ranking.html"));
-        let items = LightNovelWorldSource::parse_ranking(&ranking).unwrap();
-        assert_eq!(items.len(), 1);
-        assert_eq!(items[0].title, "Fixture Novel");
-        let details = html::document(include_str!("../tests/fixtures/details.html"));
-        let item = LightNovelWorldSource::parse_details(
-            &details,
-            "https://lightnovelworld.org/novel/fixture/",
-        )
-        .unwrap();
-        assert_eq!(item.authors, vec!["Fixture Author"]);
+    fn parses_catalog_and_preserves_legacy_item_keys() {
+        let value: Value = serde_json::from_str(CATALOG).unwrap();
+        let items = parse_catalog_items(value["items"].as_array().unwrap()).unwrap();
+        assert_eq!(items.len(), 2);
+        assert_eq!(items[0].title, "Shadow Slave");
+        assert_eq!(
+            items[0].key,
+            "https://lightnovelworld.org/novel/shadow-slave/"
+        );
+        assert_eq!(
+            items[0].url.as_deref(),
+            Some("https://chikari.moe/novels/shadow-slave")
+        );
+        assert_eq!(items[0].status, Some(json!("ongoing")));
+        assert_eq!(items[1].content_rating.as_deref(), Some("adult"));
+    }
+
+    #[test]
+    fn parses_details_metadata() {
+        let value: Value = serde_json::from_str(DETAILS).unwrap();
+        let item = parse_details(&value, "shadow-slave").unwrap();
+        assert_eq!(item.authors, vec!["GuiltyThree"]);
+        assert!(item.tags.contains(&"Action".to_owned()));
+        assert!(item.tags.contains(&"Magic".to_owned()));
+        assert!(!item.tags.contains(&"Spoiler".to_owned()));
         assert!(item.initialized);
+        assert_eq!(item.rating, Some(9.5));
     }
 
     #[test]
-    fn parses_search_and_sanitizes_text_fixture() {
-        let items = LightNovelWorldSource::parse_search(&json!({
-            "novels": [{
-                "slug": "fixture",
-                "title": "Fixture Novel",
-                "author": "Fixture Author",
-                "genres": ["Fantasy"],
-                "cover_path": "/fixture.jpg",
-                "status": "Ongoing"
-            }]
-        }))
-        .unwrap();
-        assert_eq!(items[0].title, "Fixture Novel");
-        let chapter = html::document(include_str!("../tests/fixtures/chapter.html"));
-        let text = LightNovelWorldSource::parse_text(
-            &chapter,
-            "https://lightnovelworld.org/novel/fixture/chapter/1/",
+    fn parses_paginated_chapters_with_legacy_keys() {
+        let value: Value = serde_json::from_str(CHAPTERS).unwrap();
+        let chapters =
+            parse_chapters(value["items"].as_array().unwrap(), "shadow-slave", 200).unwrap();
+        assert_eq!(chapters.len(), 2);
+        assert_eq!(chapters[0].chapter_number, Some(201.0));
+        assert_eq!(chapters[0].source_order, Some(200));
+        assert_eq!(
+            chapters[0].key,
+            "https://lightnovelworld.org/novel/shadow-slave/chapter/201/"
+        );
+        assert_eq!(
+            chapters[0].url.as_deref(),
+            Some("https://chikari.moe/novels/shadow-slave/201")
+        );
+        assert!(chapters[0].date_uploaded.is_some());
+    }
+
+    #[test]
+    fn renders_public_chapter_text_safely() {
+        let value: Value = serde_json::from_str(CHAPTER).unwrap();
+        let text = parse_text(&value, "https://chikari.moe/novels/shadow-slave/1").unwrap();
+        let html = text.html.unwrap();
+        assert!(html.contains("<p>A frail-looking reader &amp; survivor.</p>"));
+        assert!(html.contains("&lt;script&gt;"));
+        assert!(!html.contains("<script>"));
+        assert!(matches!(
+            &text.blocks[0],
+            NovelContentBlock::Text { html: false, .. }
+        ));
+    }
+
+    #[test]
+    fn rejects_locked_chapter_without_hiding_the_reason() {
+        let error = parse_text(
+            &json!({"locked": true, "protected_window": 5}),
+            "https://chikari.moe/novels/example/10",
         )
-        .unwrap();
-        let rendered = text.html.unwrap();
-        assert!(rendered.contains("Readable fixture"));
-        assert!(!rendered.contains("<script"));
-        assert!(!rendered.contains("onclick"));
+        .unwrap_err();
+        assert!(error.to_string().contains("early access"));
     }
 
     #[test]
-    fn preserves_adult_titles_as_rated_catalog_items() {
-        let items = LightNovelWorldSource::parse_search(&json!({
-            "novels": [{
-                "slug": "adult-fixture",
-                "title": "Adult Fixture",
-                "genres": ["Fantasy", "Adult"]
-            }]
-        }))
-        .unwrap();
+    fn migrates_old_and_new_urls_to_canonical_chikari_urls() {
+        let mut source = LightNovelWorldSource::default();
+        for candidate in [
+            "https://lightnovelworld.org/novel/shadow-slave/chapter/12/",
+            "https://chikari.moe/novels/shadow-slave/12",
+        ] {
+            let result = source.handle_url(candidate).unwrap().unwrap();
+            let item = result.item.unwrap();
+            assert_eq!(
+                item.url.as_deref(),
+                Some("https://chikari.moe/novels/shadow-slave")
+            );
+            let chapter = result.novel_chapter.unwrap();
+            assert_eq!(chapter.chapter_number, Some(12.0));
+            assert_eq!(
+                chapter.url.as_deref(),
+                Some("https://chikari.moe/novels/shadow-slave/12")
+            );
+        }
+    }
 
-        assert_eq!(items.len(), 1);
-        assert_eq!(items[0].content_rating.as_deref(), Some("adult"));
+    #[test]
+    fn parses_live_filter_genres() {
+        let value: Value = serde_json::from_str(GENRES).unwrap();
+        let genres = parse_genres(&value).unwrap();
+        assert_eq!(genres.len(), 3);
+        assert_eq!(genres[0], option("Action", "action"));
+        let filters = filter_definitions(genres);
+        assert_eq!(filters.len(), 7);
+    }
+
+    #[test]
+    fn constants_and_image_context_use_only_the_new_hosts() {
+        assert_eq!(BASE_URL, "https://chikari.moe");
+        let request = image(
+            "https://cdn.chikari.moe/novels/53/cover.webp",
+            "https://chikari.moe/novels/shadow-slave",
+        );
+        assert_eq!(request.cookie_url.as_deref(), Some(BASE_URL));
+        assert_eq!(
+            request.headers.get("Referer").map(String::as_str),
+            Some("https://chikari.moe/novels/shadow-slave")
+        );
     }
 }

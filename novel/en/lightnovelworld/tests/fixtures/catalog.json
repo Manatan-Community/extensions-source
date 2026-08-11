@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "id": 50,
+      "slug": "shadow-slave",
+      "title": "Shadow Slave",
+      "status": "releasing",
+      "is_nsfw": false,
+      "chapter_count": 3152,
+      "cover_url": "https://cdn.chikari.moe/novels/53/cover.webp",
+      "rating": 9.5,
+      "medium": "novel"
+    },
+    {
+      "id": 51,
+      "slug": "adult-fixture",
+      "title": "Adult Fixture",
+      "status": "completed",
+      "is_nsfw": true,
+      "chapter_count": 10,
+      "cover_url": "https://cdn.chikari.moe/novels/54/cover.webp",
+      "rating": 8.0,
+      "medium": "novel"
+    }
+  ],
+  "total": 2,
+  "limit": 36,
+  "offset": 0
+}

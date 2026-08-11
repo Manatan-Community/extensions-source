@@ -800,9 +800,9 @@ dependencies = [
 name = "manatan-novel-en-lightnovelworld"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "manatan-common",
  "manatan-sdk",
- "regex",
  "serde_json",
  "url",
 ]
