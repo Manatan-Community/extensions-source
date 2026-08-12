@@ -1,0 +1,20 @@
+[package]
+name = "manatan-novel-en-bookracy"
+version.workspace = true
+edition.workspace = true
+license = "MIT"
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+base64.workspace = true
+manatan-common.workspace = true
+manatan-sdk.workspace = true
+regex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+url.workspace = true
+zip.workspace = true

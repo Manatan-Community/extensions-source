@@ -39361,6 +39361,39 @@
       "attribution": "Independent integration with Novel Archive's public catalog and chapter APIs."
     },
     {
+      "upstreamRepository": "https://bookracy.com",
+      "upstreamPath": "public trending, search, cover, and EPUB download APIs",
+      "sourceId": "bookracy",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone-epub-json-api",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution",
+        "epub-processing"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "catalog-metadata-tests",
+        "unsupported-format-tests",
+        "url-resolution-tests",
+        "archive-path-safety",
+        "fixture-epub-render-test",
+        "strict-clippy",
+        "component-validated",
+        "signed-package-validated",
+        "production-runner-live-trending-and-filtered-search",
+        "production-runner-saved-item-details-and-chapters",
+        "live-epub-download-and-render",
+        "live-cover-image"
+      ],
+      "packagePath": "packages/novel/en/bookracy.manatan2",
+      "knownSiteFailure": null,
+      "license": "MIT",
+      "attribution": "Independent integration with BookRacy's public catalog and EPUB endpoints."
+    },
+    {
       "upstreamRepository": "https://shuttletv.su",
       "upstreamPath": "public TMDB catalog and CineSrc embed",
       "sourceId": "shuttletv",

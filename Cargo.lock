@@ -775,6 +775,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-bookracy"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde",
+ "serde_json",
+ "url",
+ "zip",
+]
+
+[[package]]
 name = "manatan-novel-en-cyrisia"
 version = "0.1.0"
 dependencies = [
