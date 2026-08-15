@@ -1,4 +1,4 @@
-use manatan_sdk::{html, model::PageContent};
+use manatan_sdk::{client::BROWSER_USER_AGENT, html, model::PageContent};
 use natsuid_manga::{
     build_filter_definitions, build_search_form, chapter_list_url,
     extract_manga_id_from_detail_page, extract_nonce, genre_filter_url, nonce_url,
@@ -108,6 +108,15 @@ fn maps_rest_payloads_and_filters_novels() {
         items[0].cover.as_ref().map(|request| request.url.as_str()),
         Some("https://rawkuma.net/wp-content/uploads/alpha.jpg")
     );
+    let cover = items[0].cover.as_ref().unwrap();
+    assert_eq!(
+        cover.headers.get("Referer").map(String::as_str),
+        Some("https://rawkuma.net")
+    );
+    assert_eq!(
+        cover.headers.get("User-Agent").map(String::as_str),
+        Some(BROWSER_USER_AGENT)
+    );
     assert_eq!(items[0].extra["mangaId"], json!(101));
     assert_eq!(items[0].extra["slug"], json!("alpha"));
 }
@@ -174,6 +183,8 @@ fn parses_chapters_and_pages() {
                 context.as_ref().unwrap()["Referer"],
                 "https://rawkuma.net/manga/alpha/chapter-12/?style=list"
             );
+            assert_eq!(context.as_ref().unwrap()["User-Agent"], BROWSER_USER_AGENT);
+            assert_eq!(pages[1].headers["User-Agent"], BROWSER_USER_AGENT);
         }
         _ => panic!("expected URL page"),
     }

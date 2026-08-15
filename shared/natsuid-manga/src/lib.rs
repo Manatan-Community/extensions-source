@@ -3,12 +3,12 @@ use std::{collections::BTreeMap, sync::Mutex};
 use chrono::{DateTime, Utc};
 use manatan_common::{absolute_url, extract_number, normalize_space, path_key};
 use manatan_sdk::{
-    client::Client,
+    client::{Client, BROWSER_USER_AGENT},
     host,
     html::{self, ElementRef, Html, Selector},
     model::{
-        CatalogItem, FilterDefinition, MangaChapter, MangaPage, OptionItem, PageContent, Paged,
-        SortOption, SortSelection, UrlResolveResult,
+        CatalogItem, FilterDefinition, ImageRequest, MangaChapter, MangaPage, OptionItem,
+        PageContent, Paged, SortOption, SortSelection, UrlResolveResult,
     },
     Error, MangaSource, Result,
 };
@@ -552,8 +552,7 @@ impl RestManga {
             .first()
             .map(|media| media.source_url.trim())
             .filter(|value| !value.is_empty())
-            .map(str::to_owned)
-            .map(Into::into);
+            .map(|cover_url| image_request(cover_url, base));
         let description = html_text(&self.content.rendered);
         if !description.is_empty() {
             item.description = Some(description);
@@ -1027,7 +1026,20 @@ fn html_text(source: &str) -> String {
 }
 
 fn page_headers(referer: &str) -> BTreeMap<String, String> {
-    BTreeMap::from([(String::from("Referer"), referer.to_owned())])
+    browser_headers(referer)
+}
+
+fn image_request(url: &str, referer: &str) -> ImageRequest {
+    ImageRequest::get(url)
+        .header("Referer", referer)
+        .header("User-Agent", BROWSER_USER_AGENT)
+}
+
+fn browser_headers(referer: &str) -> BTreeMap<String, String> {
+    BTreeMap::from([
+        (String::from("Referer"), referer.to_owned()),
+        (String::from("User-Agent"), BROWSER_USER_AGENT.to_owned()),
+    ])
 }
 
 fn parse_rfc3339(value: &str) -> Option<i64> {

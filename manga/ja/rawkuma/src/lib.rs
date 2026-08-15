@@ -48,8 +48,14 @@ mod tests {
         assert_eq!(manifest["license"], "Apache-2.0");
         assert_eq!(
             manifest["permissions"]["network"]["allow"],
-            json!(["https://rawkuma.net", "https://cdn.kumacdn.club"])
+            json!([
+                "https://rawkuma.net",
+                "https://cdn.kumacdn.club",
+                "https://rcdn.kyut.dev"
+            ])
         );
+        assert_eq!(manifest["permissions"]["cookies"], true);
+        assert_eq!(manifest["permissions"]["webview"], true);
         assert_eq!(
             manifest["sources"],
             json!([{

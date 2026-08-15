@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "rawkuma",
   "name": "Rawkuma",
-  "version": "1.0.3",
-  "versionCode": 4,
+  "version": "1.0.4",
+  "versionCode": 5,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -22,11 +22,12 @@
     "network": {
       "allow": [
         "https://rawkuma.net",
-        "https://cdn.kumacdn.club"
+        "https://cdn.kumacdn.club",
+        "https://rcdn.kyut.dev"
       ]
     },
     "cookies": true,
-    "webview": false,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false
