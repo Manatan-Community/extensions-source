@@ -496,12 +496,27 @@ fn parse_chapters(data: &Value, slug: &str) -> Result<Vec<MangaChapter>> {
                 .map(|date| date.timestamp_millis()),
             language: Some(LANGUAGE.to_owned()),
             url: Some(format!("{BASE_URL}/manga/{slug}/{key}")),
-            source_order: Some(parsed.len() as i32),
             ..MangaChapter::default()
         });
     }
     if parsed.is_empty() {
         return Err(Error::new("SoraRaw details page has no readable chapters"));
+    }
+    // SoraRaw has returned both scrambled and newest-first chapter arrays. Keep
+    // the extension contract deterministic and use positive, one-based source
+    // orders: Manatan reserves zero to mean that a source did not supply an
+    // order.
+    parsed.sort_by(|left, right| {
+        right
+            .chapter_number
+            .unwrap_or(f32::NEG_INFINITY)
+            .total_cmp(&left.chapter_number.unwrap_or(f32::NEG_INFINITY))
+            .then_with(|| right.date_uploaded.cmp(&left.date_uploaded))
+            .then_with(|| right.key.cmp(&left.key))
+    });
+    let chapter_count = parsed.len();
+    for (index, chapter) in parsed.iter_mut().enumerate() {
+        chapter.source_order = Some((chapter_count - index) as i32);
     }
     Ok(parsed)
 }
@@ -861,7 +876,36 @@ mod tests {
         assert_eq!(chapters[0].key, "ch-247");
         assert_eq!(chapters[0].chapter_number, Some(247.0));
         assert!(chapters[0].date_uploaded.is_some());
-        assert_eq!(chapters[0].source_order, Some(0));
+        assert_eq!(chapters[0].source_order, Some(2));
+        assert_eq!(chapters[1].source_order, Some(1));
+    }
+
+    #[test]
+    fn sorts_scrambled_fractional_chapters_and_assigns_positive_orders() {
+        let data = json!({
+            "props": { "pageProps": { "data": { "manga": { "chapters": [
+                { "path": "example-ch-1", "order": 1, "published_at": "2026-01-01T00:00:00Z" },
+                { "path": "example-ch-9", "order": 9, "published_at": "2026-03-01T00:00:00Z" },
+                { "path": "example-ch-2-1", "order": 2.1, "published_at": "2026-02-01T00:00:00Z" },
+                { "path": "example-ch-2", "order": 2, "published_at": "2026-01-15T00:00:00Z" }
+            ] } } } }
+        });
+
+        let chapters = parse_chapters(&data, "example").expect("chapters parse");
+        assert_eq!(
+            chapters
+                .iter()
+                .map(|chapter| chapter.chapter_number)
+                .collect::<Vec<_>>(),
+            vec![Some(9.0), Some(2.1), Some(2.0), Some(1.0)]
+        );
+        assert_eq!(
+            chapters
+                .iter()
+                .map(|chapter| chapter.source_order)
+                .collect::<Vec<_>>(),
+            vec![Some(4), Some(3), Some(2), Some(1)]
+        );
     }
 
     #[test]
