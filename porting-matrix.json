@@ -28338,17 +28338,23 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
         "filters",
         "url-resolution",
-        "chapter-pagination",
-        "commands"
+        "protected-font-decoding"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "runtime-tested",
+      "tests": [
+        "rust-fixtures-novel/en/chrysanthemumgarden",
+        "component-manatan-extensions-2.0.0-novel/en/chrysanthemumgarden",
+        "production-wasmtime-runtime-filters-novel/en/chrysanthemumgarden",
+        "live-browser-protected-font-decoding-novel/en/chrysanthemumgarden"
+      ],
+      "packagePath": "packages/novel/en/chrysanthemumgarden.manatan2",
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "Apache-2.0",
+      "attribution": ""
     },
     {
       "upstreamRepository": "LNReader/lnreader-plugins",

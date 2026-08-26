@@ -789,6 +789,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-chrysanthemumgarden"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "manatan-novel-en-cyrisia"
 version = "0.1.0"
 dependencies = [
