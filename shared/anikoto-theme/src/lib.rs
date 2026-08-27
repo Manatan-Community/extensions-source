@@ -232,6 +232,7 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
                     .get(key)
                     .and_then(|value| value.get("url"))
                     .and_then(Value::as_str)
+                    .filter(|url| !url.trim().is_empty())
                 {
                     hosters.push(VideoHoster {
                         key: format!("mapper:{name}:{key}"),
@@ -355,28 +356,20 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
         let stream_type = embed
             .path_segments()
             .and_then(Iterator::last)
-            .filter(|value| matches!(*value, "sub" | "dub"));
-        let primary = format!(
-            "{origin}/stream/getSources?id={}&id={}",
-            encode(data_id),
-            encode(data_id)
-        );
-        let response = self.get_text(&primary, Some(embed_url), true);
-        let body = match response {
-            Ok((body, _)) => body,
+            .filter(|value| matches!(*value, "sub" | "dub" | "hsub"))
+            .unwrap_or_default();
+        let primary = source_api_url(&origin, "getSources", data_id, stream_type);
+        let response = self
+            .get_text(&primary, Some(embed_url), true)
+            .and_then(|(body, _)| serde_json::from_str(&body).map_err(Error::from));
+        let response: SourceResponse = match response {
+            Ok(response) => response,
             Err(_) => {
-                let mut fallback = format!(
-                    "{origin}/stream/getSourcesNew?id={}&id={}",
-                    encode(data_id),
-                    encode(data_id)
-                );
-                if let Some(stream_type) = stream_type {
-                    fallback.push_str(&format!("&type={0}&type={0}", encode(stream_type)));
-                }
-                self.get_text(&fallback, Some(embed_url), true)?.0
+                let fallback = source_api_url(&origin, "getSourcesNew", data_id, stream_type);
+                let (body, _) = self.get_text(&fallback, Some(embed_url), true)?;
+                serde_json::from_str(&body)?
             }
         };
-        let response: SourceResponse = serde_json::from_str(&body)?;
         let url = source_url(&response.sources)
             .filter(|value| value.starts_with("http"))
             .ok_or_else(|| Error::new("player source API returned no HLS URL"))?;
@@ -1309,6 +1302,14 @@ fn source_url(value: &Value) -> Option<String> {
     }
 }
 
+fn source_api_url(origin: &str, endpoint: &str, data_id: &str, stream_type: &str) -> String {
+    format!(
+        "{origin}/stream/{endpoint}?id={id}&id={id}&type={stream_type}&type={stream_type}",
+        id = encode(data_id),
+        stream_type = encode(stream_type),
+    )
+}
+
 fn segment(values: &[f64]) -> Option<MediaSegment> {
     (values.len() >= 2 && values[1] > values[0]).then(|| MediaSegment {
         start_seconds: values[0],
@@ -1593,7 +1594,19 @@ mod tests {
         assert!(url.contains("keyword=one+piece"));
         assert!(url.contains("genre%5B%5D=1"));
         assert!(url.contains("language%5B%5D=sub"));
-        assert_ne!(vrf_encrypt("1642"), "1642");
+        assert_eq!(vrf_encrypt("1642"), "cE9mNXJ6YVdvNzBacjZSTQ==");
+    }
+
+    #[test]
+    fn constructs_typed_source_api_urls() {
+        assert_eq!(
+            source_api_url("https://megaplay.buzz", "getSources", "36396", "hsub"),
+            "https://megaplay.buzz/stream/getSources?id=36396&id=36396&type=hsub&type=hsub"
+        );
+        assert_eq!(
+            source_api_url("https://megaplay.buzz", "getSourcesNew", "36396", ""),
+            "https://megaplay.buzz/stream/getSourcesNew?id=36396&id=36396&type=&type="
+        );
     }
 
     #[test]

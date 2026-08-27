@@ -30,3 +30,31 @@ impl AnikotoConfig for Anikoto {
 manatan_sdk::export_extension!(
     manatan_sdk::Extension::new().video("anikoto", AnikotoSource::<Anikoto>::default())
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tracks_current_aniyomi_domains_and_hosters() {
+        assert!(Anikoto::DOMAINS.contains(&"anikototv.to"));
+        assert!(Anikoto::DOMAINS.contains(&"anikototv.se"));
+        assert!(Anikoto::HOSTERS.contains(&"HD-1"));
+        assert!(Anikoto::HOSTERS.contains(&"Vidstream-2"));
+    }
+
+    #[test]
+    fn manifest_allows_current_player_resources() {
+        let manifest = include_str!("../manifest.json");
+        for origin in [
+            "https://*.kryntal.top",
+            "https://*.norami.top",
+            "https://*.sugevideo.xyz",
+        ] {
+            assert!(
+                manifest.contains(&format!("\"{origin}\"")),
+                "missing network permission for {origin}"
+            );
+        }
+    }
+}
