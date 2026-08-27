@@ -20,7 +20,6 @@ const FEED_LIMIT: u32 = 500;
 const REQUEST_LIMIT_MS: u32 = 350;
 const NATIVE_USER_AGENT: &str = "Manatan/6.0 (+https://manatan.com)";
 
-const LANGUAGE_KEY: &str = "translated_language";
 const ORIGINAL_LANGUAGES_KEY: &str = "original_languages";
 const COVER_QUALITY_KEY: &str = "cover_quality";
 const DATA_SAVER_KEY: &str = "data_saver";
@@ -40,10 +39,17 @@ const DEFAULT_BLOCKED_GROUPS: &[&str] = &[
 pub struct MangaDexSource {
     client: Client,
     allowed_manga: BTreeSet<String>,
+    language: LanguageVariant,
 }
 
 impl Default for MangaDexSource {
     fn default() -> Self {
+        Self::new(LanguageVariant::from_source_code("en"))
+    }
+}
+
+impl MangaDexSource {
+    fn new(language: LanguageVariant) -> Self {
         Self {
             // MangaDex's API rejects browser-identifying User-Agent values on
             // API requests. Identify the native client explicitly and send
@@ -54,11 +60,9 @@ impl Default for MangaDexSource {
                 .header("Referer", format!("{SITE_URL}/"))
                 .header("Origin", SITE_URL),
             allowed_manga: BTreeSet::new(),
+            language,
         }
     }
-}
-
-impl MangaDexSource {
     fn get_json<T: DeserializeOwned>(&self, url: &str) -> Result<T> {
         let response = self
             .client
@@ -90,7 +94,7 @@ impl MangaDexSource {
         ))
         .map_err(url_error)?;
         url.query_pairs_mut()
-            .append_pair("translatedLanguage[]", &translated_language());
+            .append_pair("translatedLanguage[]", self.language.api_code);
         self.get_json(url.as_str())
     }
 
@@ -145,13 +149,19 @@ impl MangaDexSource {
 
 impl MangaSource for MangaDexSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        let url = manga_list_url(page, Some(("followedCount", "desc")), "", &Value::Null)?;
+        let url = manga_list_url(
+            page,
+            Some(("followedCount", "desc")),
+            "",
+            &Value::Null,
+            self.language.api_code,
+        )?;
         let response: CollectionResponse<MangaData> = self.get_json(&url)?;
-        parse_catalog(response)
+        parse_catalog(response, self.language.api_code)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        let url = latest_feed_url(page)?;
+        let url = latest_feed_url(page, self.language.api_code)?;
         let response: CollectionResponse<ChapterData> = self.get_json(&url)?;
         let mut ids = Vec::new();
         let mut seen = BTreeSet::new();
@@ -170,7 +180,7 @@ impl MangaSource for MangaDexSource {
         let entries = ids
             .iter()
             .filter_map(|id| by_id.remove(id))
-            .map(|entry| entry.to_catalog_item(&translated_language(), &cover_quality()))
+            .map(|entry| entry.to_catalog_item(self.language.api_code, &cover_quality()))
             .collect::<Result<Vec<_>>>()?;
         Ok(Paged {
             entries,
@@ -187,15 +197,15 @@ impl MangaSource for MangaDexSource {
                 }
             }
         }
-        let url = manga_list_url(page, None, trimmed, filters)?;
+        let url = manga_list_url(page, None, trimmed, filters, self.language.api_code)?;
         let response: CollectionResponse<MangaData> = self.get_json(&url)?;
-        parse_catalog(response)
+        parse_catalog(response, self.language.api_code)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let manga_id = manga_id(item.url.as_deref().unwrap_or(&item.key))?;
         let manga = self.manga_entity(&manga_id)?;
-        let mut parsed = manga.to_catalog_item(&translated_language(), &cover_quality())?;
+        let mut parsed = manga.to_catalog_item(self.language.api_code, &cover_quality())?;
         parsed.initialized = true;
         if let Ok(aggregate) = self.aggregate(&manga_id) {
             let (volumes, chapters) = aggregate_stats(&aggregate);
@@ -215,7 +225,7 @@ impl MangaSource for MangaDexSource {
         let mut source_order = 0_i32;
         let mut chapters = Vec::new();
         loop {
-            let url = chapter_feed_url(&manga_id, offset)?;
+            let url = chapter_feed_url(&manga_id, offset, self.language.api_code)?;
             let response: CollectionResponse<ChapterData> = self.get_json(&url)?;
             let count = response.data.len() as u32;
             for chapter in response.data {
@@ -333,10 +343,109 @@ impl MangaSource for MangaDexSource {
     }
 }
 
+#[cfg(any(target_arch = "wasm32", test))]
+fn extension_registry() -> manatan_sdk::Extension {
+    SOURCE_LANGUAGES.iter().fold(
+        manatan_sdk::Extension::new(),
+        |extension, &(source_code, api_code)| {
+            extension.manga(
+                source_id(source_code),
+                MangaDexSource::new(LanguageVariant { api_code }),
+            )
+        },
+    )
+}
+
 #[cfg(target_arch = "wasm32")]
-manatan_sdk::export_extension!(
-    manatan_sdk::Extension::new().manga("mangadex", MangaDexSource::default())
-);
+manatan_sdk::export_extension!(extension_registry());
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+struct LanguageVariant {
+    api_code: &'static str,
+}
+
+impl LanguageVariant {
+    fn from_source_code(code: &str) -> Self {
+        SOURCE_LANGUAGES
+            .iter()
+            .find(|(source_code, _)| source_code.eq_ignore_ascii_case(code))
+            .map(|&(_, api_code)| Self { api_code })
+            .unwrap_or(Self { api_code: "en" })
+    }
+}
+
+const SOURCE_LANGUAGES: [(&str, &str); 61] = [
+    ("af", "af"),
+    ("sq", "sq"),
+    ("ar", "ar"),
+    ("az", "az"),
+    ("eu", "eu"),
+    ("be", "be"),
+    ("bn", "bn"),
+    ("bg", "bg"),
+    ("my", "my"),
+    ("ca", "ca"),
+    ("zh-Hans", "zh"),
+    ("zh-Hant", "zh-hk"),
+    ("cv", "cv"),
+    ("hr", "hr"),
+    ("cs", "cs"),
+    ("da", "da"),
+    ("nl", "nl"),
+    ("en", "en"),
+    ("eo", "eo"),
+    ("et", "et"),
+    ("fil", "tl"),
+    ("fi", "fi"),
+    ("fr", "fr"),
+    ("ka", "ka"),
+    ("de", "de"),
+    ("el", "el"),
+    ("he", "he"),
+    ("hi", "hi"),
+    ("hu", "hu"),
+    ("ga", "ga"),
+    ("id", "id"),
+    ("it", "it"),
+    ("ja", "ja"),
+    ("jv", "jv"),
+    ("kk", "kk"),
+    ("ko", "ko"),
+    ("la", "la"),
+    ("lt", "lt"),
+    ("ms", "ms"),
+    ("mn", "mn"),
+    ("ne", "ne"),
+    ("no", "no"),
+    ("fa", "fa"),
+    ("pl", "pl"),
+    ("pt-BR", "pt-br"),
+    ("pt", "pt"),
+    ("ro", "ro"),
+    ("ru", "ru"),
+    ("sr", "sr"),
+    ("sk", "sk"),
+    ("es-419", "es-la"),
+    ("es", "es"),
+    ("sv", "sv"),
+    ("ta", "ta"),
+    ("te", "te"),
+    ("th", "th"),
+    ("tr", "tr"),
+    ("uk", "uk"),
+    ("ur", "ur"),
+    ("uz", "uz"),
+    ("vi", "vi"),
+];
+
+#[cfg(any(target_arch = "wasm32", test))]
+fn source_id(source_code: &str) -> String {
+    if source_code == "en" {
+        "mangadex".to_owned()
+    } else {
+        format!("mangadex-{}", source_code.to_ascii_lowercase())
+    }
+}
 
 #[derive(Clone, Debug, Default, Deserialize)]
 struct CollectionResponse<T> {
@@ -566,6 +675,7 @@ fn manga_list_url(
     forced_sort: Option<(&str, &str)>,
     query: &str,
     filters: &Value,
+    translated_language: &str,
 ) -> Result<String> {
     let mut url = Url::parse(&format!("{API_URL}/manga")).map_err(url_error)?;
     let mut pairs = url.query_pairs_mut();
@@ -580,7 +690,7 @@ fn manga_list_url(
                 .to_string(),
         )
         .append_pair("includes[]", "cover_art")
-        .append_pair("availableTranslatedLanguage[]", &translated_language());
+        .append_pair("availableTranslatedLanguage[]", translated_language);
     append_safe_ratings_inline(&mut pairs);
 
     for language in selected_original_languages(filters) {
@@ -677,7 +787,7 @@ fn manga_list_url(
     Ok(url.to_string())
 }
 
-fn latest_feed_url(page: u32) -> Result<String> {
+fn latest_feed_url(page: u32, translated_language: &str) -> Result<String> {
     let mut url = Url::parse(&format!("{API_URL}/chapter")).map_err(url_error)?;
     let mut pairs = url.query_pairs_mut();
     pairs
@@ -690,7 +800,7 @@ fn latest_feed_url(page: u32) -> Result<String> {
                 .saturating_mul(LATEST_LIMIT)
                 .to_string(),
         )
-        .append_pair("translatedLanguage[]", &translated_language())
+        .append_pair("translatedLanguage[]", translated_language)
         .append_pair("order[publishAt]", "desc")
         .append_pair("includeFutureUpdates", "0")
         .append_pair("includeFuturePublishAt", "0")
@@ -707,7 +817,7 @@ fn latest_feed_url(page: u32) -> Result<String> {
     Ok(url.to_string())
 }
 
-fn chapter_feed_url(manga_id: &str, offset: u32) -> Result<String> {
+fn chapter_feed_url(manga_id: &str, offset: u32, translated_language: &str) -> Result<String> {
     let mut url = Url::parse(&format!(
         "{API_URL}/manga/{}/feed",
         require_uuid(manga_id, "manga")?
@@ -717,7 +827,7 @@ fn chapter_feed_url(manga_id: &str, offset: u32) -> Result<String> {
     pairs
         .append_pair("limit", &FEED_LIMIT.to_string())
         .append_pair("offset", &offset.to_string())
-        .append_pair("translatedLanguage[]", &translated_language())
+        .append_pair("translatedLanguage[]", translated_language)
         .append_pair("order[volume]", "desc")
         .append_pair("order[chapter]", "desc")
         .append_pair("includes[]", "scanlation_group")
@@ -741,14 +851,16 @@ fn append_safe_ratings_inline(pairs: &mut url::form_urlencoded::Serializer<'_, u
         .append_pair("contentRating[]", "suggestive");
 }
 
-fn parse_catalog(response: CollectionResponse<MangaData>) -> Result<Paged<CatalogItem>> {
-    let language = translated_language();
+fn parse_catalog(
+    response: CollectionResponse<MangaData>,
+    translated_language: &str,
+) -> Result<Paged<CatalogItem>> {
     let quality = cover_quality();
     let entries = response
         .data
         .into_iter()
         .filter(|manga| rating_is_allowed(manga.attributes.content_rating.as_deref()))
-        .map(|manga| manga.to_catalog_item(&language, &quality))
+        .map(|manga| manga.to_catalog_item(translated_language, &quality))
         .collect::<Result<Vec<_>>>()?;
     Ok(Paged {
         entries,
@@ -986,14 +1098,6 @@ fn relationship_names(relationships: &[Relationship], kind: &str) -> Vec<String>
     names.into_iter().collect()
 }
 
-fn translated_language() -> String {
-    context::preference::<String>(LANGUAGE_KEY)
-        .ok()
-        .flatten()
-        .filter(|value| language_codes().iter().any(|(_, code)| code == value))
-        .unwrap_or_else(|| "en".to_owned())
-}
-
 fn cover_quality() -> String {
     context::preference::<String>(COVER_QUALITY_KEY)
         .ok()
@@ -1219,15 +1323,6 @@ fn filter_definitions() -> Vec<FilterDefinition> {
 
 fn preference_definitions() -> Vec<PreferenceDefinition> {
     vec![
-        PreferenceDefinition::Select {
-            key: LANGUAGE_KEY.to_owned(),
-            title: "Chapter language".to_owned(),
-            options: language_codes()
-                .iter()
-                .map(|(label, code)| option(label, code))
-                .collect(),
-            default: "en".to_owned(),
-        },
         PreferenceDefinition::MultiSelect {
             key: ORIGINAL_LANGUAGES_KEY.to_owned(),
             title: "Original languages".to_owned(),
@@ -1388,6 +1483,7 @@ mod tests {
         let manifest: Manifest = serde_json::from_str(MANIFEST).expect("manifest parses");
         manifest.validate().expect("manifest validates");
         assert_eq!(manifest.id, "mangadex");
+        assert_eq!(manifest.sources.len(), SOURCE_LANGUAGES.len());
         assert_eq!(manifest.publisher.id, "org.manatan.community.extensions");
         assert_eq!(
             manifest.sources[0].content_rating,
@@ -1405,10 +1501,60 @@ mod tests {
     }
 
     #[test]
+    fn language_sources_match_mihon_and_preserve_the_english_id() {
+        let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
+        let sources = manifest["sources"].as_array().expect("sources array");
+        for &(source_code, api_code) in &SOURCE_LANGUAGES {
+            let id = source_id(source_code);
+            let source = sources
+                .iter()
+                .find(|source| source["id"] == id)
+                .unwrap_or_else(|| panic!("missing {source_code} source"));
+            assert_eq!(source["name"], "MangaDex");
+            assert_eq!(source["lang"], source_code);
+            assert_eq!(
+                LanguageVariant::from_source_code(source_code).api_code,
+                api_code
+            );
+            let listing = manga_list_url(
+                1,
+                Some(("followedCount", "desc")),
+                "",
+                &Value::Null,
+                LanguageVariant::from_source_code(source_code).api_code,
+            )
+            .expect("listing URL");
+            assert!(Url::parse(&listing)
+                .expect("listing URL parses")
+                .query_pairs()
+                .any(|(key, value)| {
+                    key == "availableTranslatedLanguage[]" && value == api_code
+                }));
+        }
+        assert_eq!(source_id("en"), "mangadex");
+        assert_eq!(source_id("pt-BR"), "mangadex-pt-br");
+        assert_eq!(source_id("zh-Hans"), "mangadex-zh-hans");
+    }
+
+    #[test]
+    fn registers_each_language_without_a_chapter_language_preference() {
+        let mut extension = extension_registry();
+        for &(source_code, _) in &SOURCE_LANGUAGES {
+            let id = source_id(source_code);
+            let preferences = extension
+                .call(&id, "preferences", "{}")
+                .unwrap_or_else(|error| panic!("{id} is not registered: {}", error.message));
+            assert!(!preferences.contains("translated_language"));
+            assert!(!preferences.contains("Chapter language"));
+            assert!(preferences.contains(ORIGINAL_LANGUAGES_KEY));
+        }
+    }
+
+    #[test]
     fn catalog_drops_adult_entries_and_prefers_requested_alt_title() {
         let response: CollectionResponse<MangaData> =
             serde_json::from_str(CATALOG).expect("catalog fixture parses");
-        let parsed = parse_catalog(response).expect("catalog parses");
+        let parsed = parse_catalog(response, "en").expect("catalog parses");
         assert_eq!(parsed.entries.len(), 2);
         assert_eq!(parsed.entries[0].title, "Journey of the Stars");
         assert_eq!(parsed.entries[0].content_rating.as_deref(), Some("safe"));
@@ -1465,7 +1611,7 @@ mod tests {
             "statuses": { "ongoing": true },
             "sort": "rating:desc"
         });
-        let url = manga_list_url(3, None, "fixture", &hostile_filters).expect("url builds");
+        let url = manga_list_url(3, None, "fixture", &hostile_filters, "en").expect("url builds");
         let pairs = Url::parse(&url)
             .expect("url parses")
             .query_pairs()
@@ -1484,8 +1630,9 @@ mod tests {
 
     #[test]
     fn latest_and_feed_requests_apply_safety_and_block_lists() {
-        let latest = latest_feed_url(2).expect("latest URL");
-        let feed = chapter_feed_url("11111111-1111-4111-8111-111111111111", 500).expect("feed URL");
+        let latest = latest_feed_url(2, "en").expect("latest URL");
+        let feed =
+            chapter_feed_url("11111111-1111-4111-8111-111111111111", 500, "en").expect("feed URL");
         for url in [latest, feed] {
             let pairs = Url::parse(&url)
                 .expect("url parses")
