@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "aniwave",
   "name": "AniWave (Unoriginal)",
-  "version": "0.1.4",
-  "versionCode": 5,
+  "version": "0.1.5",
+  "versionCode": 6,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -52,7 +52,11 @@
         "https://*.vidstream.pro",
         "https://vidtube.site",
         "https://megaplay.buzz",
-        "https://vidwish.live"
+        "https://vidwish.live",
+        "https://*.kryntal.top",
+        "https://*.norami.top",
+        "https://*.sugevideo.xyz",
+        "https://*.livedns.my"
       ]
     },
     "cookies": true,

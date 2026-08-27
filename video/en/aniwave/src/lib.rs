@@ -50,6 +50,10 @@ mod tests {
             "https://*.kotocdn.site",
             "https://*.lostproject.club",
             "https://mapper.mewcdn.online",
+            "https://*.kryntal.top",
+            "https://*.norami.top",
+            "https://*.sugevideo.xyz",
+            "https://*.livedns.my",
         ] {
             assert!(
                 manifest.contains(&format!("\"{origin}\"")),
