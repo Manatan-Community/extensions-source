@@ -963,6 +963,7 @@ version = "0.1.0"
 dependencies = [
  "base64",
  "manatan-sdk",
+ "regex",
  "scraper",
  "serde",
  "serde_json",

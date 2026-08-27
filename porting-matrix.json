@@ -1359,7 +1359,7 @@
       "upstreamRepository": "keiyoushi/extensions-source",
       "upstreamPath": "src/all/mangafire",
       "sourceId": "mangafire",
-      "language": "all",
+      "language": "en",
       "mediaKind": "manga",
       "framework": "standalone",
       "requiredCapabilities": [
@@ -1373,7 +1373,10 @@
       ],
       "status": "component-valid",
       "tests": [
-        "11 fixture and policy tests",
+        "16 fixture and policy tests",
+        "seven-language-source-registration-with-legacy-English-id",
+        "mihon-aligned-theme-volume-dedup-and-chapter-number-tests",
+        "shape-captcha-solver-bridge-and-permission-policy",
         "cargo clippy -p mangafire --all-targets -- -D warnings",
         "adult-and-unknown-fail-closed",
         "forced-safe-content-rating-and-blocked-genre-queries",
@@ -1381,6 +1384,168 @@
         "source-isolated-host-webview-cookie-retry",
         "wasm-tools-validate",
         "live catalog/detail/chapter/page/image requests"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-es",
+      "language": "es",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-es-419",
+      "language": "es-419",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-fr",
+      "language": "fr",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-ja",
+      "language": "ja",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-pt",
+      "language": "pt",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
+      ],
+      "packagePath": null,
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Ported from keiyoushi/extensions-source."
+    },
+    {
+      "upstreamRepository": "keiyoushi/extensions-source",
+      "upstreamPath": "src/all/mangafire",
+      "sourceId": "mangafire-pt-br",
+      "language": "pt-BR",
+      "mediaKind": "manga",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "cloudflare-challenge-recovery",
+        "filters",
+        "url-resolution",
+        "page-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "shared MangaFire component and 16 fixture and policy tests",
+        "language-specific chapter API mapping",
+        "wasm-tools-validate"
       ],
       "packagePath": null,
       "knownSiteFailure": null,

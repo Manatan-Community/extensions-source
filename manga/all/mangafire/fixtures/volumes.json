@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": 4102,
+      "number": 29,
+      "name": "Neo Egoist League",
+      "chapterCount": 9,
+      "language": "en"
+    },
+    {
+      "id": 4103,
+      "number": 29,
+      "name": "Liga Neo Egoísta",
+      "chapterCount": 9,
+      "language": "es"
+    }
+  ],
+  "meta": {
+    "lastPage": 1,
+    "hasNext": false
+  }
+}

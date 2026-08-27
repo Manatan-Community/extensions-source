@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "mangafire",
   "name": "MangaFire",
-  "version": "1.2.1",
-  "versionCode": 6,
+  "version": "1.3.0",
+  "versionCode": 7,
   "minimumManatanVersion": "0.3.1",
   "apiVersion": 2,
   "wasm": "extension.wasm",
@@ -13,7 +13,7 @@
     "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
     "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
   },
-  "description": "MangaFire with typed chapter language selection, direct JSON API pages, bounded host-browser challenge recovery, and fail-closed content filtering.",
+  "description": "MangaFire language-specific sources with Mihon-aligned filters, volume and duplicate-release preferences, corrected chapter numbering, bounded captcha recovery, and fail-closed content filtering.",
   "author": "Manatan Community",
   "homepage": "https://mangafire.to",
   "repository": "https://github.com/Manatan-Community/extensions-source",
@@ -23,6 +23,9 @@
     "network": {
       "allow": [
         "https://mangafire.to",
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com",
+        "https://docs.opencv.org",
         "https://static.mfcdn.nl",
         "https://k99.mfcdn1.xyz",
         "https://k99.mfcdn2.xyz",
@@ -52,7 +55,7 @@
     {
       "id": "mangafire",
       "name": "MangaFire",
-      "lang": "all",
+      "lang": "en",
       "contentType": "manga",
       "baseUrl": "https://mangafire.to",
       "contentRating": "suggestive",
@@ -82,6 +85,144 @@
       "tags": [
         "json-api"
       ]
+    },
+    {
+      "id": "mangafire-es",
+      "name": "MangaFire",
+      "lang": "es",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
+    },
+    {
+      "id": "mangafire-es-419",
+      "name": "MangaFire",
+      "lang": "es-419",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
+    },
+    {
+      "id": "mangafire-fr",
+      "name": "MangaFire",
+      "lang": "fr",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
+    },
+    {
+      "id": "mangafire-ja",
+      "name": "MangaFire",
+      "lang": "ja",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
+    },
+    {
+      "id": "mangafire-pt",
+      "name": "MangaFire",
+      "lang": "pt",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
+    },
+    {
+      "id": "mangafire-pt-br",
+      "name": "MangaFire",
+      "lang": "pt-BR",
+      "contentType": "manga",
+      "baseUrl": "https://mangafire.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "preferences": true,
+        "urlResolution": true
+      },
+      "listings": [
+        { "id": "popular", "name": "Popular" },
+        { "id": "latest", "name": "Latest" }
+      ],
+      "urlPatterns": [
+        { "pattern": "https://mangafire.to/title/*", "kind": "item-or-chapter" }
+      ],
+      "tags": ["json-api"]
     }
   ]
 }

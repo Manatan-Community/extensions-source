@@ -306,11 +306,12 @@ fn validate_extension(extension: &ExtensionDir) -> Result<()> {
         extension.media
     );
     ensure!(
-        extension
-            .manifest
-            .sources
-            .iter()
-            .all(|source| source.lang == extension.lang),
+        extension.lang == "all"
+            || extension
+                .manifest
+                .sources
+                .iter()
+                .all(|source| source.lang == extension.lang),
         "{} source language does not match {}",
         extension.id,
         extension.lang
@@ -461,9 +462,10 @@ fn validate_matrix_against(extensions: &[ExtensionDir]) -> Result<()> {
     }
     for extension in extensions {
         for source in &extension.manifest.sources {
+            let language = matrix_source_language(&extension.lang, &source.lang);
             let row = matrix.sources.iter().find(|row| {
                 row.media_kind == extension.media
-                    && row.language == extension.lang
+                    && row.language == language
                     && row.source_id == source.id
             });
             ensure!(row.is_some(), "{} has no porting matrix row", source.id);
@@ -471,6 +473,14 @@ fn validate_matrix_against(extensions: &[ExtensionDir]) -> Result<()> {
     }
     println!("validated {} porting matrix rows", matrix.sources.len());
     Ok(())
+}
+
+fn matrix_source_language<'a>(package_language: &'a str, source_language: &'a str) -> &'a str {
+    if package_language == "all" {
+        source_language
+    } else {
+        package_language
+    }
 }
 
 fn inventory_upstreams(arguments: Vec<String>) -> Result<()> {
@@ -1506,7 +1516,13 @@ fn sha256(bytes: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::validate_network_pattern;
+    use super::{matrix_source_language, validate_network_pattern};
+
+    #[test]
+    fn aggregate_packages_use_each_manifest_source_language() {
+        assert_eq!(matrix_source_language("all", "ja"), "ja");
+        assert_eq!(matrix_source_language("en", "ja"), "en");
+    }
 
     #[test]
     fn validates_network_url_origins() {
