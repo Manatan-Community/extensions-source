@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 2,
+  "id": "mokuro",
+  "name": "Mokuro Catalog",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "manga",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Japanese OCR manga from Mokuro Bunko's WebDAV catalog, read directly from ranged remote CBZ archives.",
+  "author": "Manatan Community",
+  "homepage": "https://mokuro.moe/catalog",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://mokuro.moe"
+      ]
+    },
+    "cookies": false,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [],
+  "sources": [
+    {
+      "id": "mokuro",
+      "name": "Mokuro Catalog",
+      "lang": "ja",
+      "contentType": "manga",
+      "baseUrl": "https://mokuro.moe",
+      "contentRating": "adult",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "urlResolution": true,
+        "pageProcessing": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Catalog"
+        },
+        {
+          "id": "latest",
+          "name": "Recently updated"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://mokuro.moe/catalog*",
+          "kind": "item"
+        }
+      ],
+      "tags": [
+        "standalone",
+        "webdav",
+        "json-manifests",
+        "remote-cbz",
+        "range-requests",
+        "ocr"
+      ]
+    }
+  ]
+}

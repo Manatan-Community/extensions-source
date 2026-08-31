@@ -1,0 +1,40 @@
+{
+  "version": 2,
+  "series_title": "Yotsuba to!",
+  "external_ids": { "anilist": 30104, "mal": 104 },
+  "titles": {
+    "native": "よつばと！",
+    "romaji": "Yotsuba to!",
+    "english": "Yotsuba&!"
+  },
+  "synonyms": ["Yotsuba and!", "Yotsubato"],
+  "updated_at": "2026-08-29T13:43:41.051Z",
+  "volumes": [
+    {
+      "volume_uuid": "1895474e-917c-4a78-9c86-c890d107c7d7",
+      "volume_title": "Yotsuba-to--01",
+      "page_count": 224,
+      "matched_page_count": 224,
+      "character_count": 12869,
+      "mokuro_version": "0.2.0-beta.6",
+      "archive_size": 70371434,
+      "mokuro_size": 172267,
+      "mokuro_modified": 1772590475,
+      "cover_size": 37232,
+      "cover_modified": 1783635181
+    },
+    {
+      "volume_uuid": "abb88b0a-6d8d-42c7-a9b2-79142fdb8483",
+      "volume_title": "Yotsuba-to--02",
+      "page_count": 224,
+      "matched_page_count": 223,
+      "character_count": 9059,
+      "mokuro_version": "0.2.0-beta.6",
+      "archive_size": 58390893,
+      "mokuro_size": 127577,
+      "mokuro_modified": 1772590486,
+      "cover_size": 33404,
+      "cover_modified": 1783635180
+    }
+  ]
+}

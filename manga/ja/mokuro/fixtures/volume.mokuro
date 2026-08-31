@@ -1,0 +1,10 @@
+{
+  "version": "0.2.0-beta.6",
+  "title": "Yotsuba to!",
+  "volume": "Yotsuba-to--01",
+  "pages": [
+    {"img_path": "Yotsuba-to--01/001.jpg"},
+    {"img_path": "Yotsuba-to--01/002.webp"},
+    {"img_path": "Yotsuba-to--01/missing.jpg"}
+  ]
+}

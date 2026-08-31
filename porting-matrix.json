@@ -20736,9 +20736,14 @@
         "url-resolution",
         "page-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "live-verified",
+      "tests": [
+        "cargo test -p mokuro (7 tests)",
+        "cargo clippy -p mokuro --all-targets -- -D warnings",
+        "Android emulator: WebDAV catalog/search/details/chapters and ranged CBZ first/last page decode",
+        "iOS Simulator: WebDAV catalog/details and ranged CBZ reader page rendered"
+      ],
+      "packagePath": "packages/manga/ja/mokuro.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."

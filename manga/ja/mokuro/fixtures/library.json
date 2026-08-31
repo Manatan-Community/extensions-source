@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "updated_at": "2026-08-29T16:52:07.424Z",
+  "series": [
+    {
+      "series_title": "Yotsuba to!",
+      "external_ids": { "anilist": 30104, "mal": 104 },
+      "titles": {
+        "native": "よつばと！",
+        "romaji": "Yotsuba to!",
+        "english": "Yotsuba&!"
+      },
+      "synonyms": ["Yotsuba and!", "Yotsubato", "Ёцуба!"],
+      "updated_at": "2026-08-29T13:43:41.051Z"
+    },
+    {
+      "series_title": "Damaged Example",
+      "external_ids": {},
+      "titles": {},
+      "synonyms": [],
+      "updated_at": "2026-08-28T10:00:00.000Z"
+    }
+  ]
+}
