@@ -1,7 +1,7 @@
 // Adapted from LNReader/lnreader-plugins under the MIT license.
 
 use chrono::DateTime;
-use manatan_common::{absolute_url, attr, normalize_space, require, selector};
+use manatan_common::{normalize_space, require, selector};
 use manatan_sdk::{
     client::{Client, Response},
     html::{self, Html},
@@ -79,60 +79,6 @@ impl KakuyomuSource {
         ))
     }
 
-    fn parse_listing(document: &Html) -> Result<Paged<CatalogItem>> {
-        let rows = selector(".widget-media-genresWorkList-right > .widget-work")?;
-        let title = selector("a.widget-workCard-titleLabel")?;
-        let next = selector(".widget-pagerNext, .widget-pagerNext a")?;
-        let mut entries = Vec::new();
-        for row in document.select(&rows) {
-            let Some(anchor) = row.select(&title).next() else {
-                continue;
-            };
-            let Some(href) = attr(anchor, "href") else {
-                continue;
-            };
-            let name = normalize_space(&html::text(anchor));
-            if name.is_empty() {
-                continue;
-            }
-            let url = absolute_url(BASE_URL, &href)?;
-            let mut item = CatalogItem::new(url.clone(), name);
-            item.cover = Self::preview_cover_url(&url).map(Into::into);
-            item.url = Some(url);
-            item.language = Some("ja".into());
-            item.content_rating = Some("safe".into());
-            entries.push(item);
-        }
-        Ok(Paged::new(entries, document.select(&next).next().is_some()))
-    }
-
-    fn parse_selected_listing(selection: &Value) -> Result<Paged<CatalogItem>> {
-        let rows = selected_matches(selection, "entries")?;
-        let mut entries = Vec::with_capacity(rows.len());
-        for row in rows {
-            let Some(href) = selected_string(row, "href") else {
-                continue;
-            };
-            let Some(name) = selected_string(row, "title")
-                .map(|value| normalize_space(&value))
-                .filter(|value| !value.is_empty())
-            else {
-                continue;
-            };
-            let url = absolute_url(BASE_URL, &href)?;
-            let mut item = CatalogItem::new(url.clone(), name);
-            item.cover = Self::preview_cover_url(&url).map(Into::into);
-            item.url = Some(url);
-            item.language = Some("ja".into());
-            item.content_rating = Some("safe".into());
-            entries.push(item);
-        }
-        Ok(Paged::new(
-            entries,
-            !selected_matches(selection, "next")?.is_empty(),
-        ))
-    }
-
     fn apollo_state(document: &Html) -> Result<Map<String, Value>> {
         let data = selector("script#__NEXT_DATA__[type=\"application/json\"]")?;
         let json = document
@@ -152,21 +98,44 @@ impl KakuyomuSource {
             .ok_or_else(|| Error::new("Kakuyomu page has no Apollo state"))
     }
 
-    fn parse_search(document: &Html) -> Result<Paged<CatalogItem>> {
+    fn parse_ranking(document: &Html) -> Result<Paged<CatalogItem>> {
         let state = Self::apollo_state(document)?;
-        let next = selector(".widget-pagerNext, .widget-pagerNext a")?;
-        Self::parse_search_state(state, document.select(&next).next().is_some())
+        Self::parse_connection_state(&state, "rankedWorks(")
     }
 
-    fn parse_search_state(
-        state: Map<String, Value>,
-        has_next_page: bool,
+    fn parse_search(document: &Html) -> Result<Paged<CatalogItem>> {
+        let state = Self::apollo_state(document)?;
+        Self::parse_connection_state(&state, "searchWorks(")
+    }
+
+    fn parse_connection_state(
+        state: &Map<String, Value>,
+        field_prefix: &str,
     ) -> Result<Paged<CatalogItem>> {
-        let mut entries = Vec::new();
-        for work in state
-            .values()
-            .filter(|value| typename(value) == Some("Work"))
-        {
+        let connection = state
+            .get("ROOT_QUERY")
+            .and_then(Value::as_object)
+            .and_then(|query| {
+                query
+                    .iter()
+                    .find(|(key, _)| key.starts_with(field_prefix))
+                    .map(|(_, value)| value)
+            })
+            .ok_or_else(|| Error::new(format!("Kakuyomu page has no {field_prefix} connection")))?;
+        let nodes = connection
+            .get("nodes")
+            .and_then(Value::as_array)
+            .ok_or_else(|| {
+                Error::new(format!("Kakuyomu {field_prefix} connection has no nodes"))
+            })?;
+        let mut entries = Vec::with_capacity(nodes.len());
+        for node in nodes {
+            let Some(reference) = node.get("__ref").and_then(Value::as_str) else {
+                continue;
+            };
+            let Some(work) = resolve_ref(state, reference) else {
+                continue;
+            };
             let Some(id) = string(work, "id") else {
                 continue;
             };
@@ -181,11 +150,16 @@ impl KakuyomuSource {
             item.url = Some(url);
             item.cover = string(work, "adminCoverImageUrl")
                 .or_else(|| string(work, "ogImageUrl"))
+                .or_else(|| Self::preview_cover_url(&item.key))
                 .map(Into::into);
             item.language = Some("ja".into());
             item.content_rating = Some("safe".into());
             entries.push(item);
         }
+        let has_next_page = connection
+            .pointer("/pageInfo/hasNextPage")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
         Ok(Paged::new(entries, has_next_page))
     }
 
@@ -345,37 +319,11 @@ impl NovelSource for KakuyomuSource {
             return Err(Error::new(format!("unknown novel listing {listing:?}")));
         }
         let response = self.response(&Self::ranking_url(page.max(1), filters)?)?;
-        if let Some(selection) = self.select(
-            &response,
-            json!([
-                {
-                    "id": "entries",
-                    "selector": ".widget-media-genresWorkList-right > .widget-work",
-                    "limit": 100,
-                    "fields": [
-                        {
-                            "name": "title",
-                            "selector": "a.widget-workCard-titleLabel",
-                            "value": { "type": "text" }
-                        },
-                        {
-                            "name": "href",
-                            "selector": "a.widget-workCard-titleLabel",
-                            "value": { "type": "attribute", "name": "href" }
-                        }
-                    ]
-                },
-                {
-                    "id": "next",
-                    "selector": ".widget-pagerNext, .widget-pagerNext a",
-                    "limit": 1,
-                    "fields": []
-                }
-            ]),
-        )? {
-            return Self::parse_selected_listing(&selection);
+        if let Some(selection) = self.select(&response, apollo_queries())? {
+            let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
+            return Self::parse_connection_state(&state, "rankedWorks(");
         }
-        Self::parse_listing(&html::document(response.text()?))
+        Self::parse_ranking(&html::document(response.text()?))
     }
 
     fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -386,10 +334,9 @@ impl NovelSource for KakuyomuSource {
             url.query_pairs_mut().append_pair("page", &page.to_string());
         }
         let response = self.response(url.as_str())?;
-        if let Some(selection) = self.select(&response, apollo_queries(true))? {
+        if let Some(selection) = self.select(&response, apollo_queries())? {
             let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
-            let has_next = !selected_matches(&selection, "next")?.is_empty();
-            return Self::parse_search_state(state, has_next);
+            return Self::parse_connection_state(&state, "searchWorks(");
         }
         Self::parse_search(&html::document(response.text()?))
     }
@@ -398,7 +345,7 @@ impl NovelSource for KakuyomuSource {
         let url = item.url.as_deref().unwrap_or(&item.key);
         let response = self.response(url)?;
         let final_url = response.final_url().to_owned();
-        if let Some(selection) = self.select(&response, apollo_queries(false))? {
+        if let Some(selection) = self.select(&response, apollo_queries())? {
             let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
             return Self::parse_work_state(state, &final_url).map(|value| value.0);
         }
@@ -416,7 +363,7 @@ impl NovelSource for KakuyomuSource {
         let url = item.url.as_deref().unwrap_or(&item.key);
         let response = self.response(url)?;
         let final_url = response.final_url().to_owned();
-        if let Some(selection) = self.select(&response, apollo_queries(false))? {
+        if let Some(selection) = self.select(&response, apollo_queries())? {
             let state = Self::apollo_state_json(selected_apollo_json(&selection)?)?;
             return Self::parse_work_state(state, &final_url).map(|value| value.1);
         }
@@ -505,22 +452,13 @@ impl NovelSource for KakuyomuSource {
     }
 }
 
-fn apollo_queries(include_next: bool) -> Value {
-    let mut queries = vec![json!({
+fn apollo_queries() -> Value {
+    json!([{
         "id": "apollo",
         "selector": "script#__NEXT_DATA__[type=\"application/json\"]",
         "limit": 1,
         "fields": [{ "name": "json", "value": { "type": "innerHtml" } }]
-    })];
-    if include_next {
-        queries.push(json!({
-            "id": "next",
-            "selector": ".widget-pagerNext, .widget-pagerNext a",
-            "limit": 1,
-            "fields": []
-        }));
-    }
-    Value::Array(queries)
+    }])
 }
 
 fn selected_matches<'a>(selection: &'a Value, id: &str) -> Result<&'a [Value]> {
@@ -673,10 +611,19 @@ mod tests {
     #[test]
     fn parses_ranking_fixture() {
         let document = html::document(include_str!("../tests/fixtures/ranking.html"));
-        let page = KakuyomuSource::parse_listing(&document).unwrap();
-        assert_eq!(page.entries[0].title, "Fixture Work");
+        let page = KakuyomuSource::parse_ranking(&document).unwrap();
+        assert_eq!(page.entries.len(), 2);
+        assert_eq!(page.entries[0].title, "First Ranked Work");
+        assert_eq!(page.entries[1].title, "Fixture Work");
         assert_eq!(
             page.entries[0]
+                .cover
+                .as_ref()
+                .map(|request| request.url.as_str()),
+            Some("https://cdn-static.kakuyomu.jp/custom-cover.png")
+        );
+        assert_eq!(
+            page.entries[1]
                 .cover
                 .as_ref()
                 .map(|request| request.url.as_str()),
@@ -697,24 +644,20 @@ mod tests {
     }
 
     #[test]
-    fn selected_ranking_results_include_preview_covers() {
-        let page = KakuyomuSource::parse_selected_listing(&json!({
-            "results": {
-                "entries": [{
-                    "title": "Fixture Work",
-                    "href": "/works/123"
-                }],
-                "next": []
-            }
-        }))
+    fn parses_search_connection_order_and_pagination() {
+        let state = KakuyomuSource::apollo_state_json(
+            r#"{"props":{"pageProps":{"__APOLLO_STATE__":{"ROOT_QUERY":{"searchWorks({\"first\":20})":{"nodes":[{"__ref":"Work:2"},{"__ref":"Work:1"}],"pageInfo":{"hasNextPage":true}}},"Work:1":{"__typename":"Work","id":"1","title":"Second Result"},"Work:2":{"__typename":"Work","id":"2","title":"First Result"}}}}}"#,
+        )
         .unwrap();
+        let page = KakuyomuSource::parse_connection_state(&state, "searchWorks(").unwrap();
         assert_eq!(
-            page.entries[0]
-                .cover
-                .as_ref()
-                .map(|request| request.url.as_str()),
-            Some("https://cdn-static.kakuyomu.jp/works/123/ogimage.png")
+            page.entries
+                .iter()
+                .map(|entry| entry.title.as_str())
+                .collect::<Vec<_>>(),
+            ["First Result", "Second Result"]
         );
+        assert!(page.has_next_page);
     }
 
     #[test]
