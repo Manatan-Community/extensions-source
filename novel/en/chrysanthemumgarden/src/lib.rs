@@ -179,18 +179,41 @@ impl ChrysanthemumGardenSource {
     }
 
     fn parse_chapters(document: &Html) -> Result<Vec<NovelChapter>> {
-        let links = selector("div.chapter-item > a")?;
+        let links =
+            selector("#translated-chapters a.chapter-item[href], div.chapter-item > a[href]")?;
+        let chapter_numbers = selector(".chapter-item-number")?;
+        let chapter_names = selector(".chapter-item-name")?;
+        let mut seen = HashSet::new();
         let mut chapters = Vec::new();
         for anchor in document.select(&links) {
             let Some(href) = attr(anchor, "href") else {
                 continue;
             };
-            let title = normalize_space(&html::text(anchor));
             let url = absolute_url(BASE_URL, &href)?;
+            if !seen.insert(url.clone()) {
+                continue;
+            }
+            let number_label = anchor
+                .select(&chapter_numbers)
+                .next()
+                .map(html::text)
+                .map(|value| normalize_space(&value))
+                .filter(|value| !value.is_empty());
+            let name = anchor
+                .select(&chapter_names)
+                .next()
+                .map(html::text)
+                .map(|value| normalize_space(&value))
+                .filter(|value| !value.is_empty());
+            let title = chapter_title(anchor, number_label.as_deref(), name.as_deref());
+            let number = number_label
+                .as_deref()
+                .and_then(chapter_number_label)
+                .or_else(|| chapter_number(&title));
             chapters.push(NovelChapter {
                 key: url.clone(),
                 title: (!title.is_empty()).then_some(title.clone()),
-                chapter_number: chapter_number(&title),
+                chapter_number: number,
                 url: Some(url),
                 language: Some("en".into()),
                 source_order: Some(chapters.len() as i32),
@@ -483,6 +506,28 @@ fn chapter_number(value: &str) -> Option<f32> {
         .ok()
 }
 
+fn chapter_number_label(value: &str) -> Option<f32> {
+    Regex::new(r"(?i)^\s*(?:ch(?:apter)?\s*)?([0-9]+(?:\.[0-9]+)?)(?:\.)?\s*$")
+        .ok()?
+        .captures(value)?
+        .get(1)?
+        .as_str()
+        .parse()
+        .ok()
+}
+
+fn chapter_title(anchor: ElementRef<'_>, number: Option<&str>, name: Option<&str>) -> String {
+    match (number, name) {
+        (Some(number), Some(name)) => {
+            let number = number.trim_end_matches('.');
+            normalize_space(&format!("{number}. {name}"))
+        }
+        (Some(number), None) => normalize_space(number),
+        (None, Some(name)) => normalize_space(name),
+        (None, None) => normalize_space(&html::text(anchor)),
+    }
+}
+
 fn path_segments(value: &str) -> Option<Vec<String>> {
     let url = Url::parse(value).ok()?;
     Some(
@@ -681,8 +726,26 @@ mod tests {
         assert!(item.tags.contains(&"BL".to_owned()));
         let chapters = ChrysanthemumGardenSource::parse_chapters(&document).unwrap();
         assert_eq!(chapters.len(), 2);
+        assert_eq!(chapters[0].title.as_deref(), Some("1. Start"));
+        assert_eq!(chapters[0].chapter_number, Some(1.0));
+        assert_eq!(chapters[1].title.as_deref(), Some("2.5. Continue"));
         assert_eq!(chapters[1].chapter_number, Some(2.5));
         assert_eq!(chapters[1].source_order, Some(1));
+    }
+
+    #[test]
+    fn parses_legacy_chapter_markup() {
+        let document = html::document(
+            r#"<div class="translated-chapters">
+                <div class="chapter-item">
+                    <a href="/novel-tl/fixture/fixture-3/">Ch3 - Legacy</a>
+                </div>
+            </div>"#,
+        );
+        let chapters = ChrysanthemumGardenSource::parse_chapters(&document).unwrap();
+        assert_eq!(chapters.len(), 1);
+        assert_eq!(chapters[0].title.as_deref(), Some("Ch3 - Legacy"));
+        assert_eq!(chapters[0].chapter_number, Some(3.0));
     }
 
     #[test]
