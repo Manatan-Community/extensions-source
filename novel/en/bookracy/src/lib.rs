@@ -86,6 +86,7 @@ impl BookRacySource {
     fn get_json<T: for<'de> Deserialize<'de>>(&self, url: &str) -> Result<T> {
         self.client
             .get(url)
+            .header("Origin", BASE_URL)
             .header("Referer", BASE_URL)
             .send()?
             .error_for_status()?
@@ -375,11 +376,18 @@ fn language_code(value: &str) -> Option<&str> {
         .map(str::trim)
 }
 
+fn is_english_language(value: &str) -> bool {
+    if language_code(value).is_some_and(|language| language.eq_ignore_ascii_case("en")) {
+        return true;
+    }
+    value.split([';', ',', '|', '/']).any(|language| {
+        let language = language.trim();
+        language.eq_ignore_ascii_case("en") || language.eq_ignore_ascii_case("english")
+    })
+}
+
 fn is_readable_english_epub(book: &Book) -> bool {
-    book.book_filetype.eq_ignore_ascii_case("epub")
-        && language_code(&book.book_lang)
-            .map(|language| language.eq_ignore_ascii_case("en"))
-            .unwrap_or(false)
+    book.book_filetype.eq_ignore_ascii_case("epub") && is_english_language(&book.book_lang)
 }
 
 fn metadata_tags(book: &Book) -> Vec<String> {
@@ -694,7 +702,7 @@ mod tests {
             link: "https://api.bookracy.com/download/014551dfa41f52ef232bfb04a8944fa1/A%20Test%20Book.epub?author=Test%20Author".into(),
             book_image: "https://api.bookracy.com/cover/014551dfa41f52ef232bfb04a8944fa1/thumbnail.jpg".into(),
             book_filetype: "epub".into(),
-            book_lang: "English [en]".into(),
+            book_lang: "English".into(),
             book_size: "1.2MB".into(),
             description: "A test description.".into(),
             year: "2026".into(),
@@ -720,6 +728,16 @@ mod tests {
         book.book_filetype = "pdf".into();
         assert!(!is_readable_english_epub(&book));
         assert!(BookRacySource::item(&book, false).is_err());
+    }
+
+    #[test]
+    fn recognizes_current_legacy_and_bilingual_english_labels() {
+        for language in ["English", "en", "English [en]", "Spanish;English"] {
+            assert!(is_english_language(language), "rejected {language:?}");
+        }
+        for language in ["", "Spanish", "es", "French [fr]"] {
+            assert!(!is_english_language(language), "accepted {language:?}");
+        }
     }
 
     #[test]
