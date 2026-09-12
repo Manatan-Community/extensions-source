@@ -1253,6 +1253,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "reanime-video"
+version = "0.1.0"
+dependencies = [
+ "manatan-sdk",
+ "serde",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "redox_syscall"
 version = "0.5.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"

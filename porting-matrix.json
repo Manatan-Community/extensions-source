@@ -41558,6 +41558,33 @@
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Independent integration with SoraRaw's public catalog and reader data."
+    },
+    {
+      "upstreamRepository": "https://reanime.to",
+      "upstreamPath": "public catalog, anime, episode, and FlixCloud player APIs",
+      "sourceId": "reanime",
+      "language": "en",
+      "mediaKind": "video",
+      "framework": "standalone-json-api-headless-webview",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "filters",
+        "hoster-resolution",
+        "url-resolution",
+        "media-processing"
+      ],
+      "status": "component-valid",
+      "tests": [
+        "fixture-contract-tests",
+        "live-public-api-validation",
+        "live-browser-hls-playback"
+      ],
+      "packagePath": "packages/video/en/reanime.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with ReAnime's public catalog and player."
     }
   ]
 }

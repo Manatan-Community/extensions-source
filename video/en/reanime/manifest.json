@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 2,
+  "id": "reanime",
+  "name": "ReAnime",
+  "version": "0.1.0",
+  "versionCode": 1,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "English-subbed and dubbed anime from ReAnime.",
+  "author": "Manatan Community",
+  "homepage": "https://reanime.to/home",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://reanime.to",
+        "https://stats.reanime.to",
+        "https://s4.anilist.co",
+        "https://image.tmdb.org",
+        "https://artworks.thetvdb.com",
+        "https://cdn.myanimelist.net",
+        "https://flixcloud.cc",
+        "https://*.flixcloud.cc",
+        "https://*.atomic4cdn.top"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "3f19226745247d389a4156742adc9b9f1c495aadd4adf892a2cc0e4eec6000c2"
+    }
+  ],
+  "sources": [
+    {
+      "id": "reanime",
+      "name": "ReAnime",
+      "lang": "en",
+      "contentType": "video",
+      "baseUrl": "https://reanime.to",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": true,
+        "hosterResolution": true,
+        "webview": true,
+        "urlResolution": true,
+        "mediaProcessing": true
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest Episodes"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://reanime.to/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://reanime.to/watch/*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "anime",
+        "subbed",
+        "dubbed"
+      ]
+    }
+  ]
+}
