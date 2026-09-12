@@ -6,19 +6,24 @@
 
 use std::{collections::BTreeMap, marker::PhantomData};
 
+use aes::{
+    cipher::{generic_array::GenericArray, BlockDecrypt, KeyInit},
+    Aes256,
+};
 use base64::{engine::general_purpose, Engine};
 use manatan_common::{absolute_url, normalize_space, require};
 use manatan_sdk::{
     client::Client,
     context,
     html::{self, ElementRef, Html, Selector},
-    CatalogItem, Error, FilterDefinition, MediaResourceKind, MediaSegment, MediaTrack, OptionItem,
-    Paged, PreferenceDefinition, Result, SegmentProcessing, SegmentRule, UrlResolveResult,
-    VideoEpisode, VideoHoster, VideoSource, VideoStream,
+    runtime, CatalogItem, Error, FilterDefinition, MediaResourceKind, MediaSegment, MediaTrack,
+    OptionItem, Paged, PreferenceDefinition, Result, SegmentProcessing, SegmentRule,
+    UrlResolveResult, VideoEpisode, VideoHoster, VideoSource, VideoStream,
 };
 use regex::Regex;
 use serde::Deserialize;
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
 use url::Url;
 
 const PLAY_ALLOWED_RATINGS: &[&str] = &["G", "PG", "PG-13", "R", "R+"];
@@ -361,18 +366,18 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
         let primary = source_api_url(&origin, "getSources", data_id, stream_type);
         let response = self
             .get_text(&primary, Some(embed_url), true)
-            .and_then(|(body, _)| serde_json::from_str(&body).map_err(Error::from));
-        let response: SourceResponse = match response {
+            .and_then(|(body, _)| parse_source_response(&body));
+        let (response, mut url) = match response {
             Ok(response) => response,
             Err(_) => {
                 let fallback = source_api_url(&origin, "getSourcesNew", data_id, stream_type);
                 let (body, _) = self.get_text(&fallback, Some(embed_url), true)?;
-                serde_json::from_str(&body)?
+                parse_source_response(&body)?
             }
         };
-        let url = source_url(&response.sources)
-            .filter(|value| value.starts_with("http"))
-            .ok_or_else(|| Error::new("player source API returned no HLS URL"))?;
+        if response.tokenized == Some(1) {
+            url = sign_megaplay_url(&url, runtime::now_millis())?;
+        }
         let tracks = response
             .tracks
             .unwrap_or_default()
@@ -1274,7 +1279,12 @@ struct SkipData {
 
 #[derive(Debug, Deserialize)]
 struct SourceResponse {
+    #[serde(default)]
     sources: Value,
+    #[serde(default)]
+    enc: Option<String>,
+    #[serde(default, rename = "t")]
+    tokenized: Option<u8>,
     #[serde(default)]
     tracks: Option<Vec<SourceTrack>>,
 }
@@ -1300,6 +1310,113 @@ fn source_url(value: &Value) -> Option<String> {
         Value::Array(value) => value.first().and_then(source_url),
         _ => None,
     }
+}
+
+fn parse_source_response(source: &str) -> Result<(SourceResponse, String)> {
+    let response: SourceResponse = serde_json::from_str(source)?;
+    let url = match source_url(&response.sources) {
+        Some(url) => Some(url),
+        None => response
+            .enc
+            .as_deref()
+            .map(decrypt_megaplay_source)
+            .transpose()?
+            .as_ref()
+            .and_then(source_url),
+    };
+    let url = url
+        .filter(|value| value.starts_with("http"))
+        .ok_or_else(|| Error::new("player source API returned no HLS URL"))?;
+    Ok((response, url))
+}
+
+fn decrypt_megaplay_source(encrypted: &str) -> Result<Value> {
+    let mut ciphertext = general_purpose::URL_SAFE_NO_PAD
+        .decode(encrypted)
+        .or_else(|_| general_purpose::URL_SAFE.decode(encrypted))
+        .or_else(|_| general_purpose::STANDARD.decode(encrypted))
+        .map_err(|error| Error::new(format!("invalid encrypted player source: {error}")))?;
+    if ciphertext.is_empty() || ciphertext.len() % 16 != 0 {
+        return Err(Error::new(
+            "encrypted player source has invalid AES block length",
+        ));
+    }
+
+    let mut key = [0_u8; 32];
+    key[..16].copy_from_slice(b"i?LMTAx0Q6,:}50U");
+    let iv = *b"W0;27ToaUpl_P%'c";
+    let cipher = Aes256::new_from_slice(&key)
+        .map_err(|error| Error::new(format!("invalid player source key: {error}")))?;
+    let mut previous = iv;
+    let (blocks, remainder) = ciphertext.as_chunks_mut::<16>();
+    debug_assert!(remainder.is_empty());
+    for block in blocks {
+        let encrypted_block = *block;
+        cipher.decrypt_block(GenericArray::from_mut_slice(block));
+        for (byte, previous_byte) in block.iter_mut().zip(previous) {
+            *byte ^= previous_byte;
+        }
+        previous = encrypted_block;
+    }
+
+    let padding = usize::from(*ciphertext.last().unwrap_or(&0));
+    if padding == 0
+        || padding > 16
+        || padding > ciphertext.len()
+        || !ciphertext[ciphertext.len() - padding..]
+            .iter()
+            .all(|byte| usize::from(*byte) == padding)
+    {
+        return Err(Error::new(
+            "encrypted player source has invalid PKCS#7 padding",
+        ));
+    }
+    ciphertext.truncate(ciphertext.len() - padding);
+    serde_json::from_slice(&ciphertext).map_err(Error::from)
+}
+
+fn sign_megaplay_url(source: &str, now_millis: i64) -> Result<String> {
+    let mut url = Url::parse(source).map_err(url_error)?;
+    let Some(relative_path) = url.path().strip_prefix("/anime/") else {
+        return Ok(source.to_owned());
+    };
+    let token_path = relative_path
+        .strip_suffix("/master.m3u8")
+        .unwrap_or(relative_path);
+    let expires = now_millis.div_euclid(1_000).saturating_add(120);
+    let payload = format!("{expires}|{token_path}");
+    let signature = hmac_sha256(b"MpCdnT0k3n!9f2K#xQ7vL5mR8wN1pY4s", payload.as_bytes());
+    let token = format!(
+        "{}.{}",
+        general_purpose::URL_SAFE_NO_PAD.encode(payload),
+        general_purpose::URL_SAFE_NO_PAD.encode(signature)
+    );
+    url.query_pairs_mut().append_pair("token", &token);
+    Ok(url.into())
+}
+
+fn hmac_sha256(key: &[u8], message: &[u8]) -> [u8; 32] {
+    const BLOCK_SIZE: usize = 64;
+    let mut key_block = [0_u8; BLOCK_SIZE];
+    if key.len() > BLOCK_SIZE {
+        key_block[..32].copy_from_slice(&Sha256::digest(key));
+    } else {
+        key_block[..key.len()].copy_from_slice(key);
+    }
+    let mut inner_pad = [0x36_u8; BLOCK_SIZE];
+    let mut outer_pad = [0x5c_u8; BLOCK_SIZE];
+    for index in 0..BLOCK_SIZE {
+        inner_pad[index] ^= key_block[index];
+        outer_pad[index] ^= key_block[index];
+    }
+    let mut inner = Sha256::new();
+    inner.update(inner_pad);
+    inner.update(message);
+    let inner = inner.finalize();
+    let mut outer = Sha256::new();
+    outer.update(outer_pad);
+    outer.update(inner);
+    outer.finalize().into()
 }
 
 fn source_api_url(origin: &str, endpoint: &str, data_id: &str, stream_type: &str) -> String {
@@ -1715,5 +1832,41 @@ mod tests {
         .unwrap();
         assert!(search.contains("rating%5B%5D=pg_13"));
         assert!(search.contains("vrf="));
+    }
+
+    #[test]
+    fn decrypts_and_signs_current_megaplay_sources() {
+        let (response, url) =
+            parse_source_response(include_str!("../tests/fixtures/encrypted-sources.json"))
+                .unwrap();
+        assert_eq!(response.tokenized, Some(1));
+        assert_eq!(
+            url,
+            "https://fetch.nexabloom.top/anime/4b5ed938de41e4ff532c02c27dfd143a/ede456520a20b3eafbb954fb2e654765/master.m3u8"
+        );
+
+        let signed = sign_megaplay_url(&url, 1_789_235_941_000).unwrap();
+        let signed = Url::parse(&signed).unwrap();
+        let token = signed
+            .query_pairs()
+            .find_map(|(key, value)| (key == "token").then(|| value.into_owned()))
+            .unwrap();
+        let (payload, signature) = token.split_once('.').unwrap();
+        assert_eq!(
+            general_purpose::URL_SAFE_NO_PAD.decode(payload).unwrap(),
+            b"1789236061|4b5ed938de41e4ff532c02c27dfd143a/ede456520a20b3eafbb954fb2e654765"
+        );
+        assert_eq!(
+            general_purpose::URL_SAFE_NO_PAD.decode(signature).unwrap(),
+            [
+                18, 62, 113, 78, 234, 149, 41, 228, 237, 207, 104, 20, 148, 209, 36, 103, 122, 153,
+                155, 177, 79, 98, 162, 212, 18, 182, 146, 13, 202, 74, 67, 201,
+            ]
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_encrypted_megaplay_sources() {
+        assert!(decrypt_megaplay_source("not-a-valid-aes-payload").is_err());
     }
 }

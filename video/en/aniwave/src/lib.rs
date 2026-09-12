@@ -9,13 +9,7 @@ impl AnikotoConfig for AniWave {
     const NAME: &'static str = "AniWave (Unoriginal)";
     const LANG: &'static str = "en";
     const BASE_URL: &'static str = "https://animewave.to";
-    const DOMAINS: &'static [&'static str] = &[
-        "animewave.to",
-        "aniwave.id",
-        "aniwave.best",
-        "aniwave.ro",
-        "aniwave.cz",
-    ];
+    const DOMAINS: &'static [&'static str] = &["animewave.to", "aniwave.cz"];
     const HOSTERS: &'static [&'static str] = &[
         "HD-1",
         "Vidstream-2",
@@ -23,7 +17,6 @@ impl AnikotoConfig for AniWave {
         "Kiwi-Stream",
         "VidPlay-1",
     ];
-    const MAPPER_URL: &'static str = "https://mapper.mewcdn.online/api";
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -37,10 +30,8 @@ mod tests {
 
     #[test]
     fn tracks_current_aniyomi_domains_and_mapper() {
-        assert!(AniWave::DOMAINS.contains(&"aniwave.id"));
-        assert!(AniWave::DOMAINS.contains(&"aniwave.best"));
-        assert!(AniWave::DOMAINS.contains(&"aniwave.ro"));
-        assert_eq!(AniWave::MAPPER_URL, "https://mapper.mewcdn.online/api");
+        assert_eq!(AniWave::DOMAINS, ["animewave.to", "aniwave.cz"]);
+        assert_eq!(AniWave::MAPPER_URL, "https://mapper.nekostream.site/api");
     }
 
     #[test]
@@ -49,11 +40,13 @@ mod tests {
         for origin in [
             "https://*.kotocdn.site",
             "https://*.lostproject.club",
-            "https://mapper.mewcdn.online",
+            "https://mapper.nekostream.site",
             "https://*.kryntal.top",
             "https://*.norami.top",
             "https://*.sugevideo.xyz",
             "https://*.livedns.my",
+            "https://*.nexabloom.top",
+            "https://*.streamzone1.site",
         ] {
             assert!(
                 manifest.contains(&format!("\"{origin}\"")),

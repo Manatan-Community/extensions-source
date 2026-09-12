@@ -50,6 +50,8 @@ mod tests {
             "https://*.kryntal.top",
             "https://*.norami.top",
             "https://*.sugevideo.xyz",
+            "https://*.nexabloom.top",
+            "https://*.streamzone1.site",
         ] {
             assert!(
                 manifest.contains(&format!("\"{origin}\"")),
