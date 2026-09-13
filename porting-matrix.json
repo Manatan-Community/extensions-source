@@ -20759,12 +20759,13 @@
       "requiredCapabilities": [
         "http",
         "filters",
+        "preferences",
         "url-resolution",
         "page-processing"
       ],
       "status": "live-verified",
       "tests": [
-        "cargo test -p mokuro (7 tests)",
+        "cargo test -p mokuro (9 tests)",
         "cargo clippy -p mokuro --all-targets -- -D warnings",
         "Android emulator: WebDAV catalog/search/details/chapters and ranged CBZ first/last page decode",
         "iOS Simulator: WebDAV catalog/details and ranged CBZ reader page rendered"

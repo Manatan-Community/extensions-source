@@ -11,6 +11,7 @@ use aes::{
     Aes256,
 };
 use base64::{engine::general_purpose, Engine};
+use chrono::NaiveDateTime;
 use manatan_common::{absolute_url, normalize_space, require};
 use manatan_sdk::{
     client::Client,
@@ -781,7 +782,8 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
         let episode_title = parent
             .and_then(|element| element.select(&name).next())
             .map(html::text)
-            .filter(|value| !value.is_empty());
+            .filter(|value| !value.is_empty())
+            .or_else(|| episode_title_from_tooltip(&title_attr));
         let episode_path = format!(
             "{}/ep-{}",
             strip_episode_suffix(Url::parse(anime_url).map_err(url_error)?.path()),
@@ -799,7 +801,7 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
                 extra.insert(key.into(), json!(value));
             }
         }
-        let labels = [
+        let labels: Vec<String> = [
             (attr(anchor, "data-sub").as_deref() == Some("1"), "Sub"),
             (
                 title_attr.to_ascii_lowercase().contains("softsub"),
@@ -811,6 +813,11 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
         .filter(|(present, _)| *present)
         .map(|(_, label)| label.to_owned())
         .collect();
+        let release_group = (!labels.is_empty()).then(|| labels.join(" & "));
+        let date_uploaded = attr(anchor, "data-timestamp")
+            .and_then(|value| value.parse::<i64>().ok())
+            .and_then(|timestamp| timestamp.checked_mul(1_000))
+            .or_else(|| episode_date_from_tooltip(&title_attr));
         entries.push(VideoEpisode {
             key: format!("{ids}&epurl={episode_path}"),
             title: Some(
@@ -822,13 +829,39 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
                     ),
             ),
             episode_number: Some(number),
+            date_uploaded,
             url: Some(absolute_url(anime_url, &episode_path)?),
+            release_group,
+            is_filler: has_class(anchor, "filler"),
             labels,
             extra,
             ..VideoEpisode::default()
         });
     }
     Ok(entries)
+}
+
+fn episode_title_from_tooltip(tooltip: &str) -> Option<String> {
+    let title = ["Release:", "Released:", "Softsub"]
+        .into_iter()
+        .fold(tooltip, |current, marker| {
+            current
+                .split_once(marker)
+                .map_or(current, |(before, _)| before)
+        })
+        .trim();
+    (!title.is_empty()).then(|| title.to_owned())
+}
+
+fn episode_date_from_tooltip(tooltip: &str) -> Option<i64> {
+    let capture = Regex::new(r"Releas(?:e|ed):\s*(\d{4}/\d{2}/\d{2}\s+\d{2}:\d{2})")
+        .ok()?
+        .captures(tooltip)?
+        .get(1)?
+        .as_str();
+    NaiveDateTime::parse_from_str(capture, "%Y/%m/%d %H:%M")
+        .ok()
+        .map(|date| date.and_utc().timestamp_millis())
 }
 
 pub fn parse_server_list_html(source: &str, episode_path: &str) -> Result<Vec<VideoHoster>> {
@@ -1749,6 +1782,12 @@ mod tests {
         .unwrap();
         assert_eq!(episodes.len(), 2);
         assert_eq!(episodes[0].episode_number, Some(2.0));
+        assert_eq!(episodes[0].title.as_deref(), Some("Episode 2: Second"));
+        assert_eq!(episodes[0].date_uploaded, Some(2_000));
+        assert_eq!(episodes[0].release_group.as_deref(), Some("Sub & SoftSub"));
+        assert!(episodes[0].is_filler);
+        assert_eq!(episodes[0].labels, ["Sub", "SoftSub"]);
+        assert!(!episodes[1].is_filler);
         let fragment = result_fragment(include_str!("../tests/fixtures/servers.json")).unwrap();
         let hosters = parse_server_list_html(&fragment, "/watch/example-anime-abcd/ep-1").unwrap();
         assert_eq!(hosters[0].name, "VidPlay-1 - Sub");

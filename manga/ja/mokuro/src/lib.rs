@@ -3,8 +3,9 @@ use std::{collections::BTreeMap, io::Read};
 use flate2::read::DeflateDecoder;
 use manatan_sdk::{
     client::{Client, BROWSER_USER_AGENT},
-    CatalogItem, Error, FilterDefinition, ImageRequest, MangaChapter, MangaPage, MangaSource,
-    OptionItem, PageContent, Paged, ProcessedImage, Result, UrlResolveResult,
+    context, CatalogItem, Error, FilterDefinition, ImageRequest, MangaChapter, MangaPage,
+    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, ProcessedImage, Result,
+    SortOption, SortSelection, UrlResolveResult,
 };
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -22,6 +23,8 @@ const REQUEST_LIMIT_MS: u32 = 100;
 const ZIP_TAIL_SIZE: u64 = 65_557;
 const MAX_CENTRAL_DIRECTORY_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_PAGE_BYTES: u64 = 32 * 1024 * 1024;
+const TITLE_LANGUAGE_PREFERENCE_KEY: &str = "title_language";
+const TITLE_LANGUAGE_DEFAULT: &str = "native";
 
 pub struct MokuroSource {
     client: Client,
@@ -72,30 +75,35 @@ impl MokuroSource {
         page: u32,
         query: &str,
         filters: &Value,
-        forced_sort: Option<&str>,
+        forced_sort: Option<SelectedSort>,
     ) -> Result<Paged<CatalogItem>> {
         let mut entries = self.library()?.series;
         let query = query.trim().to_lowercase();
         if !query.is_empty() {
             entries.retain(|series| series.matches(&query));
         }
-        sort_series(
-            &mut entries,
-            forced_sort
-                .or_else(|| selected(filters, "sort"))
-                .unwrap_or("title"),
-        );
-        paginate(entries, page, &self.catalog_covers())
+        if let Some(tag) = selected(filters, "tag").filter(|tag| !tag.is_empty()) {
+            entries.retain(|series| {
+                series
+                    .tag
+                    .as_deref()
+                    .is_some_and(|value| value.to_lowercase().contains(&tag.to_lowercase()))
+            });
+        }
+        let title_language = title_language();
+        let sort = forced_sort.unwrap_or_else(|| selected_sort(filters));
+        sort_series(&mut entries, &sort, &title_language);
+        paginate(entries, page, &self.catalog_covers(), &title_language)
     }
 }
 
 impl MangaSource for MokuroSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.list(page, "", &Value::Null, Some("title"))
+        self.list(page, "", &Value::Null, Some(SelectedSort::title()))
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.list(page, "", &Value::Null, Some("newest"))
+        self.list(page, "", &Value::Null, Some(SelectedSort::newest()))
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -119,7 +127,7 @@ impl MangaSource for MokuroSource {
             .find(|series| series.series_title == key)
             .ok_or_else(|| Error::new(format!("Mokuro series not found: {key}")))?;
         let series = self.series(&key)?;
-        let mut details = summary.to_item(None)?;
+        let mut details = summary.to_item(None, &title_language())?;
         series.enrich_item(&mut details);
         details.initialized = true;
         Ok(details)
@@ -150,14 +158,20 @@ impl MangaSource for MokuroSource {
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
-        Ok(vec![FilterDefinition::Select {
-            id: "sort".to_owned(),
-            name: "Sort by".to_owned(),
+        Ok(filter_definitions(&self.library()?.series))
+    }
+
+    fn preferences(&mut self) -> Result<Vec<PreferenceDefinition>> {
+        Ok(vec![PreferenceDefinition::Select {
+            key: TITLE_LANGUAGE_PREFERENCE_KEY.to_owned(),
+            title: "Display title language".to_owned(),
             options: vec![
-                option("Title", "title"),
-                option("Recently updated", "newest"),
+                option("Native", "native"),
+                option("English", "english"),
+                option("Romaji", "romaji"),
+                option("Folder name", "folder"),
             ],
-            default_index: 0,
+            default: TITLE_LANGUAGE_DEFAULT.to_owned(),
         }])
     }
 
@@ -178,26 +192,16 @@ impl MangaSource for MokuroSource {
     }
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
-        let url = Url::parse(candidate).map_err(url_error)?;
-        if url.host_str() != Some("mokuro.moe")
-            || !url.path().trim_end_matches('/').ends_with("/catalog")
-        {
-            return Ok(None);
-        }
-        let Some(fragment) = url.fragment().filter(|fragment| !fragment.is_empty()) else {
+        let Some(key) = series_title_from_url(candidate)? else {
             return Ok(None);
         };
-        let key = decode_component(fragment);
-        if key.is_empty() {
-            return Ok(None);
-        }
         let series = self
             .library()?
             .series
             .into_iter()
-            .find(|series| series.series_title == key);
+            .find(|series| series.series_title.eq_ignore_ascii_case(&key));
         Ok(series
-            .map(|series| series.to_item(None))
+            .map(|series| series.to_item(None, &title_language()))
             .transpose()?
             .map(|item| UrlResolveResult {
                 item: Some(item),
@@ -251,6 +255,8 @@ struct SeriesSummary {
     #[serde(default)]
     synonyms: Vec<String>,
     #[serde(default)]
+    tag: Option<String>,
+    #[serde(default)]
     updated_at: String,
     #[serde(default)]
     external_ids: BTreeMap<String, Value>,
@@ -264,13 +270,41 @@ struct Titles {
 }
 
 impl SeriesSummary {
-    fn title(&self) -> &str {
-        self.titles
-            .native
-            .as_deref()
-            .or(self.titles.romaji.as_deref())
-            .or(self.titles.english.as_deref())
-            .unwrap_or(&self.series_title)
+    fn display_title(&self, preference: &str) -> &str {
+        match preference {
+            "english" => self
+                .titles
+                .english
+                .as_deref()
+                .or(self.titles.romaji.as_deref())
+                .or(self.titles.native.as_deref()),
+            "romaji" => self
+                .titles
+                .romaji
+                .as_deref()
+                .or(self.titles.english.as_deref())
+                .or(self.titles.native.as_deref()),
+            "folder" => Some(self.series_title.as_str()),
+            _ => self
+                .titles
+                .native
+                .as_deref()
+                .or(self.titles.romaji.as_deref())
+                .or(self.titles.english.as_deref()),
+        }
+        .unwrap_or(&self.series_title)
+    }
+
+    fn title(&self, preference: &str) -> String {
+        let title = self.display_title(preference);
+        let Some(tag) = self.tag.as_deref().map(strip_outer_brackets) else {
+            return title.to_owned();
+        };
+        if tag.is_empty() {
+            title.to_owned()
+        } else {
+            format!("{title} ({tag})")
+        }
     }
 
     fn matches(&self, query: &str) -> bool {
@@ -286,7 +320,8 @@ impl SeriesSummary {
         .any(|value| value.to_lowercase().contains(query))
     }
 
-    fn to_item(&self, cover_path: Option<&str>) -> Result<CatalogItem> {
+    fn to_item(&self, cover_path: Option<&str>, title_language: &str) -> Result<CatalogItem> {
+        let display_title = self.display_title(title_language);
         let mut alternate_titles = [
             self.titles.native.as_deref(),
             self.titles.romaji.as_deref(),
@@ -294,7 +329,7 @@ impl SeriesSummary {
         ]
         .into_iter()
         .flatten()
-        .filter(|title| *title != self.title())
+        .filter(|title| *title != display_title)
         .map(ToOwned::to_owned)
         .chain(self.synonyms.iter().cloned())
         .collect::<Vec<_>>();
@@ -310,6 +345,14 @@ impl SeriesSummary {
         if !self.updated_at.is_empty() {
             description.push(format!("Updated: {}", self.updated_at));
         }
+        if let Some(anilist_id) = external_id(&self.external_ids, "anilist") {
+            description.push(format!("[AniList](https://anilist.co/manga/{anilist_id})"));
+        }
+        if let Some(mal_id) = external_id(&self.external_ids, "mal") {
+            description.push(format!(
+                "[MyAnimeList](https://myanimelist.net/manga/{mal_id})"
+            ));
+        }
         let cover = cover_path
             .map(cover_url)
             .transpose()?
@@ -319,10 +362,20 @@ impl SeriesSummary {
         extra.insert("externalIds".to_owned(), json!(self.external_ids));
         Ok(CatalogItem {
             key: self.series_title.clone(),
-            title: self.title().to_owned(),
+            title: self.title(title_language),
             url: Some(catalog_item_url(&self.series_title)?),
             cover,
             description: Some(description.join("\n")),
+            tags: self
+                .tag
+                .as_deref()
+                .map(strip_outer_brackets)
+                .into_iter()
+                .flat_map(|tag| tag.split(','))
+                .map(str::trim)
+                .filter(|tag| !tag.is_empty())
+                .map(str::to_owned)
+                .collect(),
             content_rating: Some(CONTENT_RATING.to_owned()),
             language: Some(LANGUAGE.to_owned()),
             viewer: Some(json!("rtl")),
@@ -750,6 +803,7 @@ fn paginate(
     entries: Vec<SeriesSummary>,
     page: u32,
     covers: &BTreeMap<String, String>,
+    title_language: &str,
 ) -> Result<Paged<CatalogItem>> {
     let page = page.max(1) as usize;
     let start = (page - 1).saturating_mul(PAGE_SIZE);
@@ -760,27 +814,66 @@ fn paginate(
     let has_next = end < entries.len();
     let entries = entries[start..end]
         .iter()
-        .map(|series| series.to_item(covers.get(&series.series_title).map(String::as_str)))
+        .map(|series| {
+            series.to_item(
+                covers.get(&series.series_title).map(String::as_str),
+                title_language,
+            )
+        })
         .collect::<Result<Vec<_>>>()?;
     Ok(Paged::new(entries, has_next))
 }
 
-fn sort_series(series: &mut [SeriesSummary], sort: &str) {
-    match sort {
-        "newest" => series.sort_by(|left, right| {
-            right
-                .updated_at
-                .cmp(&left.updated_at)
-                .then_with(|| title_cmp(left, right))
-        }),
-        _ => series.sort_by(title_cmp),
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct SelectedSort {
+    value: String,
+    ascending: bool,
+}
+
+impl SelectedSort {
+    fn title() -> Self {
+        Self {
+            value: "title".to_owned(),
+            ascending: true,
+        }
+    }
+
+    fn newest() -> Self {
+        Self {
+            value: "newest".to_owned(),
+            ascending: false,
+        }
     }
 }
 
-fn title_cmp(left: &SeriesSummary, right: &SeriesSummary) -> std::cmp::Ordering {
-    left.title()
+fn sort_series(series: &mut [SeriesSummary], sort: &SelectedSort, title_language: &str) {
+    match (sort.value.as_str(), sort.ascending) {
+        ("newest", true) => series.sort_by(|left, right| {
+            left.updated_at
+                .cmp(&right.updated_at)
+                .then_with(|| title_cmp(left, right, title_language))
+        }),
+        ("newest", false) => series.sort_by(|left, right| {
+            right
+                .updated_at
+                .cmp(&left.updated_at)
+                .then_with(|| title_cmp(left, right, title_language))
+        }),
+        ("catalog", false) => series.reverse(),
+        ("catalog", true) => {}
+        (_, true) => series.sort_by(|left, right| title_cmp(left, right, title_language)),
+        (_, false) => series.sort_by(|left, right| title_cmp(right, left, title_language)),
+    }
+}
+
+fn title_cmp(
+    left: &SeriesSummary,
+    right: &SeriesSummary,
+    title_language: &str,
+) -> std::cmp::Ordering {
+    left.display_title(title_language)
         .to_lowercase()
-        .cmp(&right.title().to_lowercase())
+        .cmp(&right.display_title(title_language).to_lowercase())
 }
 
 fn option(label: &str, value: &str) -> OptionItem {
@@ -793,8 +886,117 @@ fn option(label: &str, value: &str) -> OptionItem {
 fn selected<'a>(filters: &'a Value, key: &str) -> Option<&'a str> {
     filters
         .get(key)
-        .and_then(Value::as_str)
+        .and_then(|value| {
+            value
+                .as_str()
+                .or_else(|| value.get("value").and_then(Value::as_str))
+        })
         .filter(|value| !value.is_empty())
+}
+
+fn selected_sort(filters: &Value) -> SelectedSort {
+    let Some(value) = filters.get("sort") else {
+        return SelectedSort::title();
+    };
+    if let Some(value) = value.as_str() {
+        return SelectedSort {
+            value: value.to_owned(),
+            ascending: true,
+        };
+    }
+    let Some(object) = value.as_object() else {
+        return SelectedSort::title();
+    };
+    let value = object
+        .get("value")
+        .and_then(Value::as_str)
+        .map(str::to_owned)
+        .or_else(|| {
+            object
+                .get("index")
+                .and_then(Value::as_u64)
+                .and_then(|index| ["title", "newest", "catalog"].get(index as usize))
+                .map(|value| (*value).to_owned())
+        })
+        .unwrap_or_else(|| "title".to_owned());
+    SelectedSort {
+        value,
+        ascending: object
+            .get("ascending")
+            .and_then(Value::as_bool)
+            .unwrap_or(true),
+    }
+}
+
+fn filter_definitions(series: &[SeriesSummary]) -> Vec<FilterDefinition> {
+    let mut tags = series
+        .iter()
+        .filter_map(|series| series.tag.as_deref())
+        .map(strip_outer_brackets)
+        .filter(|tag| !tag.is_empty())
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    tags.sort_by_key(|tag| tag.to_lowercase());
+    tags.dedup_by(|left, right| left.eq_ignore_ascii_case(right));
+
+    let mut filters = vec![FilterDefinition::Sort {
+        id: "sort".to_owned(),
+        name: "Sort".to_owned(),
+        options: [
+            ("Title", "title"),
+            ("Latest update", "newest"),
+            ("Catalog order", "catalog"),
+        ]
+        .into_iter()
+        .map(|(label, value)| SortOption {
+            label: label.to_owned(),
+            value: value.to_owned(),
+        })
+        .collect(),
+        default: Some(SortSelection {
+            index: 0,
+            ascending: true,
+        }),
+    }];
+    if !tags.is_empty() {
+        let mut options = vec![option("All", "")];
+        options.extend(tags.iter().map(|tag| option(tag, tag)));
+        filters.push(FilterDefinition::Select {
+            id: "tag".to_owned(),
+            name: "Edition / quality".to_owned(),
+            options,
+            default_index: 0,
+        });
+    }
+    filters
+}
+
+fn title_language() -> String {
+    context::preference::<String>(TITLE_LANGUAGE_PREFERENCE_KEY)
+        .ok()
+        .flatten()
+        .filter(|value| matches!(value.as_str(), "native" | "english" | "romaji" | "folder"))
+        .unwrap_or_else(|| TITLE_LANGUAGE_DEFAULT.to_owned())
+}
+
+fn external_id(values: &BTreeMap<String, Value>, key: &str) -> Option<String> {
+    values.get(key).and_then(|value| match value {
+        Value::Number(value) => Some(value.to_string()),
+        Value::String(value) if !value.trim().is_empty() => Some(value.trim().to_owned()),
+        _ => None,
+    })
+}
+
+fn strip_outer_brackets(value: &str) -> &str {
+    let value = value.trim();
+    for (open, close) in [('(', ')'), ('[', ']'), ('（', '）'), ('【', '】')] {
+        if value.starts_with(open) && value.ends_with(close) {
+            let start = open.len_utf8();
+            let end = value.len() - close.len_utf8();
+            return value[start..end].trim();
+        }
+    }
+    value
 }
 
 fn cover_url(path: &str) -> Result<String> {
@@ -816,6 +1018,46 @@ fn catalog_item_url(series_name: &str) -> Result<String> {
     let mut url = Url::parse(CATALOG_URL).map_err(url_error)?;
     url.set_fragment(Some(series_name));
     Ok(url.to_string())
+}
+
+fn series_title_from_url(candidate: &str) -> Result<Option<String>> {
+    let url = Url::parse(candidate).map_err(url_error)?;
+    let encoded_title = match url.host_str() {
+        Some("mokuro.moe") => {
+            if url.path().trim_end_matches('/').ends_with("/catalog") {
+                url.fragment().map(str::to_owned)
+            } else {
+                reader_series_path_segment(&url)
+            }
+        }
+        Some("reader.mokuro.app") => reader_cbz_url(&url)
+            .and_then(|cbz_url| Url::parse(&cbz_url).ok())
+            .filter(|cbz_url| cbz_url.host_str() == Some("mokuro.moe"))
+            .and_then(|cbz_url| reader_series_path_segment(&cbz_url)),
+        _ => None,
+    };
+    Ok(encoded_title
+        .map(|title| decode_component(&title))
+        .filter(|title| !title.is_empty()))
+}
+
+fn reader_series_path_segment(url: &Url) -> Option<String> {
+    let mut segments = url.path_segments()?;
+    (segments.next()? == "mokuro-reader")
+        .then(|| segments.next().map(str::to_owned))
+        .flatten()
+}
+
+fn reader_cbz_url(url: &Url) -> Option<String> {
+    let fragment_query = url
+        .fragment()
+        .and_then(|fragment| fragment.split_once('?').map(|(_, query)| query));
+    fragment_query
+        .into_iter()
+        .flat_map(|query| url::form_urlencoded::parse(query.as_bytes()))
+        .chain(url.query_pairs())
+        .find(|(key, _)| key == "cbz")
+        .map(|(_, value)| value.into_owned())
 }
 
 fn reader_file_url(series_name: &str, volume_name: &str, extension: &str) -> Result<String> {
@@ -932,12 +1174,82 @@ mod tests {
         let library: LibraryResponse = serde_json::from_str(LIBRARY).unwrap();
         assert_eq!(library.series.len(), 2);
         let yotsuba = &library.series[0];
-        let item = yotsuba.to_item(None).unwrap();
+        let item = yotsuba.to_item(None, "native").unwrap();
         assert_eq!(item.key, "Yotsuba to!");
-        assert_eq!(item.title, "よつばと！");
-        assert!(item.description.unwrap().contains("WebDAV folder"));
+        assert_eq!(item.title, "よつばと！ (Colored, Upscaled)");
+        assert_eq!(item.tags, ["Colored", "Upscaled"]);
+        let description = item.description.unwrap();
+        assert!(description.contains("WebDAV folder"));
+        assert!(description.contains("https://anilist.co/manga/30104"));
+        assert!(description.contains("https://myanimelist.net/manga/104"));
+        assert_eq!(
+            yotsuba.to_item(None, "english").unwrap().title,
+            "Yotsuba&! (Colored, Upscaled)"
+        );
+        assert_eq!(
+            yotsuba.to_item(None, "folder").unwrap().title,
+            "Yotsuba to! (Colored, Upscaled)"
+        );
         assert!(yotsuba.matches("yotsuba&!"));
         assert!(yotsuba.matches("yotsubato"));
+    }
+
+    #[test]
+    fn exposes_title_preference_and_catalog_filters() {
+        let mut source = MokuroSource::default();
+        let preferences = source.preferences().unwrap();
+        let PreferenceDefinition::Select {
+            key,
+            options,
+            default,
+            ..
+        } = &preferences[0]
+        else {
+            panic!("expected title language preference")
+        };
+        assert_eq!(key, TITLE_LANGUAGE_PREFERENCE_KEY);
+        assert_eq!(default, "native");
+        assert_eq!(options.len(), 4);
+
+        let library: LibraryResponse = serde_json::from_str(LIBRARY).unwrap();
+        let filters = filter_definitions(&library.series);
+        assert!(matches!(filters[0], FilterDefinition::Sort { .. }));
+        let FilterDefinition::Select { options, .. } = &filters[1] else {
+            panic!("expected tag filter")
+        };
+        assert!(options
+            .iter()
+            .any(|option| option.value == "Colored, Upscaled"));
+    }
+
+    #[test]
+    fn applies_sort_direction_and_display_title_language() {
+        let library: LibraryResponse = serde_json::from_str(LIBRARY).unwrap();
+        let mut series = library.series.clone();
+        sort_series(
+            &mut series,
+            &SelectedSort {
+                value: "title".to_owned(),
+                ascending: true,
+            },
+            "english",
+        );
+        assert_eq!(series[0].series_title, "Damaged Example");
+
+        sort_series(
+            &mut series,
+            &SelectedSort {
+                value: "catalog".to_owned(),
+                ascending: false,
+            },
+            "native",
+        );
+        assert_eq!(series[0].series_title, "Yotsuba to!");
+
+        assert_eq!(
+            selected_sort(&json!({ "sort": { "index": 1, "ascending": false } })),
+            SelectedSort::newest()
+        );
     }
 
     #[test]
@@ -1053,6 +1365,33 @@ mod tests {
         assert_eq!(
             source.chapter_url(&item, &chapter).unwrap().unwrap(),
             "https://reader.mokuro.app/#/upload?cbz=https%3A%2F%2Fmokuro.moe%2Fmokuro-reader%2F%2523Zombie%2520Sagashitemasu%2FVolume%25201.cbz"
+        );
+        assert_eq!(
+            series_title_from_url(&item_url).unwrap().as_deref(),
+            Some("Yotsuba to!")
+        );
+        assert_eq!(
+            series_title_from_url(
+                "https://mokuro.moe/mokuro-reader/%23Zombie%20Sagashitemasu/Volume%201.cbz"
+            )
+            .unwrap()
+            .as_deref(),
+            Some("#Zombie Sagashitemasu")
+        );
+        assert_eq!(
+            series_title_from_url(
+                "https://reader.mokuro.app/#/upload?cbz=https%3A%2F%2Fmokuro.moe%2Fmokuro-reader%2F%2523Zombie%2520Sagashitemasu%2FVolume%25201.cbz"
+            )
+            .unwrap()
+            .as_deref(),
+            Some("#Zombie Sagashitemasu")
+        );
+        assert_eq!(
+            series_title_from_url(
+                "https://reader.mokuro.app/#/upload?cbz=https%3A%2F%2Fexample.test%2Fprivate.cbz"
+            )
+            .unwrap(),
+            None
         );
     }
 

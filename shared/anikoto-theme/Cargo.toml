@@ -8,6 +8,7 @@ repository.workspace = true
 [dependencies]
 aes.workspace = true
 base64.workspace = true
+chrono.workspace = true
 manatan-common.workspace = true
 manatan-sdk.workspace = true
 regex.workspace = true
