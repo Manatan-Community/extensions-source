@@ -313,7 +313,6 @@ fn parse_chapters(document: &Html, slug: &str) -> Result<Vec<MangaChapter>> {
             chapter_number: chapter_number(&key).or_else(|| number_in_text(&text)),
             language: Some(LANGUAGE.to_owned()),
             url: Some(format!("{BASE_URL}/manga/{slug}/{key}")),
-            source_order: Some(chapters.len() as i32),
             ..MangaChapter::default()
         });
     }

@@ -261,14 +261,15 @@ impl MangaSource for MangaFireSource {
             let hid = title_hid(&manga_path)?;
             let payload: ApiResponse<VolumeDto> =
                 self.get_json(&format!("{BASE_URL}/api/titles/{hid}/volumes"))?;
-            let volumes = payload
+            let mut volume_items = payload
                 .items
                 .into_iter()
                 .filter(|volume| volume.language.eq_ignore_ascii_case(language.api_code))
-                .enumerate()
-                .map(|(index, volume)| {
-                    volume.into_manga_chapter(&manga_path, language, index as i32)
-                })
+                .collect::<Vec<_>>();
+            volume_items.sort_by(|left, right| right.number.total_cmp(&left.number));
+            let volumes = volume_items
+                .into_iter()
+                .map(|volume| volume.into_manga_chapter(&manga_path, language))
                 .collect::<Result<Vec<_>>>()?;
             if !volumes.is_empty() {
                 return Ok(volumes);
@@ -276,7 +277,6 @@ impl MangaSource for MangaFireSource {
         }
 
         let mut page = 1;
-        let mut source_order = 0_i32;
         let mut chapters = Vec::new();
 
         loop {
@@ -289,8 +289,7 @@ impl MangaSource for MangaFireSource {
                 .unwrap_or(1)
                 .max(1);
             for chapter in payload.items {
-                chapters.push(chapter.into_manga_chapter(&manga_path, language, source_order)?);
-                source_order += 1;
+                chapters.push(chapter.into_manga_chapter(&manga_path, language)?);
             }
             if page >= last_page {
                 break;
@@ -663,7 +662,6 @@ impl VolumeDto {
         self,
         manga_path: &str,
         selected_language: LanguageVariant,
-        source_order: i32,
     ) -> Result<MangaChapter> {
         let number = chapter_number_string(self.number);
         let path = format!("{manga_path}/volume/{}", self.id);
@@ -679,7 +677,6 @@ impl VolumeDto {
             scanlators: vec![format!("{} chapters", self.chapter_count)],
             language: Some(selected_language.source_code.to_owned()),
             url: Some(absolute_url(BASE_URL, &path)?),
-            source_order: Some(source_order),
             extra: BTreeMap::from([("releaseType".to_owned(), json!("volume"))]),
             ..MangaChapter::default()
         })
@@ -705,7 +702,6 @@ impl ChapterDto {
         self,
         manga_path: &str,
         selected_language: LanguageVariant,
-        source_order: i32,
     ) -> Result<MangaChapter> {
         let api_language = if self.language.trim().is_empty() {
             selected_language.api_code
@@ -733,7 +729,6 @@ impl ChapterDto {
             scanlators: vec![self.release_type.unwrap_or_else(|| "Unknown".to_owned())],
             language: Some(source_language.to_owned()),
             url: Some(absolute_url(BASE_URL, &chapter_path)?),
-            source_order: Some(source_order),
             extra: chapter_extra(self.id, api_language),
             ..MangaChapter::default()
         })
@@ -1957,10 +1952,10 @@ mod tests {
         let language = LanguageVariant::from_source_code("en");
 
         let mut chapters = Vec::new();
-        for (index, chapter) in page_one.items.into_iter().chain(page_two.items).enumerate() {
+        for chapter in page_one.items.into_iter().chain(page_two.items) {
             chapters.push(
                 chapter
-                    .into_manga_chapter("/title/kw9j9-blue-lockk", language, index as i32)
+                    .into_manga_chapter("/title/kw9j9-blue-lockk", language)
                     .expect("chapter maps"),
             );
         }
@@ -2017,7 +2012,7 @@ mod tests {
             .into_iter()
             .find(|volume| volume.language == language.api_code)
             .expect("English volume")
-            .into_manga_chapter("/title/kw9j9-blue-lockk", language, 0)
+            .into_manga_chapter("/title/kw9j9-blue-lockk", language)
             .expect("volume maps");
         assert_eq!(volume.key, "/title/kw9j9-blue-lockk/volume/4102");
         assert_eq!(volume.title.as_deref(), Some("Vol. 29 - Neo Egoist League"));
@@ -2034,10 +2029,9 @@ mod tests {
         let chapters = releases
             .items
             .into_iter()
-            .enumerate()
-            .map(|(index, chapter)| {
+            .map(|chapter| {
                 chapter
-                    .into_manga_chapter("/title/kw9j9-blue-lockk", language, index as i32)
+                    .into_manga_chapter("/title/kw9j9-blue-lockk", language)
                     .expect("chapter maps")
             })
             .collect::<Vec<_>>();
@@ -2057,7 +2051,7 @@ mod tests {
         }))
         .expect("named chapter parses");
         let named = named
-            .into_manga_chapter("/title/kw9j9-blue-lockk", language, 0)
+            .into_manga_chapter("/title/kw9j9-blue-lockk", language)
             .expect("named chapter maps");
         assert_eq!(named.chapter_number, Some(107.5));
         assert_eq!(named.title.as_deref(), Some("Chapter 107.5 - The Rematch"));

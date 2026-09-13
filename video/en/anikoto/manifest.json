@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "anikoto",
   "name": "Anikoto",
-  "version": "0.1.5",
-  "versionCode": 5,
+  "version": "0.1.6",
+  "versionCode": 6,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -51,11 +51,13 @@
         "https://vidtube.site",
         "https://megaplay.buzz",
         "https://*.nexabloom.top",
+        "https://*.quavex.top",
         "https://*.streamzone1.site",
         "https://vidwish.live",
         "https://*.kryntal.top",
         "https://*.norami.top",
-        "https://*.sugevideo.xyz"
+        "https://*.sugevideo.xyz",
+        "https://*.livedns.my"
       ]
     },
     "cookies": true

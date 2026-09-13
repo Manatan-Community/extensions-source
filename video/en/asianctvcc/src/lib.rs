@@ -239,12 +239,14 @@ impl VideoSource for AsiancTvCc {
             }
         }
         episodes.sort_by(|left, right| {
-            left.season_number
-                .partial_cmp(&right.season_number)
+            right
+                .season_number
+                .partial_cmp(&left.season_number)
                 .unwrap_or(std::cmp::Ordering::Equal)
                 .then_with(|| {
-                    left.episode_number
-                        .partial_cmp(&right.episode_number)
+                    right
+                        .episode_number
+                        .partial_cmp(&left.episode_number)
                         .unwrap_or(std::cmp::Ordering::Equal)
                 })
         });

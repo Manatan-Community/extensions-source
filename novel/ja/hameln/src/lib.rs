@@ -103,7 +103,7 @@ impl HamelnSource {
             .and_then(Value::as_str)
             .filter(|value| !value.trim().is_empty())
             .ok_or_else(|| Error::new("Hameln browser returned no rendered HTML"))?;
-        Ok((html::document(&rendered), response.final_url, user_agent))
+        Ok((html::document(rendered), response.final_url, user_agent))
     }
 
     fn prepare_image_host(&self, page: &Paged<CatalogItem>) -> Result<()> {
@@ -313,11 +313,11 @@ impl HamelnSource {
                 date_uploaded,
                 url: Some(url),
                 language: Some("ja".into()),
-                source_order: Some(chapters.len() as i32),
                 page: Some(1),
                 ..NovelChapter::default()
             });
         }
+        chapters.reverse();
         Ok(chapters)
     }
 
@@ -740,8 +740,8 @@ mod tests {
             .contains("Fixture summary"));
         let chapters = HamelnSource::parse_chapters(&document, url).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[0].title.as_deref(), Some("First chapter"));
-        assert_eq!(chapters[1].chapter_number, Some(2.0));
+        assert_eq!(chapters[0].title.as_deref(), Some("Second chapter"));
+        assert_eq!(chapters[0].chapter_number, Some(2.0));
     }
 
     #[test]
@@ -750,10 +750,10 @@ mod tests {
         let url = "https://syosetu.org/novel/12345/";
         let chapters = HamelnSource::parse_chapters(&document, url).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[0].title.as_deref(), Some("First mobile chapter"));
-        assert_eq!(chapters[0].chapter_number, Some(1.0));
-        assert_eq!(chapters[1].title.as_deref(), Some("Second mobile chapter"));
-        assert_eq!(chapters[1].chapter_number, Some(2.0));
+        assert_eq!(chapters[0].title.as_deref(), Some("Second mobile chapter"));
+        assert_eq!(chapters[0].chapter_number, Some(2.0));
+        assert_eq!(chapters[1].title.as_deref(), Some("First mobile chapter"));
+        assert_eq!(chapters[1].chapter_number, Some(1.0));
     }
 
     #[test]

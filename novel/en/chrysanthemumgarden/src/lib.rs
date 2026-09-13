@@ -216,7 +216,6 @@ impl ChrysanthemumGardenSource {
                 chapter_number: number,
                 url: Some(url),
                 language: Some("en".into()),
-                source_order: Some(chapters.len() as i32),
                 ..NovelChapter::default()
             });
         }
@@ -224,6 +223,7 @@ impl ChrysanthemumGardenSource {
             (!chapters.is_empty()).then_some(()),
             "Chrysanthemum Garden novel has no readable chapters",
         )?;
+        chapters.reverse();
         Ok(chapters)
     }
 
@@ -726,11 +726,10 @@ mod tests {
         assert!(item.tags.contains(&"BL".to_owned()));
         let chapters = ChrysanthemumGardenSource::parse_chapters(&document).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[0].title.as_deref(), Some("1. Start"));
-        assert_eq!(chapters[0].chapter_number, Some(1.0));
-        assert_eq!(chapters[1].title.as_deref(), Some("2.5. Continue"));
-        assert_eq!(chapters[1].chapter_number, Some(2.5));
-        assert_eq!(chapters[1].source_order, Some(1));
+        assert_eq!(chapters[0].title.as_deref(), Some("2.5. Continue"));
+        assert_eq!(chapters[0].chapter_number, Some(2.5));
+        assert_eq!(chapters[1].title.as_deref(), Some("1. Start"));
+        assert_eq!(chapters[1].chapter_number, Some(1.0));
     }
 
     #[test]

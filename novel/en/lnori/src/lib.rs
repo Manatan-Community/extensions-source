@@ -213,7 +213,6 @@ impl LnoriSource {
                     chapter_number: Some((offset + index + 1) as f32),
                     url: Some(key),
                     language: Some("en".into()),
-                    source_order: Some((offset + index) as i32),
                     ..NovelChapter::default()
                 }
             })
@@ -362,6 +361,7 @@ impl NovelSource for LnoriSource {
             (!chapters.is_empty()).then_some(()),
             "LNORI series has no readable chapters",
         )?;
+        chapters.reverse();
         Ok(chapters)
     }
 

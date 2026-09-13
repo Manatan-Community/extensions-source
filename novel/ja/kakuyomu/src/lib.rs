@@ -258,12 +258,12 @@ impl KakuyomuSource {
                         .map(|value| value.timestamp_millis()),
                     url: Some(url),
                     language: Some("ja".into()),
-                    source_order: Some(chapters.len() as i32),
                     section: section.clone(),
                     ..NovelChapter::default()
                 });
             }
         }
+        chapters.reverse();
         item.extra.insert("chapters".into(), json!(chapters));
         Ok((item, chapters))
     }

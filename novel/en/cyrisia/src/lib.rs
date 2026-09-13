@@ -153,7 +153,6 @@ impl CyrisiaSource {
             volume_number: Some((index + 1) as f32),
             url: Some(epub_url),
             language: Some("en".into()),
-            source_order: Some(index as i32),
             ..NovelChapter::default()
         })
     }
@@ -222,12 +221,14 @@ impl NovelSource for CyrisiaSource {
             (!entry.epubs.is_empty()).then_some(()),
             "Cyrisia series has no EPUB volumes",
         )?;
-        entry
+        let mut chapters = entry
             .epubs
             .iter()
             .enumerate()
             .map(|(index, epub)| Self::chapter(&entry, epub, index))
-            .collect()
+            .collect::<Result<Vec<_>>>()?;
+        chapters.reverse();
+        Ok(chapters)
     }
 
     fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {

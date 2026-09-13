@@ -342,7 +342,6 @@ impl WtrLabSource {
                         .and_then(parse_date),
                     url: Some(url),
                     language: Some("en".into()),
-                    source_order: Some(chapters.len() as i32),
                     ..NovelChapter::default()
                 });
             }
@@ -351,13 +350,10 @@ impl WtrLabSource {
             }
         }
         chapters.sort_by(|a, b| {
-            a.chapter_number
-                .partial_cmp(&b.chapter_number)
+            b.chapter_number
+                .partial_cmp(&a.chapter_number)
                 .unwrap_or(std::cmp::Ordering::Equal)
         });
-        for (index, chapter) in chapters.iter_mut().enumerate() {
-            chapter.source_order = Some(index as i32);
-        }
         Ok(chapters)
     }
 

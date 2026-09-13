@@ -166,7 +166,6 @@ impl SyosetuSource {
                 date_uploaded: date,
                 url: Some(url),
                 language: Some("ja".into()),
-                source_order: Some(entries.len() as i32),
                 page: Some(page),
                 ..NovelChapter::default()
             });
@@ -266,22 +265,37 @@ impl NovelSource for SyosetuSource {
             let (document, _) = self.document(&page_url)?;
             entries.extend(Self::parse_chapter_page(&document, page)?.entries);
         }
-        for (index, chapter) in entries.iter_mut().enumerate() {
-            chapter.source_order = Some(index as i32);
-        }
+        entries.reverse();
         Ok(entries)
     }
 
     fn chapters_page(&mut self, item: CatalogItem, page: u32) -> Result<NovelChapterPage> {
         let work_url = Self::work_url(&item)?;
         let page = page.max(1);
-        let url = if page == 1 {
-            work_url
+        let (first, final_url) = self.document(&work_url)?;
+        let page_count = last_page(&first)?;
+        if page > page_count {
+            return Ok(NovelChapterPage {
+                entries: Vec::new(),
+                has_next_page: false,
+                page_count: Some(page_count),
+            });
+        }
+        let upstream_page = page_count - page + 1;
+        let document = if upstream_page == 1 {
+            first
         } else {
-            format!("{work_url}?p={page}")
+            let url = format!("{final_url}?p={upstream_page}");
+            self.document(&url)?.0
         };
-        let (document, _) = self.document(&url)?;
-        Self::parse_chapter_page(&document, page)
+        let mut result = Self::parse_chapter_page(&document, upstream_page)?;
+        result.entries.reverse();
+        for chapter in &mut result.entries {
+            chapter.page = Some(page);
+        }
+        result.has_next_page = page < page_count;
+        result.page_count = Some(page_count);
+        Ok(result)
     }
 
     fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {

@@ -478,7 +478,6 @@ impl MangaSource for HitomiSource {
                 .map(ToOwned::to_owned)
                 .or_else(|| Some(self.source_language.to_owned())),
             url: Some(format!("{BASE_URL}{}", gallery.galleryurl)),
-            source_order: Some(0),
             page_count: Some(gallery.files.len() as u32),
             ..MangaChapter::default()
         }])

@@ -174,6 +174,18 @@ impl VideoSource for ShuttleTv {
                 });
             }
         }
+        episodes.sort_by(|left, right| {
+            right
+                .season_number
+                .partial_cmp(&left.season_number)
+                .unwrap_or(std::cmp::Ordering::Equal)
+                .then_with(|| {
+                    right
+                        .episode_number
+                        .partial_cmp(&left.episode_number)
+                        .unwrap_or(std::cmp::Ordering::Equal)
+                })
+        });
         Ok(episodes)
     }
 

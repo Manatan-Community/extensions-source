@@ -131,13 +131,11 @@ impl MangaSource for MokuroSource {
         if series.volumes.is_empty() {
             return Err(Error::new("Mokuro series has no readable volumes"));
         }
-        let volume_count = series.volumes.len();
         Ok(series
             .volumes
             .into_iter()
             .rev()
-            .enumerate()
-            .map(|(index, volume)| volume.to_chapter(&series_name, volume_count - index))
+            .map(|volume| volume.to_chapter(&series_name))
             .collect())
     }
 
@@ -406,7 +404,7 @@ struct VolumeSummary {
 }
 
 impl VolumeSummary {
-    fn to_chapter(&self, series_name: &str, source_order: usize) -> MangaChapter {
+    fn to_chapter(&self, series_name: &str) -> MangaChapter {
         let missing_pages = self.page_count.saturating_sub(self.matched_page_count);
         let summary = (missing_pages > 0).then(|| {
             format!(
@@ -425,7 +423,6 @@ impl VolumeSummary {
                 .ok()
                 .map(ImageRequest::get),
             url: reader_file_url(series_name, &self.volume_title, "cbz").ok(),
-            source_order: Some(source_order as i32),
             page_count: Some(self.matched_page_count),
             summary,
             ..MangaChapter::default()
@@ -950,16 +947,13 @@ mod tests {
             .volumes
             .iter()
             .rev()
-            .enumerate()
-            .map(|(index, volume)| volume.to_chapter("Yotsuba to!", series.volumes.len() - index))
+            .map(|volume| volume.to_chapter("Yotsuba to!"))
             .collect::<Vec<_>>();
         assert_eq!(chapters[0].key, "Yotsuba-to--02");
-        assert_eq!(chapters[0].source_order, Some(2));
         assert_eq!(chapters[0].volume_number, Some(2.0));
         assert_eq!(chapters[0].page_count, Some(223));
         assert!(chapters[0].summary.as_deref().unwrap().contains("missing"));
         assert_eq!(chapters[1].key, "Yotsuba-to--01");
-        assert_eq!(chapters[1].source_order, Some(1));
     }
 
     #[test]

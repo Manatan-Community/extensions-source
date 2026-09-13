@@ -356,7 +356,6 @@ fn parse_chapters_at(document: &Html, slug: &str, now_millis: i64) -> Result<Vec
             date_uploaded,
             language: Some(LANGUAGE.to_owned()),
             url: canonical_chapter_url(slug, &key),
-            source_order: Some(chapters.len() as i32),
             ..MangaChapter::default()
         });
     }

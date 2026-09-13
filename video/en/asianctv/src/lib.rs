@@ -76,7 +76,7 @@ impl AsianCtv {
     fn player_api_streams(&self, player_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
         let id = player_id(player_url)?;
         let value: Value = Client::browser()
-            .get(&format!(
+            .get(format!(
                 "https://vidbasic.live/stream/getSources?id={id}&id={id}"
             ))
             .header("Referer", episode_url)
@@ -408,7 +408,6 @@ fn streams_from_capture(
                 headers: [("Referer".to_string(), referer.to_string())]
                     .into_iter()
                     .chain([("Origin".to_string(), "https://vidbasic.live".to_string())])
-                    .into_iter()
                     .collect(),
                 ..VideoStream::default()
             }

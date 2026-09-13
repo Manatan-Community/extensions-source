@@ -263,13 +263,11 @@ impl Shuba69Source {
                 ..NovelChapter::default()
             });
         }
-        for (index, chapter) in chapters.iter_mut().enumerate() {
-            chapter.source_order = Some(index as i32);
-        }
         require(
             (!chapters.is_empty()).then_some(()),
             "69书吧 novel has no chapters",
         )?;
+        chapters.reverse();
         Ok(chapters)
     }
 
@@ -570,13 +568,12 @@ mod tests {
     }
 
     #[test]
-    fn parses_chapters_in_reading_order() {
+    fn parses_chapters_newest_first() {
         let document = html::document(include_str!("../tests/fixtures/chapters.html"));
         let chapters = Shuba69Source::parse_chapters(&document).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[0].title.as_deref(), Some("第1章 开始"));
-        assert_eq!(chapters[0].chapter_number, Some(1.0));
-        assert_eq!(chapters[1].source_order, Some(1));
+        assert_eq!(chapters[0].title.as_deref(), Some("第2章 继续"));
+        assert_eq!(chapters[0].chapter_number, Some(2.0));
     }
 
     #[test]

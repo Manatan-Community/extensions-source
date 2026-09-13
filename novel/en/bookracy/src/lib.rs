@@ -180,7 +180,6 @@ impl BookRacySource {
             volume_number: Some(1.0),
             url: Some(book.link.clone()),
             language: Some("en".into()),
-            source_order: Some(0),
             ..NovelChapter::default()
         })
     }

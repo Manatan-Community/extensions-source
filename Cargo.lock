@@ -936,9 +936,9 @@ dependencies = [
 
 [[package]]
 name = "manatan-sdk"
-version = "1.0.0"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63c09d1019777d5ef815a8a4622e7017e78f8b0ae950646249eddc634b944462"
+checksum = "64fcc5f9fb08dfbfa755be07d2bc02f857b4e295addb031ed36a70146c497e23"
 dependencies = [
  "base64",
  "scraper",
@@ -1256,6 +1256,7 @@ dependencies = [
 name = "reanime-video"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "manatan-sdk",
  "serde",
  "serde_json",

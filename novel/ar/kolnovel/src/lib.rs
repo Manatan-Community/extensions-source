@@ -244,10 +244,6 @@ impl KolNovelSource {
                 ..NovelChapter::default()
             });
         }
-        chapters.reverse();
-        for (index, chapter) in chapters.iter_mut().enumerate() {
-            chapter.source_order = Some(index as i32);
-        }
         require(
             (!chapters.is_empty()).then_some(()),
             "KolNovel series has no chapters",
@@ -619,7 +615,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_details_and_oldest_first_chapters() {
+    fn parses_details_and_newest_first_chapters() {
         let document = html::document(include_str!("../tests/fixtures/details.html"));
         let item = KolNovelSource::parse_details(&document, "https://kolnovel.com/series/fixture/")
             .unwrap();
@@ -630,10 +626,9 @@ mod tests {
 
         let chapters = KolNovelSource::parse_chapters(&document).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[0].chapter_number, Some(1.0));
-        assert_eq!(chapters[1].chapter_number, Some(2.0));
-        assert!(chapters[1].title.as_deref().unwrap().starts_with('🔒'));
-        assert_eq!(chapters[0].source_order, Some(0));
+        assert_eq!(chapters[0].chapter_number, Some(2.0));
+        assert_eq!(chapters[1].chapter_number, Some(1.0));
+        assert!(chapters[0].title.as_deref().unwrap().starts_with('🔒'));
     }
 
     #[test]
@@ -725,10 +720,6 @@ mod tests {
         assert!(item.cover.is_some());
         let chapters = KolNovelSource::parse_chapters(&details).expect("parse live chapters");
         assert!(chapters.len() > 100);
-        assert_eq!(
-            chapters.first().and_then(|chapter| chapter.source_order),
-            Some(0)
-        );
     }
 
     #[test]

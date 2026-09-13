@@ -828,7 +828,6 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
             ..VideoEpisode::default()
         });
     }
-    entries.reverse();
     Ok(entries)
 }
 
@@ -1749,7 +1748,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(episodes.len(), 2);
-        assert_eq!(episodes[0].episode_number, Some(1.0));
+        assert_eq!(episodes[0].episode_number, Some(2.0));
         let fragment = result_fragment(include_str!("../tests/fixtures/servers.json")).unwrap();
         let hosters = parse_server_list_html(&fragment, "/watch/example-anime-abcd/ep-1").unwrap();
         assert_eq!(hosters[0].name, "VidPlay-1 - Sub");

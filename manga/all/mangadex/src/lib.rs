@@ -222,16 +222,14 @@ impl MangaSource for MangaDexSource {
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
         let manga_id = self.ensure_item_allowed(&item)?;
         let mut offset = 0_u32;
-        let mut source_order = 0_i32;
         let mut chapters = Vec::new();
         loop {
             let url = chapter_feed_url(&manga_id, offset, self.language.api_code)?;
             let response: CollectionResponse<ChapterData> = self.get_json(&url)?;
             let count = response.data.len() as u32;
             for chapter in response.data {
-                if let Some(chapter) = chapter.to_manga_chapter(source_order) {
+                if let Some(chapter) = chapter.to_manga_chapter() {
                     chapters.push(chapter);
-                    source_order += 1;
                 }
             }
             offset = offset.saturating_add(response.limit.max(count));
@@ -298,7 +296,7 @@ impl MangaSource for MangaDexSource {
                 let item = self.details(CatalogItem::new(manga_id, ""))?;
                 let manga_chapter = response
                     .data
-                    .to_manga_chapter(0)
+                    .to_manga_chapter()
                     .ok_or_else(|| Error::new("MangaDex chapter is unavailable or external"))?;
                 Ok(Some(UrlResolveResult {
                     item: Some(item),
@@ -609,7 +607,7 @@ struct ChapterAttributes {
 }
 
 impl ChapterData {
-    fn to_manga_chapter(&self, source_order: i32) -> Option<MangaChapter> {
+    fn to_manga_chapter(&self) -> Option<MangaChapter> {
         if self.attributes.external_url.is_some()
             || self.attributes.pages == 0
             || self.attributes.is_unavailable
@@ -630,7 +628,6 @@ impl ChapterData {
             scanlators,
             language: self.attributes.translated_language.clone(),
             url: Some(format!("{SITE_URL}/chapter/{}", self.id)),
-            source_order: Some(source_order),
             page_count: Some(self.attributes.pages),
             extra: [("chapterId".to_owned(), Value::from(self.id.clone()))]
                 .into_iter()
@@ -1658,7 +1655,7 @@ mod tests {
         assert!(first.offset + first.limit < first.total);
         assert_eq!(second.offset + second.limit, second.total);
 
-        let chapter = first.data[0].to_manga_chapter(0).expect("chapter converts");
+        let chapter = first.data[0].to_manga_chapter().expect("chapter converts");
         assert_eq!(chapter.chapter_number, Some(12.5));
         assert_eq!(chapter.volume_number, Some(2.0));
         assert_eq!(chapter.page_count, Some(2));

@@ -502,10 +502,8 @@ fn parse_chapters(data: &Value, slug: &str) -> Result<Vec<MangaChapter>> {
     if parsed.is_empty() {
         return Err(Error::new("SoraRaw details page has no readable chapters"));
     }
-    // SoraRaw has returned both scrambled and newest-first chapter arrays. Keep
-    // the extension contract deterministic and use positive, one-based source
-    // orders: Manatan reserves zero to mean that a source did not supply an
-    // order.
+    // SoraRaw has returned both scrambled and newest-first chapter arrays.
+    // Normalize its output to the SDK's newest-first contract.
     parsed.sort_by(|left, right| {
         right
             .chapter_number
@@ -514,10 +512,6 @@ fn parse_chapters(data: &Value, slug: &str) -> Result<Vec<MangaChapter>> {
             .then_with(|| right.date_uploaded.cmp(&left.date_uploaded))
             .then_with(|| right.key.cmp(&left.key))
     });
-    let chapter_count = parsed.len();
-    for (index, chapter) in parsed.iter_mut().enumerate() {
-        chapter.source_order = Some((chapter_count - index) as i32);
-    }
     Ok(parsed)
 }
 
@@ -876,12 +870,10 @@ mod tests {
         assert_eq!(chapters[0].key, "ch-247");
         assert_eq!(chapters[0].chapter_number, Some(247.0));
         assert!(chapters[0].date_uploaded.is_some());
-        assert_eq!(chapters[0].source_order, Some(2));
-        assert_eq!(chapters[1].source_order, Some(1));
     }
 
     #[test]
-    fn sorts_scrambled_fractional_chapters_and_assigns_positive_orders() {
+    fn sorts_scrambled_fractional_chapters_newest_first() {
         let data = json!({
             "props": { "pageProps": { "data": { "manga": { "chapters": [
                 { "path": "example-ch-1", "order": 1, "published_at": "2026-01-01T00:00:00Z" },
@@ -898,13 +890,6 @@ mod tests {
                 .map(|chapter| chapter.chapter_number)
                 .collect::<Vec<_>>(),
             vec![Some(9.0), Some(2.1), Some(2.0), Some(1.0)]
-        );
-        assert_eq!(
-            chapters
-                .iter()
-                .map(|chapter| chapter.source_order)
-                .collect::<Vec<_>>(),
-            vec![Some(4), Some(3), Some(2), Some(1)]
         );
     }
 

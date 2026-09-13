@@ -1,11 +1,13 @@
+use base64::Engine;
 use manatan_sdk::{
     browser::{
         self, WebViewExtractRequest, WebViewExtractResponse, WebViewRequestCapture, WebViewSession,
         WebViewSessionPersistence, WebViewWaitUntil,
     },
     client::Client,
-    CatalogItem, Error, FilterDefinition, ImageRequest, MediaTrack, OptionItem, Paged, Result,
-    UrlResolveResult, VideoEpisode, VideoHoster, VideoSource, VideoStream,
+    CatalogItem, Error, FilterDefinition, ImageRequest, MediaResourceKind, MediaTrack, OptionItem,
+    Paged, ProcessedMedia, Result, SegmentProcessing, SegmentRule, UrlResolveResult, VideoEpisode,
+    VideoHoster, VideoSource, VideoStream,
 };
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
@@ -153,10 +155,46 @@ impl ReAnime {
         Ok(episodes)
     }
 
-    fn capture_stream(&self, watch_url: &str, language: &str) -> Result<Vec<VideoStream>> {
-        validate_watch_url(watch_url)?;
+    fn player_servers(&self, slug: &str, episode: &VideoEpisode) -> Result<Vec<FlixServer>> {
+        let anime = self.anime(slug)?;
+        if anime.anilist_id == 0 {
+            return Err(Error::new("ReAnime title is missing its AniList ID"));
+        }
+        let number = episode_number(episode)?;
+        let response: FlixResponse =
+            self.api(&format!("/api/flix/{}/{}", anime.anilist_id, number), &[])?;
+        if !response.success {
+            return Err(Error::new("ReAnime player server lookup failed"));
+        }
+        let servers = response
+            .servers
+            .into_iter()
+            .filter(|server| matches!(server.data_type.as_str(), "sub" | "dub"))
+            .filter(|server| validate_player_url(&server.data_link).is_ok())
+            .collect::<Vec<_>>();
+        if servers.is_empty() {
+            return Err(Error::new("ReAnime episode has no playable servers"));
+        }
+        Ok(servers)
+    }
+
+    fn player_hosters(
+        &self,
+        item: &CatalogItem,
+        episode: &VideoEpisode,
+    ) -> Result<Vec<VideoHoster>> {
+        validate_episode(&item.key, episode)?;
+        Ok(hosters_from_servers(
+            item,
+            episode,
+            self.player_servers(&item.key, episode)?,
+        ))
+    }
+
+    fn capture_stream(&self, player_url: &str, language: &str) -> Result<Vec<VideoStream>> {
+        validate_player_url(player_url)?;
         let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
-            url: watch_url.to_string(),
+            url: player_url.to_string(),
             method: Default::default(),
             body: None,
             cookie_url: None,
@@ -170,14 +208,18 @@ impl ReAnime {
             wait_until: Some(WebViewWaitUntil::DomReady),
             wait_for_selector: None,
             wait_for_event: None,
-            wait_for_script: Some(
-                "performance.now() >= 12000 && Boolean(document.querySelector('iframe[src*=\"flixcloud\"]'))"
-                    .to_string(),
-            ),
-            script: "(() => ({ iframe: document.querySelector('iframe[src*=\"flixcloud\"]')?.src || '' }))()"
-                .to_string(),
+            // FlixCloud can replace or move its video element after starting
+            // playback. Keep the extraction boundary on the stable network
+            // request instead of depending on that transient DOM shape.
+            wait_for_script: Some("performance.now() >= 12000".to_string()),
+            script: "(() => ({ playlistKey: window.__pk || '', video: document.querySelector('video')?.currentSrc || '' }))()".to_string(),
             timeout_ms: Some(45_000),
-            capture_requests: vec![capture(".m3u8"), capture(".ass"), capture(".vtt")],
+            capture_requests: vec![
+                capture(".m3u8"),
+                capture(".ass"),
+                capture(".vtt"),
+                capture(".srt"),
+            ],
             capture_events: Vec::new(),
             cookies: false,
             headless: Some(true),
@@ -213,30 +255,29 @@ impl VideoSource for ReAnime {
     }
 
     fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
-        let hoster = self
-            .hosters(item.clone(), episode.clone())?
-            .into_iter()
+        let hosters = self.player_hosters(&item, &episode)?;
+        let hoster = hosters
+            .iter()
+            .find(|hoster| hoster.key.ends_with(":sub"))
+            .or_else(|| hosters.first())
+            .ok_or_else(|| Error::new("ReAnime episode has no playable server"))?;
+        let language = hoster
+            .key
+            .rsplit(':')
             .next()
-            .ok_or_else(|| Error::new("ReAnime episode has no playable language"))?;
-        self.hoster_streams(item, episode, hoster)
+            .filter(|value| matches!(*value, "sub" | "dub"))
+            .ok_or_else(|| Error::new("invalid ReAnime hoster"))?;
+        self.capture_stream(
+            hoster
+                .url
+                .as_deref()
+                .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?,
+            language,
+        )
     }
 
     fn hosters(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
-        validate_episode(&item.key, &episode)?;
-        let mut hosters = Vec::new();
-        for (language, label) in [("sub", "English Sub"), ("dub", "English Dub")] {
-            if episode.labels.iter().any(|value| value == label) {
-                let url = watch_url(&item.key, episode_number(&episode)?, language)?;
-                hosters.push(VideoHoster {
-                    key: format!("{}:{}:{language}", item.key, episode.key),
-                    name: label.to_string(),
-                    url: Some(url),
-                    lazy: true,
-                    ..VideoHoster::default()
-                });
-            }
-        }
-        Ok(hosters)
+        self.player_hosters(&item, &episode)
     }
 
     fn hoster_streams(
@@ -245,28 +286,42 @@ impl VideoSource for ReAnime {
         episode: VideoEpisode,
         hoster: VideoHoster,
     ) -> Result<Vec<VideoStream>> {
-        validate_episode(&item.key, &episode)?;
-        let prefix = format!("{}:{}:", item.key, episode.key);
+        let expected = self
+            .player_hosters(&item, &episode)?
+            .into_iter()
+            .find(|candidate| candidate.key == hoster.key && candidate.url == hoster.url)
+            .ok_or_else(|| Error::new("ReAnime hoster is no longer available"))?;
         let language = hoster
             .key
-            .strip_prefix(&prefix)
+            .rsplit(':')
+            .next()
             .filter(|value| matches!(*value, "sub" | "dub"))
             .ok_or_else(|| Error::new("invalid ReAnime hoster"))?;
-        let expected_label = if language == "dub" {
-            "English Dub"
-        } else {
-            "English Sub"
-        };
-        if !episode.labels.iter().any(|value| value == expected_label) {
-            return Err(Error::new(
-                "ReAnime hoster language is unavailable for this episode",
-            ));
+        self.capture_stream(
+            expected
+                .url
+                .as_deref()
+                .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?,
+            language,
+        )
+    }
+
+    fn process_resource(
+        &mut self,
+        context: &Value,
+        bytes: &[u8],
+        _mime_type: Option<&str>,
+    ) -> Result<Option<ProcessedMedia>> {
+        if context.get("resourceType").and_then(Value::as_str) != Some("playlist") {
+            return Ok(None);
         }
-        let expected = watch_url(&item.key, episode_number(&episode)?, language)?;
-        if hoster.url.as_deref() != Some(expected.as_str()) {
-            return Err(Error::new("ReAnime hoster URL does not match the episode"));
-        }
-        self.capture_stream(&expected, language)
+        let key = playlist_key_from_processing(context)
+            .ok_or_else(|| Error::new("ReAnime playlist key is missing"))?;
+        let plaintext = decrypt_playlist(bytes, key)?;
+        Ok(Some(ProcessedMedia {
+            bytes: plaintext,
+            mime_type: Some("application/vnd.apple.mpegurl".to_string()),
+        }))
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
@@ -362,11 +417,19 @@ impl VideoSource for ReAnime {
         episode: &VideoEpisode,
     ) -> Result<Option<String>> {
         validate_episode(&item.key, episode)?;
-        Ok(Some(watch_url(
-            &item.key,
-            episode_number(episode)?,
-            default_language(episode)?,
-        )?))
+        let number = episode_number(episode)?;
+        let hoster = self
+            .player_hosters(item, episode)?
+            .into_iter()
+            .next()
+            .ok_or_else(|| Error::new("ReAnime episode has no playable server"))?;
+        let language = hoster
+            .key
+            .rsplit(':')
+            .next()
+            .filter(|value| matches!(*value, "sub" | "dub"))
+            .ok_or_else(|| Error::new("invalid ReAnime hoster"))?;
+        Ok(Some(watch_url(&item.key, &number, language)?))
     }
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
@@ -412,6 +475,8 @@ struct CursorResponse {
 struct AnimeSummary {
     #[serde(default)]
     anime_id: String,
+    #[serde(default)]
+    anilist_id: u64,
     #[serde(default)]
     title: AnimeTitle,
     #[serde(default)]
@@ -491,6 +556,25 @@ struct EpisodeDto {
     is_filler: bool,
 }
 
+#[derive(Debug, Default, Deserialize)]
+struct FlixResponse {
+    #[serde(default)]
+    success: bool,
+    #[serde(default)]
+    servers: Vec<FlixServer>,
+}
+
+#[derive(Debug, Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct FlixServer {
+    #[serde(default)]
+    server_name: String,
+    #[serde(default)]
+    data_link: String,
+    #[serde(default)]
+    data_type: String,
+}
+
 fn safe_catalog(items: Vec<AnimeSummary>, initialized: bool) -> Vec<CatalogItem> {
     items
         .into_iter()
@@ -559,6 +643,34 @@ fn video_episode(slug: &str, episode: EpisodeDto) -> VideoEpisode {
     }
 }
 
+fn hosters_from_servers(
+    item: &CatalogItem,
+    episode: &VideoEpisode,
+    servers: Vec<FlixServer>,
+) -> Vec<VideoHoster> {
+    servers
+        .into_iter()
+        .map(|server| VideoHoster {
+            key: format!(
+                "{}:{}:{}:{}",
+                item.key, episode.key, server.server_name, server.data_type
+            ),
+            name: format!(
+                "{} - English {}",
+                server.server_name,
+                if server.data_type == "dub" {
+                    "Dub"
+                } else {
+                    "Sub"
+                }
+            ),
+            url: Some(server.data_link),
+            lazy: true,
+            ..VideoHoster::default()
+        })
+        .collect()
+}
+
 fn streams_from_capture(
     response: &WebViewExtractResponse,
     language: &str,
@@ -578,12 +690,23 @@ fn streams_from_capture(
         .cloned()
         .ok_or_else(|| Error::new("ReAnime player did not expose an HLS stream"))?;
     validate_stream_url(&stream_url)?;
+    let playlist_key = response
+        .value
+        .as_ref()
+        .and_then(|value| value.get("playlistKey"))
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| Error::new("ReAnime player did not expose its playlist key"))?;
+    decode_base64(playlist_key, "ReAnime playlist key")?;
 
     let mut subtitles = response
         .captured_requests
         .iter()
         .map(|request| request.url.clone())
-        .filter(|url| is_media_url(url, ".ass") || is_media_url(url, ".vtt"))
+        .filter(|url| {
+            is_media_url(url, ".ass") || is_media_url(url, ".vtt") || is_media_url(url, ".srt")
+        })
         .collect::<Vec<_>>();
     subtitles.sort();
     subtitles.dedup();
@@ -593,6 +716,8 @@ fn streams_from_capture(
         .map(|url| {
             let format = if is_media_url(&url, ".ass") {
                 "ass"
+            } else if is_media_url(&url, ".srt") {
+                "srt"
             } else {
                 "vtt"
             };
@@ -621,8 +746,64 @@ fn streams_from_capture(
         initialized: true,
         headers: media_headers(),
         subtitles: subtitle_tracks,
+        segment_processing: Some(playlist_processing(playlist_key)),
         ..VideoStream::default()
     }])
+}
+
+const PLAYLIST_KEY_HEADER: &str = "X-Manatan-ReAnime-Playlist-Key";
+
+fn playlist_processing(playlist_key: &str) -> SegmentProcessing {
+    SegmentProcessing {
+        rewrite_playlist: true,
+        guest_transform: true,
+        max_resource_bytes: Some(2 * 1024 * 1024),
+        rules: vec![SegmentRule {
+            resource_types: vec![MediaResourceKind::Playlist],
+            host_patterns: vec!["*.flixcloud.cc".to_string()],
+            headers: [(PLAYLIST_KEY_HEADER.to_string(), playlist_key.to_string())]
+                .into_iter()
+                .collect(),
+            ..SegmentRule::default()
+        }],
+        ..SegmentProcessing::default()
+    }
+}
+
+fn playlist_key_from_processing(context: &Value) -> Option<&str> {
+    context
+        .get("processing")?
+        .get("rules")?
+        .as_array()?
+        .iter()
+        .filter_map(|rule| rule.get("headers").and_then(Value::as_object))
+        .find_map(|headers| headers.get(PLAYLIST_KEY_HEADER).and_then(Value::as_str))
+}
+
+fn decrypt_playlist(bytes: &[u8], encoded_key: &str) -> Result<Vec<u8>> {
+    let encoded = std::str::from_utf8(bytes)
+        .map(str::trim)
+        .map_err(|_| Error::new("ReAnime returned a non-text playlist"))?;
+    let ciphertext = decode_base64(encoded, "ReAnime playlist")?;
+    let key = decode_base64(encoded_key, "ReAnime playlist key")?;
+    if key.is_empty() {
+        return Err(Error::new("ReAnime playlist key is empty"));
+    }
+    let plaintext = ciphertext
+        .iter()
+        .enumerate()
+        .map(|(index, byte)| byte ^ key[index % key.len()])
+        .collect::<Vec<_>>();
+    if !plaintext.starts_with(b"#EXTM3U") {
+        return Err(Error::new("ReAnime playlist decryption failed"));
+    }
+    Ok(plaintext)
+}
+
+fn decode_base64(value: &str, label: &str) -> Result<Vec<u8>> {
+    base64::engine::general_purpose::STANDARD
+        .decode(value)
+        .map_err(|_| Error::new(format!("{label} is invalid")))
 }
 
 fn capture(needle: &str) -> WebViewRequestCapture {
@@ -751,20 +932,20 @@ fn validate_api_url(value: &str) -> Result<()> {
     let url = Url::parse(value).map_err(url_error)?;
     if url.scheme() != "https"
         || url.host_str() != Some("reanime.to")
-        || !url.path().starts_with("/api/v1/")
+        || !(url.path().starts_with("/api/v1/") || url.path().starts_with("/api/flix/"))
     {
         return Err(Error::new("unexpected ReAnime API URL"));
     }
     Ok(())
 }
 
-fn validate_watch_url(value: &str) -> Result<()> {
+fn validate_player_url(value: &str) -> Result<()> {
     let url = Url::parse(value).map_err(url_error)?;
     if url.scheme() != "https"
-        || url.host_str() != Some("reanime.to")
-        || !url.path().starts_with("/watch/")
+        || url.host_str() != Some("flixcloud.cc")
+        || !url.path().starts_with("/e/")
     {
-        return Err(Error::new("unexpected ReAnime watch URL"));
+        return Err(Error::new("unexpected ReAnime player URL"));
     }
     Ok(())
 }
@@ -809,8 +990,8 @@ fn validate_episode(slug: &str, episode: &VideoEpisode) -> Result<()> {
     Ok(())
 }
 
-fn episode_number(episode: &VideoEpisode) -> Result<&str> {
-    episode
+fn episode_number(episode: &VideoEpisode) -> Result<String> {
+    if let Some(value) = episode
         .extra
         .get("episodeNumber")
         .and_then(Value::as_str)
@@ -821,17 +1002,15 @@ fn episode_number(episode: &VideoEpisode) -> Result<&str> {
                     .bytes()
                     .all(|byte| byte.is_ascii_digit() || byte == b'.')
         })
-        .ok_or_else(|| Error::new("ReAnime episode number is missing"))
-}
-
-fn default_language(episode: &VideoEpisode) -> Result<&'static str> {
-    if episode.labels.iter().any(|value| value == "English Sub") {
-        Ok("sub")
-    } else if episode.labels.iter().any(|value| value == "English Dub") {
-        Ok("dub")
-    } else {
-        Err(Error::new("ReAnime episode has no playable language"))
+    {
+        return Ok(value.to_string());
     }
+
+    episode
+        .episode_number
+        .filter(|number| number.is_finite() && *number > 0.0)
+        .map(number_string)
+        .ok_or_else(|| Error::new("ReAnime episode number is missing"))
 }
 
 fn number_string(number: f32) -> String {
@@ -919,18 +1098,27 @@ mod tests {
             "dubbed": true
         }))
         .unwrap();
-        let mut source = ReAnime;
         let item = CatalogItem::new("sample-anime-abc123", "Sample Anime");
         let episode = video_episode(&item.key, episode);
-        let hosters = source.hosters(item, episode).unwrap();
+        let hosters = hosters_from_servers(
+            &item,
+            &episode,
+            vec![
+                FlixServer {
+                    server_name: "HD-1".to_string(),
+                    data_link: "https://flixcloud.cc/e/sub-player?v=1".to_string(),
+                    data_type: "sub".to_string(),
+                },
+                FlixServer {
+                    server_name: "HD-1".to_string(),
+                    data_link: "https://flixcloud.cc/e/dub-player?v=1".to_string(),
+                    data_type: "dub".to_string(),
+                },
+            ],
+        );
         assert_eq!(hosters.len(), 2);
-        assert_eq!(hosters[0].name, "English Sub");
-        assert!(hosters[0]
-            .url
-            .as_deref()
-            .unwrap()
-            .ends_with("?ep=12&lang=sub"));
-        assert_eq!(hosters[1].name, "English Dub");
+        assert_eq!(hosters[0].name, "HD-1 - English Sub");
+        assert_eq!(hosters[1].name, "HD-1 - English Dub");
 
         let dub_only: EpisodeDto = serde_json::from_value(json!({
             "episodeId": "ep-13",
@@ -944,14 +1132,41 @@ mod tests {
         let episode = video_episode(&item.key, dub_only);
         assert!(episode.url.as_deref().unwrap().ends_with("?ep=13&lang=dub"));
         assert_eq!(
-            source.episode_url(&item, &episode).unwrap().as_deref(),
-            episode.url.as_deref()
+            watch_url(&item.key, &episode_number(&episode).unwrap(), "dub").unwrap(),
+            episode.url.unwrap()
         );
+    }
+
+    #[test]
+    fn resolves_hosters_after_episode_metadata_is_persisted() {
+        let item = CatalogItem::new("sample-anime-abc123", "Sample Anime");
+        let episode = VideoEpisode {
+            key: "sample-anime-abc123:ep-12".to_string(),
+            episode_number: Some(12.0),
+            labels: vec!["English Sub".to_string()],
+            ..VideoEpisode::default()
+        };
+
+        let hosters = hosters_from_servers(
+            &item,
+            &episode,
+            vec![FlixServer {
+                server_name: "HD-2".to_string(),
+                data_link: "https://flixcloud.cc/e/player?v=2".to_string(),
+                data_type: "sub".to_string(),
+            }],
+        );
+        assert_eq!(hosters.len(), 1);
+        assert_eq!(episode_number(&episode).unwrap(), "12");
+        assert_eq!(hosters[0].name, "HD-2 - English Sub");
     }
 
     #[test]
     fn prefers_master_playlist_and_collects_subtitles() {
         let response = WebViewExtractResponse {
+            value: Some(serde_json::json!({
+                "playlistKey": base64::engine::general_purpose::STANDARD.encode(b"test-key")
+            })),
             captured_requests: vec![
                 manatan_sdk::browser::WebViewCapturedRequest {
                     url: "https://fetch8.flixcloud.cc/video/720/index.m3u8?token=a".to_string(),
@@ -972,6 +1187,46 @@ mod tests {
         assert!(streams[0].url.contains("/master.m3u8"));
         assert_eq!(streams[0].subtitles.len(), 1);
         assert!(streams[0].requires_proxy);
+        assert!(streams[0]
+            .segment_processing
+            .as_ref()
+            .is_some_and(|processing| processing.guest_transform));
+    }
+
+    #[test]
+    fn decrypts_only_playlist_resources_with_the_captured_key() {
+        let key = b"playlist-key";
+        let plaintext = b"#EXTM3U\n#EXT-X-VERSION:3\nsegment.ts\n";
+        let ciphertext = plaintext
+            .iter()
+            .enumerate()
+            .map(|(index, byte)| byte ^ key[index % key.len()])
+            .collect::<Vec<_>>();
+        let encoded_key = base64::engine::general_purpose::STANDARD.encode(key);
+        let context = serde_json::json!({
+            "resourceType": "playlist",
+            "processing": playlist_processing(&encoded_key),
+        });
+        let encoded_playlist = base64::engine::general_purpose::STANDARD.encode(ciphertext);
+
+        let mut source = ReAnime;
+        let processed = source
+            .process_resource(&context, encoded_playlist.as_bytes(), Some("text/plain"))
+            .unwrap()
+            .unwrap();
+        assert_eq!(processed.bytes, plaintext);
+        assert_eq!(
+            processed.mime_type.as_deref(),
+            Some("application/vnd.apple.mpegurl")
+        );
+        assert!(source
+            .process_resource(
+                &serde_json::json!({ "resourceType": "segment" }),
+                b"video",
+                Some("video/mp2t"),
+            )
+            .unwrap()
+            .is_none());
     }
 
     #[test]

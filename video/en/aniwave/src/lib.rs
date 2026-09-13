@@ -46,6 +46,7 @@ mod tests {
             "https://*.sugevideo.xyz",
             "https://*.livedns.my",
             "https://*.nexabloom.top",
+            "https://*.quavex.top",
             "https://*.streamzone1.site",
         ] {
             assert!(

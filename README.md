@@ -19,6 +19,10 @@ Extension implementations never live in the SDK. Every guest uses the public
 [`manatan-sdk`](https://crates.io/crates/manatan-sdk), targets
 `wasm32-unknown-unknown`, and exports `manatan:extensions@2.0.0`.
 
+Manga chapters, video episodes, and novel chapters must be returned
+newest-first. Extensions do not assign `source_order`; Manatan derives its
+internal source positions from the returned list order.
+
 ## Build an extension
 
 ```sh

@@ -167,6 +167,7 @@ impl NovelArchiveSource {
             "Novel Archive novel has no chapters",
         )?;
         Ok((1..=count)
+            .rev()
             .map(|number| {
                 let title = names
                     .and_then(|values| values.get((number - 1) as usize))
@@ -181,7 +182,6 @@ impl NovelArchiveSource {
                     chapter_number: Some(number as f32),
                     url: Some(url),
                     language: Some("en".into()),
-                    source_order: Some((number - 1) as i32),
                     ..NovelChapter::default()
                 }
             })
@@ -520,7 +520,7 @@ mod tests {
         });
         let chapters = NovelArchiveSource::parse_chapters("fixture", &fixture).unwrap();
         assert_eq!(chapters.len(), 2);
-        assert_eq!(chapters[1].title.as_deref(), Some("Second"));
+        assert_eq!(chapters[0].title.as_deref(), Some("Second"));
         let html = paragraphs("One & two\n\n<script>alert(1)</script>");
         assert!(html.contains("One &amp; two"));
         assert!(!html.contains("<script>"));

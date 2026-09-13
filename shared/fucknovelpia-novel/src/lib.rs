@@ -147,7 +147,6 @@ impl<C: Config> Source<C> {
             url: Some(book_url.to_owned()),
             language: Some(C::LANGUAGE.to_owned()),
             chapter_number: Some(1.0),
-            source_order: Some(0),
             section: Some("Full-book download".to_owned()),
             summary: Some(
                 "This source publishes the novel as one archive. Adding or opening it downloads and decrypts the complete EPUB."
@@ -167,7 +166,7 @@ impl<C: Config> Source<C> {
     }
 
     fn chapters_from_epub(cached: &CachedEpub) -> Vec<NovelChapter> {
-        cached
+        let mut chapters = cached
             .chapters
             .iter()
             .enumerate()
@@ -177,7 +176,6 @@ impl<C: Config> Source<C> {
                 url: Some(cached.book_url.clone()),
                 language: Some(C::LANGUAGE.to_owned()),
                 chapter_number: Some((index + 1) as f32),
-                source_order: Some(index as i32),
                 extra: [
                     ("bookUrl".to_owned(), json!(cached.book_url)),
                     ("epubPath".to_owned(), json!(chapter.path)),
@@ -186,7 +184,9 @@ impl<C: Config> Source<C> {
                 .collect(),
                 ..NovelChapter::default()
             })
-            .collect()
+            .collect::<Vec<_>>();
+        chapters.reverse();
+        chapters
     }
 
     fn text_from_epub(cached: &CachedEpub, chapter: &NovelChapter) -> Result<NovelText> {
@@ -465,11 +465,11 @@ impl<C: Config> Source<C> {
                 chapter_number,
                 url: Some(url),
                 language: Some(C::LANGUAGE.to_owned()),
-                source_order: Some(index as i32),
                 extra,
                 ..NovelChapter::default()
             });
         }
+        chapters.reverse();
         Ok(chapters)
     }
 

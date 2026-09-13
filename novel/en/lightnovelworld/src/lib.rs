@@ -120,7 +120,7 @@ impl LightNovelWorldSource {
         let mut url = Url::parse(&format!("{BASE_URL}/api/novels/{slug}/chapters"))
             .map_err(|error| Error::new(error.to_string()))?;
         url.query_pairs_mut()
-            .append_pair("order", "asc")
+            .append_pair("order", "desc")
             .append_pair("limit", &limit.to_string())
             .append_pair("offset", &offset.to_string());
         self.get_json(url.as_str())
@@ -184,7 +184,7 @@ impl NovelSource for LightNovelWorldSource {
                 .get("items")
                 .and_then(Value::as_array)
                 .ok_or_else(|| Error::new("Chikari chapter response has no items"))?;
-            let page = parse_chapters(values, &slug, offset)?;
+            let page = parse_chapters(values, &slug)?;
             let received = page.len() as u64;
             chapters.extend(page);
             let total = response
@@ -214,7 +214,6 @@ impl NovelSource for LightNovelWorldSource {
                 .and_then(Value::as_array)
                 .ok_or_else(|| Error::new("Chikari chapter response has no items"))?,
             &slug,
-            offset,
         )?;
         let total = response
             .get("total")
@@ -487,11 +486,10 @@ fn parse_details(value: &Value, slug: &str) -> Result<CatalogItem> {
     Ok(item)
 }
 
-fn parse_chapters(values: &[Value], slug: &str, offset: u64) -> Result<Vec<NovelChapter>> {
+fn parse_chapters(values: &[Value], slug: &str) -> Result<Vec<NovelChapter>> {
     values
         .iter()
-        .enumerate()
-        .map(|(index, value)| {
+        .map(|value| {
             let number = value
                 .get("number")
                 .and_then(Value::as_f64)
@@ -524,7 +522,6 @@ fn parse_chapters(values: &[Value], slug: &str, offset: u64) -> Result<Vec<Novel
                         .unwrap_or("en")
                         .to_owned(),
                 ),
-                source_order: Some(offset.saturating_add(index as u64).min(i32::MAX as u64) as i32),
                 ..NovelChapter::default()
             })
         })
@@ -806,11 +803,9 @@ mod tests {
     #[test]
     fn parses_paginated_chapters_with_legacy_keys() {
         let value: Value = serde_json::from_str(CHAPTERS).unwrap();
-        let chapters =
-            parse_chapters(value["items"].as_array().unwrap(), "shadow-slave", 200).unwrap();
+        let chapters = parse_chapters(value["items"].as_array().unwrap(), "shadow-slave").unwrap();
         assert_eq!(chapters.len(), 2);
         assert_eq!(chapters[0].chapter_number, Some(201.0));
-        assert_eq!(chapters[0].source_order, Some(200));
         assert_eq!(
             chapters[0].key,
             "https://lightnovelworld.org/novel/shadow-slave/chapter/201/"
