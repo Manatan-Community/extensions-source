@@ -20,8 +20,6 @@ use serde_json::Value;
 use url::Url;
 
 const BASE_URL: &str = "https://witanime.you";
-const PLAYER_SCRIPT_URL: &str =
-    "https://witanime.you/wp-content/themes/Anime-Online-Theme/assets/js/qh100.js";
 
 #[derive(Default)]
 pub struct WitAnime;
@@ -30,12 +28,19 @@ pub struct WitAnime;
 struct PlayerCandidate {
     name: String,
     url: String,
+    referer: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 struct PlayerConfig {
     d: Vec<usize>,
     k: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct DotPlayResponse {
+    success: bool,
+    video_url: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -83,9 +88,19 @@ impl WitAnime {
         Ok((self.html(&next)?, next))
     }
 
-    fn framework_hash(&self) -> Result<String> {
-        let script = self.remote_html(PLAYER_SCRIPT_URL, &format!("{BASE_URL}/"))?;
-        parse_framework_hash(&script)
+    fn framework_hash(&self, page_html: &str) -> Result<String> {
+        if let Ok(hash) = parse_framework_hash(page_html) {
+            return Ok(hash);
+        }
+        for script_url in framework_script_urls(page_html)? {
+            let Ok(script) = self.remote_html(&script_url, &format!("{BASE_URL}/")) else {
+                continue;
+            };
+            if let Ok(hash) = parse_framework_hash(&script) {
+                return Ok(hash);
+            }
+        }
+        Err(Error::new("WIT ANIME player API key was not found"))
     }
 
     fn expanded_candidates(
@@ -93,7 +108,7 @@ impl WitAnime {
         episode_html: &str,
         episode_url: &str,
     ) -> Result<Vec<PlayerCandidate>> {
-        let framework_hash = self.framework_hash()?;
+        let framework_hash = self.framework_hash(episode_html)?;
         let mut candidates = parse_player_candidates(episode_html, &framework_hash)?;
         let yonaplay: Vec<_> = candidates
             .iter()
@@ -102,7 +117,11 @@ impl WitAnime {
             .collect();
         for candidate in yonaplay {
             let html = self.remote_html(&candidate.url, episode_url)?;
-            candidates.extend(parse_yonaplay_candidates(&html)?);
+            let mut mirrors = parse_yonaplay_candidates(&html)?;
+            for mirror in &mut mirrors {
+                mirror.referer = Some(candidate.url.clone());
+            }
+            candidates.extend(mirrors);
         }
         for candidate in &mut candidates {
             candidate.url = canonical_player_url(&candidate.url);
@@ -130,7 +149,13 @@ impl WitAnime {
                 persistence: WebViewSessionPersistence::Ephemeral,
                 ..WebViewSession::default()
             }),
-            headers: vec![("Referer".to_string(), episode_url.to_string())],
+            headers: vec![(
+                "Referer".to_string(),
+                candidate
+                    .referer
+                    .clone()
+                    .unwrap_or_else(|| episode_url.to_string()),
+            )],
             user_agent: None,
             wait_until: Some(WebViewWaitUntil::DomReady),
             wait_for_selector: None,
@@ -141,8 +166,9 @@ impl WitAnime {
                     const visit = (target, depth) => {
                         if (depth > 3) return false;
                         try {
+                            target.loadAndPlayVideo?.();
                             target.document.querySelector(
-                                '#pl_but, #pl_but_background, .vjs-big-play-button, .jw-icon-playback, button[aria-label="Play"]'
+                                '#preview-overlay, #pl_but, #pl_but_background, .vjs-big-play-button, .jw-icon-playback, button[aria-label="Play"]'
                             )?.click();
                             target.document.querySelector('video')?.play?.().catch(() => {});
                             const video = target.document.querySelector('video');
@@ -194,6 +220,29 @@ impl WitAnime {
             preload_scripts: Vec::new(),
         })?;
         streams_from_capture(&response, candidate)
+    }
+
+    fn resolve_dotplay(&self, candidate: &PlayerCandidate) -> Result<Vec<VideoStream>> {
+        let parsed = Url::parse(&candidate.url).map_err(url_error)?;
+        let code = parsed
+            .path()
+            .strip_prefix("/embed/")
+            .filter(|value| !value.is_empty() && !value.contains('/'))
+            .ok_or_else(|| Error::new("invalid DotPlay embed URL"))?;
+        let referer = candidate.referer.as_deref().unwrap_or(&candidate.url);
+        self.remote_html(&candidate.url, referer)?;
+        let mut api = Url::parse("https://dotplay.net/api.php").map_err(url_error)?;
+        api.query_pairs_mut().append_pair("code", code);
+        let response: DotPlayResponse = Client::browser()
+            .get(api.as_str())
+            .header("Referer", &candidate.url)
+            .timeout_ms(30_000)
+            .max_body_bytes(256 * 1024)
+            .send()?
+            .error_for_status()?
+            .json()?;
+        let url = parse_dotplay_video_url(response)?;
+        Ok(vec![direct_mp4_stream(url, candidate)?])
     }
 }
 
@@ -261,7 +310,12 @@ impl VideoSource for WitAnime {
         }
         let mut errors = Vec::new();
         for candidate in candidates.iter().take(4) {
-            match self.capture_player(candidate, &episode_url) {
+            let result = if is_dotplay(&candidate.url) {
+                self.resolve_dotplay(candidate)
+            } else {
+                self.capture_player(candidate, &episode_url)
+            };
+            match result {
                 Ok(streams) if !streams.is_empty() => return Ok(streams),
                 Ok(_) => errors.push(format!("{} returned no media", candidate.name)),
                 Err(error) => errors.push(format!("{}: {error}", candidate.name)),
@@ -408,6 +462,10 @@ fn parse_details(html: &str, key: &str, canonical_url: &str) -> Result<CatalogIt
 fn parse_episodes(html: &str) -> Result<Vec<VideoEpisode>> {
     let mut episodes = parse_encoded_episodes(html)?;
     let document = Html::parse_document(html);
+    let filler_keys = filler_episode_keys(&document)?;
+    for episode in &mut episodes {
+        episode.is_filler = filler_keys.contains(&episode.key);
+    }
     let anchors = selector("div.ehover6 > div.episodes-card-title > h3 a")?;
     let number = Regex::new(r"(\d+(?:\.\d+)?)\s*$").map_err(regex_error)?;
     let mut seen: BTreeSet<String> = episodes.iter().map(|episode| episode.key.clone()).collect();
@@ -426,12 +484,14 @@ fn parse_episodes(html: &str) -> Result<Vec<VideoEpisode>> {
             .captures(&title)
             .and_then(|capture| capture.get(1))
             .and_then(|value| value.as_str().parse().ok());
+        let is_filler = filler_keys.contains(&key);
         episodes.push(VideoEpisode {
             key,
             title: Some(title),
             episode_number,
             url: Some(url),
             language: Some("ar".to_string()),
+            is_filler,
             ..VideoEpisode::default()
         });
     }
@@ -511,8 +571,8 @@ fn parse_encoded_episodes(html: &str) -> Result<Vec<VideoEpisode>> {
 }
 
 fn parse_player_candidates(html: &str, framework_hash: &str) -> Result<Vec<PlayerCandidate>> {
-    let resources = script_value(html, "_zH")?;
-    let configs = script_value(html, "_zW")?;
+    let resources = script_value_any(html, &["_zT", "_zH"])?;
+    let configs = script_value_any(html, &["_zV", "_zW"])?;
     let resources: Vec<String> =
         serde_json::from_slice(&decode_base64(&resources)?).map_err(json_error)?;
     let configs: Vec<PlayerConfig> =
@@ -566,6 +626,7 @@ fn parse_player_candidates(html: &str, framework_hash: &str) -> Result<Vec<Playe
                 .filter(|value| !value.is_empty())
                 .unwrap_or_else(|| format!("Server {}", index + 1)),
             url,
+            referer: None,
         });
     }
     Ok(candidates)
@@ -598,6 +659,7 @@ fn parse_yonaplay_candidates(html: &str) -> Result<Vec<PlayerCandidate>> {
         candidates.push(PlayerCandidate {
             name: clean(&server.text().collect::<String>()),
             url,
+            referer: None,
         });
     }
     Ok(candidates)
@@ -724,6 +786,56 @@ fn script_value(html: &str, name: &str) -> Result<String> {
         .ok_or_else(|| Error::new(format!("WIT ANIME is missing {name}")))
 }
 
+fn script_value_any(html: &str, names: &[&str]) -> Result<String> {
+    names
+        .iter()
+        .find_map(|name| script_value(html, name).ok())
+        .ok_or_else(|| Error::new(format!("WIT ANIME is missing {}", names.join(" or "))))
+}
+
+fn framework_script_urls(html: &str) -> Result<Vec<String>> {
+    let document = Html::parse_document(html);
+    let scripts = selector("script[src]")?;
+    let mut urls = BTreeSet::new();
+    for script in document.select(&scripts) {
+        let Some(url) = script.value().attr("src").and_then(absolute_site_url) else {
+            continue;
+        };
+        let Ok(parsed) = Url::parse(&url) else {
+            continue;
+        };
+        if parsed
+            .path()
+            .starts_with("/wp-content/themes/Anime-Online-Theme/assets/js/")
+            && parsed.path().ends_with(".js")
+        {
+            urls.insert(url);
+        }
+    }
+    Ok(urls.into_iter().collect())
+}
+
+fn filler_episode_keys(document: &Html) -> Result<BTreeSet<String>> {
+    let rows = selector("#ULEpisodesList li")?;
+    let anchors = selector("a")?;
+    let mut keys = BTreeSet::new();
+    for row in document.select(&rows) {
+        if !clean(&row.text().collect::<String>()).contains("فلر") {
+            continue;
+        }
+        let Some(key) = row
+            .select(&anchors)
+            .next()
+            .and_then(element_target_url)
+            .and_then(|url| content_key(&url))
+        else {
+            continue;
+        };
+        keys.insert(key);
+    }
+    Ok(keys)
+}
+
 fn decode_base64(value: &str) -> Result<Vec<u8>> {
     BASE64
         .decode(value)
@@ -792,6 +904,8 @@ fn validate_player_url(value: &str) -> Result<()> {
                 | "app.videas.fr"
                 | "hgcloud.to"
                 | "audinifer.com"
+                | "dotplay.net"
+                | "www.dotplay.net"
                 | "mega.nz"
                 | "www.4shared.com"
                 | "my.mail.ru"
@@ -808,6 +922,52 @@ fn is_yonaplay(value: &str) -> bool {
         .ok()
         .and_then(|url| url.host_str().map(ToString::to_string))
         .is_some_and(|host| matches!(host.as_str(), "yonaplay.net" | "www.yonaplay.net"))
+}
+
+fn is_dotplay(value: &str) -> bool {
+    Url::parse(value)
+        .ok()
+        .and_then(|url| url.host_str().map(ToString::to_string))
+        .is_some_and(|host| matches!(host.as_str(), "dotplay.net" | "www.dotplay.net"))
+}
+
+fn parse_dotplay_video_url(response: DotPlayResponse) -> Result<String> {
+    if !response.success {
+        return Err(Error::new("DotPlay reported that the video is unavailable"));
+    }
+    let encoded = response
+        .video_url
+        .ok_or_else(|| Error::new("DotPlay did not return a video URL"))?;
+    let decoded = String::from_utf8(decode_base64(&encoded)?)
+        .map_err(|error| Error::new(format!("invalid DotPlay video URL: {error}")))?;
+    let url = decoded.split('|').next().unwrap_or_default().to_string();
+    let parsed = Url::parse(&url).map_err(url_error)?;
+    let host = parsed.host_str().unwrap_or_default();
+    if parsed.scheme() != "https"
+        || !(host == "archive.org" || host.ends_with(".archive.org"))
+        || !parsed.path().to_ascii_lowercase().ends_with(".mp4")
+    {
+        return Err(Error::new("DotPlay returned an unexpected video URL"));
+    }
+    Ok(url)
+}
+
+fn direct_mp4_stream(url: String, candidate: &PlayerCandidate) -> Result<VideoStream> {
+    let origin = player_origin(&candidate.url)?;
+    Ok(VideoStream {
+        url,
+        name: Some(candidate.name.clone()),
+        format: Some("mp4".to_string()),
+        requires_proxy: true,
+        initialized: true,
+        headers: [
+            ("Referer".to_string(), candidate.url.clone()),
+            ("Origin".to_string(), origin),
+        ]
+        .into_iter()
+        .collect(),
+        ..VideoStream::default()
+    })
 }
 
 fn canonical_player_url(value: &str) -> String {
@@ -827,9 +987,10 @@ fn candidate_priority(candidate: &PlayerCandidate) -> (u8, u8) {
         .unwrap_or_default();
     let host_priority = match host.as_str() {
         "hgcloud.to" | "audinifer.com" => 0,
-        "app.videas.fr" => 1,
-        "videa.hu" | "www.videa.hu" => 2,
-        "yonaplay.net" | "www.yonaplay.net" => 3,
+        "dotplay.net" | "www.dotplay.net" => 1,
+        "app.videas.fr" => 2,
+        "videa.hu" | "www.videa.hu" => 3,
+        "yonaplay.net" | "www.yonaplay.net" => 4,
         _ => 4,
     };
     let quality_priority = u8::from(!candidate.name.to_ascii_lowercase().contains("fhd"));
@@ -995,12 +1156,19 @@ mod tests {
             .map(|(index, byte)| byte ^ key[index % key.len()])
             .collect();
         let payload = format!("{}.{}", BASE64.encode(encrypted), BASE64.encode(key));
-        let html = format!(r#"<script>var processedEpisodeData = '{payload}';</script>"#);
+        let html = format!(
+            r#"<script>var processedEpisodeData = '{payload}';</script>
+               <ul id="ULEpisodesList"><li>
+                 <a href="javascript:void(0);" onclick="openEpisode('aHR0cHM6Ly93aXRhbmltZS55b3UvZXBpc29kZS9vbmUtcGllY2UtMTE3MS8=')">الحلقة 1171</a>
+                 <span class="label label-danger">فلر</span>
+               </li></ul>"#
+        );
         let episodes = parse_episodes(&html).unwrap();
         assert_eq!(episodes.len(), 1);
         assert_eq!(episodes[0].episode_number, Some(1171.0));
         assert_eq!(episodes[0].title.as_deref(), Some("الحلقة 1171"));
         assert_eq!(episodes[0].key, "/episode/one-piece-1171/");
+        assert!(episodes[0].is_filler);
     }
 
     #[test]
@@ -1040,7 +1208,7 @@ mod tests {
             .unwrap(),
         );
         let html = format!(
-            r#"<script>var _zH="{resources}";var _zW="{configs}";</script>
+            r#"<script>var _zT="{resources}";var _zV="{configs}";</script>
                <ul id="episode-servers">
                  <li><a>yonaplay - FHD</a></li>
                  <li><a>Unsupported mirror</a></li>
@@ -1063,12 +1231,31 @@ mod tests {
         );
         let candidates = parse_yonaplay_candidates(&html).unwrap();
         assert_eq!(candidates[0].url, "https://hgcloud.to/e/abc123");
+        assert!(validate_player_url("https://dotplay.net/embed/abc123").is_ok());
         assert!(validate_player_url("https://evil.example/embed/abc").is_err());
         assert!(content_key("https://evil.example/anime/one-piece/").is_none());
         assert_eq!(
             canonical_player_url("https://hgcloud.to/e/abc123"),
             "https://audinifer.com/e/abc123"
         );
+    }
+
+    #[test]
+    fn decodes_dotplay_direct_video() {
+        let encoded = BASE64.encode("https://archive.org/download/example/video.mp4|1234");
+        assert_eq!(
+            parse_dotplay_video_url(DotPlayResponse {
+                success: true,
+                video_url: Some(encoded),
+            })
+            .unwrap(),
+            "https://archive.org/download/example/video.mp4"
+        );
+        assert!(parse_dotplay_video_url(DotPlayResponse {
+            success: true,
+            video_url: Some(BASE64.encode("https://evil.example/video.mp4|1234")),
+        })
+        .is_err());
     }
 
     #[test]
@@ -1085,6 +1272,7 @@ mod tests {
             &PlayerCandidate {
                 name: "StreamWish FHD".to_string(),
                 url: "https://hgcloud.to/e/abc123".to_string(),
+                referer: None,
             },
         )
         .unwrap();
@@ -1111,6 +1299,22 @@ mod tests {
         assert_eq!(
             parse_framework_hash(script).unwrap(),
             "23a97133-caf3-4eb4-9466-93d0a4ff8198"
+        );
+    }
+
+    #[test]
+    fn discovers_rotating_same_origin_player_scripts() {
+        let html = r#"
+          <script src="https://witanime.you/wp-content/themes/Anime-Online-Theme/assets/js/yh00.js"></script>
+          <script src="/wp-content/themes/Anime-Online-Theme/assets/js/theme-scripts.js"></script>
+          <script src="https://cdn.example/player.js"></script>
+        "#;
+        assert_eq!(
+            framework_script_urls(html).unwrap(),
+            vec![
+                "https://witanime.you/wp-content/themes/Anime-Online-Theme/assets/js/theme-scripts.js",
+                "https://witanime.you/wp-content/themes/Anime-Online-Theme/assets/js/yh00.js",
+            ]
         );
     }
 }
