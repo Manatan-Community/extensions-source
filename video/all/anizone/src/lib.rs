@@ -124,9 +124,89 @@ impl AniZoneSource {
         Ok((item, html))
     }
 
-    fn catalog_page(&self, url: &str) -> Result<Paged<CatalogItem>> {
+    fn livewire_items(
+        &self,
+        url: &str,
+        component_name: &str,
+        sort: &str,
+        page: u32,
+    ) -> Result<LivewireItemsPage> {
         let html = self.get_html(url)?;
-        let parsed = parse_listing_page(&html, &self.title_key())?;
+        let (csrf, mut livewire_page) = parse_livewire_items_page(&html, component_name)?;
+        if livewire_page.sort.as_deref() != Some(sort) {
+            let component = self.livewire_request(
+                url,
+                &csrf,
+                &livewire_page.snapshot,
+                json!({"sort": sort}),
+                Vec::new(),
+            )?;
+            livewire_page = page_from_dispatch(component, &["filters-reset"])?;
+        }
+        for _ in 1..page.max(1) {
+            let Some(cursor) = livewire_page
+                .next_cursor
+                .clone()
+                .filter(|_| livewire_page.has_more)
+            else {
+                livewire_page.items.clear();
+                livewire_page.next_cursor = None;
+                livewire_page.has_more = false;
+                return Ok(livewire_page);
+            };
+            let component = self.livewire_request(
+                url,
+                &csrf,
+                &livewire_page.snapshot,
+                json!({}),
+                vec![LivewireCall {
+                    path: "".to_string(),
+                    method: "loadPage".to_string(),
+                    params: vec![Value::String(cursor)],
+                }],
+            )?;
+            livewire_page = page_from_dispatch(component, &["items-loaded"])?;
+        }
+        Ok(livewire_page)
+    }
+
+    fn catalog_page(&self, query: &str, sort: &str, page: u32) -> Result<Paged<CatalogItem>> {
+        let url = anime_index_url(query);
+        let livewire_page = self.livewire_items(&url, "pages.anime-index", sort, page)?;
+        let parsed = parse_listing_values(
+            livewire_page.items,
+            livewire_page.has_more,
+            &self.title_key(),
+        )?;
+        self.hydrate_listings(parsed)
+    }
+
+    fn latest_page(&self, page: u32) -> Result<Paged<CatalogItem>> {
+        let url = format!("{BASE_URL}/episode");
+        let livewire_page =
+            self.livewire_items(&url, "pages.episode-index", "release-desc", page)?;
+        let anime = livewire_page
+            .items
+            .into_iter()
+            .filter_map(|episode| {
+                if episode
+                    .get("is_unsafe")
+                    .and_then(Value::as_bool)
+                    .unwrap_or(true)
+                {
+                    return None;
+                }
+                let mut anime = episode.get("anime")?.clone();
+                let anime = anime.as_object_mut()?;
+                anime.insert("is_unsafe".to_string(), Value::Bool(false));
+                Some(Value::Object(anime.clone()))
+            })
+            .collect();
+        let parsed = parse_listing_values(anime, livewire_page.has_more, &self.title_key())?;
+        self.hydrate_listings(parsed)
+    }
+
+    fn hydrate_listings(&self, parsed: ListingPage) -> Result<Paged<CatalogItem>> {
         self.ensure_safe_search()?;
         let requests = parsed
             .entries
@@ -162,24 +242,63 @@ impl AniZoneSource {
     fn safe_episodes(&self, item: &CatalogItem) -> Result<Vec<VideoEpisode>> {
         let slug = validate_slug(&item.key)?.to_string();
         let (_, first_html) = self.fetch_safe_details(&slug)?;
-        let mut page = 1;
-        let mut current = first_html;
         let mut episodes = Vec::new();
         let mut seen = BTreeSet::new();
-        loop {
-            let parsed = parse_episode_page(&current, &slug, &self.title_key())?;
-            episodes.extend(
-                parsed
-                    .entries
-                    .into_iter()
-                    .filter(|episode| seen.insert(episode.key.clone())),
-            );
-            if !parsed.has_next_page || page >= MAX_EPISODE_PAGES {
-                break;
+        if let Ok((csrf, mut livewire_page)) =
+            parse_livewire_items_page(&first_html, "pages.anime-detail")
+        {
+            let mut page = 1;
+            loop {
+                let parsed = parse_episode_values(
+                    livewire_page.items,
+                    livewire_page.has_more,
+                    &slug,
+                    &self.title_key(),
+                )?;
+                episodes.extend(
+                    parsed
+                        .entries
+                        .into_iter()
+                        .filter(|episode| seen.insert(episode.key.clone())),
+                );
+                if !parsed.has_next_page || page >= MAX_EPISODE_PAGES {
+                    break;
+                }
+                let Some(cursor) = livewire_page.next_cursor.clone() else {
+                    break;
+                };
+                let component = self.livewire_request(
+                    &format!("{BASE_URL}/anime/{slug}"),
+                    &csrf,
+                    &livewire_page.snapshot,
+                    json!({}),
+                    vec![LivewireCall {
+                        path: "".to_string(),
+                        method: "loadPage".to_string(),
+                        params: vec![Value::String(cursor)],
+                    }],
+                )?;
+                livewire_page = page_from_dispatch(component, &["items-loaded"])?;
+                page += 1;
             }
-            page += 1;
-            current = self.get_html(&format!("{BASE_URL}/anime/{slug}?page={page}"))?;
-            parse_safe_details(&current, &slug, &self.title_key())?;
+        } else {
+            let mut page = 1;
+            let mut current = first_html;
+            loop {
+                let parsed = parse_episode_page(&current, &slug, &self.title_key())?;
+                episodes.extend(
+                    parsed
+                        .entries
+                        .into_iter()
+                        .filter(|episode| seen.insert(episode.key.clone())),
+                );
+                if !parsed.has_next_page || page >= MAX_EPISODE_PAGES {
+                    break;
+                }
+                page += 1;
+                current = self.get_html(&format!("{BASE_URL}/anime/{slug}?page={page}"))?;
+                parse_safe_details(&current, &slug, &self.title_key())?;
+            }
         }
         episodes.sort_by(|left, right| {
             right
@@ -216,28 +335,29 @@ impl AniZoneSource {
         Ok(response.text()?.to_string())
     }
 
-    fn livewire_video(
+    fn livewire_request(
         &self,
-        episode_url: &str,
+        referer: &str,
         csrf: &str,
         snapshot: &str,
-        server_id: u32,
-    ) -> Result<LivewireVideo> {
+        updates: Value,
+        calls: Vec<LivewireCall>,
+    ) -> Result<LivewireComponent> {
         let payload = json!({
             "_token": csrf,
             "components": [{
                 "snapshot": snapshot,
-                "updates": {},
-                "calls": [{"path": "", "method": "setVideo", "params": [server_id]}]
+                "updates": updates,
+                "calls": calls
             }]
         });
         let response = self
             .client()
             .post(format!("{BASE_URL}/livewire/update"))
-            .header("X-Livewire", "")
+            .header("X-Livewire", "true")
             .header("X-CSRF-TOKEN", csrf)
             .header("Origin", BASE_URL)
-            .header("Referer", episode_url)
+            .header("Referer", referer)
             .json(&payload)?
             .rate_limit("anizone:livewire", RATE_LIMIT_MS)
             .timeout_ms(30_000)
@@ -245,11 +365,31 @@ impl AniZoneSource {
             .send()?
             .error_for_status()?;
         let response: LivewireResponse = response.json()?;
-        let component = response
+        response
             .components
             .into_iter()
             .next()
-            .ok_or_else(|| Error::new("AniZone Livewire response had no component"))?;
+            .ok_or_else(|| Error::new("AniZone Livewire response had no component"))
+    }
+
+    fn livewire_video(
+        &self,
+        episode_url: &str,
+        csrf: &str,
+        snapshot: &str,
+        server_id: u32,
+    ) -> Result<LivewireVideo> {
+        let component = self.livewire_request(
+            episode_url,
+            csrf,
+            snapshot,
+            json!({}),
+            vec![LivewireCall {
+                path: "".to_string(),
+                method: "setVideo".to_string(),
+                params: vec![json!(server_id)],
+            }],
+        )?;
         Ok(LivewireVideo {
             snapshot: component.snapshot,
             html: component.effects.html,
@@ -326,15 +466,11 @@ impl AniZoneSource {
 
 impl VideoSource for AniZoneSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.catalog_page(&anime_index_url("", "title-asc", page))
+        self.catalog_page("", "title-asc", page)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        let mut url = Url::parse(&format!("{BASE_URL}/episode")).map_err(url_error)?;
-        url.query_pairs_mut()
-            .append_pair("sort", "release-desc")
-            .append_pair("page", &page.max(1).to_string());
-        self.catalog_page(url.as_str())
+        self.latest_page(page)
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -343,7 +479,7 @@ impl VideoSource for AniZoneSource {
             .and_then(Value::as_str)
             .filter(|sort| is_allowed_sort(sort))
             .unwrap_or("title-asc");
-        self.catalog_page(&anime_index_url(query.trim(), sort, page))
+        self.catalog_page(query.trim(), sort, page)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -476,6 +612,14 @@ struct ListingPage {
     has_next_page: bool,
 }
 
+struct LivewireItemsPage {
+    items: Vec<Value>,
+    next_cursor: Option<String>,
+    has_more: bool,
+    snapshot: String,
+    sort: Option<String>,
+}
+
 struct EpisodePage {
     entries: Vec<VideoEpisode>,
     has_next_page: bool,
@@ -520,7 +664,24 @@ struct LivewireComponent {
 
 #[derive(Deserialize)]
 struct LivewireEffects {
+    #[serde(default)]
     html: String,
+    #[serde(default)]
+    dispatches: Vec<LivewireDispatch>,
+}
+
+#[derive(Deserialize)]
+struct LivewireDispatch {
+    name: String,
+    #[serde(default)]
+    params: Value,
+}
+
+#[derive(serde::Serialize)]
+struct LivewireCall {
+    path: String,
+    method: String,
+    params: Vec<Value>,
 }
 
 #[derive(Default)]
@@ -537,15 +698,12 @@ struct HlsVariant {
     bandwidth: Option<u64>,
 }
 
-fn anime_index_url(query: &str, sort: &str, page: u32) -> String {
+fn anime_index_url(query: &str) -> String {
     let mut url = Url::parse(&format!("{BASE_URL}/anime")).expect("constant AniZone URL");
     let mut pairs = url.query_pairs_mut();
     if !query.is_empty() {
         pairs.append_pair("search", query);
     }
-    pairs
-        .append_pair("sort", sort)
-        .append_pair("page", &page.max(1).to_string());
     drop(pairs);
     url.to_string()
 }
@@ -557,7 +715,152 @@ fn is_allowed_sort(value: &str) -> bool {
     )
 }
 
+fn parse_livewire_items_page(
+    html: &str,
+    component_name: &str,
+) -> Result<(String, LivewireItemsPage)> {
+    let document = Html::parse_document(html);
+    let csrf = document
+        .select(&selector("meta[name='csrf-token'][content]")?)
+        .next()
+        .and_then(|element| element.value().attr("content"))
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| Error::new("AniZone page had no CSRF token"))?
+        .to_string();
+    let component = document
+        .select(&selector("[wire\\:snapshot][x-data]")?)
+        .find_map(|element| {
+            let snapshot = element.value().attr("wire:snapshot")?;
+            let snapshot_value = serde_json::from_str::<Value>(snapshot).ok()?;
+            let name = snapshot_value.get("memo")?.get("name")?.as_str()?;
+            if name != component_name {
+                return None;
+            }
+            let x_data = element.value().attr("x-data")?;
+            let items = extract_json_value(x_data, "items")?.as_array()?.clone();
+            let next_cursor = extract_js_string(x_data, "nextCursor");
+            let has_more = extract_js_bool(x_data, "hasMore").unwrap_or(false);
+            let sort = snapshot_value
+                .get("data")
+                .and_then(|data| data.get("sort"))
+                .and_then(Value::as_str)
+                .map(ToOwned::to_owned);
+            Some(LivewireItemsPage {
+                items,
+                next_cursor,
+                has_more,
+                snapshot: snapshot.to_string(),
+                sort,
+            })
+        })
+        .ok_or_else(|| Error::new("AniZone page had no compatible Livewire item data"))?;
+    Ok((csrf, component))
+}
+
+fn page_from_dispatch(
+    component: LivewireComponent,
+    accepted_names: &[&str],
+) -> Result<LivewireItemsPage> {
+    let sort = serde_json::from_str::<Value>(&component.snapshot)
+        .ok()
+        .and_then(|snapshot| snapshot.get("data").cloned())
+        .and_then(|data| data.get("sort").cloned())
+        .and_then(|sort| sort.as_str().map(ToOwned::to_owned));
+    let dispatch = component
+        .effects
+        .dispatches
+        .into_iter()
+        .find(|dispatch| accepted_names.contains(&dispatch.name.as_str()))
+        .ok_or_else(|| Error::new("AniZone Livewire response had no item page event"))?;
+    let items = dispatch
+        .params
+        .get("items")
+        .and_then(Value::as_array)
+        .cloned()
+        .ok_or_else(|| Error::new("AniZone Livewire item event had no items"))?;
+    let next_cursor = dispatch
+        .params
+        .get("nextCursor")
+        .and_then(Value::as_str)
+        .map(ToOwned::to_owned);
+    let has_more = dispatch
+        .params
+        .get("hasMore")
+        .and_then(Value::as_bool)
+        .unwrap_or(next_cursor.is_some());
+    Ok(LivewireItemsPage {
+        items,
+        next_cursor,
+        has_more,
+        snapshot: component.snapshot,
+        sort,
+    })
+}
+
+fn parse_listing_values(
+    values: Vec<Value>,
+    has_next_page: bool,
+    preferred_title_key: &str,
+) -> Result<ListingPage> {
+    let mut entries = Vec::new();
+    let mut seen = BTreeSet::new();
+    for value in values {
+        if value
+            .get("is_unsafe")
+            .and_then(Value::as_bool)
+            .unwrap_or(true)
+        {
+            continue;
+        }
+        let Some(slug) = value.get("slug").and_then(Value::as_str) else {
+            continue;
+        };
+        let slug = validate_slug(slug)?.to_string();
+        if !seen.insert(slug.clone()) {
+            continue;
+        }
+        let titles = value
+            .get("title_list")
+            .and_then(Value::as_object)
+            .cloned()
+            .unwrap_or_default();
+        let title = preferred_title(&titles, preferred_title_key)
+            .or_else(|| {
+                value
+                    .get("main_title")
+                    .and_then(Value::as_str)
+                    .map(clean_title)
+            })
+            .unwrap_or_else(|| slug.clone());
+        let tags = value
+            .get("tags")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(|tag| tag.get("name").and_then(Value::as_str))
+            .map(ToOwned::to_owned)
+            .collect::<Vec<_>>();
+        if ensure_safe_text(&title, &tags, None).is_err() {
+            continue;
+        }
+        let cover = value
+            .get("cover")
+            .and_then(Value::as_str)
+            .map(image_request)
+            .transpose()?;
+        entries.push(ListingEntry { slug, cover });
+    }
+    Ok(ListingPage {
+        entries,
+        has_next_page,
+    })
+}
+
+#[cfg(test)]
 fn parse_listing_page(html: &str, preferred_title_key: &str) -> Result<ListingPage> {
+    if let Ok((_, page)) = parse_livewire_items_page(html, "pages.anime-index") {
+        return parse_listing_values(page.items, page.has_more, preferred_title_key);
+    }
     let document = Html::parse_document(html);
     let card_selector = selector("div.grid > div, div.grid > li, ul.grid > li")?;
     let link_selector = selector("a[href*='/anime/']")?;
@@ -683,6 +986,14 @@ fn parse_episode_page(
     expected_slug: &str,
     preferred_title_key: &str,
 ) -> Result<EpisodePage> {
+    if let Ok((_, page)) = parse_livewire_items_page(html, "pages.anime-detail") {
+        return parse_episode_values(
+            page.items,
+            page.has_more,
+            expected_slug,
+            preferred_title_key,
+        );
+    }
     let document = Html::parse_document(html);
     let item_selector = selector("ul.grid > li[x-data], div.grid > li[x-data]")?;
     let link_selector = selector("a[href*='/anime/']")?;
@@ -738,6 +1049,69 @@ fn parse_episode_page(
     })
 }
 
+fn parse_episode_values(
+    values: Vec<Value>,
+    has_next_page: bool,
+    expected_slug: &str,
+    preferred_title_key: &str,
+) -> Result<EpisodePage> {
+    let expected_slug = validate_slug(expected_slug)?;
+    let mut entries = Vec::new();
+    for value in values {
+        if value
+            .get("is_unsafe")
+            .and_then(Value::as_bool)
+            .unwrap_or(true)
+        {
+            continue;
+        }
+        let Some(candidate_url) = value.get("url").and_then(Value::as_str) else {
+            continue;
+        };
+        let secure_url = candidate_url.replacen("http://anizone.to/", "https://anizone.to/", 1);
+        let Some((slug, Some(episode_slug))) = parse_anizone_url(&secure_url)? else {
+            continue;
+        };
+        if slug != expected_slug {
+            continue;
+        }
+        let titles = value
+            .get("title_list")
+            .and_then(Value::as_object)
+            .cloned()
+            .unwrap_or_default();
+        let translated = preferred_title(&titles, preferred_title_key);
+        let base_title = format!("Episode {episode_slug}");
+        let title = translated
+            .filter(|value| !base_title.contains(value))
+            .map(|value| format!("{base_title} - {value}"))
+            .unwrap_or(base_title);
+        ensure_safe_text(&title, &[], value.get("summary").and_then(Value::as_str))?;
+        let thumbnail = value
+            .get("snapshot")
+            .and_then(Value::as_str)
+            .map(image_request)
+            .transpose()?;
+        let episode_number = episode_slug
+            .parse::<f32>()
+            .ok()
+            .or_else(|| episode_number(&title));
+        entries.push(VideoEpisode {
+            key: format!("{slug}/{episode_slug}"),
+            title: Some(title),
+            episode_number,
+            thumbnail,
+            url: Some(format!("{BASE_URL}/anime/{slug}/{episode_slug}")),
+            language: Some(LANG.to_string()),
+            ..VideoEpisode::default()
+        });
+    }
+    Ok(EpisodePage {
+        entries,
+        has_next_page,
+    })
+}
+
 fn parse_playback(html: &str) -> Result<Playback> {
     reject_blocked_document(html)?;
     let document = Html::parse_document(html);
@@ -748,7 +1122,7 @@ fn parse_playback(html: &str) -> Result<Playback> {
         .filter(|value| !value.trim().is_empty())
         .ok_or_else(|| Error::new("AniZone playback page had no CSRF token"))?
         .to_string();
-    let player_selector = selector("media-player")?;
+    let player_selector = selector("media-player, [x-data*='vidstackPlayer']")?;
     let snapshot = document
         .select(&selector("[wire\\:snapshot]")?)
         .find(|element| element.select(&player_selector).next().is_some())
@@ -785,6 +1159,33 @@ fn parse_playback_fragment(html: &str, name: &str) -> Result<PlaybackSource> {
 }
 
 fn parse_playback_document(document: &Html, name: &str) -> Result<PlaybackSource> {
+    if let Some(player) = document
+        .select(&selector("[x-data*='vidstackPlayer']")?)
+        .next()
+    {
+        let x_data = player.value().attr("x-data").unwrap_or_default();
+        let config = extract_json_after_marker(x_data, "vidstackPlayer(JSON.parse('")
+            .and_then(|value| value.as_object().cloned())
+            .ok_or_else(|| Error::new("AniZone Vidstack player had invalid configuration"))?;
+        let url = config
+            .get("src")
+            .and_then(Value::as_str)
+            .ok_or_else(|| Error::new("AniZone Vidstack player had no source"))?
+            .to_string();
+        validate_media_url(&url)?;
+        let subtitles = config
+            .get("subtitles")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .map(|track| track_from_vidstack(track, &url))
+            .collect::<Result<Vec<_>>>()?;
+        return Ok(PlaybackSource {
+            url,
+            name: name.to_string(),
+            subtitles,
+        });
+    }
     let player = document
         .select(&selector("media-player[src]")?)
         .next()
@@ -803,6 +1204,37 @@ fn parse_playback_document(document: &Html, name: &str) -> Result<PlaybackSource
         url,
         name: name.to_string(),
         subtitles,
+    })
+}
+
+fn track_from_vidstack(track: &Value, base: &str) -> Result<MediaTrack> {
+    let candidate = track
+        .get("file")
+        .and_then(Value::as_str)
+        .ok_or_else(|| Error::new("AniZone Vidstack subtitle had no URL"))?;
+    let url = absolute_media_url(base, candidate)?;
+    validate_media_url(&url)?;
+    Ok(MediaTrack {
+        url: url.clone(),
+        language: track
+            .get("language")
+            .and_then(Value::as_str)
+            .map(ToOwned::to_owned),
+        label: track
+            .get("title")
+            .and_then(Value::as_str)
+            .map(ToOwned::to_owned),
+        format: track
+            .get("format")
+            .and_then(Value::as_str)
+            .map(ToOwned::to_owned)
+            .or_else(|| media_format(&url)),
+        headers: media_headers(BASE_URL),
+        is_default: track
+            .get("default")
+            .and_then(Value::as_bool)
+            .unwrap_or(false),
+        ..MediaTrack::default()
     })
 }
 
@@ -1168,16 +1600,48 @@ fn normalize_label(value: &str) -> String {
 }
 
 fn extract_json_object(x_data: &str, key: &str) -> Option<Map<String, Value>> {
-    let marker = format!("{key}: JSON.parse('");
-    let start = x_data.find(&marker)? + marker.len();
+    extract_json_value(x_data, key)?.as_object().cloned()
+}
+
+fn extract_json_value(x_data: &str, key: &str) -> Option<Value> {
+    extract_json_after_marker(x_data, &format!("{key}: JSON.parse('"))
+}
+
+fn extract_json_after_marker(x_data: &str, marker: &str) -> Option<Value> {
+    let start = x_data.find(marker)? + marker.len();
     let encoded = &x_data[start..];
     let end = encoded.find("')")?;
     let encoded = encoded[..end].replace("\\'", "'");
     let decoded: String = serde_json::from_str(&format!("\"{encoded}\"")).ok()?;
-    serde_json::from_str::<Value>(&decoded)
-        .ok()?
-        .as_object()
-        .cloned()
+    serde_json::from_str(&decoded).ok()
+}
+
+fn extract_js_string(x_data: &str, key: &str) -> Option<String> {
+    let marker = format!("{key}:");
+    let value = x_data
+        .get(x_data.find(&marker)? + marker.len()..)?
+        .trim_start();
+    let quote = value.chars().next()?;
+    if !matches!(quote, '\'' | '"') {
+        return None;
+    }
+    let value = &value[quote.len_utf8()..];
+    let end = value.find(quote)?;
+    Some(value[..end].to_string())
+}
+
+fn extract_js_bool(x_data: &str, key: &str) -> Option<bool> {
+    let marker = format!("{key}:");
+    let value = x_data
+        .get(x_data.find(&marker)? + marker.len()..)?
+        .trim_start();
+    if value.starts_with("true") {
+        Some(true)
+    } else if value.starts_with("false") {
+        Some(false)
+    } else {
+        None
+    }
 }
 
 fn preferred_title(titles: &Map<String, Value>, preferred: &str) -> Option<String> {
@@ -1463,6 +1927,22 @@ mod tests {
     }
 
     #[test]
+    fn parses_livewire_catalog_data_and_filters_unsafe_items() {
+        let (_, page) = parse_livewire_items_page(
+            include_str!("../fixtures/catalog-livewire.html"),
+            "pages.anime-index",
+        )
+        .unwrap();
+        assert_eq!(page.sort.as_deref(), Some("title-asc"));
+        assert_eq!(page.next_cursor.as_deref(), Some("fixture-cursor"));
+        let page = parse_listing_values(page.items, page.has_more, "1").unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert_eq!(page.entries[0].slug, "safe1234");
+        assert!(page.entries[0].cover.is_some());
+        assert!(page.has_next_page);
+    }
+
+    #[test]
     fn details_are_classified_and_blocked_metadata_fails_closed() {
         let safe = parse_safe_details(
             include_str!("../fixtures/details-safe.html"),
@@ -1489,6 +1969,25 @@ mod tests {
         assert_eq!(page.entries[0].key, "safe1234/1");
         assert_eq!(page.entries[0].episode_number, Some(1.0));
         assert!(page.entries[0].thumbnail.is_some());
+    }
+
+    #[test]
+    fn episode_parser_supports_livewire_item_data() {
+        let page = parse_episode_page(
+            include_str!("../fixtures/episodes-livewire.html"),
+            "safe1234",
+            "1",
+        )
+        .unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert_eq!(page.entries[0].key, "safe1234/1");
+        assert_eq!(page.entries[0].episode_number, Some(1.0));
+        assert_eq!(
+            page.entries[0].title.as_deref(),
+            Some("Episode 1 - The Beginning")
+        );
+        assert!(page.entries[0].thumbnail.is_some());
+        assert!(!page.has_next_page);
     }
 
     #[test]
