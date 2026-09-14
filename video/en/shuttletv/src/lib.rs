@@ -13,6 +13,8 @@ use url::Url;
 const BASE_URL: &str = "https://shuttletv.su";
 const TMDB_URL: &str = "https://api.themoviedb.org/3";
 const IMAGE_URL: &str = "https://image.tmdb.org/t/p";
+const WAIT_FOR_MEDIA_SCRIPT: &str =
+    "performance.getEntriesByType('resource').some(e => e.name.includes('.m3u8') || e.name.includes('.mpd') || e.name.includes('/stream/mpd'))";
 // ShuttleTV publishes this browser key in its own client bundle.
 const TMDB_KEY: &str = "ea021b3b0775c8531592713ab727f254";
 
@@ -68,10 +70,11 @@ impl ShuttleTv {
             // CineSrc delays its player bootstrap while its browser challenge runs.
             // Do not use an elapsed-time fallback here: challenge completion varies
             // substantially, and returning early produces an empty stream list.
-            wait_for_script: Some(
-                "Boolean((window.__cinesrcVideo || document.querySelector('video'))?.currentSrc) || performance.getEntriesByType('resource').some(e => e.name.includes('.m3u8') || e.name.includes('.mpd') || e.name.includes('/stream/mpd'))"
-                    .to_string(),
-            ),
+            // CineSrc assigns a blob: currentSrc before it requests the real
+            // manifest. Waiting on currentSrc therefore races the HLS request
+            // on WebKit and can return an empty stream list. Only finish once
+            // an externally playable HLS/DASH resource is observable.
+            wait_for_script: Some(WAIT_FOR_MEDIA_SCRIPT.to_string()),
             script: "(() => { const v = window.__cinesrcVideo || document.querySelector('video'); const h = window.__cinesrcHls; const resources = performance.getEntriesByType('resource').map(e => e.name); const levels = Array.from(h?.levels || []).flatMap(l => Array.isArray(l.url) ? l.url : [l.url]); return { url: v?.currentSrc || v?.src || '', urls: Array.from(new Set([...resources, ...levels].filter(u => typeof u === 'string' && (u.includes('.m3u8') || u.includes('.mpd') || u.includes('/stream/mpd'))))), textTracks: Array.from(v?.textTracks || []).map(t => ({ label: t.label, language: t.language })) }; })()".to_string(),
             timeout_ms: Some(120_000),
             capture_requests: vec![
@@ -479,5 +482,13 @@ mod tests {
         assert_eq!(streams[0].url, "https://media.example/master.m3u8");
         assert!(streams[0].is_hls);
         assert!(streams[0].requires_proxy);
+    }
+
+    #[test]
+    fn waits_for_a_real_manifest_instead_of_a_blob_video_source() {
+        assert!(WAIT_FOR_MEDIA_SCRIPT.contains("getEntriesByType('resource')"));
+        assert!(WAIT_FOR_MEDIA_SCRIPT.contains(".m3u8"));
+        assert!(!WAIT_FOR_MEDIA_SCRIPT.contains("currentSrc"));
+        assert!(!media_url("blob:https://cinesrc.st/player"));
     }
 }
