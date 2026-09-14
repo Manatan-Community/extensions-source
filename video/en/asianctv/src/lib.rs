@@ -6,8 +6,8 @@ use manatan_sdk::{
         WebViewSessionPersistence, WebViewWaitUntil,
     },
     client::Client,
-    CatalogItem, Error, FilterDefinition, ImageRequest, OptionItem, Paged, Result, VideoEpisode,
-    VideoSource, VideoStream,
+    CatalogItem, Error, FilterDefinition, ImageRequest, MediaTrack, OptionItem, Paged, Result,
+    VideoEpisode, VideoSource, VideoStream,
 };
 use regex::Regex;
 use scraper::{ElementRef, Html, Selector};
@@ -38,8 +38,16 @@ impl AsianCtv {
         parse_catalog_page(&html)
     }
 
+    fn latest_page(&self, url: &str) -> Result<Paged<CatalogItem>> {
+        let html = self.html(url)?;
+        parse_latest_page(&html)
+    }
+
     fn capture_player(&self, player_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
         validate_player_url(player_url)?;
+        if player_host(player_url)? == "catalog.dramavibe.cfd" {
+            return self.dramavibe_streams(player_url, episode_url);
+        }
         if let Ok(streams) = self.player_api_streams(player_url, episode_url) {
             return Ok(streams);
         }
@@ -73,6 +81,57 @@ impl AsianCtv {
         streams_from_capture(&response, &player_origin(player_url)?)
     }
 
+    fn dramavibe_streams(&self, player_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
+        let html = Client::browser()
+            .get(player_url)
+            .header("Referer", episode_url)
+            .timeout_ms(30_000)
+            .max_body_bytes(4 * 1024 * 1024)
+            .send()?
+            .error_for_status()?
+            .text()?
+            .to_string();
+        let player = parse_dramavibe_player(&html)?;
+        let subtitles = player
+            .subtitle_api
+            .and_then(|url| {
+                Client::browser()
+                    .get(url)
+                    .header("Referer", player_url)
+                    .timeout_ms(30_000)
+                    .max_body_bytes(2 * 1024 * 1024)
+                    .send()
+                    .ok()?
+                    .error_for_status()
+                    .ok()?
+                    .json::<Value>()
+                    .ok()
+            })
+            .and_then(|value| parse_dramavibe_subtitles(&value).ok())
+            .unwrap_or_default();
+        Ok(player
+            .streams
+            .into_iter()
+            .enumerate()
+            .map(|(index, url)| VideoStream {
+                url,
+                name: Some(if index == 0 {
+                    "DramaVibe".to_string()
+                } else {
+                    format!("DramaVibe mirror {}", index + 1)
+                }),
+                format: Some("hls".to_string()),
+                is_hls: true,
+                requires_proxy: true,
+                preferred: index == 0,
+                initialized: true,
+                headers: media_headers(player_url),
+                subtitles: subtitles.clone(),
+                ..VideoStream::default()
+            })
+            .collect())
+    }
+
     fn player_api_streams(&self, player_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
         let id = player_id(player_url)?;
         let value: Value = Client::browser()
@@ -96,7 +155,7 @@ impl VideoSource for AsianCtv {
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page(&paged_url("/", page))
+        self.latest_page(&paged_url("/", page))
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -260,6 +319,46 @@ fn parse_catalog_page(html: &str) -> Result<Paged<CatalogItem>> {
     Ok(Paged::new(entries, document.select(&next).next().is_some()))
 }
 
+fn parse_latest_page(html: &str) -> Result<Paged<CatalogItem>> {
+    let document = Html::parse_document(html);
+    let anchors = selector(
+        ".content-left .list-episode-item a[href*='episode'], .content-left .list-episode-item-2 a[href*='episode']",
+    )?;
+    let image_selector = selector("img")?;
+    let title_selector = selector("h2, h3")?;
+    let mut entries = Vec::new();
+    let mut seen = BTreeSet::new();
+    for anchor in document.select(&anchors) {
+        let href = anchor.value().attr("href").unwrap_or_default();
+        let Some(slug) = episode_to_series_slug(href) else {
+            continue;
+        };
+        if !seen.insert(slug.clone()) {
+            continue;
+        }
+        let title = anchor
+            .select(&title_selector)
+            .next()
+            .map(|element| clean(&element.text().collect::<String>()))
+            .or_else(|| anchor.value().attr("title").map(clean))
+            .filter(|value| !value.is_empty())
+            .unwrap_or_else(|| title_from_slug(&slug));
+        entries.push(CatalogItem {
+            key: slug.clone(),
+            title: strip_episode_suffix(&title),
+            url: Some(format!("{BASE_URL}/series/{slug}/")),
+            cover: anchor
+                .select(&image_selector)
+                .next()
+                .and_then(image_from_element),
+            content_rating: Some("suggestive".to_string()),
+            ..CatalogItem::default()
+        });
+    }
+    let next = selector("a.next, a.next.page-numbers")?;
+    Ok(Paged::new(entries, document.select(&next).next().is_some()))
+}
+
 fn parse_details(html: &str, slug: &str) -> Result<CatalogItem> {
     let document = Html::parse_document(html);
     let root = document
@@ -352,6 +451,82 @@ fn parse_player_url(html: &str) -> Result<String> {
         }
     }
     Err(Error::new("AsianCTV episode returned no video server"))
+}
+
+#[derive(Debug, PartialEq)]
+struct DramaVibePlayer {
+    streams: Vec<String>,
+    subtitle_api: Option<String>,
+}
+
+fn parse_dramavibe_player(html: &str) -> Result<DramaVibePlayer> {
+    let html = html.replace("\\/", "/");
+    let stream_regex =
+        Regex::new(r#"https://[^\"'\\\s]+\.m3u8(?:\?[^\"'\\\s]*)?"#).map_err(regex_error)?;
+    let mut seen = BTreeSet::new();
+    let streams = stream_regex
+        .find_iter(&html)
+        .map(|value| value.as_str().to_string())
+        .filter(|url| validate_dramavibe_media_url(url).is_ok())
+        .filter(|url| seen.insert(url.clone()))
+        .collect::<Vec<_>>();
+    if streams.is_empty() {
+        return Err(Error::new("DramaVibe player returned no HLS stream"));
+    }
+    let subtitle_api = Regex::new(r#"https://storage\.dramavibe\.cfd/[^\"'\\\s]+/subtitles"#)
+        .map_err(regex_error)?
+        .find(&html)
+        .map(|value| value.as_str().to_string());
+    Ok(DramaVibePlayer {
+        streams,
+        subtitle_api,
+    })
+}
+
+fn parse_dramavibe_subtitles(value: &Value) -> Result<Vec<MediaTrack>> {
+    let Some(items) = value.as_array() else {
+        return Err(Error::new("DramaVibe returned invalid subtitle data"));
+    };
+    items
+        .iter()
+        .map(|item| {
+            let url = item
+                .get("url")
+                .and_then(Value::as_str)
+                .ok_or_else(|| Error::new("DramaVibe subtitle had no URL"))?;
+            validate_dramavibe_media_url(url)?;
+            let language = item.get("lang").and_then(Value::as_str).unwrap_or("en");
+            let format = item.get("format").and_then(Value::as_str).unwrap_or("srt");
+            Ok(MediaTrack {
+                url: url.to_string(),
+                language: Some(language.to_string()),
+                label: Some(language_label(language)),
+                format: Some(format.to_string()),
+                headers: media_headers("https://catalog.dramavibe.cfd/"),
+                is_default: language.eq_ignore_ascii_case("en"),
+                ..MediaTrack::default()
+            })
+        })
+        .collect()
+}
+
+fn media_headers(referer: &str) -> std::collections::BTreeMap<String, String> {
+    [
+        ("Referer".to_string(), referer.to_string()),
+        (
+            "Origin".to_string(),
+            "https://catalog.dramavibe.cfd".to_string(),
+        ),
+    ]
+    .into_iter()
+    .collect()
+}
+
+fn language_label(language: &str) -> String {
+    match language.to_ascii_lowercase().as_str() {
+        "en" | "eng" => "English".to_string(),
+        value => value.to_ascii_uppercase(),
+    }
 }
 
 fn streams_from_capture(
@@ -504,8 +679,34 @@ fn validate_site_url(value: &str) -> Result<()> {
 fn validate_player_url(value: &str) -> Result<()> {
     let url = Url::parse(value).map_err(url_error)?;
     let host = url.host_str().unwrap_or_default();
-    if url.scheme() != "https" || !matches!(host, "vidbasic.live" | "megaplay.buzz") {
+    if url.scheme() != "https"
+        || !matches!(
+            host,
+            "vidbasic.live" | "megaplay.buzz" | "catalog.dramavibe.cfd"
+        )
+    {
         return Err(Error::new("unexpected AsianCTV player URL"));
+    }
+    Ok(())
+}
+
+fn player_host(value: &str) -> Result<String> {
+    let url = Url::parse(value).map_err(url_error)?;
+    url.host_str()
+        .map(str::to_string)
+        .ok_or_else(|| Error::new("AsianCTV player URL had no host"))
+}
+
+fn validate_dramavibe_media_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    let host = url.host_str().unwrap_or_default();
+    if url.scheme() != "https"
+        || !matches!(
+            host,
+            "storage.dramavibe.cfd" | "cdn.dramav2.xyz" | "cdn.drama3.click"
+        )
+    {
+        return Err(Error::new("unexpected DramaVibe media URL"));
     }
     Ok(())
 }
@@ -723,5 +924,61 @@ mod tests {
             player_origin("https://vidbasic.live/stream/s-1/107754").unwrap(),
             "https://vidbasic.live/"
         );
+    }
+
+    #[test]
+    fn parses_current_dramavibe_player_and_subtitles() {
+        let player = parse_dramavibe_player(
+            r#"
+            <script>
+              window.__playlist="https://cdn.dramav2.xyz/video-id/video.m3u8";
+              var srcCdnList = ["https://cdn.dramav2.xyz/video-id/video.m3u8", "https://cdn.drama3.click/video-id/video.m3u8"];
+              var subApi = "https://storage.dramavibe.cfd/api/public/video/video-id/subtitles";
+            </script>
+            "#,
+        )
+        .unwrap();
+        assert_eq!(player.streams.len(), 2);
+        assert_eq!(
+            player.subtitle_api.as_deref(),
+            Some("https://storage.dramavibe.cfd/api/public/video/video-id/subtitles")
+        );
+
+        let subtitles = parse_dramavibe_subtitles(&json!([{
+            "lang": "en",
+            "format": "srt",
+            "url": "https://cdn.dramav2.xyz/subs/video-id.en.srt?token=safe"
+        }]))
+        .unwrap();
+        assert_eq!(subtitles.len(), 1);
+        assert_eq!(subtitles[0].label.as_deref(), Some("English"));
+        assert!(subtitles[0].is_default);
+        assert!(validate_dramavibe_media_url("https://evil.example/video.m3u8").is_err());
+    }
+
+    #[test]
+    fn latest_uses_recent_episode_cards_with_covers() {
+        let html = r#"
+          <div class="content-left">
+            <ul class="list-episode-item">
+              <li><a href="https://asianctv.in/against-the-current-2026-episode-10/">
+                <img data-original="https://asianctv.in/wp-content/uploads/cover.jpg">
+                <h2>Against the Current (2026)</h2>
+              </a></li>
+              <li><a href="https://asianctv.in/against-the-current-2026-episode-9/">
+                <img data-original="https://asianctv.in/wp-content/uploads/cover.jpg">
+                <h2>Against the Current (2026)</h2>
+              </a></li>
+            </ul>
+          </div>
+          <div class="content-right">
+            <a href="https://asianctv.in/series/unrelated/"><h2>Unrelated</h2></a>
+          </div>
+        "#;
+        let page = parse_latest_page(html).unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert_eq!(page.entries[0].key, "against-the-current-2026");
+        assert_eq!(page.entries[0].title, "Against the Current (2026)");
+        assert!(page.entries[0].cover.is_some());
     }
 }
