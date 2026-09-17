@@ -838,6 +838,11 @@ pub fn parse_episodes_json_for<C: AnikotoConfig>(
             ..VideoEpisode::default()
         });
     }
+    // The site renders episodes oldest-first, while the Manatan SDK contract
+    // requires extension episode lists to be newest-first. Keep that ordering
+    // normalization at the shared source boundary so every Anikoto-theme
+    // package produces the same host-independent episode identity.
+    entries.reverse();
     Ok(entries)
 }
 

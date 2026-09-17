@@ -53,6 +53,8 @@ mod tests {
             "https://*.livedns.my",
             "https://*.nexabloom.top",
             "https://*.qeltrix.top",
+            "https://*.vyrnex.top",
+            "https://*.tyrionx.top",
             "https://*.quavex.top",
             "https://*.streamzone1.site",
         ] {
