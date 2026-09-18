@@ -27,7 +27,7 @@ use sha2::{Digest, Sha256};
 use url::Url;
 
 const PLAY_ALLOWED_RATINGS: &[&str] = &["G", "PG", "PG-13", "R", "R+"];
-const BLOCKED_CONTENT_TAGS: &[&str] = &["adult", "hentai", "porn", "smut", "ecchi"];
+const BLOCKED_CONTENT_TAGS: &[&str] = &["adult", "hentai", "porn", "smut"];
 
 pub trait AnikotoConfig: 'static {
     const NAME: &'static str;
@@ -459,7 +459,7 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         let (body, final_url) =
             self.get_text(&url, Some(&format!("{}/", self.base_url())), false)?;
         let mut parsed = parse_details_html_for::<C>(&body, &final_url)?;
-        reject_blocked_details(&parsed)?;
+        apply_content_rating(&mut parsed);
         parsed.key = item.key;
         Ok(parsed)
     }
@@ -736,8 +736,8 @@ pub fn parse_details_html_for<C: AnikotoConfig>(
     Ok(item)
 }
 
-fn reject_blocked_details(item: &CatalogItem) -> Result<()> {
-    let blocked = item.tags.iter().find(|tag| {
+fn apply_content_rating(item: &mut CatalogItem) {
+    let explicit = item.tags.iter().any(|tag| {
         let normalized = tag.trim().to_ascii_lowercase();
         BLOCKED_CONTENT_TAGS.iter().any(|blocked| {
             normalized == *blocked
@@ -745,12 +745,7 @@ fn reject_blocked_details(item: &CatalogItem) -> Result<()> {
                 || normalized.contains(&format!(" {blocked}"))
         })
     });
-    if let Some(tag) = blocked {
-        return Err(Error::new(format!(
-            "content tagged {tag:?} is unavailable in this package"
-        )));
-    }
-    Ok(())
+    item.content_rating = Some(if explicit { "adult" } else { "suggestive" }.to_owned());
 }
 
 pub fn parse_episodes_json(source: &str, anime_url: &str) -> Result<Vec<VideoEpisode>> {
@@ -1791,7 +1786,7 @@ mod tests {
     }
 
     #[test]
-    fn enforces_play_safe_ratings_and_rejects_adult_details() {
+    fn enforces_play_safe_listings_and_classifies_detail_ratings() {
         let filters = play_safe_filters(&json!({
             "genre": ["1", "214"],
             "rating": ["Rx"]
@@ -1800,12 +1795,24 @@ mod tests {
         assert_eq!(filters["genre"], json!(["1"]));
         assert_eq!(filters["rating"], json!(PLAY_ALLOWED_RATINGS));
 
-        let details = parse_details_html(
+        let mut details = parse_details_html(
             r#"<html><h1 class="title">Blocked</h1><div>Genres <span><a>Hentai</a></span></div></html>"#,
             "https://animewave.to/watch/blocked",
         )
         .unwrap();
-        assert!(reject_blocked_details(&details).is_err());
+        apply_content_rating(&mut details);
+        assert_eq!(details.content_rating.as_deref(), Some("adult"));
+
+        let mut suggestive_details = parse_details_html(
+            r#"<html><h1 class="title">Suggestive</h1><div>Genres <span><a>Ecchi</a></span></div></html>"#,
+            "https://animewave.to/watch/suggestive",
+        )
+        .unwrap();
+        apply_content_rating(&mut suggestive_details);
+        assert_eq!(
+            suggestive_details.content_rating.as_deref(),
+            Some("suggestive")
+        );
         assert!(!anikoto_filters(2027)
             .iter()
             .any(|filter| { serde_json::to_string(filter).unwrap().contains("Rx") }));
