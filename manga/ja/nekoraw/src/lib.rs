@@ -15,11 +15,11 @@ const REQUEST_LIMIT_MS: u32 = 250;
 const LANGUAGE: &str = "ja";
 const CONTENT_RATING: &str = "adult";
 
-pub struct NekorawSource {
+pub struct KuronaviSource {
     client: Client,
 }
 
-impl Default for NekorawSource {
+impl Default for KuronaviSource {
     fn default() -> Self {
         Self {
             client: Client::browser()
@@ -29,7 +29,7 @@ impl Default for NekorawSource {
     }
 }
 
-impl NekorawSource {
+impl KuronaviSource {
     fn document(&self, url: &str) -> Result<Html> {
         let response = self
             .client
@@ -46,7 +46,7 @@ impl NekorawSource {
     }
 }
 
-impl MangaSource for NekorawSource {
+impl MangaSource for KuronaviSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let mut url = Url::parse(&format!("{BASE_URL}/hot")).map_err(url_error)?;
         if page > 1 {
@@ -69,7 +69,7 @@ impl MangaSource for NekorawSource {
             "popular" => self.popular(page),
             "latest" => self.latest(page),
             "top" => self.listing_page(page, Some("10")),
-            other => Err(Error::new(format!("unknown NekoRaw listing {other:?}"))),
+            other => Err(Error::new(format!("unknown KuroNavi listing {other:?}"))),
         }
     }
 
@@ -91,7 +91,7 @@ impl MangaSource for NekorawSource {
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("NekoRaw item has no manga slug"))?;
+            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
         let url = manga_url(&slug);
         let parsed = parse_details(&self.document(&url)?, &slug, &url)?;
         Ok(parsed)
@@ -99,16 +99,16 @@ impl MangaSource for NekorawSource {
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("NekoRaw item has no manga slug"))?;
+            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
         parse_chapters(&self.document(&manga_url(&slug))?, &slug)
     }
 
     fn pages(&mut self, item: CatalogItem, chapter: MangaChapter) -> Result<Vec<MangaPage>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("NekoRaw item has no manga slug"))?;
+            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
         let chapter_url =
             canonical_chapter_url(&slug, chapter.url.as_deref().unwrap_or(&chapter.key))
-                .ok_or_else(|| Error::new("NekoRaw chapter has no chapter key"))?;
+                .ok_or_else(|| Error::new("KuroNavi chapter has no chapter key"))?;
         parse_pages(&self.document(&chapter_url)?, &chapter_url)
     }
 
@@ -118,7 +118,7 @@ impl MangaSource for NekorawSource {
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("NekoRaw item has no manga slug"))?;
+            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
         Ok(Some(manga_url(&slug)))
     }
 
@@ -128,7 +128,7 @@ impl MangaSource for NekorawSource {
         chapter: &MangaChapter,
     ) -> Result<Option<String>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("NekoRaw item has no manga slug"))?;
+            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
         Ok(canonical_chapter_url(
             &slug,
             chapter.url.as_deref().unwrap_or(&chapter.key),
@@ -177,7 +177,9 @@ impl MangaSource for NekorawSource {
 
 #[cfg(target_arch = "wasm32")]
 manatan_sdk::export_extension!(
-    manatan_sdk::Extension::new().manga("nekoraw", NekorawSource::default())
+    // Keep the historical source ID so existing NekoRaw library entries migrate
+    // to the site's KuroNavi identity instead of becoming orphaned.
+    manatan_sdk::Extension::new().manga("nekoraw", KuronaviSource::default())
 );
 
 fn parse_catalog(document: &Html, current_page: u32) -> Result<Paged<CatalogItem>> {
@@ -236,7 +238,7 @@ fn parse_catalog(document: &Html, current_page: u32) -> Result<Paged<CatalogItem
 
 fn parse_details(document: &Html, slug: &str, url: &str) -> Result<CatalogItem> {
     let title = first_text(document, "h1")?
-        .ok_or_else(|| Error::new("NekoRaw details page has no title"))?;
+        .ok_or_else(|| Error::new("KuroNavi details page has no title"))?;
     let cover = first_attr(document, "meta[itemprop='image']", "content")?
         .or(first_attr(
             document,
@@ -317,7 +319,7 @@ fn parse_chapters(document: &Html, slug: &str) -> Result<Vec<MangaChapter>> {
         });
     }
     if chapters.is_empty() {
-        return Err(Error::new("NekoRaw details page has no chapters"));
+        return Err(Error::new("KuroNavi details page has no chapters"));
     }
     Ok(chapters)
 }
@@ -347,7 +349,7 @@ fn parse_pages(document: &Html, chapter_url: &str) -> Result<Vec<MangaPage>> {
         });
     }
     if pages.is_empty() {
-        return Err(Error::new("NekoRaw chapter page has no images"));
+        return Err(Error::new("KuroNavi chapter page has no images"));
     }
     Ok(pages)
 }
@@ -615,7 +617,7 @@ fn select(value: &str) -> Result<Selector> {
 }
 
 fn url_error(error: impl ToString) -> Error {
-    Error::new(format!("NekoRaw URL error: {}", error.to_string()))
+    Error::new(format!("KuroNavi URL error: {}", error.to_string()))
 }
 
 #[cfg(test)]
@@ -628,7 +630,7 @@ mod tests {
     const CHAPTER: &str = include_str!("../fixtures/chapter.html");
     const MANIFEST: &str = include_str!("../manifest.json");
     const ICON: &[u8] = include_bytes!("../assets/icon.png");
-    const ICON_SHA256: &str = "16e49143efada6f3a00ab54e882ce164562e7f595fe78778615044f8972fb35e";
+    const ICON_SHA256: &str = "6c77d7c74ea79ec76de647430e392cbeb8e3fea0cb4e8bfcbd528c64abd18c8f";
 
     #[test]
     fn parses_current_catalog_markup_and_pagination() {
@@ -642,7 +644,7 @@ mod tests {
                 .cover
                 .as_ref()
                 .map(|cover| cover.url.as_str()),
-            Some("https://admin.mangarawad.vip/storage/images/wanpisu/cover.jpg")
+            Some("https://admin.mangarawad.diy/storage/images/wanpisu/cover.jpg")
         );
         assert_eq!(
             page.entries[0].content_rating.as_deref(),
@@ -719,7 +721,7 @@ mod tests {
         assert_eq!(query.get("sort").map(|value| value.as_ref()), Some("10"));
         assert_eq!(query.get("page").map(|value| value.as_ref()), Some("2"));
 
-        let mut source = NekorawSource::default();
+        let mut source = KuronaviSource::default();
         let resolved = source
             .handle_url("https://nekoraw.blog/manga/wanpisu/chapter-1175")
             .expect("deep link parses")
@@ -771,9 +773,27 @@ mod tests {
     fn manifest_and_icon_metadata_are_consistent() {
         let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
         assert_eq!(manifest["id"], "nekoraw");
+        assert_eq!(manifest["name"], "KuroNavi");
+        assert_eq!(manifest["sources"][0]["name"], "KuroNavi");
         assert_eq!(manifest["sources"][0]["baseUrl"], BASE_URL);
         assert_eq!(manifest["sources"][0]["contentRating"], CONTENT_RATING);
         assert_eq!(manifest["assets"][0]["sha256"], ICON_SHA256);
         assert_eq!(format!("{:x}", Sha256::digest(ICON)), ICON_SHA256);
+
+        let allowed_hosts = manifest["permissions"]["network"]["allow"]
+            .as_array()
+            .expect("network allowlist")
+            .iter()
+            .filter_map(Value::as_str)
+            .collect::<BTreeSet<_>>();
+        for host in [
+            "https://kuronavi.one",
+            "https://admin.mangarawad.beer",
+            "https://admin.mangarawad.diy",
+            "https://admin.raw18.world",
+            "https://iphotomg.com",
+        ] {
+            assert!(allowed_hosts.contains(host), "missing live host {host}");
+        }
     }
 }
