@@ -1,8 +1,7 @@
 //! AnikotoTheme video-family support derived from `yuzono/anime-extensions`.
 //!
 //! The upstream implementation is Apache-2.0. Android networking and the
-//! local playlist server are deliberately replaced with Manatan host calls
-//! and declarative resource processing.
+//! local playlist server is deliberately replaced with Manatan host calls.
 
 use std::{collections::BTreeMap, marker::PhantomData};
 
@@ -17,9 +16,9 @@ use manatan_sdk::{
     client::Client,
     context,
     html::{self, ElementRef, Html, Selector},
-    runtime, CatalogItem, Error, FilterDefinition, MediaResourceKind, MediaSegment, MediaTrack,
-    OptionItem, Paged, PreferenceDefinition, Result, SegmentProcessing, SegmentRule,
-    UrlResolveResult, VideoEpisode, VideoHoster, VideoSource, VideoStream,
+    runtime, CatalogItem, Error, FilterDefinition, MediaSegment, MediaTrack, OptionItem, Paged,
+    PlayerArg, PreferenceDefinition, Result, UrlResolveResult, VideoEpisode, VideoHoster,
+    VideoSource, VideoStream,
 };
 use regex::Regex;
 use serde::Deserialize;
@@ -956,14 +955,16 @@ fn stream<C: AnikotoConfig>(
     outro: Option<MediaSegment>,
 ) -> Result<VideoStream> {
     let parsed = Url::parse(url).map_err(url_error)?;
-    let origin = format!(
-        "{}://{}",
-        parsed.scheme(),
-        require(parsed.host_str(), "stream URL has no host")?
-    );
+    let stream_host = require(parsed.host_str(), "stream URL has no host")?;
     let referer = referer
         .map(str::to_owned)
-        .unwrap_or_else(|| format!("{origin}/"));
+        .unwrap_or_else(|| format!("{}://{stream_host}/", parsed.scheme()));
+    let referer_url = Url::parse(&referer).map_err(url_error)?;
+    let origin = format!(
+        "{}://{}",
+        referer_url.scheme(),
+        require(referer_url.host_str(), "stream referer has no host")?
+    );
     let headers = BTreeMap::from([("Referer".into(), referer), ("Origin".into(), origin)]);
     let preferred_server = context::preference::<String>("server").ok().flatten();
     let preferred_type = context::preference::<String>("type").ok().flatten();
@@ -977,7 +978,6 @@ fn stream<C: AnikotoConfig>(
         quality: Some("Auto".into()),
         format: Some("hls".into()),
         is_hls: true,
-        requires_proxy: true,
         preferred: preferred_server
             .as_deref()
             .is_some_and(|value| C::server_matches(value, &data.server_name))
@@ -989,31 +989,16 @@ fn stream<C: AnikotoConfig>(
         subtitles,
         intro,
         outro,
-        segment_processing: Some(anikoto_segment_processing()),
+        mpv_args: vec![PlayerArg {
+            name: "demuxer-lavf-o".into(),
+            value: "force_mpegts=1".into(),
+        }],
+        ffmpeg_stream_args: vec![PlayerArg {
+            name: "force_mpegts".into(),
+            value: "1".into(),
+        }],
         ..VideoStream::default()
     })
-}
-
-pub fn anikoto_segment_processing() -> SegmentProcessing {
-    SegmentProcessing {
-        rewrite_playlist: true,
-        max_resource_bytes: Some(64 * 1024 * 1024),
-        rules: vec![
-            SegmentRule {
-                resource_types: vec![MediaResourceKind::Segment],
-                host_patterns: vec!["*.ibyteimg.com".into(), "*.tiktokcdn.com".into()],
-                strip_prefix_bytes: Some(252),
-                ..SegmentRule::default()
-            },
-            SegmentRule {
-                resource_types: vec![MediaResourceKind::Segment],
-                auto_detect_media_offset: true,
-                probe_bytes: Some(4096),
-                ..SegmentRule::default()
-            },
-        ],
-        ..SegmentProcessing::default()
-    }
 }
 
 pub fn vrf_encrypt(input: &str) -> String {
@@ -1827,10 +1812,33 @@ mod tests {
     }
 
     #[test]
-    fn expresses_host_owned_segment_processing() {
-        let rules = anikoto_segment_processing().rules;
-        assert_eq!(rules[0].strip_prefix_bytes, Some(252));
-        assert!(rules[1].auto_detect_media_offset);
+    fn streams_match_the_native_mpv_transport_contract() {
+        let data = HosterData {
+            kind: "Sub".into(),
+            server_id: "1".into(),
+            server_name: "Vidstream-2".into(),
+            episode_path: "/watch/example/ep-1".into(),
+        };
+        let video = stream::<StandardAnikotoConfig>(
+            "https://fetch.nexabloom.top/anime/example/master.m3u8",
+            &data,
+            Some("https://megaplay.buzz/"),
+            Vec::new(),
+            None,
+            None,
+        )
+        .unwrap();
+
+        assert!(!video.requires_proxy);
+        assert!(video.segment_processing.is_none());
+        assert_eq!(
+            video.headers.get("Origin").map(String::as_str),
+            Some("https://megaplay.buzz")
+        );
+        assert_eq!(video.mpv_args[0].name, "demuxer-lavf-o");
+        assert_eq!(video.mpv_args[0].value, "force_mpegts=1");
+        assert_eq!(video.ffmpeg_stream_args[0].name, "force_mpegts");
+        assert_eq!(video.ffmpeg_stream_args[0].value, "1");
     }
 
     #[test]
