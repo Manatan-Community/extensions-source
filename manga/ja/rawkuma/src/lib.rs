@@ -50,8 +50,10 @@ mod tests {
             manifest["permissions"]["network"]["allow"],
             json!([
                 "https://rawkuma.net",
-                "https://cdn.kumacdn.club",
-                "https://rcdn.kyut.dev"
+                "https://*.rawkuma.net",
+                "https://*.rawkuma.com",
+                "https://*.kumacdn.club",
+                "https://*.kyut.dev"
             ])
         );
         assert_eq!(manifest["permissions"]["cookies"], true);
