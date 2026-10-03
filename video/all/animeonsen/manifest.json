@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animeonsen",
   "name": "AnimeOnsen",
-  "version": "0.1.0",
-  "versionCode": 1,
+  "version": "0.1.1",
+  "versionCode": 2,
   "apiVersion": 2,
   "minimumManatanVersion": "0.3.1",
   "wasm": "extension.wasm",
@@ -18,6 +18,7 @@
   "homepage": "https://www.animeonsen.xyz",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
+  "icon": "assets/icon.png",
   "permissions": {
     "network": {
       "allow": [
@@ -34,6 +35,13 @@
     "assets": false,
     "javascript": false
   },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "bb1aacde8ac403db265eb45db39f201c84209a21e89cc9fca570af97d3311232"
+    }
+  ],
   "sources": [
     {
       "id": "animeonsen",

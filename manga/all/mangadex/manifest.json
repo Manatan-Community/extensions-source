@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "mangadex",
   "name": "MangaDex",
-  "version": "1.1.1",
-  "versionCode": 3,
+  "version": "1.1.2",
+  "versionCode": 4,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -17,6 +17,7 @@
   "homepage": "https://mangadex.org",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
+  "icon": "assets/icon.png",
   "permissions": {
     "network": {
       "allow": [
@@ -33,7 +34,13 @@
     "assets": false,
     "javascript": false
   },
-  "assets": [],
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "f1b6671a004b58704cca4cad107dc1d79413e31812f7f116815e49a31dc2db13"
+    }
+  ],
   "sources": [
     {
       "id": "mangadex-af",

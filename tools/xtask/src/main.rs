@@ -353,13 +353,16 @@ fn validate_extension(extension: &ExtensionDir) -> Result<()> {
         .iter()
         .map(|asset| asset.path.as_str())
         .collect::<BTreeSet<_>>();
-    if let Some(icon) = extension.manifest.icon.as_deref() {
-        ensure!(
-            declared_assets.contains(icon),
-            "{} icon must be a declared asset",
-            extension.id
-        );
-    }
+    let icon = extension
+        .manifest
+        .icon
+        .as_deref()
+        .context("every extension must declare a bundled icon")?;
+    ensure!(
+        declared_assets.contains(icon),
+        "{} icon must be a declared asset",
+        extension.id
+    );
     for asset in &extension.manifest.assets {
         let path = extension.path.join(&asset.path);
         ensure!(path.is_file(), "{} is missing", path.display());
@@ -1516,7 +1519,54 @@ fn sha256(bytes: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{matrix_source_language, validate_network_pattern};
+    use super::{
+        discover_extensions, matrix_source_language, validate_extension, validate_network_pattern,
+        ExtensionDir,
+    };
+
+    fn icon_test_extension() -> ExtensionDir {
+        discover_extensions()
+            .unwrap()
+            .into_iter()
+            .find(|extension| extension.id == "bookracy")
+            .unwrap()
+    }
+
+    #[test]
+    fn rejects_missing_bundled_icon() {
+        let mut extension = icon_test_extension();
+        extension.manifest.icon = None;
+        let error = validate_extension(&extension).unwrap_err();
+        assert!(error.to_string().contains("must declare a bundled icon"));
+    }
+
+    #[test]
+    fn rejects_undeclared_icon_asset() {
+        let mut extension = icon_test_extension();
+        extension.manifest.assets.clear();
+        let error = validate_extension(&extension).unwrap_err();
+        assert!(error.to_string().contains("icon must be a declared asset"));
+    }
+
+    #[test]
+    fn rejects_changed_icon_digest() {
+        let mut extension = icon_test_extension();
+        let icon = extension.manifest.icon.clone().unwrap();
+        extension
+            .manifest
+            .assets
+            .iter_mut()
+            .find(|asset| asset.path == icon)
+            .unwrap()
+            .sha256 = Some("0".repeat(64));
+        let error = validate_extension(&extension).unwrap_err();
+        assert!(error.to_string().contains("digest mismatch"));
+    }
+
+    #[test]
+    fn accepts_declared_unchanged_icon_asset() {
+        validate_extension(&icon_test_extension()).unwrap();
+    }
 
     #[test]
     fn aggregate_packages_use_each_manifest_source_language() {
