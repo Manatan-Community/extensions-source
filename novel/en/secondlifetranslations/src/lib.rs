@@ -2,7 +2,9 @@ use manatan_common::{absolute_url, attr, normalize_space, selector};
 use manatan_sdk::{
     client::Client,
     html::{self, Html},
-    model::{CatalogItem, NovelChapter, NovelText, Paged, UrlResolveResult},
+    model::{
+        CatalogItem, FilterDefinition, NovelChapter, NovelText, OptionItem, Paged, UrlResolveResult,
+    },
     Error, NovelSource, Result,
 };
 use serde_json::{json, Value};
@@ -11,11 +13,117 @@ use url::Url;
 use wordpress_novel::{chapter_text, first_text, image, number, rating};
 
 const BASE: &str = "https://secondlifetranslations.com";
+const AJAX: &str = "https://secondlifetranslations.com/wp-admin/admin-ajax.php";
+const PAGE_SIZE: usize = 20;
 #[derive(Default)]
 pub struct SecondLife {
     client: Client,
 }
 impl SecondLife {
+    fn original_language(filters: &Value) -> Result<&'static str> {
+        match filters
+            .get("originalLanguage")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+        {
+            "" => Ok(""),
+            "Chinese" => Ok("Chinese"),
+            "Japanese" => Ok("Japanese"),
+            _ => Err(Error::new(
+                "Unsupported original language; choose Any, Chinese or Japanese",
+            )),
+        }
+    }
+    fn nonce(doc: &Html) -> Result<String> {
+        for script in doc.select(&selector("script")?) {
+            let text = html::text(script);
+            let Some((_, config)) = text.split_once("var myAjax = ") else {
+                continue;
+            };
+            let Some(config) = config.split(';').next() else {
+                continue;
+            };
+            if let Ok(config) = serde_json::from_str::<Value>(config.trim()) {
+                if let Some(nonce) = config
+                    .get("nonce")
+                    .and_then(Value::as_str)
+                    .filter(|s| !s.is_empty())
+                {
+                    return Ok(nonce.into());
+                }
+            }
+        }
+        Err(Error::new(
+            "Second Life catalog filter configuration is missing",
+        ))
+    }
+    fn filtered_page(&self, page: u32, language: &str, nonce: &str) -> Result<Paged<CatalogItem>> {
+        let page_text = page.to_string();
+        let response = self
+            .client
+            .post(AJAX)
+            .form(&[
+                ("action", "novelfilter"),
+                ("pg", page_text.as_str()),
+                ("language", language),
+                ("status", ""),
+                ("genre", ""),
+                ("nonce", nonce),
+            ])
+            .send()?
+            .error_for_status()?;
+        let html = response.text()?;
+        if html.trim() == "-1" || html.trim() == "0" {
+            return Err(Error::new(
+                "Second Life rejected the catalog filter; refresh and try again",
+            ));
+        }
+        let mut catalog = Self::catalog(&html::document(html), BASE, page)?;
+        for item in &mut catalog.entries {
+            item.extra
+                .insert("originalLanguage".into(), json!(language));
+        }
+        Ok(catalog)
+    }
+    fn filtered_search(
+        &self,
+        query: &str,
+        page: u32,
+        language: &str,
+    ) -> Result<Paged<CatalogItem>> {
+        let doc = self.document(&format!("{BASE}/translations/"))?;
+        let nonce = Self::nonce(&doc)?;
+        if query.trim().is_empty() {
+            return self.filtered_page(page.max(1), language, &nonce);
+        }
+        // The website's filter endpoint has no text-search parameter. Search its
+        // filtered catalog, not the unrelated WordPress search which drops language.
+        let wanted = usize::try_from(page.max(1))
+            .unwrap_or(usize::MAX)
+            .checked_mul(PAGE_SIZE)
+            .and_then(|n| n.checked_add(1))
+            .ok_or_else(|| Error::new("Second Life search page is out of range"))?;
+        let query = normalize_space(query).to_lowercase();
+        let mut matches = Vec::new();
+        let mut seen = HashSet::new();
+        for catalog_page in 1..=50 {
+            let result = self.filtered_page(catalog_page, language, &nonce)?;
+            for item in result.entries {
+                if item.title.to_lowercase().contains(&query) && seen.insert(item.key.clone()) {
+                    matches.push(item);
+                }
+            }
+            if matches.len() >= wanted || !result.has_next_page {
+                let start = wanted - PAGE_SIZE - 1;
+                let has_next = matches.len() > start + PAGE_SIZE;
+                return Ok(Paged::new(
+                    matches.into_iter().skip(start).take(PAGE_SIZE).collect(),
+                    has_next,
+                ));
+            }
+        }
+        Err(Error::new("Second Life filtered search exceeded its catalog page limit; browse with the original-language filter instead"))
+    }
     fn document(&self, url: &str) -> Result<Html> {
         let response = self.client.get(url).send()?.error_for_status()?;
         Ok(html::document(response.text()?))
@@ -24,7 +132,7 @@ impl SecondLife {
         let mut seen = HashSet::new();
         let mut entries = Vec::new();
         for a in doc.select(&selector(
-            ".tl-container a[href*='/novel/'], .search-entry-title a[href*='/novel/']",
+            ".tl-container a[href*='/novel/'], .all-novels a[href*='/novel/'], .search-entry-title a[href*='/novel/']",
         )?) {
             let url = absolute_url(BASE, &attr(a, "href").unwrap_or_default())?;
             let title = normalize_space(&html::text(a));
@@ -58,8 +166,16 @@ impl SecondLife {
             entries.push(item);
         }
         let has_next = doc
-            .select(&selector("a.btn-page[href], a.next.page-numbers")?)
+            .select(&selector(
+                "a.btn-page[href], a.btn-page[p], a.next.page-numbers",
+            )?)
             .any(|a| {
+                if attr(a, "p")
+                    .and_then(|s| s.parse::<u32>().ok())
+                    .is_some_and(|n| n > page)
+                {
+                    return true;
+                }
                 attr(a, "href")
                     .and_then(|s| Url::parse(page_url).ok()?.join(&s).ok())
                     .is_some_and(|u| {
@@ -160,12 +276,22 @@ impl SecondLife {
     }
 }
 impl NovelSource for SecondLife {
+    fn listing(&mut self, listing: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        if listing != "popular" {
+            return Err(Error::new("Unknown Second Life listing"));
+        }
+        self.search("", page, filters)
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let page = page.max(1);
         let url = format!("{BASE}/translations/?pg={page}");
         Self::catalog(&self.document(&url)?, &url, page)
     }
-    fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
+    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        let language = Self::original_language(filters)?;
+        if !language.is_empty() {
+            return self.filtered_search(query, page, language);
+        }
         if query.trim().is_empty() {
             return self.popular(page);
         }
@@ -178,7 +304,9 @@ impl NovelSource for SecondLife {
     }
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let url = item.url.as_deref().unwrap_or(&item.key);
-        Self::detail(&self.document(url)?, url)
+        let mut details = Self::detail(&self.document(url)?, url)?;
+        details.extra = item.extra;
+        Ok(details)
     }
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<NovelChapter>> {
         Self::chapter_list(&self.document(item.url.as_deref().unwrap_or(&item.key))?)
@@ -208,6 +336,24 @@ impl NovelSource for SecondLife {
             ..UrlResolveResult::default()
         }))
     }
+    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
+        Ok(vec![FilterDefinition::Select {
+            id: "originalLanguage".into(),
+            name: "Original language (translated to English)".into(),
+            options: [
+                ("Any", ""),
+                ("Chinese", "Chinese"),
+                ("Japanese", "Japanese"),
+            ]
+            .into_iter()
+            .map(|(label, value)| OptionItem {
+                label: label.into(),
+                value: value.into(),
+            })
+            .collect(),
+            default_index: 0,
+        }])
+    }
 }
 #[cfg(target_arch = "wasm32")]
 fn extension() -> manatan_sdk::Extension {
@@ -219,6 +365,39 @@ manatan_sdk::export_extension!(extension());
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn original_language_is_distinct_from_reading_language() {
+        let mut source = SecondLife::default();
+        assert!(source
+            .listing("popular", 1, &json!({"originalLanguage":"Korean"}))
+            .is_err());
+        assert!(source.listing("unknown", 1, &json!({})).is_err());
+        assert_eq!(
+            SecondLife::original_language(&json!({"originalLanguage":"Japanese"})).unwrap(),
+            "Japanese"
+        );
+        assert_eq!(
+            SecondLife::original_language(&json!({"originalLanguage":"Chinese"})).unwrap(),
+            "Chinese"
+        );
+        assert!(SecondLife::original_language(&json!({"originalLanguage":"Korean"})).is_err());
+        let doc = html::document(
+            r#"<div class="all-novels"><a href="/novel/test/"><h6>Japanese original</h6></a></div><a class="btn btn-page" p="2">Next</a>"#,
+        );
+        let catalog = SecondLife::catalog(&doc, BASE, 1).unwrap();
+        assert_eq!(catalog.entries.len(), 1);
+        assert_eq!(catalog.entries[0].language.as_deref(), Some("en"));
+        assert!(catalog.has_next_page);
+        assert!(!SecondLife::catalog(&doc, BASE, 2).unwrap().has_next_page);
+    }
+    #[test]
+    fn filter_nonce_is_parsed_as_data_and_never_executed() {
+        let doc = html::document(
+            r#"<script>var myAjax = {"nonce":"fixture-nonce","ajaxurl":"https://untrusted.invalid"};</script>"#,
+        );
+        assert_eq!(SecondLife::nonce(&doc).unwrap(), "fixture-nonce");
+        assert!(SecondLife::nonce(&html::document("<script>other()</script>")).is_err());
+    }
     #[test]
     fn details_keep_author_status_and_explicit_content_rating() {
         let doc = html::document(
