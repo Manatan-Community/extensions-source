@@ -1,0 +1,13 @@
+[package]
+name = "wordpress-novel"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+manatan-sdk.workspace = true
+manatan-common.workspace = true
+scraper.workspace = true
+regex.workspace = true
+url.workspace = true

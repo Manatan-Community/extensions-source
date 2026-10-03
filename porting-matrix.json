@@ -41560,6 +41560,36 @@
       "knownSiteFailure": null,
       "license": "Apache-2.0",
       "attribution": "Independent integration with ReAnime's public catalog and player."
+    },
+    {
+      "upstreamRepository": "native",
+      "upstreamPath": "https://shanghaifantasy.com",
+      "sourceId": "shanghaifantasy",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": ["http", "cookies", "webview", "url-resolution"],
+      "status": "live-verified",
+      "tests": ["fixture-parser-tests", "cargo-clippy", "signed-package-install-dedicated-ios-simulator", "live-catalog-pagination-search-details-cover-chapter-pagination-locks-reader", "ios-native-reader-screenshots"],
+      "packagePath": "packages/novel/en/shanghaifantasy.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent implementation of Shanghai Fantasy's public WordPress catalog and chapter API. Paid chapters remain locked."
+    },
+    {
+      "upstreamRepository": "native",
+      "upstreamPath": "https://secondlifetranslations.com/translations/",
+      "sourceId": "secondlifetranslations",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": ["http", "url-resolution"],
+      "status": "live-verified",
+      "tests": ["fixture-parser-tests", "cargo-clippy", "signed-package-install-dedicated-ios-simulator", "live-catalog-pagination-search-details-cover-chapter-order-split-chapters-reader", "ios-native-reader-screenshots"],
+      "packagePath": "packages/novel/en/secondlifetranslations.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent implementation using Second Life Translations' public WordPress pages."
     }
   ]
 }

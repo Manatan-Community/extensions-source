@@ -859,6 +859,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-secondlifetranslations"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
+name = "manatan-novel-en-shanghaifantasy"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
 name = "manatan-novel-en-wtrlab"
 version = "0.1.0"
 dependencies = [
@@ -1932,6 +1954,17 @@ dependencies = [
  "scraper",
  "serde",
  "serde_json",
+ "url",
+]
+
+[[package]]
+name = "wordpress-novel"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "scraper",
  "url",
 ]
 
