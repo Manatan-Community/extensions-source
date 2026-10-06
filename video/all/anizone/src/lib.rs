@@ -41,7 +41,6 @@ const BLOCKED_TERMS: &[&str] = &[
     "nudity",
     "r18",
     "18plus",
-    "18",
 ];
 
 #[derive(Default)]
@@ -240,6 +239,14 @@ impl AniZoneSource {
     }
 
     fn safe_episodes(&self, item: &CatalogItem) -> Result<Vec<VideoEpisode>> {
+        self.episode_list(item, None)
+    }
+
+    fn episode_list(
+        &self,
+        item: &CatalogItem,
+        requested_key: Option<&str>,
+    ) -> Result<Vec<VideoEpisode>> {
         let slug = validate_slug(&item.key)?.to_string();
         let (_, first_html) = self.fetch_safe_details(&slug)?;
         let mut episodes = Vec::new();
@@ -261,7 +268,8 @@ impl AniZoneSource {
                         .into_iter()
                         .filter(|episode| seen.insert(episode.key.clone())),
                 );
-                if !parsed.has_next_page || page >= MAX_EPISODE_PAGES {
+                if !should_fetch_more_episodes(parsed.has_next_page, page, requested_key, &episodes)
+                {
                     break;
                 }
                 let Some(cursor) = livewire_page.next_cursor.clone() else {
@@ -292,7 +300,8 @@ impl AniZoneSource {
                         .into_iter()
                         .filter(|episode| seen.insert(episode.key.clone())),
                 );
-                if !parsed.has_next_page || page >= MAX_EPISODE_PAGES {
+                if !should_fetch_more_episodes(parsed.has_next_page, page, requested_key, &episodes)
+                {
                     break;
                 }
                 page += 1;
@@ -315,7 +324,7 @@ impl AniZoneSource {
         requested: &VideoEpisode,
     ) -> Result<VideoEpisode> {
         let expected_key = episode_key(&item.key, requested)?;
-        self.safe_episodes(item)?
+        self.episode_list(item, Some(&expected_key))?
             .into_iter()
             .find(|episode| episode.key == expected_key)
             .ok_or_else(|| Error::new("AniZone episode is not present in the safe episode list"))
@@ -713,6 +722,17 @@ fn is_allowed_sort(value: &str) -> bool {
         value,
         "title-asc" | "title-desc" | "release-asc" | "release-desc" | "added-asc" | "added-desc"
     )
+}
+
+fn should_fetch_more_episodes(
+    has_next_page: bool,
+    page: u32,
+    requested_key: Option<&str>,
+    episodes: &[VideoEpisode],
+) -> bool {
+    has_next_page
+        && page < MAX_EPISODE_PAGES
+        && !requested_key.is_some_and(|key| episodes.iter().any(|episode| episode.key == key))
 }
 
 fn parse_livewire_items_page(
@@ -1575,7 +1595,9 @@ fn ensure_safe_text(title: &str, tags: &[String], description: Option<&str>) -> 
     if let Some(description) = description {
         values.push(description);
     }
-    if values.into_iter().any(contains_blocked_term) {
+    // A standalone structured rating may be "18", but an episode number or
+    // a number in prose is not a rating. Keep that distinction at this boundary.
+    if tags.iter().any(|tag| tag.trim() == "18") || values.into_iter().any(contains_blocked_term) {
         return Err(Error::new(
             "AniZone content is outside the Play-safe classification boundary",
         ));
@@ -1586,9 +1608,12 @@ fn ensure_safe_text(title: &str, tags: &[String], description: Option<&str>) -> 
 fn contains_blocked_term(value: &str) -> bool {
     value
         .split(|character: char| !character.is_alphanumeric() && character != '+')
-        .map(normalize_label)
-        .filter(|word| !word.is_empty())
-        .any(|word| BLOCKED_TERMS.iter().any(|blocked| word == *blocked))
+        .any(|word| {
+            word == "18+"
+                || BLOCKED_TERMS
+                    .iter()
+                    .any(|blocked| normalize_label(word) == *blocked)
+        })
 }
 
 fn normalize_label(value: &str) -> String {
@@ -1918,6 +1943,45 @@ mod tests {
     use sha2::{Digest, Sha256};
 
     #[test]
+    fn safe_episode_eighteen_is_not_an_adult_rating() {
+        let page = parse_episode_values(
+            vec![json!({
+                "url": "http://anizone.to/anime/uyyyn4kf/18",
+                "is_unsafe": false,
+                "title_list": {"1": "You Are a Special Animal! Gaimon and His Wonderful Friends!"},
+                "summary": "The crew lands on an island of strange animals."
+            })],
+            false,
+            "uyyyn4kf",
+            "1",
+        )
+        .unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert_eq!(page.entries[0].episode_number, Some(18.0));
+    }
+
+    #[test]
+    fn stream_authorization_stops_after_the_requested_safe_episode() {
+        let episodes = vec![VideoEpisode {
+            key: "safe1234/1".to_string(),
+            ..VideoEpisode::default()
+        }];
+        assert!(!should_fetch_more_episodes(
+            true,
+            1,
+            Some("safe1234/1"),
+            &episodes
+        ));
+        assert!(should_fetch_more_episodes(
+            true,
+            1,
+            Some("safe1234/2"),
+            &episodes
+        ));
+        assert!(should_fetch_more_episodes(true, 1, None, &episodes));
+    }
+
+    #[test]
     fn parses_catalog_and_filters_unsafe_cards_before_covers_surface() {
         let page = parse_listing_page(include_str!("../fixtures/catalog.html"), "1").unwrap();
         assert_eq!(page.entries.len(), 1);
@@ -2035,6 +2099,9 @@ mod tests {
         assert!(contains_blocked_term("18+"));
         assert!(contains_blocked_term("Adult Cast"));
         assert!(!contains_blocked_term("Adventure"));
+        assert!(!contains_blocked_term("Episode 18"));
+        assert!(!contains_blocked_term("The crew returns after 18 days."));
+        assert!(ensure_safe_text("Safe title", &["18".to_string()], None).is_err());
     }
 
     #[test]

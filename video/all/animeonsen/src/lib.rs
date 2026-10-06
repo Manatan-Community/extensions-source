@@ -272,14 +272,15 @@ impl VideoSource for AnimeOnsenSource {
             })
             .collect::<Result<Vec<_>>>()?;
         subtitles.sort_by_key(|track| !track.is_default);
-        let is_hls = payload.uri.stream.contains(".m3u8");
+        let (format, is_hls, is_dash) = stream_transport(&payload.uri.stream);
         Ok(vec![VideoStream {
             url: payload.uri.stream,
             name: Some("AnimeOnsen".to_string()),
             quality: Some("720p".to_string()),
             resolution: Some("1280x720".to_string()),
-            format: Some(if is_hls { "hls" } else { "mp4" }.to_string()),
+            format: Some(format.to_string()),
             is_hls,
+            is_dash,
             preferred: true,
             initialized: true,
             headers: media_headers(),
@@ -587,6 +588,19 @@ fn validate_subtitle_url(value: &str) -> Result<()> {
     Ok(())
 }
 
+fn stream_transport(url: &str) -> (&'static str, bool, bool) {
+    let path = Url::parse(url)
+        .map(|url| url.path().to_ascii_lowercase())
+        .unwrap_or_default();
+    if path.ends_with(".m3u8") {
+        ("hls", true, false)
+    } else if path.ends_with(".mpd") {
+        ("dash", false, true)
+    } else {
+        ("mp4", false, false)
+    }
+}
+
 fn media_headers() -> BTreeMap<String, String> {
     [
         ("Referer".to_string(), format!("{SITE_URL}/")),
@@ -714,6 +728,26 @@ manatan_sdk::export_extension!(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn identifies_dash_manifest_transport() {
+        assert_eq!(
+            stream_transport("https://cdn.animeonsen.xyz/video/mp4-dash/title/4/manifest.mpd"),
+            ("dash", false, true)
+        );
+        assert_eq!(
+            stream_transport("https://cdn.animeonsen.xyz/video/manifest.MPD?token=test"),
+            ("dash", false, true)
+        );
+        assert_eq!(
+            stream_transport("https://cdn.animeonsen.xyz/video/master.m3u8?token=test"),
+            ("hls", true, false)
+        );
+        assert_eq!(
+            stream_transport("https://cdn.animeonsen.xyz/video/file.mp4?name=master.m3u8"),
+            ("mp4", false, false)
+        );
+    }
 
     #[test]
     fn parses_safe_fixture_and_builds_catalog() {

@@ -2,6 +2,65 @@
   "schemaVersion": 1,
   "generatedAt": "2026-07-10T19:50:32Z",
   "sources": [
+    {
+      "upstreamRepository": "Manatan-Community/extensions-source",
+      "upstreamPath": "novel/en/starcafe",
+      "sourceId": "starcafe",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "next-flight",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "url-resolution"
+      ],
+      "status": "live-verified",
+      "tests": ["5 parser and access-policy regression tests", "cargo clippy --all-targets -- -D warnings", "signed component and bundled icon validation", "production Wasmtime runner: filters export", "Wasmtime with public HTTP test bridge: catalog, latest, search, pagination, covers and all 7 novels' complete chapter indexes and first/middle public text"],
+      "packagePath": "packages/novel/en/starcafe.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Original implementation by Manatan Community using public website behavior."
+    },
+    {
+      "upstreamRepository": "Manatan-Community/extensions-source",
+      "upstreamPath": "novel/en/rainbowreads",
+      "sourceId": "rainbowreads",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "wordpress-novel",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "url-resolution"
+      ],
+      "status": "live-verified",
+      "tests": ["5 parser, ordering and reader regression tests", "cargo clippy --all-targets -- -D warnings", "signed component and bundled icon validation", "production Wasmtime runner: filters export", "Wasmtime with public HTTP test bridge: popular/latest/search, catalog pages 1/2, covers, 383- and 176-chapter indexes, first/middle text and supplemental Elementor page"],
+      "packagePath": "packages/novel/en/rainbowreads.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Original implementation by Manatan Community using public website behavior."
+    },
+    {
+      "upstreamRepository": "Manatan-Community/extensions-source",
+      "upstreamPath": "video/en/oceanveil",
+      "sourceId": "oceanveil",
+      "language": "en",
+      "mediaKind": "video",
+      "framework": "json-api-browser-player",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "authentication",
+        "url-resolution"
+      ],
+      "status": "runtime-tested",
+      "tests": ["6 metadata, ordering, preview rejection, media-cookie and browser same-origin contract regression tests", "cargo clippy --all-targets -- -D warnings", "signed component and bundled icon validation", "production Wasmtime runner: official login action", "Wasmtime with public HTTP test bridge: catalog pages 1/2, latest, search, details, cover, eight-episode ordering and explicit DRM playback guard", "Full authenticated playback and native browser integration NOT live-verified; DRM playback unsupported"],
+      "packagePath": "packages/video/en/oceanveil.manatan2",
+      "knownSiteFailure": "Authenticated full playback needs an OceanVeil account; DRM titles require the official player.",
+      "license": "Apache-2.0",
+      "attribution": "Original implementation by Manatan Community using public website behavior."
+    },
     { "upstreamRepository": "yuzono/cursed-manga-extensions", "upstreamPath": "src/all/hitomi", "sourceId": "hitomi", "language": "all", "mediaKind": "manga", "framework": "standalone", "requiredCapabilities": ["http", "filters", "url-resolution", "page-processing"], "status": "live-verified", "tests": ["8 protocol and policy tests", "cargo clippy -p hitomi --all-targets -- -D warnings", "signed package install on dedicated iOS Simulator", "live popular/search/filter/detail/chapter/cover requests", "first/middle/last reader images returned valid AVIF"], "packagePath": null, "knownSiteFailure": null, "license": "Apache-2.0", "attribution": "Ported from yuzono/cursed-manga-extensions." },
     { "upstreamRepository": "yuzono/cursed-manga-extensions", "upstreamPath": "src/all/hitomi", "sourceId": "hitomi-en", "language": "en", "mediaKind": "manga", "framework": "standalone", "requiredCapabilities": ["http", "filters", "url-resolution", "page-processing"], "status": "component-valid", "tests": ["shared Hitomi component and language-specific registration"], "packagePath": null, "knownSiteFailure": null, "license": "Apache-2.0", "attribution": "Ported from yuzono/cursed-manga-extensions." },
     { "upstreamRepository": "yuzono/cursed-manga-extensions", "upstreamPath": "src/all/hitomi", "sourceId": "hitomi-id", "language": "id", "mediaKind": "manga", "framework": "standalone", "requiredCapabilities": ["http", "filters", "url-resolution", "page-processing"], "status": "component-valid", "tests": ["shared Hitomi component and language-specific registration"], "packagePath": null, "knownSiteFailure": null, "license": "Apache-2.0", "attribution": "Ported from yuzono/cursed-manga-extensions." },

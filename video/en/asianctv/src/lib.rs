@@ -91,7 +91,33 @@ impl AsianCtv {
             .error_for_status()?
             .text()?
             .to_string();
-        let player = parse_dramavibe_player(&html)?;
+        let mut player = parse_dramavibe_player(&html)?;
+        if let Some(episode) = &player.source_episode {
+            let mut api = Url::parse(player_url).map_err(url_error)?;
+            let requested_episode = api
+                .query_pairs()
+                .find(|(key, _)| key == "episode")
+                .map(|(_, value)| value.into_owned());
+            if requested_episode.as_deref() != Some(episode.as_str()) {
+                return Err(Error::new(
+                    "DramaVibe source API did not match the requested episode",
+                ));
+            }
+            api.set_path("/player_source.php");
+            api.set_query(None);
+            api.query_pairs_mut().append_pair("episode", episode);
+            let value: Value = Client::browser()
+                .get(api.as_str())
+                .cookies_for(player_url)
+                .header("Referer", player_url)
+                .header("Accept", "application/json")
+                .timeout_ms(30_000)
+                .max_body_bytes(512 * 1024)
+                .send()?
+                .error_for_status()?
+                .json()?;
+            player.streams = parse_dramavibe_sources(&value)?;
+        }
         let subtitles = player
             .subtitle_api
             .and_then(|url| {
@@ -457,6 +483,7 @@ fn parse_player_url(html: &str) -> Result<String> {
 struct DramaVibePlayer {
     streams: Vec<String>,
     subtitle_api: Option<String>,
+    source_episode: Option<String>,
 }
 
 fn parse_dramavibe_player(html: &str) -> Result<DramaVibePlayer> {
@@ -470,17 +497,65 @@ fn parse_dramavibe_player(html: &str) -> Result<DramaVibePlayer> {
         .filter(|url| validate_dramavibe_media_url(url).is_ok())
         .filter(|url| seen.insert(url.clone()))
         .collect::<Vec<_>>();
-    if streams.is_empty() {
+    let source_episode =
+        Regex::new(r#"fetch\s*\(\s*["']/player_source\.php\?episode=["']\s*\+\s*(\d{1,12})\b"#)
+            .map_err(regex_error)?
+            .captures(&html)
+            .and_then(|captures| captures.get(1).map(|value| value.as_str().to_string()));
+    if streams.is_empty() && source_episode.is_none() {
         return Err(Error::new("DramaVibe player returned no HLS stream"));
     }
-    let subtitle_api = Regex::new(r#"https://storage\.dramavibe\.cfd/[^\"'\\\s]+/subtitles"#)
-        .map_err(regex_error)?
-        .find(&html)
-        .map(|value| value.as_str().to_string());
+    let subtitle_api =
+        Regex::new(r#"https://storage\.dramavibe\.cfd/[^\"'\\\s]+/subtitles(?:\?[^\"'\\\s]*)?"#)
+            .map_err(regex_error)?
+            .find(&html)
+            .map(|value| value.as_str().to_string());
     Ok(DramaVibePlayer {
         streams,
         subtitle_api,
+        source_episode,
     })
+}
+
+fn parse_dramavibe_sources(value: &Value) -> Result<Vec<String>> {
+    if value.get("ok").and_then(Value::as_bool) != Some(true) {
+        return Err(Error::new(
+            "DramaVibe source API reports this video unavailable",
+        ));
+    }
+    let list = value
+        .get("list")
+        .and_then(Value::as_array)
+        .filter(|list| !list.is_empty() && list.len() <= 32)
+        .ok_or_else(|| Error::new("DramaVibe source API returned no playable sources"))?;
+    let mut streams = Vec::new();
+    let mut seen = BTreeSet::new();
+    // These URLs come from the checked host-fetched API response. The host
+    // independently proves their origin and checks public DNS, including CDN
+    // rotation; a guest-side static CDN list would defeat that policy.
+    for candidate in value.get("src").into_iter().chain(list.iter()) {
+        let Some(candidate) = candidate.as_str() else {
+            return Err(Error::new(
+                "DramaVibe source API returned an invalid source",
+            ));
+        };
+        let url = Url::parse(candidate).map_err(url_error)?;
+        if url.scheme() != "https"
+            || url.host_str().is_none()
+            || !url.username().is_empty()
+            || url.password().is_some()
+            || url.port_or_known_default() != Some(443)
+            || !url.path().to_ascii_lowercase().ends_with(".m3u8")
+        {
+            return Err(Error::new(
+                "DramaVibe source API returned an invalid HLS URL",
+            ));
+        }
+        if seen.insert(candidate.to_string()) {
+            streams.push(candidate.to_string());
+        }
+    }
+    Ok(streams)
 }
 
 fn parse_dramavibe_subtitles(value: &Value) -> Result<Vec<MediaTrack>> {
@@ -924,6 +999,37 @@ mod tests {
             player_origin("https://vidbasic.live/stream/s-1/107754").unwrap(),
             "https://vidbasic.live/"
         );
+    }
+
+    #[test]
+    fn accepts_runtime_resolved_dramavibe_player() {
+        let html = r#"<script>
+          var src = ''; var srcCdnList = [];
+          var subApi = "https://storage.dramavibe.cfd/api/public/video/test/subtitles?client=cdn2";
+          fetch('/player_source.php?episode=' + 4858, {
+            credentials: 'same-origin', headers: {'Accept': 'application/json'}
+          });
+        </script>"#;
+        let player = parse_dramavibe_player(html)
+            .expect("the player exposes its source API, not an inline playlist");
+        assert_eq!(player.source_episode.as_deref(), Some("4858"));
+        assert_eq!(
+            player.subtitle_api.as_deref(),
+            Some("https://storage.dramavibe.cfd/api/public/video/test/subtitles?client=cdn2")
+        );
+        let streams = parse_dramavibe_sources(&serde_json::json!({
+            "ok": true,
+            "src": "https://rotated.example/video/master.m3u8",
+            "list": ["https://rotated.example/video/master.m3u8", "https://mirror.example/video/master.m3u8"]
+        })).unwrap();
+        assert_eq!(streams.len(), 2);
+        for value in [
+            serde_json::json!({"ok": false, "list": []}),
+            serde_json::json!({"ok": true, "list": ["http://rotated.example/master.m3u8"]}),
+            serde_json::json!({"ok": true, "list": ["https://user:pass@rotated.example/master.m3u8"]}),
+        ] {
+            assert!(parse_dramavibe_sources(&value).is_err());
+        }
     }
 
     #[test]

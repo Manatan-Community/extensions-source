@@ -1,0 +1,17 @@
+[package]
+name = "manatan-novel-en-starcafe"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+manatan-sdk.workspace = true
+manatan-common.workspace = true
+serde_json.workspace = true
+url.workspace = true
+regex.workspace = true
+wordpress-novel = { path = "../../../shared/wordpress-novel" }

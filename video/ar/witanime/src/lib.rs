@@ -377,6 +377,16 @@ fn parse_catalog_page(html: &str) -> Result<Paged<CatalogItem>> {
     let document = Html::parse_document(html);
     let cards =
         selector("div.anime-list-content div.anime-card-poster div.ehover6, div.anime-card-poster div.ehover6")?;
+    if document.select(&cards).next().is_none()
+        && document
+            .select(&selector("div.anime-list-content")?)
+            .next()
+            .is_none()
+    {
+        return Err(Error::new(
+            "WIT ANIME returned an unsupported page instead of its anime catalog; the site may have moved or be unavailable",
+        ));
+    }
     let anchor = selector("a")?;
     let image = selector("img")?;
     let mut items = Vec::new();
@@ -1105,6 +1115,20 @@ mod tests {
         <a href="javascript:void(0);" onclick="openEpisode('aHR0cHM6Ly93aXRhbmltZS55b3UvZXBpc29kZS9vbmUtcGllY2UtJUQ4JUE3JUQ5JTg0JUQ4JUFEJUQ5JTg0JUQ5JTgyJUQ4JUE5LTExNzAv')">الحلقة 1170</a>
       </h3></div></div>
     "#;
+
+    #[test]
+    fn redirected_blog_is_not_an_empty_anime_catalog() {
+        assert!(parse_catalog_page(
+            r#"<html><title>WIT ANIME</title><div class="blog-posts">Blogger</div></html>"#
+        )
+        .is_err());
+        assert!(
+            parse_catalog_page(r#"<div class="anime-list-content"></div>"#)
+                .unwrap()
+                .entries
+                .is_empty()
+        );
+    }
 
     #[test]
     fn parses_catalog_details_and_episodes() {

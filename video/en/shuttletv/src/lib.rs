@@ -8,6 +8,7 @@ use manatan_sdk::{
     VideoStream,
 };
 use serde_json::Value;
+use std::collections::BTreeSet;
 use url::Url;
 
 const BASE_URL: &str = "https://shuttletv.su";
@@ -87,7 +88,47 @@ impl ShuttleTv {
             headless: Some(true),
             preload_scripts: Vec::new(),
         })?;
-        streams_from_capture(&response, embed_url)
+        let streams = streams_from_capture(&response, embed_url)?;
+        if streams.len() > 32 {
+            return Err(Error::new("ShuttleTV player exposed too many manifests"));
+        }
+        let requests = streams
+            .iter()
+            .map(|stream| {
+                Client::browser()
+                    .get(&stream.url)
+                    .cookies_for(&stream.url)
+                    .header("Referer", embed_url)
+                    .header("Origin", "https://cinesrc.st")
+                    .timeout_ms(20_000)
+                    .max_body_bytes(1024 * 1024)
+            })
+            .collect();
+        let responses = Client::send_many(requests, 3);
+        let candidates = streams
+            .into_iter()
+            .zip(responses)
+            .filter_map(|(stream, response)| {
+                let response = response.ok()?.error_for_status().ok()?;
+                let body = response.text().ok()?.to_string();
+                let valid = if stream.is_hls {
+                    body.trim_start().starts_with("#EXTM3U")
+                } else {
+                    body.contains("<MPD")
+                };
+                valid.then_some((stream, body))
+            })
+            .collect();
+        let direct_url = response
+            .value
+            .as_ref()
+            .and_then(|value| value.get("url"))
+            .and_then(Value::as_str);
+        let streams = root_manifest_streams(candidates, direct_url);
+        if streams.is_empty() {
+            return Err(Error::new("ShuttleTV player manifests are unavailable"));
+        }
+        Ok(streams)
     }
 }
 
@@ -339,8 +380,8 @@ fn streams_from_capture(
             .filter(|url| media_url(url))
             .map(ToString::to_string),
     );
-    urls.sort();
-    urls.dedup();
+    let mut seen = BTreeSet::new();
+    urls.retain(|url| seen.insert(url.clone()));
     if urls.is_empty() {
         return Err(Error::new(
             "ShuttleTV player did not expose a playable stream",
@@ -375,6 +416,61 @@ fn streams_from_capture(
 fn media_url(url: &str) -> bool {
     let lower = url.to_ascii_lowercase();
     lower.contains(".m3u8") || lower.contains(".mpd") || lower.contains("/stream/mpd")
+}
+
+fn root_manifest_streams(
+    candidates: Vec<(VideoStream, String)>,
+    direct_url: Option<&str>,
+) -> Vec<VideoStream> {
+    // A browser requests the master, quality variants and audio playlists.
+    // Only roots are videos: choosing an audio child gives a black picture,
+    // while choosing a quality child loses the master's audio association.
+    let mut children = BTreeSet::new();
+    for (stream, body) in &candidates {
+        if !stream.is_hls || !body.contains("#EXT-X-STREAM-INF:") {
+            continue;
+        }
+        let Ok(base) = Url::parse(&stream.url) else {
+            continue;
+        };
+        for line in body.lines().map(str::trim) {
+            if !line.is_empty() && !line.starts_with('#') {
+                if let Ok(url) = base.join(line) {
+                    children.insert(url.to_string());
+                }
+            } else {
+                let mut rest = line;
+                while let Some((_, tail)) = rest.split_once("URI=\"") {
+                    let Some((uri, tail)) = tail.split_once('"') else {
+                        break;
+                    };
+                    if let Ok(url) = base.join(uri) {
+                        children.insert(url.to_string());
+                    }
+                    rest = tail;
+                }
+            }
+        }
+    }
+    let mut streams: Vec<_> = candidates
+        .into_iter()
+        .filter(|(stream, _)| !children.contains(&stream.url))
+        // CineSrc re-signs child URLs on each master fetch, so comparing their
+        // opaque URLs alone is insufficient. Prefer manifest structure. A
+        // standalone media playlist is accepted only when the browser's video
+        // element actually selected that URL, not merely requested it.
+        .filter(|(stream, body)| {
+            stream.is_dash
+                || body.contains("#EXT-X-STREAM-INF:")
+                || direct_url == Some(stream.url.as_str())
+        })
+        .map(|(mut stream, body)| {
+            stream.preferred = stream.is_dash || body.contains("#EXT-X-STREAM-INF:");
+            stream
+        })
+        .collect();
+    streams.sort_by_key(|stream| !stream.preferred);
+    streams
 }
 
 fn parse_key(key: &str) -> Result<(&str, u64)> {
@@ -433,6 +529,95 @@ manatan_sdk::export_extension!(manatan_sdk::Extension::new().video("shuttletv", 
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn captured_audio_and_quality_playlists_are_not_separate_videos() {
+        let master = "#EXTM3U\n#EXT-X-MEDIA:TYPE=AUDIO,URI=\"a.m3u8\"\n#EXT-X-STREAM-INF:BANDWIDTH=6000000\nz.m3u8\n";
+        let candidates = [
+            (
+                "https://media.example/a.m3u8",
+                "#EXTM3U\n#EXTINF:6,\na.m4s\n",
+            ),
+            ("https://media.example/master.m3u8", master),
+            (
+                "https://media.example/z.m3u8",
+                "#EXTM3U\n#EXTINF:6,\nz.m4s\n",
+            ),
+        ]
+        .into_iter()
+        .map(|(url, body)| {
+            (
+                VideoStream {
+                    url: url.to_string(),
+                    is_hls: true,
+                    ..VideoStream::default()
+                },
+                body.to_string(),
+            )
+        })
+        .collect();
+        let streams = root_manifest_streams(candidates, None);
+        assert_eq!(streams.len(), 1);
+        assert_eq!(streams[0].url, "https://media.example/master.m3u8");
+    }
+
+    #[test]
+    fn keeps_independent_hls_and_dash_roots() {
+        let candidates = vec![
+            (
+                VideoStream {
+                    url: "https://media.example/video.m3u8".to_string(),
+                    is_hls: true,
+                    ..VideoStream::default()
+                },
+                "#EXTM3U\n#EXTINF:6,\nvideo.ts\n".to_string(),
+            ),
+            (
+                VideoStream {
+                    url: "https://media.example/video.mpd".to_string(),
+                    is_dash: true,
+                    ..VideoStream::default()
+                },
+                "<MPD/>".to_string(),
+            ),
+        ];
+        let streams = root_manifest_streams(candidates, Some("https://media.example/video.m3u8"));
+        assert_eq!(streams.len(), 2);
+        assert!(streams[0].is_dash && streams[0].preferred);
+        assert!(streams[1].is_hls);
+    }
+
+    #[test]
+    fn rotating_signed_child_urls_do_not_become_video_choices() {
+        let master = "#EXTM3U\n#EXT-X-MEDIA:TYPE=AUDIO,URI=\"new-a.m3u8\"\n#EXT-X-STREAM-INF:BANDWIDTH=6000000\nnew-v.m3u8\n";
+        let candidates = [
+            (
+                "https://media.example/old-a.m3u8",
+                "#EXTM3U\n#EXTINF:6,\na.m4s\n",
+            ),
+            ("https://media.example/root.m3u8", master),
+            (
+                "https://media.example/old-v.m3u8",
+                "#EXTM3U\n#EXTINF:6,\nv.m4s\n",
+            ),
+        ]
+        .into_iter()
+        .map(|(url, body)| {
+            (
+                VideoStream {
+                    url: url.to_string(),
+                    is_hls: true,
+                    ..VideoStream::default()
+                },
+                body.to_string(),
+            )
+        })
+        .collect();
+        let streams = root_manifest_streams(candidates, Some("blob:https://cinesrc.st/video"));
+        assert_eq!(streams.len(), 1);
+        assert!(streams[0].preferred);
+        assert_eq!(streams[0].url, "https://media.example/root.m3u8");
+    }
 
     #[test]
     fn parses_movie_and_tv_results() {

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "id": "anizone",
-  "name": "AniZone",
-  "version": "0.1.2",
-  "versionCode": 3,
-  "apiVersion": 2,
+  "id": "oceanveil",
+  "name": "OceanVeil",
+  "version": "1.0.0",
+  "versionCode": 1,
   "minimumManatanVersion": "0.3.1",
+  "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
   "publisher": {
@@ -13,69 +13,63 @@
     "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
     "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
   },
-  "description": "All-language anime catalog, subtitles, and streams from AniZone with enforced safe-search filtering.",
+  "description": "English anime from OceanVeil.",
   "author": "Manatan Community",
-  "homepage": "https://anizone.to",
+  "homepage": "https://oceanveil.net",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
   "icon": "assets/icon.png",
-  "permissions": {
-    "network": {
-      "allow": [
-        "https://anizone.to",
-        "https://*.vid-cdn.xyz",
-        "https://*.xin-cdn.xyz"
-      ]
-    },
-    "cookies": true,
-    "webview": false,
-    "storage": false,
-    "assets": false,
-    "javascript": false
-  },
   "assets": [
     {
       "path": "assets/icon.png",
       "mimeType": "image/png",
-      "sha256": "6f9900740db5d0413f7af9c430adce0cfeb45c066a2711d1467932960cf1d426"
+      "sha256": "25ce129f07b52f5ab5145e26c8e12b9bcfcff40719997b1d00cf0a684aee6832"
     }
   ],
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://oceanveil.net",
+        "https://image.oceanveil.net",
+        "https://anime-contents-stream.oceanveil.net"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
   "sources": [
     {
-      "id": "anizone",
-      "name": "AniZone",
-      "lang": "all",
+      "id": "oceanveil",
+      "name": "OceanVeil",
+      "lang": "en",
       "contentType": "video",
-      "baseUrl": "https://anizone.to",
-      "contentRating": "suggestive",
+      "baseUrl": "https://oceanveil.net",
+      "contentRating": "safe",
       "capabilities": {
-        "search": true,
         "latest": true,
-        "filters": true,
-        "preferences": true,
-        "hosterResolution": false,
+        "search": true,
         "urlResolution": true,
-        "mediaProcessing": false
+        "authentication": true,
+        "webview": true
       },
       "listings": [
         {
           "id": "popular",
-          "name": "Popular"
+          "name": "All Titles"
         },
         {
           "id": "latest",
-          "name": "Latest"
+          "name": "Latest Updates"
         }
       ],
       "urlPatterns": [
         {
-          "pattern": "https://anizone.to/anime/*",
-          "kind": "item-or-episode"
+          "pattern": "https://oceanveil.net/anime_titles/*",
+          "kind": "item"
         }
-      ],
-      "tags": [
-        "anizone",
-        "subtitles"
       ]
     }
   ]

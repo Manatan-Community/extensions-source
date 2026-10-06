@@ -859,6 +859,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-rainbowreads"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
 name = "manatan-novel-en-secondlifetranslations"
 version = "0.1.0"
 dependencies = [
@@ -875,6 +887,18 @@ version = "0.1.0"
 dependencies = [
  "manatan-common",
  "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
+name = "manatan-novel-en-starcafe"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
  "serde_json",
  "url",
  "wordpress-novel",
@@ -958,6 +982,17 @@ dependencies = [
  "serde_json",
  "url",
  "wit-bindgen",
+]
+
+[[package]]
+name = "manatan-video-en-oceanveil"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
 ]
 
 [[package]]

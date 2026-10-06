@@ -12,8 +12,10 @@ applicable checks below pass against the signed production package.
   raw upstream plugin, or unlisted executable asset.
 - Every declared JavaScript asset is packaged, SHA-256 pinned, and callable
   only through a fixed identifier with JSON-compatible arguments and results.
-- The manifest declares every HTTP, redirect, image, subtitle, and stream
-  origin. The Play profile rejects HTTP and undeclared origins.
+- The manifest declares trusted network starting origins. Native video hosts
+  may discover public HTTPS playback origins from authorized responses by
+  default; static-only packages use the documented discovery opt-out. The Play
+  profile rejects HTTP and origins without declared or host-verified provenance.
 - The package id, content type, digest, publisher id, and publisher public key
   match the repository entry. A changed publisher key requires an explicit
   uninstall and trust decision.

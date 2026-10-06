@@ -50,3 +50,11 @@ Declare every reachable hostname, including stream and image hosts. Prefer an
 exact hostname. DNS-label-aware wildcards are only appropriate when a source
 really uses arbitrary subdomains. Enable browser, cookies, storage,
 JavaScript, assets, or media processing only when the source uses them.
+
+On current Manatan hosts, native video sources discover public HTTPS playback
+origins from already authorized responses and redirects by default. Declare the
+trusted catalog/player starting origins, not every rotating CDN hostname.
+Discovery does not permit local/private destinations, arbitrary guest-returned
+URLs, or writes to discovered origins. Publishers requiring static origins only
+can opt out with `"network.media-discovery.disabled.v1"` in
+`permissions.services`. Older hosts still enforce the static allow list.
