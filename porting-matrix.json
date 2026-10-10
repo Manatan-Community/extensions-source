@@ -4,6 +4,21 @@
   "sources": [
     {
       "upstreamRepository": "Manatan-Community/extensions-source",
+      "upstreamPath": "novel/en/rainylotus",
+      "sourceId": "rainylotus",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "lotus-wordpress",
+      "requiredCapabilities": ["http", "cookies", "webview", "filters", "authentication", "url-resolution"],
+      "status": "live-verified",
+      "tests": ["13 parser, pagination and access-policy regressions plus 3 shared reader sanitizer tests", "cargo clippy --all-targets -- -D warnings", "signed component and metadata-free bundled icon validation", "production Wasmtime runner: official login action", "Wasmtime with real HTTP: 56-title catalog pages 1/2, newly added, title/empty search and full-metadata filter checks", "Three novels: covers, 177/135/64 ordered chapters, older chapter-page access, first/middle/newest public prose matched to official pages, stale lock revalidation and explicit paid gate", "Official login action and guest status; interactive sign-in and authenticated reading NOT VERIFIED"],
+      "packagePath": "packages/novel/en/rainylotus.manatan2",
+      "knownSiteFailure": "Interactive sign-in and authenticated chapter reading require an authorized account and are not guest-tested.",
+      "license": "Apache-2.0",
+      "attribution": "Original implementation by Manatan Community using public website behavior."
+    },
+    {
+      "upstreamRepository": "Manatan-Community/extensions-source",
       "upstreamPath": "novel/en/starcafe",
       "sourceId": "starcafe",
       "language": "en",
