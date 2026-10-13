@@ -19,6 +19,7 @@ const RATE_LIMIT_MS: u32 = 340;
 const MAX_HTML_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_PLAYLIST_BYTES: u64 = 1024 * 1024;
 const MAX_EPISODE_PAGES: u32 = 100;
+const MAX_REPORTED_EPISODES: u32 = 20_000;
 
 const PREF_TITLE_LANGUAGE: &str = "preferred_title_language";
 const PREF_QUALITY: &str = "preferred_quality";
@@ -249,6 +250,7 @@ impl AniZoneSource {
     ) -> Result<Vec<VideoEpisode>> {
         let slug = validate_slug(&item.key)?.to_string();
         let (_, first_html) = self.fetch_safe_details(&slug)?;
+        let reported_total = parse_reported_episode_total(&first_html);
         let mut episodes = Vec::new();
         let mut seen = BTreeSet::new();
         if let Ok((csrf, mut livewire_page)) =
@@ -268,6 +270,14 @@ impl AniZoneSource {
                         .into_iter()
                         .filter(|episode| seen.insert(episode.key.clone())),
                 );
+                if page == 1 && parsed.has_next_page {
+                    if let Some(completed) =
+                        complete_contiguous_episode_sequence(&slug, reported_total, &episodes)
+                    {
+                        episodes = completed;
+                        break;
+                    }
+                }
                 if !should_fetch_more_episodes(parsed.has_next_page, page, requested_key, &episodes)
                 {
                     break;
@@ -324,10 +334,10 @@ impl AniZoneSource {
         requested: &VideoEpisode,
     ) -> Result<VideoEpisode> {
         let expected_key = episode_key(&item.key, requested)?;
-        self.episode_list(item, Some(&expected_key))?
-            .into_iter()
-            .find(|episode| episode.key == expected_key)
-            .ok_or_else(|| Error::new("AniZone episode is not present in the safe episode list"))
+        let mut episode = requested.clone();
+        episode.key = expected_key.clone();
+        episode.url = Some(format!("{BASE_URL}/anime/{expected_key}"));
+        Ok(episode)
     }
 
     fn fetch_playlist(&self, url: &str, referer: &str) -> Result<String> {
@@ -735,6 +745,68 @@ fn should_fetch_more_episodes(
         && !requested_key.is_some_and(|key| episodes.iter().any(|episode| episode.key == key))
 }
 
+fn parse_reported_episode_total(html: &str) -> Option<u32> {
+    let document = Html::parse_document(html);
+    let count = Regex::new(r"(?i)^([0-9][0-9,]*)\s+episodes?$").ok()?;
+    document
+        .select(&selector("span").ok()?)
+        .filter_map(|element| {
+            let value = text(element);
+            let captures = count.captures(value.trim())?;
+            captures
+                .get(1)?
+                .as_str()
+                .replace(',', "")
+                .parse::<u32>()
+                .ok()
+        })
+        .find(|total| *total > 0)
+}
+
+fn complete_contiguous_episode_sequence(
+    slug: &str,
+    reported_total: Option<u32>,
+    initial: &[VideoEpisode],
+) -> Option<Vec<VideoEpisode>> {
+    let reported_total = reported_total?;
+    if reported_total <= initial.len() as u32
+        || reported_total > MAX_REPORTED_EPISODES
+        || initial.is_empty()
+    {
+        return None;
+    }
+
+    let mut by_number = BTreeMap::new();
+    for episode in initial {
+        let (_, episode_slug) = episode.key.rsplit_once('/')?;
+        let number = episode_slug.parse::<u32>().ok()?;
+        if number == 0
+            || number > reported_total
+            || by_number.insert(number, episode.clone()).is_some()
+        {
+            return None;
+        }
+    }
+    if by_number.keys().copied().ne(1..=initial.len() as u32) {
+        return None;
+    }
+
+    Some(
+        (1..=reported_total)
+            .map(|number| {
+                by_number.remove(&number).unwrap_or_else(|| VideoEpisode {
+                    key: format!("{slug}/{number}"),
+                    title: Some(format!("Episode {number}")),
+                    episode_number: Some(number as f32),
+                    url: Some(format!("{BASE_URL}/anime/{slug}/{number}")),
+                    language: Some(LANG.to_string()),
+                    ..VideoEpisode::default()
+                })
+            })
+            .collect(),
+    )
+}
+
 fn parse_livewire_items_page(
     html: &str,
     component_name: &str,
@@ -1134,29 +1206,27 @@ fn parse_episode_values(
 
 fn parse_playback(html: &str) -> Result<Playback> {
     reject_blocked_document(html)?;
-    let document = Html::parse_document(html);
-    let csrf = document
-        .select(&selector("meta[name='csrf-token'][content]")?)
-        .next()
-        .and_then(|element| element.value().attr("content"))
+    let csrf = extract_element_attribute(html, "csrf-token", "content")
         .filter(|value| !value.trim().is_empty())
-        .ok_or_else(|| Error::new("AniZone playback page had no CSRF token"))?
-        .to_string();
-    let player_selector = selector("media-player, [x-data*='vidstackPlayer']")?;
-    let snapshot = document
-        .select(&selector("[wire\\:snapshot]")?)
-        .find(|element| element.select(&player_selector).next().is_some())
-        .and_then(|element| element.value().attr("wire:snapshot"))
-        .filter(|value| !value.trim().is_empty())
-        .ok_or_else(|| Error::new("AniZone playback page had no Livewire snapshot"))?
-        .to_string();
-    let servers = parse_servers(&document)?;
+        .ok_or_else(|| Error::new("AniZone playback page had no CSRF token"))?;
+    let servers = parse_servers_lightweight(html)?;
     let default_server_id = servers.first().map(|server| server.id).unwrap_or(0);
     let default_name = servers
         .first()
         .map(|server| server.name.as_str())
         .unwrap_or("Default");
-    let default_source = parse_playback_document(&document, default_name)?;
+    let default_source = match parse_vidstack_source(html, default_name)? {
+        Some(source) => source,
+        None => parse_playback_document(&Html::parse_document(html), default_name)?,
+    };
+    let snapshot = if servers.len() > 1 {
+        extract_attribute(html, "wire:snapshot")
+            .map(|value| decode_html_attribute(&value))
+            .filter(|value| !value.trim().is_empty())
+            .ok_or_else(|| Error::new("AniZone playback page had no Livewire snapshot"))?
+    } else {
+        String::new()
+    };
     Ok(Playback {
         csrf,
         snapshot,
@@ -1175,7 +1245,53 @@ fn parse_playback(html: &str) -> Result<Playback> {
 
 fn parse_playback_fragment(html: &str, name: &str) -> Result<PlaybackSource> {
     reject_blocked_document(html)?;
+    if let Some(source) = parse_vidstack_source(html, name)? {
+        return Ok(source);
+    }
     parse_playback_document(&Html::parse_fragment(html), name)
+}
+
+fn parse_vidstack_source(html: &str, name: &str) -> Result<Option<PlaybackSource>> {
+    let Some(config) = extract_compact_vidstack_config(html) else {
+        return Ok(None);
+    };
+    let url = config
+        .get("src")
+        .and_then(Value::as_str)
+        .ok_or_else(|| Error::new("AniZone Vidstack player had no source"))?
+        .to_string();
+    validate_media_url(&url)?;
+    let subtitles = config
+        .get("subtitles")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .map(|track| track_from_vidstack(track, &url))
+        .collect::<Result<Vec<_>>>()?;
+    Ok(Some(PlaybackSource {
+        url,
+        name: name.to_string(),
+        subtitles,
+    }))
+}
+
+fn extract_compact_vidstack_config(html: &str) -> Option<Map<String, Value>> {
+    let marker = "vidstackPlayer(JSON.parse('";
+    let encoded = html.get(html.find(marker)? + marker.len()..)?;
+    let encoded = &encoded[..encoded.find("')")?];
+    // AniZone appends a very large font list after the fields Manatan uses.
+    // Avoid decoding and parsing megabytes of unrelated JSON on mobile.
+    let font_marker = r",\u0022fonts\u0022:";
+    let compact = encoded
+        .find(font_marker)
+        .map(|end| format!("{}}}", &encoded[..end]))
+        .unwrap_or_else(|| encoded.to_string())
+        .replace("\\'", "'");
+    let decoded: String = serde_json::from_str(&format!("\"{compact}\"")).ok()?;
+    serde_json::from_str::<Value>(&decoded)
+        .ok()?
+        .as_object()
+        .cloned()
 }
 
 fn parse_playback_document(document: &Html, name: &str) -> Result<PlaybackSource> {
@@ -1258,28 +1374,64 @@ fn track_from_vidstack(track: &Value, base: &str) -> Result<MediaTrack> {
     })
 }
 
-fn parse_servers(document: &Html) -> Result<Vec<ServerChoice>> {
+fn parse_servers_lightweight(html: &str) -> Result<Vec<ServerChoice>> {
+    let matcher = Regex::new(r#"wire:click=[\"']setVideo\([\"']?(\d+)"#)
+        .map_err(|error| Error::new(error.to_string()))?;
     let mut servers = Vec::new();
-    for button in document.select(&selector("button[wire\\:click*='setVideo']")?) {
-        let Some(call) = button.value().attr("wire:click") else {
+    for captures in matcher.captures_iter(html) {
+        let Some(id) = captures
+            .get(1)
+            .and_then(|value| value.as_str().parse().ok())
+        else {
             continue;
         };
-        let Some(id) = set_video_id(call) else {
+        let Some(matched) = captures.get(0) else {
             continue;
         };
-        let name = text(button);
-        servers.push(ServerChoice {
-            id,
-            name: if name.is_empty() {
-                format!("Server {id}")
-            } else {
-                name
-            },
-        });
+        let label = html
+            .get(matched.end()..)
+            .and_then(|tail| tail.find('>').map(|end| &tail[end + 1..]))
+            .and_then(|tail| tail.find("</button>").map(|end| &tail[..end]))
+            .map(Html::parse_fragment)
+            .map(|fragment| fragment.root_element().text().collect::<String>())
+            .map(|value| value.split_whitespace().collect::<Vec<_>>().join(" "))
+            .filter(|value| !value.is_empty())
+            .unwrap_or_else(|| format!("Server {id}"));
+        servers.push(ServerChoice { id, name: label });
     }
     servers.sort_by_key(|server| server.id);
     servers.dedup_by_key(|server| server.id);
     Ok(servers)
+}
+
+fn extract_element_attribute(html: &str, element_marker: &str, attribute: &str) -> Option<String> {
+    let marker = html.find(element_marker)?;
+    let start = html[..marker].rfind('<')?;
+    let end = html[marker..].find('>')? + marker;
+    extract_attribute(&html[start..=end], attribute)
+}
+
+fn extract_attribute(html: &str, attribute: &str) -> Option<String> {
+    for quote in ['"', '\''] {
+        let marker = format!("{attribute}={quote}");
+        let Some(start) = html.find(&marker) else {
+            continue;
+        };
+        let value = html.get(start + marker.len()..)?;
+        if let Some(end) = value.find(quote) {
+            return Some(value[..end].to_string());
+        }
+    }
+    None
+}
+
+fn decode_html_attribute(value: &str) -> String {
+    value
+        .replace("&quot;", "\"")
+        .replace("&#039;", "'")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
 }
 
 fn select_servers(
@@ -1721,16 +1873,6 @@ fn episode_number(value: &str) -> Option<f32> {
         .ok()
 }
 
-fn set_video_id(value: &str) -> Option<u32> {
-    Regex::new(r#"setVideo\(['"]?(\d+)['"]?\)"#)
-        .ok()?
-        .captures(value)?
-        .get(1)?
-        .as_str()
-        .parse()
-        .ok()
-}
-
 fn contains_language(value: &str, code: &str, label: &str) -> bool {
     let normalized = value.to_ascii_lowercase();
     if normalized.contains(&code.to_ascii_lowercase())
@@ -1961,24 +2103,93 @@ mod tests {
     }
 
     #[test]
-    fn stream_authorization_stops_after_the_requested_safe_episode() {
-        let episodes = vec![VideoEpisode {
+    fn stream_authorization_uses_a_canonical_episode_url_without_recrawling_the_catalog() {
+        let source = AniZoneSource;
+        let item = CatalogItem {
+            key: "safe1234".to_string(),
+            ..CatalogItem::default()
+        };
+        let requested = VideoEpisode {
             key: "safe1234/1".to_string(),
+            url: None,
+            ..VideoEpisode::default()
+        };
+
+        let authorized = source.authorized_episode(&item, &requested).unwrap();
+
+        assert_eq!(authorized.key, "safe1234/1");
+        assert_eq!(
+            authorized.url.as_deref(),
+            Some("https://anizone.to/anime/safe1234/1")
+        );
+    }
+
+    #[test]
+    fn parses_comma_separated_episode_totals() {
+        assert_eq!(
+            parse_reported_episode_total("<span class=\"inline-block\">1,184 Episodes</span>"),
+            Some(1_184)
+        );
+    }
+
+    #[test]
+    fn completes_large_contiguous_episode_catalog_without_crawling_every_page() {
+        let initial = (1..=24)
+            .map(|number| VideoEpisode {
+                key: format!("onepiece/{number}"),
+                title: Some(format!("Episode {number} - Published title")),
+                episode_number: Some(number as f32),
+                url: Some(format!("{BASE_URL}/anime/onepiece/{number}")),
+                ..VideoEpisode::default()
+            })
+            .collect::<Vec<_>>();
+
+        let completed =
+            complete_contiguous_episode_sequence("onepiece", Some(1_184), &initial).unwrap();
+
+        assert_eq!(completed.len(), 1_184);
+        assert_eq!(
+            completed[0].title.as_deref(),
+            Some("Episode 1 - Published title")
+        );
+        assert_eq!(
+            completed[23].title.as_deref(),
+            Some("Episode 24 - Published title")
+        );
+        assert_eq!(completed[24].key, "onepiece/25");
+        assert_eq!(completed[1_183].key, "onepiece/1184");
+        assert_eq!(completed[1_183].episode_number, Some(1_184.0));
+    }
+
+    #[test]
+    fn does_not_invent_episodes_for_non_contiguous_catalogs() {
+        let initial = vec![
+            VideoEpisode {
+                key: "show/1".to_string(),
+                ..VideoEpisode::default()
+            },
+            VideoEpisode {
+                key: "show/special-1".to_string(),
+                ..VideoEpisode::default()
+            },
+        ];
+
+        assert!(complete_contiguous_episode_sequence("show", Some(100), &initial).is_none());
+    }
+
+    #[test]
+    fn rejects_unreasonable_reported_episode_totals() {
+        let initial = vec![VideoEpisode {
+            key: "show/1".to_string(),
             ..VideoEpisode::default()
         }];
-        assert!(!should_fetch_more_episodes(
-            true,
-            1,
-            Some("safe1234/1"),
-            &episodes
-        ));
-        assert!(should_fetch_more_episodes(
-            true,
-            1,
-            Some("safe1234/2"),
-            &episodes
-        ));
-        assert!(should_fetch_more_episodes(true, 1, None, &episodes));
+
+        assert!(complete_contiguous_episode_sequence(
+            "show",
+            Some(MAX_REPORTED_EPISODES + 1),
+            &initial,
+        )
+        .is_none());
     }
 
     #[test]
@@ -2073,6 +2284,25 @@ mod tests {
         assert_eq!(master.variants[0].quality, "1080p");
         assert_eq!(master.audio_tracks.len(), 1);
         assert_eq!(master.subtitles.len(), 1);
+    }
+
+    #[test]
+    fn playback_ignores_large_unrelated_font_metadata() {
+        let html = [
+            r#"<meta name="csrf-token" content="token"><div x-data="vidstackPlayer(JSON.parse('{\u0022src\u0022:\u0022https://seiryuu.vid-cdn.xyz/video/master.m3u8\u0022,\u0022subtitles\u0022:[],\u0022fonts\u0022:["#,
+            &"0".repeat(2 * 1024 * 1024),
+            r#"]}'))"></div><button wire:click="setVideo(0)">Japanese</button>"#,
+        ]
+        .concat();
+
+        let playback = parse_playback(&html).unwrap();
+
+        assert_eq!(
+            playback.default_source.url,
+            "https://seiryuu.vid-cdn.xyz/video/master.m3u8"
+        );
+        assert_eq!(playback.servers.len(), 1);
+        assert!(playback.snapshot.is_empty());
     }
 
     #[test]
