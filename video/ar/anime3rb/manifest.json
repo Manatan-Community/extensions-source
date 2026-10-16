@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 2,
+  "id": "anime3rb",
+  "name": "Anime3rb",
+  "version": "0.1.1",
+  "versionCode": 2,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Arabic-subtitled anime from Anime3rb.",
+  "author": "Manatan Community",
+  "homepage": "https://anime3rb.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://anime3rb.com",
+        "https://*.anime3rb.com",
+        "https://graphql.anilist.co",
+        "https://s4.anilist.co",
+        "https://vid3rb.com",
+        "https://*.vid3rb.com"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "6c132f7a49a1a65d1cdbfb37c4154d2efa01d6f04decb361e3afa85d81d8a32e"
+    }
+  ],
+  "sources": [
+    {
+      "id": "anime3rb",
+      "name": "Anime3rb",
+      "lang": "ar",
+      "contentType": "video",
+      "baseUrl": "https://anime3rb.com",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "webview": true,
+        "urlResolution": true,
+        "mediaProcessing": false
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://anime3rb.com/titles/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://anime3rb.com/episode/*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "anime",
+        "arabic-subtitles"
+      ]
+    }
+  ]
+}

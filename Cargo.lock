@@ -90,6 +90,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "anime3rb-video"
+version = "0.1.0"
+dependencies = [
+ "manatan-sdk",
+ "scraper",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "animeonsen-video"
 version = "0.1.0"
 dependencies = [

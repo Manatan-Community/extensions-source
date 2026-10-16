@@ -4,6 +4,21 @@
   "sources": [
     {
       "upstreamRepository": "Manatan-Community/extensions-source",
+      "upstreamPath": "video/ar/anime3rb",
+      "sourceId": "anime3rb",
+      "language": "ar",
+      "mediaKind": "video",
+      "framework": "standalone-browser-player",
+      "requiredCapabilities": ["http", "cookies", "webview", "url-resolution"],
+      "status": "component-valid",
+      "tests": ["6 catalog, metadata, episode, playback and URL-policy regression tests", "cargo clippy --all-targets -- -D warnings", "signed component and bundled icon validation"],
+      "packagePath": "packages/video/ar/anime3rb.manatan2",
+      "knownSiteFailure": "Cloudflare clearance and production playback require interactive runtime verification.",
+      "license": "Apache-2.0",
+      "attribution": "Original implementation by Manatan Community using public website behavior."
+    },
+    {
+      "upstreamRepository": "Manatan-Community/extensions-source",
       "upstreamPath": "novel/en/rainylotus",
       "sourceId": "rainylotus",
       "language": "en",
