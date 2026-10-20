@@ -41571,6 +41571,34 @@
       "attribution": "Independent integration with BookRacy's public catalog and EPUB endpoints."
     },
     {
+      "upstreamRepository": "https://silip.pages.dev",
+      "upstreamPath": "public TMDB catalog and published VidCore player",
+      "sourceId": "silip",
+      "language": "tl",
+      "mediaKind": "video",
+      "framework": "standalone-headless-webview",
+      "requiredCapabilities": [
+        "http",
+        "cookies",
+        "webview",
+        "filters",
+        "url-resolution",
+        "media-processing"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "6 catalog, adult-policy, URL-resolution, and stream-capture regression tests",
+        "cargo clippy -p silip-video --all-targets -- -D warnings",
+        "component-validated",
+        "production Wasmtime runner: live popular, search, details, and episodes",
+        "live browser: VidCore HLS master and media requests for Hello, Love, Goodbye"
+      ],
+      "packagePath": "packages/video/tl/silip.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with Silip's public Filipino catalog and published player list."
+    },
+    {
       "upstreamRepository": "https://shuttletv.su",
       "upstreamPath": "public TMDB catalog and CineSrc embed",
       "sourceId": "shuttletv",
