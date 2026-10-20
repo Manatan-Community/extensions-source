@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 2,
+  "id": "animejl",
+  "name": "AnimeJL",
+  "version": "0.1.1",
+  "versionCode": 2,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Spanish-subtitled and dubbed anime from AnimeJL with resilient mirror selection.",
+  "author": "Manatan Community",
+  "homepage": "https://www.anime-jl.net",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://www.anime-jl.net",
+        "https://ok.ru",
+        "https://*.okcdn.ru",
+        "https://uqload.com",
+        "https://www.uqload.com",
+        "https://videovard.sx",
+        "https://www.videovard.sx",
+        "https://sbfull.com",
+        "https://www.sbfull.com",
+        "https://animejl.top",
+        "https://www.animejl.top"
+      ]
+    },
+    "cookies": true,
+    "webview": true,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "5102ff8529147daa20b9e34307250246f54c5b1e5afe57ffbc811ee23f85fb4d"
+    }
+  ],
+  "sources": [
+    {
+      "id": "animejl",
+      "name": "AnimeJL",
+      "lang": "es",
+      "contentType": "video",
+      "baseUrl": "https://www.anime-jl.net",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "webview": true,
+        "urlResolution": true,
+        "mediaProcessing": false
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://www.anime-jl.net/anime/*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "anime",
+        "spanish-subtitles",
+        "spanish-dub"
+      ]
+    }
+  ]
+}

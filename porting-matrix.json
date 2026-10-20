@@ -38228,15 +38228,17 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
-        "filters",
-        "url-resolution",
-        "hoster-resolution",
-        "media-processing"
+        "cookies",
+        "url-resolution"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
+      "status": "component-valid",
+      "tests": [
+        "2 catalog, metadata, episode, HLS, StreamTape and URL-policy regression tests",
+        "cargo clippy --all-targets -- -D warnings",
+        "signed component and bundled icon validation"
+      ],
+      "packagePath": "packages/video/es/animeav1.manatan2",
+      "knownSiteFailure": "Production playback mirrors require live runtime verification.",
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
     },
@@ -38333,15 +38335,18 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
-        "filters",
-        "url-resolution",
-        "hoster-resolution",
-        "media-processing"
+        "cookies",
+        "webview",
+        "url-resolution"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
+      "status": "component-valid",
+      "tests": [
+        "3 catalog, metadata, episode, OK.ru and URL-policy regression tests",
+        "cargo clippy --all-targets -- -D warnings",
+        "signed component and bundled icon validation"
+      ],
+      "packagePath": "packages/video/es/animejl.manatan2",
+      "knownSiteFailure": "Non-OK.ru playback mirrors require live browser-runtime verification.",
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
     },

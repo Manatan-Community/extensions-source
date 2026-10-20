@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "id": "animeav1",
+  "name": "AnimeAv1",
+  "version": "0.1.5",
+  "versionCode": 6,
+  "apiVersion": 2,
+  "wasm": "extension.wasm",
+  "contentType": "video",
+  "publisher": {
+    "id": "org.manatan.community.extensions",
+    "publicKey": "88b67d201d387960b96b64b5c4ca39d5edceef6e8a088316449a2d5437a889ac",
+    "signature": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "description": "Spanish-subtitled and dubbed anime from AnimeAv1 with resilient mirror selection.",
+  "author": "Manatan Community",
+  "homepage": "https://animeav1.com",
+  "repository": "https://github.com/Manatan-Community/extensions-source",
+  "license": "Apache-2.0",
+  "icon": "assets/icon.png",
+  "permissions": {
+    "network": {
+      "allow": [
+        "https://animeav1.com",
+        "https://cdn.animeav1.com",
+        "https://player.zilla-networks.com",
+        "https://streamtape.com",
+        "https://*.tapecontent.net"
+      ]
+    },
+    "cookies": true,
+    "webview": false,
+    "storage": false,
+    "assets": false,
+    "javascript": false
+  },
+  "assets": [
+    {
+      "path": "assets/icon.png",
+      "mimeType": "image/png",
+      "sha256": "996548cdbc3c0927788edf4ef70417404ad03364c234c661b320fd2cb4d999cf"
+    }
+  ],
+  "sources": [
+    {
+      "id": "animeav1",
+      "name": "AnimeAv1",
+      "lang": "es",
+      "contentType": "video",
+      "baseUrl": "https://animeav1.com",
+      "contentRating": "suggestive",
+      "capabilities": {
+        "search": true,
+        "latest": true,
+        "filters": false,
+        "webview": false,
+        "urlResolution": true,
+        "mediaProcessing": false
+      },
+      "listings": [
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
+      ],
+      "urlPatterns": [
+        {
+          "pattern": "https://animeav1.com/media/*",
+          "kind": "item-or-episode"
+        }
+      ],
+      "tags": [
+        "anime",
+        "spanish-subtitles",
+        "spanish-dub"
+      ]
+    }
+  ]
+}
