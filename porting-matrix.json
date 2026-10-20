@@ -35956,6 +35956,30 @@
       "attribution": "Independent integration with the public 69书吧 catalog, search, book, directory, and chapter pages."
     },
     {
+      "upstreamRepository": "https://www.52shuku.net",
+      "upstreamPath": "category, ranking, search, novel index, and reading pages",
+      "sourceId": "shuku52",
+      "language": "zh",
+      "mediaKind": "novel",
+      "framework": "standalone",
+      "requiredCapabilities": [
+        "http",
+        "filters",
+        "url-resolution"
+      ],
+      "status": "live-verified",
+      "tests": [
+        "4 catalog, metadata, chapter, reader, and URL-policy regression tests",
+        "cargo clippy -p manatan-novel-zh-shuku52 --all-targets -- -D warnings",
+        "component-validated",
+        "production Wasmtime runner with public HTTP bridge: latest pages 1/2, popular ranking, search pages 1/2, metadata, 157 ordered chapters, first chapter text, and URL resolution"
+      ],
+      "packagePath": "packages/novel/zh/shuku52.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with the public 52书库 catalog, search, novel index, and reading pages."
+    },
+    {
       "upstreamRepository": "yuzono/anime-extensions",
       "upstreamPath": "src/all/animeonsen",
       "sourceId": "animeonsen",

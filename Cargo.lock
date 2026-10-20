@@ -992,6 +992,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-zh-shuku52"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "regex",
+ "serde_json",
+ "url",
+]
+
+[[package]]
 name = "manatan-sdk"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
