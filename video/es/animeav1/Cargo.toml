@@ -9,6 +9,7 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+base64.workspace = true
 manatan-sdk.workspace = true
 regex.workspace = true
 scraper.workspace = true

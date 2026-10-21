@@ -103,6 +103,7 @@ dependencies = [
 name = "animeav1-video"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "manatan-sdk",
  "regex",
  "scraper",

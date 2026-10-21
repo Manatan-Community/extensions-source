@@ -1,8 +1,13 @@
 use std::{cmp::Ordering, collections::BTreeSet};
 
+use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use manatan_sdk::{
-    client::Client, CatalogItem, Error, ImageRequest, Paged, Result, VideoEpisode, VideoSource,
-    VideoStream,
+    browser::{
+        self, WebViewExtractRequest, WebViewExtractResponse, WebViewRequestCapture, WebViewSession,
+        WebViewSessionPersistence, WebViewWaitUntil,
+    },
+    client::Client,
+    CatalogItem, Error, ImageRequest, Paged, Result, VideoEpisode, VideoSource, VideoStream,
 };
 use regex::Regex;
 use scraper::{ElementRef, Html, Selector};
@@ -10,7 +15,6 @@ use serde_json::Value;
 use url::Url;
 
 const BASE_URL: &str = "https://animeav1.com";
-const PLAYER_HOST: &str = "player.zilla-networks.com";
 const STREAMTAPE_REFERER: &str = "https://streamtape.com/";
 const BROWSER_USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
@@ -72,6 +76,124 @@ impl AnimeAv1 {
             .collect(),
             ..VideoStream::default()
         }])
+    }
+
+    fn extract_mp4upload(
+        &self,
+        mirror: &PlayerMirror,
+        episode_url: &str,
+    ) -> Result<Vec<VideoStream>> {
+        validate_mp4upload_url(&mirror.url)?;
+        let html = Client::browser()
+            .get(&mirror.url)
+            .header("Referer", episode_url)
+            .header("User-Agent", BROWSER_USER_AGENT)
+            .timeout_ms(30_000)
+            .max_body_bytes(4 * 1024 * 1024)
+            .send()?
+            .error_for_status()?
+            .text()?
+            .to_string();
+        let media = parse_mp4upload_media_url(&html)?;
+        ensure_full_length(&media, &mirror.url)?;
+        Ok(vec![VideoStream {
+            url: media,
+            name: Some(format!("AnimeAv1 {} · MP4Upload", mirror.language)),
+            format: Some("mp4".to_string()),
+            requires_proxy: true,
+            preferred: mirror.language == "SUB",
+            initialized: true,
+            headers: [
+                ("Referer".to_string(), mirror.url.clone()),
+                ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
+            ]
+            .into_iter()
+            .collect(),
+            ..VideoStream::default()
+        }])
+    }
+
+    fn capture_dynamic_player(
+        &self,
+        mirror: &PlayerMirror,
+        episode_url: &str,
+    ) -> Result<Vec<VideoStream>> {
+        validate_dynamic_player_url(&mirror.url)?;
+        let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
+            url: mirror.url.clone(),
+            method: Default::default(),
+            body: None,
+            cookie_url: None,
+            session: Some(WebViewSession {
+                id: "animeav1-player".to_string(),
+                persistence: WebViewSessionPersistence::Persistent,
+                ..WebViewSession::default()
+            }),
+            headers: vec![("Referer".to_string(), episode_url.to_string())],
+            user_agent: Some(BROWSER_USER_AGENT.to_string()),
+            wait_until: Some(WebViewWaitUntil::DomReady),
+            wait_for_selector: None,
+            wait_for_event: None,
+            wait_for_script: Some(
+                "(() => { const media = /\\.(m3u8|mp4)(?:\\?|$)/i; document.querySelector('video')?.play?.().catch(() => {}); document.querySelector('.vjs-big-play-button, .jw-icon-playback, button[aria-label=\"Play\"]')?.click(); return performance.getEntriesByType('resource').some(e => media.test(e.name)) || performance.now() >= 12000; })()".to_string(),
+            ),
+            script: "(() => { const media = /\\.(m3u8|mp4)(?:\\?|$)/i; const urls = performance.getEntriesByType('resource').map(e => e.name).filter(url => media.test(url)); const video = document.querySelector('video'); const direct = video?.currentSrc || video?.src || ''; if (media.test(direct)) urls.unshift(direct); return { urls: [...new Set(urls)] }; })()".to_string(),
+            timeout_ms: Some(20_000),
+            cookies: true,
+            headless: Some(true),
+            preload_scripts: Vec::new(),
+            capture_requests: vec![capture(".m3u8"), capture(".mp4")],
+            capture_events: Vec::new(),
+        })?;
+        captured_dynamic_streams(&response, mirror)
+    }
+
+    fn extract_voe(&self, mirror: &PlayerMirror, episode_url: &str) -> Result<Vec<VideoStream>> {
+        validate_dynamic_player_url(&mirror.url)?;
+        let redirect_page = self.remote_player_html(&mirror.url, episode_url)?;
+        let redirect_url = parse_voe_redirect_url(&redirect_page)?;
+        validate_voe_redirect_url(&redirect_url)?;
+        let player_page = self.remote_player_html(&redirect_url, episode_url)?;
+        let media_url = parse_voe_media_url(&player_page)?;
+        validate_standard_media_url(&media_url)?;
+        Client::browser()
+            .get(&media_url)
+            .header("Referer", redirect_url.clone())
+            .header("User-Agent", BROWSER_USER_AGENT)
+            .timeout_ms(20_000)
+            .max_body_bytes(2 * 1024 * 1024)
+            .send()?
+            .error_for_status()?;
+        let is_hls = media_url.to_ascii_lowercase().contains(".m3u8");
+        Ok(vec![VideoStream {
+            url: media_url,
+            name: Some(format!("AnimeAv1 {} · Voe", mirror.language)),
+            format: Some(if is_hls { "hls" } else { "mp4" }.to_string()),
+            is_hls,
+            requires_proxy: true,
+            preferred: mirror.language == "SUB",
+            initialized: true,
+            headers: [
+                ("Referer".to_string(), redirect_url),
+                ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
+            ]
+            .into_iter()
+            .collect(),
+            ..VideoStream::default()
+        }])
+    }
+
+    fn remote_player_html(&self, url: &str, referer: &str) -> Result<String> {
+        Ok(Client::browser()
+            .get(url)
+            .header("Referer", referer)
+            .header("User-Agent", BROWSER_USER_AGENT)
+            .timeout_ms(30_000)
+            .max_body_bytes(4 * 1024 * 1024)
+            .send()?
+            .error_for_status()?
+            .text()?
+            .to_string())
     }
 }
 
@@ -148,15 +270,43 @@ impl VideoSource for AnimeAv1 {
                 Err(error) => errors.push(format!("{}: {error}", candidate.url)),
             }
         }
-        if !candidates.is_empty() {
+
+        let dynamic_candidates = parse_dynamic_candidates(&html)?;
+        for candidate in &dynamic_candidates {
+            let result = if Url::parse(&candidate.url)
+                .ok()
+                .and_then(|url| url.host_str().map(ToString::to_string))
+                .as_deref()
+                == Some("voe.sx")
+            {
+                self.extract_voe(candidate, &episode_url)
+            } else {
+                self.capture_dynamic_player(candidate, &episode_url)
+            };
+            match result {
+                Ok(streams) if !streams.is_empty() => return Ok(streams),
+                Ok(_) => errors.push(format!("{} returned no media", candidate.url)),
+                Err(error) => errors.push(format!("{}: {error}", candidate.url)),
+            }
+        }
+
+        let mp4upload_candidates = parse_mp4upload_candidates(&html)?;
+        for candidate in &mp4upload_candidates {
+            match self.extract_mp4upload(candidate, &episode_url) {
+                Ok(streams) if !streams.is_empty() => return Ok(streams),
+                Ok(_) => errors.push(format!("{} returned no media", candidate.url)),
+                Err(error) => errors.push(format!("{}: {error}", candidate.url)),
+            }
+        }
+
+        if !candidates.is_empty()
+            || !dynamic_candidates.is_empty()
+            || !mp4upload_candidates.is_empty()
+        {
             return Err(Error::new(format!(
                 "AnimeAv1 playback mirrors failed: {}",
                 errors.join("; ")
             )));
-        }
-        let streams = parse_hls_streams(&html, &episode_url)?;
-        if !streams.is_empty() {
-            return Ok(streams);
         }
         Err(Error::new("AnimeAv1 returned no playable streams"))
     }
@@ -286,52 +436,6 @@ fn parse_episodes(html: &str, item_key: &str) -> Result<Vec<VideoEpisode>> {
     Ok(episodes)
 }
 
-fn parse_hls_streams(html: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
-    let embeds = html
-        .split("embeds:")
-        .nth(1)
-        .and_then(|value| value.split(",downloads:").next())
-        .ok_or_else(|| Error::new("AnimeAv1 episode embeds were not found"))?;
-    let block = Regex::new(r#"(DUB|SUB):\[([^]]*)\]"#).map_err(regex_error)?;
-    let hls = Regex::new(
-        r#"\{server:\"HLS\",url:\"https://player\.zilla-networks\.com/play/([A-Za-z0-9_-]+)\"\}"#,
-    )
-    .map_err(regex_error)?;
-    let mut streams = Vec::new();
-    let mut seen = BTreeSet::new();
-    for group in block.captures_iter(embeds) {
-        let label = group.get(1).map(|value| value.as_str()).unwrap_or("ES");
-        let body = group.get(2).map(|value| value.as_str()).unwrap_or_default();
-        for capture in hls.captures_iter(body) {
-            let Some(id) = capture.get(1).map(|value| value.as_str()) else {
-                continue;
-            };
-            let url = format!("https://{PLAYER_HOST}/m3u8/{id}");
-            if !seen.insert(url.clone()) {
-                continue;
-            }
-            streams.push(VideoStream {
-                url,
-                name: Some(format!("AnimeAv1 {label}")),
-                format: Some("hls".to_string()),
-                is_hls: true,
-                requires_proxy: true,
-                preferred: label == "SUB",
-                initialized: true,
-                headers: [
-                    ("Referer".to_string(), episode_url.to_string()),
-                    ("Origin".to_string(), BASE_URL.to_string()),
-                ]
-                .into_iter()
-                .collect(),
-                ..VideoStream::default()
-            });
-        }
-    }
-    streams.sort_by_key(|stream| !stream.preferred);
-    Ok(streams)
-}
-
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct PlayerMirror {
     language: String,
@@ -373,6 +477,222 @@ fn parse_player_candidates(html: &str) -> Result<Vec<PlayerMirror>> {
     candidates.sort();
     candidates.dedup_by(|left, right| left.1.url == right.1.url);
     Ok(candidates.into_iter().map(|(_, mirror)| mirror).collect())
+}
+
+fn parse_dynamic_candidates(html: &str) -> Result<Vec<PlayerMirror>> {
+    let embeds = html
+        .split("embeds:")
+        .nth(1)
+        .and_then(|value| value.split(",downloads:").next())
+        .ok_or_else(|| Error::new("AnimeAv1 episode embeds were not found"))?;
+    let block = Regex::new(r#"(DUB|SUB):\[([^]]*)\]"#).map_err(regex_error)?;
+    let player = Regex::new(r#"\{server:\"(?:Voe|Byse|UPNShare)\",url:\"(https://[^\"]+)\"\}"#)
+        .map_err(regex_error)?;
+    let mut candidates = Vec::new();
+    for group in block.captures_iter(embeds) {
+        let language = group.get(1).map(|value| value.as_str()).unwrap_or("ES");
+        let body = group.get(2).map(|value| value.as_str()).unwrap_or_default();
+        candidates.extend(player.captures_iter(body).filter_map(|capture| {
+            let url = capture.get(1)?.as_str().to_string();
+            validate_dynamic_player_url(&url).ok()?;
+            Some(PlayerMirror {
+                language: language.to_string(),
+                url,
+            })
+        }));
+    }
+    candidates.sort_by_key(|mirror| {
+        let priority = Url::parse(&mirror.url)
+            .ok()
+            .and_then(|url| url.host_str().map(ToString::to_string))
+            .map_or(9, |host| match host.as_str() {
+                "voe.sx" => 0,
+                "byselapuix.com" => 1,
+                "animeav1.uns.bio" => 2,
+                _ => 9,
+            });
+        (mirror.language != "SUB", priority)
+    });
+    candidates.dedup_by(|left, right| left.url == right.url);
+    candidates.truncate(6);
+    Ok(candidates)
+}
+
+fn parse_mp4upload_candidates(html: &str) -> Result<Vec<PlayerMirror>> {
+    let embeds = html
+        .split("embeds:")
+        .nth(1)
+        .and_then(|value| value.split(",downloads:").next())
+        .ok_or_else(|| Error::new("AnimeAv1 episode embeds were not found"))?;
+    let block = Regex::new(r#"(DUB|SUB):\[([^]]*)\]"#).map_err(regex_error)?;
+    let mp4upload = Regex::new(
+        r#"\{server:\"MP4Upload\",url:\"(https://(?:www\.)?mp4upload\.com/embed-[A-Za-z0-9_-]+\.html)\"\}"#,
+    )
+    .map_err(regex_error)?;
+    let mut candidates = Vec::new();
+    for group in block.captures_iter(embeds) {
+        let language = group.get(1).map(|value| value.as_str()).unwrap_or("ES");
+        let body = group.get(2).map(|value| value.as_str()).unwrap_or_default();
+        candidates.extend(mp4upload.captures_iter(body).filter_map(|capture| {
+            let url = capture.get(1)?.as_str().to_string();
+            validate_mp4upload_url(&url).ok()?;
+            Some(PlayerMirror {
+                language: language.to_string(),
+                url,
+            })
+        }));
+    }
+    candidates.sort_by_key(|mirror| mirror.language != "SUB");
+    candidates.dedup_by(|left, right| left.url == right.url);
+    Ok(candidates)
+}
+
+fn parse_mp4upload_media_url(html: &str) -> Result<String> {
+    let url = Regex::new(r#"src:\s*\"(https://[^\"]+/video\.mp4(?:\?[^\"]*)?)\""#)
+        .map_err(regex_error)?
+        .captures(html)
+        .and_then(|capture| capture.get(1))
+        .map(|value| value.as_str().to_string())
+        .ok_or_else(|| Error::new("MP4Upload did not publish an MP4 source"))?;
+    validate_mp4upload_media_url(&url)?;
+    Ok(url)
+}
+
+fn parse_voe_redirect_url(html: &str) -> Result<String> {
+    Regex::new(r#"window\.location\.href\s*=\s*'([^']+)'"#)
+        .map_err(regex_error)?
+        .captures(html)
+        .and_then(|capture| capture.get(1))
+        .map(|value| value.as_str().to_string())
+        .ok_or_else(|| Error::new("Voe did not publish its player redirect"))
+}
+
+fn parse_voe_media_url(html: &str) -> Result<String> {
+    let encoded = Regex::new(
+        r#"<script[^>]+type=[\"']application/json[\"'][^>]*>\s*\[\"([^\"]+)\"\]\s*</script>"#,
+    )
+    .map_err(regex_error)?
+    .captures(html)
+    .and_then(|capture| capture.get(1))
+    .map(|value| value.as_str())
+    .ok_or_else(|| Error::new("Voe did not publish its encoded playback data"))?;
+    let rotated: String = encoded
+        .chars()
+        .map(|character| match character {
+            'A'..='Z' => (((character as u8 - b'A' + 13) % 26) + b'A') as char,
+            'a'..='z' => (((character as u8 - b'a' + 13) % 26) + b'a') as char,
+            _ => character,
+        })
+        .collect();
+    let mut normalized = rotated;
+    for pattern in ["@$", "^^", "~@", "%?", "*~", "!!", "#&"] {
+        normalized = normalized.replace(pattern, "_");
+    }
+    normalized.retain(|character| character != '_');
+    let shifted = BASE64
+        .decode(normalized)
+        .map_err(|error| Error::new(format!("Voe playback data was not base64: {error}")))?;
+    let reversed: Vec<u8> = shifted
+        .into_iter()
+        .map(|byte| byte.wrapping_sub(3))
+        .rev()
+        .collect();
+    let json = BASE64
+        .decode(reversed)
+        .map_err(|error| Error::new(format!("Voe playback payload was not base64: {error}")))?;
+    let value: Value = serde_json::from_slice(&json)
+        .map_err(|error| Error::new(format!("Voe playback payload was invalid: {error}")))?;
+    value
+        .get("source")
+        .or_else(|| value.get("direct_access_url"))
+        .and_then(Value::as_str)
+        .map(ToString::to_string)
+        .ok_or_else(|| Error::new("Voe playback payload did not contain media"))
+}
+
+fn ensure_full_length(media_url: &str, referer: &str) -> Result<()> {
+    let response = Client::browser()
+        .get(media_url)
+        .header("Referer", referer)
+        .header("User-Agent", BROWSER_USER_AGENT)
+        .header("Range", "bytes=0-0")
+        .timeout_ms(20_000)
+        .max_body_bytes(1024 * 1024)
+        .send()?
+        .error_for_status()?;
+    let total = response
+        .header("Content-Range")
+        .and_then(|value| value.rsplit('/').next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .or_else(|| {
+            response
+                .header("Content-Length")
+                .and_then(|value| value.parse::<u64>().ok())
+        })
+        .ok_or_else(|| Error::new("video host did not report the media size"))?;
+    if total < 5 * 1024 * 1024 {
+        return Err(Error::new("video host returned a truncated placeholder"));
+    }
+    Ok(())
+}
+
+fn captured_dynamic_streams(
+    response: &WebViewExtractResponse,
+    mirror: &PlayerMirror,
+) -> Result<Vec<VideoStream>> {
+    let mut urls: Vec<String> = response
+        .captured_requests
+        .iter()
+        .map(|request| request.url.clone())
+        .filter(|url| media_url(url))
+        .collect();
+    urls.extend(
+        response
+            .value
+            .as_ref()
+            .and_then(|value| value.get("urls"))
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|url| media_url(url))
+            .map(ToString::to_string),
+    );
+    urls.sort();
+    urls.dedup();
+    if urls.is_empty() {
+        return Err(Error::new("player did not expose a playable stream"));
+    }
+    Ok(urls
+        .into_iter()
+        .map(|url| {
+            let is_hls = url.to_ascii_lowercase().contains(".m3u8");
+            let mut headers = response
+                .captured_requests
+                .iter()
+                .find(|request| request.url == url)
+                .map(|request| forwarded_headers(&request.headers))
+                .unwrap_or_default();
+            headers.insert("Referer".to_string(), mirror.url.clone());
+            headers
+                .entry("User-Agent".to_string())
+                .or_insert_with(|| BROWSER_USER_AGENT.to_string());
+            if let Some(cookie) = cookie_header(response, &url) {
+                headers.insert("Cookie".to_string(), cookie);
+            }
+            VideoStream {
+                url,
+                name: Some(format!("AnimeAv1 {}", mirror.language)),
+                format: Some(if is_hls { "hls" } else { "mp4" }.to_string()),
+                is_hls,
+                requires_proxy: true,
+                preferred: mirror.language == "SUB",
+                initialized: true,
+                headers,
+                ..VideoStream::default()
+            }
+        })
+        .collect())
 }
 
 fn image_request(element: ElementRef<'_>) -> Option<ImageRequest> {
@@ -459,6 +779,116 @@ fn validate_streamtape_media_url(value: &str) -> Result<()> {
     Ok(())
 }
 
+fn validate_mp4upload_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    let host = url.host_str().unwrap_or_default();
+    if url.scheme() != "https"
+        || !matches!(host, "mp4upload.com" | "www.mp4upload.com")
+        || !url.path().starts_with("/embed-")
+        || !url.path().ends_with(".html")
+    {
+        return Err(Error::new("unexpected AnimeAv1 MP4Upload URL"));
+    }
+    Ok(())
+}
+
+fn validate_mp4upload_media_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    let host = url.host_str().unwrap_or_default();
+    if url.scheme() != "https"
+        || !(host == "mp4upload.com" || host.ends_with(".mp4upload.com"))
+        || !url.path().ends_with("/video.mp4")
+    {
+        return Err(Error::new("MP4Upload returned an unexpected media URL"));
+    }
+    Ok(())
+}
+
+fn validate_dynamic_player_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    if url.scheme() != "https"
+        || !matches!(
+            url.host_str(),
+            Some("voe.sx" | "byselapuix.com" | "animeav1.uns.bio")
+        )
+    {
+        return Err(Error::new("unexpected AnimeAv1 player URL"));
+    }
+    Ok(())
+}
+
+fn validate_voe_redirect_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    if url.scheme() != "https"
+        || url.host_str() != Some("derricknationtop.com")
+        || !url.path().starts_with("/e/")
+    {
+        return Err(Error::new("Voe returned an unexpected player redirect"));
+    }
+    Ok(())
+}
+
+fn validate_standard_media_url(value: &str) -> Result<()> {
+    if !media_url(value) {
+        return Err(Error::new("player returned an unexpected media URL"));
+    }
+    Ok(())
+}
+
+fn media_url(value: &str) -> bool {
+    let Ok(url) = Url::parse(value) else {
+        return false;
+    };
+    let host = url.host_str().unwrap_or_default();
+    let lower = value.to_ascii_lowercase();
+    url.scheme() == "https"
+        && host.contains('.')
+        && host != "localhost"
+        && url.port_or_known_default() == Some(443)
+        && (lower.contains(".m3u8") || lower.contains(".mp4"))
+}
+
+fn forwarded_headers(values: &[(String, String)]) -> std::collections::BTreeMap<String, String> {
+    values
+        .iter()
+        .filter(|(name, _)| {
+            matches!(
+                name.to_ascii_lowercase().as_str(),
+                "cookie" | "origin" | "referer" | "user-agent"
+            )
+        })
+        .cloned()
+        .collect()
+}
+
+fn cookie_header(response: &WebViewExtractResponse, target: &str) -> Option<String> {
+    let target = Url::parse(target).ok()?;
+    let host = target.host_str()?;
+    let path = target.path();
+    let values: Vec<_> = response
+        .cookies
+        .iter()
+        .filter(|cookie| {
+            let domain = cookie.domain.trim_start_matches('.');
+            (host == domain || host.ends_with(&format!(".{domain}")))
+                && cookie
+                    .path
+                    .as_deref()
+                    .is_none_or(|prefix| path.starts_with(prefix))
+        })
+        .map(|cookie| format!("{}={}", cookie.name, cookie.value))
+        .collect();
+    (!values.is_empty()).then(|| values.join("; "))
+}
+
+fn capture(needle: &str) -> WebViewRequestCapture {
+    WebViewRequestCapture {
+        url_contains: Some(needle.to_string()),
+        limit: Some(16),
+        ..WebViewRequestCapture::default()
+    }
+}
+
 fn required_text(document: &Html, selector_text: &str) -> Result<String> {
     document
         .select(&selector(selector_text)?)
@@ -492,7 +922,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_catalog_details_episodes_and_direct_hls() {
+    fn parses_catalog_details_episodes_and_direct_players() {
         let catalog = r#"<article class="group/item"><figure><img src="https://cdn.animeav1.com/covers/171.jpg"></figure><header><h3>Shingeki no Kyojin</h3></header><a href="/media/shingeki-no-kyojin"></a></article><a href="?page=2">Next</a>"#;
         let page = parse_catalog(catalog, 1).unwrap();
         assert_eq!(page.entries[0].title, "Shingeki no Kyojin");
@@ -510,14 +940,6 @@ mod tests {
         assert_eq!(episodes[0].episode_number, Some(1.0));
 
         let episode = r#"embeds:{DUB:[{server:"HLS",url:"https://player.zilla-networks.com/play/dub123"},{server:"StreamTape",url:"https://streamtape.com/e/dub/"}],SUB:[{server:"HLS",url:"https://player.zilla-networks.com/play/sub123"},{server:"StreamTape",url:"https://streamtape.com/e/sub/"}]},downloads:{}"#;
-        let streams =
-            parse_hls_streams(episode, "https://animeav1.com/media/shingeki-no-kyojin/1").unwrap();
-        assert_eq!(streams.len(), 2);
-        assert_eq!(
-            streams[0].url,
-            "https://player.zilla-networks.com/m3u8/sub123"
-        );
-        assert!(streams[0].preferred);
         assert_eq!(
             parse_player_candidates(episode).unwrap(),
             vec![
@@ -531,6 +953,56 @@ mod tests {
                 }
             ]
         );
+        let dynamic = parse_dynamic_candidates(
+            r#"embeds:{DUB:[{server:"Byse",url:"https://byselapuix.com/e/dub"}],SUB:[{server:"Voe",url:"https://voe.sx/e/sub"},{server:"UPNShare",url:"https://animeav1.uns.bio/#sub"}]},downloads:{}"#,
+        )
+        .unwrap();
+        assert_eq!(dynamic[0].language, "SUB");
+        assert_eq!(dynamic[0].url, "https://voe.sx/e/sub");
+        assert_eq!(
+            parse_voe_redirect_url(
+                "<script>window.location.href = 'https://derricknationtop.com/e/sub';</script>"
+            )
+            .unwrap(),
+            "https://derricknationtop.com/e/sub"
+        );
+        let payload = r#"{"source":"https://media.example.com/master.m3u8"}"#;
+        let inner = BASE64.encode(payload);
+        let shifted: Vec<u8> = inner
+            .bytes()
+            .rev()
+            .map(|byte| byte.wrapping_add(3))
+            .collect();
+        let outer = BASE64.encode(shifted);
+        let encoded: String = outer
+            .chars()
+            .map(|character| match character {
+                'A'..='Z' => (((character as u8 - b'A' + 13) % 26) + b'A') as char,
+                'a'..='z' => (((character as u8 - b'a' + 13) % 26) + b'a') as char,
+                _ => character,
+            })
+            .collect();
+        assert_eq!(
+            parse_voe_media_url(&format!(
+                r#"<script type="application/json">["{encoded}"]</script>"#
+            ))
+            .unwrap(),
+            "https://media.example.com/master.m3u8"
+        );
+        let mp4 = r#"embeds:{DUB:[{server:"MP4Upload",url:"https://www.mp4upload.com/embed-dub123.html"}],SUB:[{server:"MP4Upload",url:"https://www.mp4upload.com/embed-sub123.html"}]},downloads:{}"#;
+        let mirrors = parse_mp4upload_candidates(mp4).unwrap();
+        assert_eq!(mirrors[0].language, "SUB");
+        assert_eq!(
+            mirrors[0].url,
+            "https://www.mp4upload.com/embed-sub123.html"
+        );
+        assert_eq!(
+            parse_mp4upload_media_url(
+                r#"player.setup({src: "https://a1.mp4upload.com:183/d/token/video.mp4"});"#
+            )
+            .unwrap(),
+            "https://a1.mp4upload.com:183/d/token/video.mp4"
+        );
         let player = r#"<script>document.getElementById('robotlink').innerHTML = '//streamtape.com/get_video?id'+ ('xcd=sub&expires=1&token=test').substring(2).substring(1);</script>"#;
         assert_eq!(
             parse_streamtape_media_url(player).unwrap(),
@@ -543,6 +1015,10 @@ mod tests {
         assert!(item_url("https://evil.example/media/foo").is_err());
         assert!(episode_url("/media/foo/not-a-number").is_err());
         assert!(validate_streamtape_url("https://streamtape.com.evil.example/e/id").is_err());
+        assert!(
+            validate_mp4upload_url("https://mp4upload.com.evil.example/embed-id.html").is_err()
+        );
+        assert!(validate_mp4upload_media_url("https://a1.mp4upload.com/d/id/video.mp4").is_ok());
         assert!(
             validate_streamtape_media_url("https://streamtape.com/get_video?id=abc&token=def")
                 .is_ok()

@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animeav1",
   "name": "AnimeAv1",
-  "version": "0.1.5",
-  "versionCode": 6,
+  "version": "0.2.2",
+  "versionCode": 13,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -23,13 +23,25 @@
       "allow": [
         "https://animeav1.com",
         "https://cdn.animeav1.com",
-        "https://player.zilla-networks.com",
         "https://streamtape.com",
-        "https://*.tapecontent.net"
+        "https://*.tapecontent.net",
+        "https://voe.sx",
+        "https://derricknationtop.com",
+        "https://*.cloudwindow-route.com",
+        "https://byselapuix.com",
+        "https://animeav1.uns.bio",
+        "https://mp4upload.com",
+        "https://www.mp4upload.com",
+        "https://*.mp4upload.com",
+        "https://*.mp4upload.com:183",
+        "https://a1.mp4upload.com:183",
+        "https://a2.mp4upload.com:183",
+        "https://a3.mp4upload.com:183",
+        "https://a4.mp4upload.com:183"
       ]
     },
     "cookies": true,
-    "webview": false,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false
@@ -53,7 +65,7 @@
         "search": true,
         "latest": true,
         "filters": false,
-        "webview": false,
+        "webview": true,
         "urlResolution": true,
         "mediaProcessing": false
       },

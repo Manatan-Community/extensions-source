@@ -38229,11 +38229,12 @@
       "requiredCapabilities": [
         "http",
         "cookies",
+        "webview",
         "url-resolution"
       ],
       "status": "component-valid",
       "tests": [
-        "2 catalog, metadata, episode, HLS, StreamTape and URL-policy regression tests",
+        "2 catalog, metadata, episode, StreamTape, Voe, MP4Upload, WebView mirror and URL-policy regression tests",
         "cargo clippy --all-targets -- -D warnings",
         "signed component and bundled icon validation"
       ],
@@ -38341,12 +38342,12 @@
       ],
       "status": "component-valid",
       "tests": [
-        "3 catalog, metadata, episode, OK.ru and URL-policy regression tests",
+        "5 catalog, metadata, episode, OK.ru, Sendvid, MP4Upload and URL-policy regression tests",
         "cargo clippy --all-targets -- -D warnings",
         "signed component and bundled icon validation"
       ],
       "packagePath": "packages/video/es/animejl.manatan2",
-      "knownSiteFailure": "Non-OK.ru playback mirrors require live browser-runtime verification.",
+      "knownSiteFailure": "Dynamic playback mirrors require live browser-runtime verification.",
       "license": "Apache-2.0",
       "attribution": "Ported from yuzono/anime-extensions."
     },

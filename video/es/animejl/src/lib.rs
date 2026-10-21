@@ -57,6 +57,28 @@ impl AnimeJl {
         parse_okru_stream(&body, embed_url)
     }
 
+    fn sendvid_stream(&self, embed_url: &str, episode_url: &str) -> Result<VideoStream> {
+        validate_player_url(embed_url)?;
+        let body = self.remote_html(embed_url, episode_url)?;
+        let stream = parse_sendvid_stream(&body, embed_url)?;
+        ensure_full_length(&stream.url, embed_url)?;
+        Ok(stream)
+    }
+
+    fn mp4upload_stream(&self, embed_url: &str, episode_url: &str) -> Result<VideoStream> {
+        validate_player_url(embed_url)?;
+        let body = self.remote_html(embed_url, episode_url)?;
+        let stream = parse_mp4upload_stream(&body, embed_url)?;
+        ensure_full_length(&stream.url, embed_url)?;
+        Ok(stream)
+    }
+
+    fn streamtape_stream(&self, embed_url: &str, episode_url: &str) -> Result<VideoStream> {
+        validate_player_url(embed_url)?;
+        let body = self.remote_html(embed_url, episode_url)?;
+        parse_streamtape_stream(&body, embed_url)
+    }
+
     fn capture_player(&self, embed_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
         validate_player_url(embed_url)?;
         let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
@@ -66,7 +88,7 @@ impl AnimeJl {
             cookie_url: None,
             session: Some(WebViewSession {
                 id: "animejl-player".to_string(),
-                persistence: WebViewSessionPersistence::Ephemeral,
+                persistence: WebViewSessionPersistence::Persistent,
                 ..WebViewSession::default()
             }),
             headers: vec![("Referer".to_string(), episode_url.to_string())],
@@ -75,14 +97,14 @@ impl AnimeJl {
             wait_for_selector: None,
             wait_for_event: None,
             wait_for_script: Some(
-                "(() => { const media = /\\.(m3u8|mp4)(?:\\?|$)/i; document.querySelector('video')?.play?.().catch(() => {}); document.querySelector('.vjs-big-play-button, .jw-icon-playback, button[aria-label=\"Play\"]')?.click(); return performance.getEntriesByType('resource').some(e => media.test(e.name)) || performance.now() >= 25000; })()".to_string(),
+                "(() => { const media = /\\.(m3u8|mp4)(?:\\?|$)/i; document.querySelector('video')?.play?.().catch(() => {}); document.querySelector('.vjs-big-play-button, .jw-icon-playback, button[aria-label=\"Play\"]')?.click(); return performance.getEntriesByType('resource').some(e => media.test(e.name)) || performance.now() >= 12000; })()".to_string(),
             ),
             script: "(() => { const media = /\\.(m3u8|mp4)(?:\\?|$)/i; const urls = performance.getEntriesByType('resource').map(e => e.name).filter(url => media.test(url)); const video = document.querySelector('video'); const direct = video?.currentSrc || video?.src || ''; if (media.test(direct)) urls.unshift(direct); return { urls: [...new Set(urls)] }; })()".to_string(),
-            timeout_ms: Some(60_000),
+            timeout_ms: Some(20_000),
             headless: Some(true),
             capture_requests: vec![capture(".m3u8"), capture(".mp4")],
             capture_events: Vec::new(),
-            cookies: false,
+            cookies: true,
             preload_scripts: Vec::new(),
         })?;
         captured_streams(&response, embed_url)
@@ -130,11 +152,20 @@ impl VideoSource for AnimeJl {
                 .ok()
                 .and_then(|url| url.host_str().map(ToString::to_string))
                 .unwrap_or_default();
-            let result = if matches!(host.as_str(), "ok.ru" | "www.ok.ru") {
-                self.okru_stream(candidate, &episode_url)
-                    .map(|stream| vec![stream])
-            } else {
-                self.capture_player(candidate, &episode_url)
+            let result = match host.as_str() {
+                "sendvid.com" | "www.sendvid.com" => self
+                    .sendvid_stream(candidate, &episode_url)
+                    .map(|stream| vec![stream]),
+                "streamtape.com" => self
+                    .streamtape_stream(candidate, &episode_url)
+                    .map(|stream| vec![stream]),
+                "mp4upload.com" | "www.mp4upload.com" => self
+                    .mp4upload_stream(candidate, &episode_url)
+                    .map(|stream| vec![stream]),
+                "ok.ru" | "www.ok.ru" => self
+                    .okru_stream(candidate, &episode_url)
+                    .map(|stream| vec![stream]),
+                _ => self.capture_player(candidate, &episode_url),
             };
             match result {
                 Ok(streams) if !streams.is_empty() => return Ok(streams),
@@ -285,12 +316,19 @@ fn parse_player_candidates(html: &str) -> Result<Vec<String>> {
         .filter(|url| validate_player_url(url).is_ok())
         .collect();
     candidates.sort_by_key(|url| player_priority(url));
-    candidates.dedup();
+    let mut seen_hosts = BTreeSet::new();
+    candidates.retain(|value| {
+        Url::parse(value)
+            .ok()
+            .and_then(|url| url.host_str().map(ToString::to_string))
+            .is_some_and(|host| seen_hosts.insert(host))
+    });
+    candidates.truncate(7);
     Ok(candidates)
 }
 
 fn parse_okru_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
-    let encoded = Regex::new(r#"hlsManifestUrl&quot;:&quot;([^&]+)&quot;"#)
+    let encoded = Regex::new(r#"(?:hlsManifestUrl|ondemandHls)&quot;:&quot;([^&]+)&quot;"#)
         .map_err(regex_error)?
         .captures(html)
         .and_then(|capture| capture.get(1))
@@ -304,6 +342,127 @@ fn parse_okru_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
         name: Some("AnimeJL OK.ru".to_string()),
         format: Some("hls".to_string()),
         is_hls: true,
+        requires_proxy: true,
+        preferred: true,
+        initialized: true,
+        headers: [
+            ("Referer".to_string(), embed_url.to_string()),
+            ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
+        ]
+        .into_iter()
+        .collect(),
+        ..VideoStream::default()
+    })
+}
+
+fn parse_mp4upload_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
+    let url = Regex::new(r#"src:\s*\"(https://[^\"]+/video\.mp4(?:\?[^\"]*)?)\""#)
+        .map_err(regex_error)?
+        .captures(html)
+        .and_then(|capture| capture.get(1))
+        .map(|value| value.as_str().to_string())
+        .ok_or_else(|| Error::new("MP4Upload did not publish an MP4 source"))?;
+    validate_mp4upload_media_url(&url)?;
+    Ok(VideoStream {
+        url,
+        name: Some("AnimeJL MP4Upload".to_string()),
+        format: Some("mp4".to_string()),
+        requires_proxy: true,
+        preferred: true,
+        initialized: true,
+        headers: [
+            ("Referer".to_string(), embed_url.to_string()),
+            ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
+        ]
+        .into_iter()
+        .collect(),
+        ..VideoStream::default()
+    })
+}
+
+fn ensure_full_length(media_url: &str, referer: &str) -> Result<()> {
+    let response = Client::browser()
+        .get(media_url)
+        .header("Referer", referer)
+        .header("User-Agent", BROWSER_USER_AGENT)
+        .header("Range", "bytes=0-0")
+        .timeout_ms(20_000)
+        .max_body_bytes(1024 * 1024)
+        .send()?
+        .error_for_status()?;
+    let total = response
+        .header("Content-Range")
+        .and_then(|value| value.rsplit('/').next())
+        .and_then(|value| value.parse::<u64>().ok())
+        .or_else(|| {
+            response
+                .header("Content-Length")
+                .and_then(|value| value.parse::<u64>().ok())
+        })
+        .ok_or_else(|| Error::new("video host did not report the media size"))?;
+    if total < 5 * 1024 * 1024 {
+        return Err(Error::new("video host returned a truncated placeholder"));
+    }
+    Ok(())
+}
+
+fn parse_sendvid_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
+    let document = Html::parse_document(html);
+    let url = document
+        .select(&selector("video source[src], source#video_source[src]")?)
+        .filter_map(|element| element.value().attr("src"))
+        .find(|url| validate_sendvid_media_url(url).is_ok())
+        .ok_or_else(|| Error::new("Sendvid did not publish an MP4 source"))?;
+    Ok(VideoStream {
+        url: url.to_string(),
+        name: Some("AnimeJL Sendvid".to_string()),
+        format: Some("mp4".to_string()),
+        requires_proxy: true,
+        preferred: true,
+        initialized: true,
+        headers: [
+            ("Referer".to_string(), embed_url.to_string()),
+            ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
+        ]
+        .into_iter()
+        .collect(),
+        ..VideoStream::default()
+    })
+}
+
+fn parse_streamtape_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
+    let expression = Regex::new(
+        r#"document\.getElementById\('robotlink'\)\.innerHTML\s*=\s*'([^']+)'\s*\+\s*\('([^']+)'\)\.substring\((\d+)\)\.substring\((\d+)\)"#,
+    )
+    .map_err(regex_error)?
+    .captures(html)
+    .ok_or_else(|| Error::new("StreamTape did not expose its media expression"))?;
+    let prefix = expression
+        .get(1)
+        .map(|value| value.as_str())
+        .unwrap_or_default();
+    let encoded = expression
+        .get(2)
+        .map(|value| value.as_str())
+        .unwrap_or_default();
+    let first = expression
+        .get(3)
+        .and_then(|value| value.as_str().parse::<usize>().ok())
+        .ok_or_else(|| Error::new("StreamTape returned an invalid media expression"))?;
+    let second = expression
+        .get(4)
+        .and_then(|value| value.as_str().parse::<usize>().ok())
+        .ok_or_else(|| Error::new("StreamTape returned an invalid media expression"))?;
+    let suffix = encoded
+        .get(first..)
+        .and_then(|value| value.get(second..))
+        .ok_or_else(|| Error::new("StreamTape returned an invalid media expression"))?;
+    let url = format!("https:{prefix}{suffix}");
+    validate_streamtape_media_url(&url)?;
+    Ok(VideoStream {
+        url,
+        name: Some("AnimeJL StreamTape".to_string()),
+        format: Some("mp4".to_string()),
         requires_proxy: true,
         preferred: true,
         initialized: true,
@@ -348,6 +507,19 @@ fn captured_streams(
         .into_iter()
         .map(|url| {
             let is_hls = url.to_ascii_lowercase().contains(".m3u8");
+            let mut headers = response
+                .captured_requests
+                .iter()
+                .find(|request| request.url == url)
+                .map(|request| forwarded_headers(&request.headers))
+                .unwrap_or_default();
+            headers.insert("Referer".to_string(), embed_url.to_string());
+            headers
+                .entry("User-Agent".to_string())
+                .or_insert_with(|| BROWSER_USER_AGENT.to_string());
+            if let Some(cookie) = cookie_header(response, &url) {
+                headers.insert("Cookie".to_string(), cookie);
+            }
             VideoStream {
                 url,
                 name: Some("AnimeJL mirror".to_string()),
@@ -355,12 +527,7 @@ fn captured_streams(
                 is_hls,
                 requires_proxy: true,
                 initialized: true,
-                headers: [
-                    ("Referer".to_string(), embed_url.to_string()),
-                    ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
-                ]
-                .into_iter()
-                .collect(),
+                headers,
                 ..VideoStream::default()
             }
         })
@@ -438,6 +605,30 @@ fn validate_player_url(value: &str) -> Result<()> {
                 | "www.sbfull.com"
                 | "animejl.top"
                 | "www.animejl.top"
+                | "sendvid.com"
+                | "www.sendvid.com"
+                | "streamtape.com"
+                | "flaswish.com"
+                | "voe.sx"
+                | "uqload.io"
+                | "uqload.vc"
+                | "uqload.is"
+                | "uqload.net"
+                | "uqload.cx"
+                | "www.mp4upload.com"
+                | "mp4upload.com"
+                | "bysezoxexe.com"
+                | "vidhidepre.com"
+                | "strwish.com"
+                | "dhtpre.com"
+                | "iplayerhls.com"
+                | "listeamed.net"
+                | "mivalyo.com"
+                | "hglink.to"
+                | "savefiles.com"
+                | "mxdrop.to"
+                | "powvideo.org"
+                | "streamplay.to"
         )
     {
         return Err(Error::new("unexpected AnimeJL player URL"));
@@ -460,10 +651,13 @@ fn player_priority(value: &str) -> u8 {
         .and_then(|url| url.host_str().map(ToString::to_string))
         .map(|host| match host.as_str() {
             "ok.ru" | "www.ok.ru" => 0,
-            "uqload.com" | "www.uqload.com" => 1,
-            "videovard.sx" | "www.videovard.sx" => 2,
-            "sbfull.com" | "www.sbfull.com" => 3,
-            _ => 4,
+            "mp4upload.com" | "www.mp4upload.com" => 1,
+            "sendvid.com" | "www.sendvid.com" => 2,
+            "streamtape.com" => 3,
+            host if host.starts_with("uqload.") => 4,
+            "videovard.sx" | "www.videovard.sx" => 5,
+            "sbfull.com" | "www.sbfull.com" => 6,
+            _ => 7,
         })
         .unwrap_or(9)
 }
@@ -477,8 +671,84 @@ fn capture(needle: &str) -> WebViewRequestCapture {
 }
 
 fn media_url(value: &str) -> bool {
+    let Ok(url) = Url::parse(value) else {
+        return false;
+    };
+    let host = url.host_str().unwrap_or_default();
     let lower = value.to_ascii_lowercase();
-    lower.contains(".m3u8") || lower.contains(".mp4")
+    url.scheme() == "https"
+        && host.contains('.')
+        && host != "localhost"
+        && (lower.contains(".m3u8") || lower.contains(".mp4"))
+}
+
+fn validate_sendvid_media_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    let host = url.host_str().unwrap_or_default();
+    if url.scheme() != "https"
+        || !(host == "sendvid.com" || host.ends_with(".sendvid.com"))
+        || !url.path().to_ascii_lowercase().ends_with(".mp4")
+    {
+        return Err(Error::new("Sendvid returned an unexpected media URL"));
+    }
+    Ok(())
+}
+
+fn validate_streamtape_media_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    if url.scheme() != "https"
+        || url.host_str() != Some("streamtape.com")
+        || url.path() != "/get_video"
+        || url.query_pairs().all(|(key, _)| key != "id")
+    {
+        return Err(Error::new("StreamTape returned an unexpected media URL"));
+    }
+    Ok(())
+}
+
+fn validate_mp4upload_media_url(value: &str) -> Result<()> {
+    let url = Url::parse(value).map_err(url_error)?;
+    let host = url.host_str().unwrap_or_default();
+    if url.scheme() != "https"
+        || !(host == "mp4upload.com" || host.ends_with(".mp4upload.com"))
+        || !url.path().ends_with("/video.mp4")
+    {
+        return Err(Error::new("MP4Upload returned an unexpected media URL"));
+    }
+    Ok(())
+}
+
+fn forwarded_headers(values: &[(String, String)]) -> std::collections::BTreeMap<String, String> {
+    values
+        .iter()
+        .filter(|(name, _)| {
+            matches!(
+                name.to_ascii_lowercase().as_str(),
+                "cookie" | "origin" | "referer" | "user-agent"
+            )
+        })
+        .cloned()
+        .collect()
+}
+
+fn cookie_header(response: &WebViewExtractResponse, target: &str) -> Option<String> {
+    let target = Url::parse(target).ok()?;
+    let host = target.host_str()?;
+    let path = target.path();
+    let values: Vec<_> = response
+        .cookies
+        .iter()
+        .filter(|cookie| {
+            let domain = cookie.domain.trim_start_matches('.');
+            (host == domain || host.ends_with(&format!(".{domain}")))
+                && cookie
+                    .path
+                    .as_deref()
+                    .is_none_or(|prefix| path.starts_with(prefix))
+        })
+        .map(|cookie| format!("{}={}", cookie.name, cookie.value))
+        .collect();
+    (!values.is_empty()).then(|| values.join("; "))
 }
 
 fn required_text(document: &Html, selector_text: &str) -> Result<String> {
@@ -554,8 +824,48 @@ mod tests {
     }
 
     #[test]
+    fn selects_sendvid_fallback_and_parses_its_mp4() {
+        let html = r#"video[0] = '<iframe src="https://sendvid.com/embed/09s3htlt" frameborder="0"></iframe>';"#;
+        let candidates = parse_player_candidates(html).unwrap();
+        assert_eq!(candidates[0], "https://sendvid.com/embed/09s3htlt");
+
+        let player = r#"<video><source id="video_source" src="https://videos2.sendvid.com/3a/6d/09s3htlt.mp4?token=test" type="video/mp4"></video>"#;
+        let stream = parse_sendvid_stream(player, &candidates[0]).unwrap();
+        assert_eq!(
+            stream.url,
+            "https://videos2.sendvid.com/3a/6d/09s3htlt.mp4?token=test"
+        );
+        assert_eq!(stream.format.as_deref(), Some("mp4"));
+    }
+
+    #[test]
+    fn decodes_current_okru_and_mp4upload_players() {
+        let ok =
+            r#"ondemandHls&quot;:&quot;https://vd196.okcdn.ru/path/video.m3u8?x=1\u0026y=2&quot;"#;
+        assert_eq!(
+            parse_okru_stream(ok, "https://ok.ru/videoembed/123")
+                .unwrap()
+                .url,
+            "https://vd196.okcdn.ru/path/video.m3u8?x=1&y=2"
+        );
+        let mp4 = r#"player.setup({src: "https://a1.mp4upload.com:183/d/token/video.mp4"});"#;
+        assert_eq!(
+            parse_mp4upload_stream(mp4, "https://www.mp4upload.com/embed-id.html")
+                .unwrap()
+                .url,
+            "https://a1.mp4upload.com:183/d/token/video.mp4"
+        );
+    }
+
+    #[test]
     fn rejects_external_content_and_media_urls() {
         assert!(item_url("https://evil.example/anime/1/nope").is_err());
         assert!(validate_okcdn_url("https://okcdn.ru.evil.example/video.m3u8").is_err());
+        assert!(validate_sendvid_media_url("https://sendvid.com.evil.example/a.mp4").is_err());
+        assert!(
+            validate_mp4upload_media_url("https://mp4upload.com.evil.example/video.mp4").is_err()
+        );
+        assert!(validate_player_url("https://sendvid.com/embed/id").is_ok());
+        assert!(validate_player_url("https://uqload.cx/embed-id.html").is_ok());
     }
 }
