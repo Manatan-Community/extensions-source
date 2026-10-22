@@ -1,6 +1,8 @@
 use std::{cmp::Ordering, collections::BTreeSet};
 
+#[cfg(test)]
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
+use manatan_common::video::{byse_response, verify_stream, voe_stream};
 use manatan_sdk::{
     browser::{
         self, WebViewExtractRequest, WebViewExtractResponse, WebViewRequestCapture, WebViewSession,
@@ -150,50 +152,10 @@ impl AnimeAv1 {
 
     fn extract_voe(&self, mirror: &PlayerMirror, episode_url: &str) -> Result<Vec<VideoStream>> {
         validate_dynamic_player_url(&mirror.url)?;
-        let redirect_page = self.remote_player_html(&mirror.url, episode_url)?;
-        let redirect_url = parse_voe_redirect_url(&redirect_page)?;
-        validate_voe_redirect_url(&redirect_url)?;
-        let player_page = self.remote_player_html(&redirect_url, episode_url)?;
-        let media_url = parse_voe_media_url(&player_page)?;
-        validate_standard_media_url(&media_url)?;
-        Client::browser()
-            .get(&media_url)
-            .header("Referer", redirect_url.clone())
-            .header("User-Agent", BROWSER_USER_AGENT)
-            .timeout_ms(20_000)
-            .max_body_bytes(2 * 1024 * 1024)
-            .send()?
-            .error_for_status()?;
-        let is_hls = media_url.to_ascii_lowercase().contains(".m3u8");
-        Ok(vec![VideoStream {
-            url: media_url,
-            name: Some(format!("AnimeAv1 {} · Voe", mirror.language)),
-            format: Some(if is_hls { "hls" } else { "mp4" }.to_string()),
-            is_hls,
-            requires_proxy: true,
-            preferred: mirror.language == "SUB",
-            initialized: true,
-            headers: [
-                ("Referer".to_string(), redirect_url),
-                ("User-Agent".to_string(), BROWSER_USER_AGENT.to_string()),
-            ]
-            .into_iter()
-            .collect(),
-            ..VideoStream::default()
-        }])
-    }
-
-    fn remote_player_html(&self, url: &str, referer: &str) -> Result<String> {
-        Ok(Client::browser()
-            .get(url)
-            .header("Referer", referer)
-            .header("User-Agent", BROWSER_USER_AGENT)
-            .timeout_ms(30_000)
-            .max_body_bytes(4 * 1024 * 1024)
-            .send()?
-            .error_for_status()?
-            .text()?
-            .to_string())
+        let mut stream = voe_stream(&mirror.url, episode_url, BROWSER_USER_AGENT)?;
+        stream.name = Some("AnimeAv1 Voe".into());
+        stream.preferred = mirror.language == "SUB";
+        Ok(vec![stream])
     }
 }
 
@@ -261,54 +223,51 @@ impl VideoSource for AnimeAv1 {
             return Err(Error::new("episode does not belong to this AnimeAv1 title"));
         }
         let html = self.html(&episode_url)?;
-        let candidates = parse_player_candidates(&html)?;
-        let mut errors = Vec::new();
-        for candidate in &candidates {
-            match self.extract_streamtape(candidate) {
-                Ok(streams) if !streams.is_empty() => return Ok(streams),
-                Ok(_) => errors.push(format!("{} returned no media", candidate.url)),
-                Err(error) => errors.push(format!("{}: {error}", candidate.url)),
+        let mut candidates = parse_player_candidates(&html)?;
+        candidates.extend(parse_dynamic_candidates(&html)?);
+        candidates.extend(parse_mp4upload_candidates(&html)?);
+        collect_audio_streams(candidates, |mirror| {
+            let host = Url::parse(&mirror.url)
+                .map_err(url_error)?
+                .host_str()
+                .unwrap_or_default()
+                .to_string();
+            let streams = match host.as_str() {
+                "streamtape.com" => self.extract_streamtape(mirror),
+                "voe.sx" => self.extract_voe(mirror, &episode_url),
+                "byselapuix.com" => byse_response(&mirror.url, &episode_url, BROWSER_USER_AGENT)
+                    .and_then(|response| {
+                        let frame = PlayerMirror {
+                            language: mirror.language.clone(),
+                            url: response.final_url.clone(),
+                        };
+                        captured_dynamic_streams(&response, &frame)
+                    }),
+                "www.mp4upload.com" | "mp4upload.com" => {
+                    self.extract_mp4upload(mirror, &episode_url)
+                }
+                _ => self.capture_dynamic_player(mirror, &episode_url),
+            }?;
+            let mut valid = Vec::new();
+            let mut errors = Vec::new();
+            for mut stream in streams {
+                match verify_stream(&stream) {
+                    Ok(()) => {
+                        stream.name = Some(format!(
+                            "{} · {}",
+                            audio_label(&mirror.language),
+                            stream.name.as_deref().unwrap_or("AnimeAv1")
+                        ));
+                        valid.push(stream);
+                    }
+                    Err(error) => errors.push(error.to_string()),
+                }
             }
-        }
-
-        let dynamic_candidates = parse_dynamic_candidates(&html)?;
-        for candidate in &dynamic_candidates {
-            let result = if Url::parse(&candidate.url)
-                .ok()
-                .and_then(|url| url.host_str().map(ToString::to_string))
-                .as_deref()
-                == Some("voe.sx")
-            {
-                self.extract_voe(candidate, &episode_url)
-            } else {
-                self.capture_dynamic_player(candidate, &episode_url)
-            };
-            match result {
-                Ok(streams) if !streams.is_empty() => return Ok(streams),
-                Ok(_) => errors.push(format!("{} returned no media", candidate.url)),
-                Err(error) => errors.push(format!("{}: {error}", candidate.url)),
+            if valid.is_empty() {
+                return Err(Error::new(errors.join("; ")));
             }
-        }
-
-        let mp4upload_candidates = parse_mp4upload_candidates(&html)?;
-        for candidate in &mp4upload_candidates {
-            match self.extract_mp4upload(candidate, &episode_url) {
-                Ok(streams) if !streams.is_empty() => return Ok(streams),
-                Ok(_) => errors.push(format!("{} returned no media", candidate.url)),
-                Err(error) => errors.push(format!("{}: {error}", candidate.url)),
-            }
-        }
-
-        if !candidates.is_empty()
-            || !dynamic_candidates.is_empty()
-            || !mp4upload_candidates.is_empty()
-        {
-            return Err(Error::new(format!(
-                "AnimeAv1 playback mirrors failed: {}",
-                errors.join("; ")
-            )));
-        }
-        Err(Error::new("AnimeAv1 returned no playable streams"))
+            Ok(valid)
+        })
     }
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
@@ -442,6 +401,45 @@ struct PlayerMirror {
     url: String,
 }
 
+fn audio_label(language: &str) -> &str {
+    if language == "DUB" {
+        "Español Latino (Doblado)"
+    } else {
+        "Japonés (Subtitulado)"
+    }
+}
+
+// Resolve each audio edition independently. A successful SUB must never hide DUB.
+fn collect_audio_streams(
+    candidates: Vec<PlayerMirror>,
+    mut extract: impl FnMut(&PlayerMirror) -> Result<Vec<VideoStream>>,
+) -> Result<Vec<VideoStream>> {
+    let mut streams = Vec::new();
+    let mut errors = Vec::new();
+    for language in ["SUB", "DUB"] {
+        for mirror in candidates
+            .iter()
+            .filter(|mirror| mirror.language == language)
+        {
+            match extract(mirror) {
+                Ok(found) if !found.is_empty() => {
+                    streams.extend(found);
+                    break;
+                }
+                Ok(_) => errors.push(format!("{language}: mirror returned no media")),
+                Err(error) => errors.push(format!("{language}: {error}")),
+            }
+        }
+    }
+    if streams.is_empty() {
+        return Err(Error::new(format!(
+            "AnimeAv1 playback mirrors failed: {}",
+            errors.join("; ")
+        )));
+    }
+    Ok(streams)
+}
+
 fn parse_player_candidates(html: &str) -> Result<Vec<PlayerMirror>> {
     let embeds = html
         .split("embeds:")
@@ -556,58 +554,6 @@ fn parse_mp4upload_media_url(html: &str) -> Result<String> {
         .ok_or_else(|| Error::new("MP4Upload did not publish an MP4 source"))?;
     validate_mp4upload_media_url(&url)?;
     Ok(url)
-}
-
-fn parse_voe_redirect_url(html: &str) -> Result<String> {
-    Regex::new(r#"window\.location\.href\s*=\s*'([^']+)'"#)
-        .map_err(regex_error)?
-        .captures(html)
-        .and_then(|capture| capture.get(1))
-        .map(|value| value.as_str().to_string())
-        .ok_or_else(|| Error::new("Voe did not publish its player redirect"))
-}
-
-fn parse_voe_media_url(html: &str) -> Result<String> {
-    let encoded = Regex::new(
-        r#"<script[^>]+type=[\"']application/json[\"'][^>]*>\s*\[\"([^\"]+)\"\]\s*</script>"#,
-    )
-    .map_err(regex_error)?
-    .captures(html)
-    .and_then(|capture| capture.get(1))
-    .map(|value| value.as_str())
-    .ok_or_else(|| Error::new("Voe did not publish its encoded playback data"))?;
-    let rotated: String = encoded
-        .chars()
-        .map(|character| match character {
-            'A'..='Z' => (((character as u8 - b'A' + 13) % 26) + b'A') as char,
-            'a'..='z' => (((character as u8 - b'a' + 13) % 26) + b'a') as char,
-            _ => character,
-        })
-        .collect();
-    let mut normalized = rotated;
-    for pattern in ["@$", "^^", "~@", "%?", "*~", "!!", "#&"] {
-        normalized = normalized.replace(pattern, "_");
-    }
-    normalized.retain(|character| character != '_');
-    let shifted = BASE64
-        .decode(normalized)
-        .map_err(|error| Error::new(format!("Voe playback data was not base64: {error}")))?;
-    let reversed: Vec<u8> = shifted
-        .into_iter()
-        .map(|byte| byte.wrapping_sub(3))
-        .rev()
-        .collect();
-    let json = BASE64
-        .decode(reversed)
-        .map_err(|error| Error::new(format!("Voe playback payload was not base64: {error}")))?;
-    let value: Value = serde_json::from_slice(&json)
-        .map_err(|error| Error::new(format!("Voe playback payload was invalid: {error}")))?;
-    value
-        .get("source")
-        .or_else(|| value.get("direct_access_url"))
-        .and_then(Value::as_str)
-        .map(ToString::to_string)
-        .ok_or_else(|| Error::new("Voe playback payload did not contain media"))
 }
 
 fn ensure_full_length(media_url: &str, referer: &str) -> Result<()> {
@@ -817,24 +763,6 @@ fn validate_dynamic_player_url(value: &str) -> Result<()> {
     Ok(())
 }
 
-fn validate_voe_redirect_url(value: &str) -> Result<()> {
-    let url = Url::parse(value).map_err(url_error)?;
-    if url.scheme() != "https"
-        || url.host_str() != Some("derricknationtop.com")
-        || !url.path().starts_with("/e/")
-    {
-        return Err(Error::new("Voe returned an unexpected player redirect"));
-    }
-    Ok(())
-}
-
-fn validate_standard_media_url(value: &str) -> Result<()> {
-    if !media_url(value) {
-        return Err(Error::new("player returned an unexpected media URL"));
-    }
-    Ok(())
-}
-
 fn media_url(value: &str) -> bool {
     let Ok(url) = Url::parse(value) else {
         return false;
@@ -920,6 +848,43 @@ manatan_sdk::export_extension!(manatan_sdk::Extension::new().video("animeav1", A
 #[cfg(test)]
 mod tests {
     use super::*;
+    use manatan_common::video::{parse_voe_media_url, parse_voe_redirect_url};
+
+    #[test]
+    fn sub_success_preserves_dub_and_failed_mirrors_fall_through() {
+        let candidates = vec![
+            PlayerMirror {
+                language: "SUB".into(),
+                url: "sub".into(),
+            },
+            PlayerMirror {
+                language: "DUB".into(),
+                url: "dead-dub".into(),
+            },
+            PlayerMirror {
+                language: "DUB".into(),
+                url: "dub".into(),
+            },
+        ];
+        let streams = collect_audio_streams(candidates, |mirror| {
+            if mirror.url == "dead-dub" {
+                return Err(Error::new("media denied"));
+            }
+            Ok(vec![VideoStream {
+                url: mirror.url.clone(),
+                ..VideoStream::default()
+            }])
+        })
+        .unwrap();
+        assert_eq!(
+            streams
+                .iter()
+                .map(|stream| stream.url.as_str())
+                .collect::<Vec<_>>(),
+            ["sub", "dub"]
+        );
+        assert_eq!(audio_label("DUB"), "Español Latino (Doblado)");
+    }
 
     #[test]
     fn parses_catalog_details_episodes_and_direct_players() {

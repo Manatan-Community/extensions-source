@@ -1,3 +1,4 @@
+use manatan_common::video::{byse_response, unpack_player, verify_stream, voe_stream};
 use std::{cmp::Ordering, collections::BTreeSet};
 
 use manatan_sdk::{
@@ -6,7 +7,8 @@ use manatan_sdk::{
         WebViewSessionPersistence, WebViewWaitUntil,
     },
     client::Client,
-    CatalogItem, Error, ImageRequest, Paged, Result, VideoEpisode, VideoSource, VideoStream,
+    CatalogItem, Error, FilterDefinition, ImageRequest, OptionItem, Paged, Result, VideoEpisode,
+    VideoSource, VideoStream,
 };
 use regex::Regex;
 use scraper::{ElementRef, Html, Selector};
@@ -38,12 +40,21 @@ impl AnimeJl {
             .to_string())
     }
 
-    fn browse(&self, page: u32, order: &str, query: Option<&str>) -> Result<Paged<CatalogItem>> {
+    fn browse(
+        &self,
+        page: u32,
+        order: &str,
+        query: Option<&str>,
+        dubbed: bool,
+    ) -> Result<Paged<CatalogItem>> {
         let mut url = Url::parse(&format!("{BASE_URL}/animes")).map_err(url_error)?;
         {
             let mut pairs = url.query_pairs_mut();
             pairs.append_pair("order", order);
             pairs.append_pair("page", &page.max(1).to_string());
+            if dubbed {
+                pairs.append_pair("genre[]", "46");
+            }
             if let Some(query) = query.filter(|value| !value.trim().is_empty()) {
                 pairs.append_pair("q", query.trim());
             }
@@ -77,6 +88,18 @@ impl AnimeJl {
         validate_player_url(embed_url)?;
         let body = self.remote_html(embed_url, episode_url)?;
         parse_streamtape_stream(&body, embed_url)
+    }
+
+    fn vidhide_streams(&self, embed_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
+        let response = Client::browser()
+            .get(embed_url)
+            .header("Referer", episode_url)
+            .header("User-Agent", BROWSER_USER_AGENT)
+            .timeout_ms(15_000)
+            .max_body_bytes(4 * 1024 * 1024)
+            .send()?
+            .error_for_status()?;
+        parse_vidhide_streams(response.text()?, response.final_url())
     }
 
     fn capture_player(&self, embed_url: &str, episode_url: &str) -> Result<Vec<VideoStream>> {
@@ -113,15 +136,35 @@ impl AnimeJl {
 
 impl VideoSource for AnimeJl {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.browse(page, "rating", None)
+        self.browse(page, "rating", None, false)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.browse(page, "updated", None)
+        self.browse(page, "updated", None, false)
     }
 
-    fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
-        self.browse(page, "rating", Some(query))
+    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        self.browse(
+            page,
+            "rating",
+            Some(query),
+            filters.get("audio").and_then(Value::as_str) == Some("dub"),
+        )
+    }
+
+    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
+        Ok(vec![FilterDefinition::Select {
+            id: "audio".into(),
+            name: "Audio".into(),
+            options: [("Todos", ""), ("Doblaje (Latino / Castellano)", "dub")]
+                .into_iter()
+                .map(|(label, value)| OptionItem {
+                    label: label.into(),
+                    value: value.into(),
+                })
+                .collect(),
+            default_index: 0,
+        }])
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -153,6 +196,17 @@ impl VideoSource for AnimeJl {
                 .and_then(|url| url.host_str().map(ToString::to_string))
                 .unwrap_or_default();
             let result = match host.as_str() {
+                "voe.sx" => {
+                    voe_stream(candidate, &episode_url, BROWSER_USER_AGENT).map(|mut stream| {
+                        stream.name = Some("AnimeJL Voe".into());
+                        vec![stream]
+                    })
+                }
+                "vidhidepre.com" | "callistanise.com" => {
+                    self.vidhide_streams(candidate, &episode_url)
+                }
+                "bysezoxexe.com" => byse_response(candidate, &episode_url, BROWSER_USER_AGENT)
+                    .and_then(|response| captured_streams(&response, &response.final_url)),
                 "sendvid.com" | "www.sendvid.com" => self
                     .sendvid_stream(candidate, &episode_url)
                     .map(|stream| vec![stream]),
@@ -168,7 +222,25 @@ impl VideoSource for AnimeJl {
                 _ => self.capture_player(candidate, &episode_url),
             };
             match result {
-                Ok(streams) if !streams.is_empty() => return Ok(streams),
+                Ok(streams) if !streams.is_empty() => {
+                    let mut valid = Vec::new();
+                    for mut stream in streams {
+                        match verify_stream(&stream) {
+                            Ok(()) => {
+                                stream.name = Some(format!(
+                                    "{} · {}",
+                                    edition_label(&item.title),
+                                    stream.name.as_deref().unwrap_or("AnimeJL")
+                                ));
+                                valid.push(stream);
+                            }
+                            Err(error) => errors.push(format!("{host}: {error}")),
+                        }
+                    }
+                    if !valid.is_empty() {
+                        return Ok(valid);
+                    }
+                }
                 Ok(_) => errors.push(format!("{host} returned no media")),
                 Err(error) => errors.push(format!("{host}: {error}")),
             }
@@ -316,15 +388,57 @@ fn parse_player_candidates(html: &str) -> Result<Vec<String>> {
         .filter(|url| validate_player_url(url).is_ok())
         .collect();
     candidates.sort_by_key(|url| player_priority(url));
-    let mut seen_hosts = BTreeSet::new();
-    candidates.retain(|value| {
-        Url::parse(value)
-            .ok()
-            .and_then(|url| url.host_str().map(ToString::to_string))
-            .is_some_and(|host| seen_hosts.insert(host))
-    });
-    candidates.truncate(7);
+    let mut seen = BTreeSet::new();
+    candidates.retain(|value| seen.insert(value.clone()));
+    candidates.truncate(12);
     Ok(candidates)
+}
+
+fn edition_label(title: &str) -> &str {
+    let title = title.to_lowercase();
+    if title.contains("castellano") {
+        "Español Castellano"
+    } else if title.contains("latino") {
+        "Español Latino"
+    } else {
+        "Japonés (Subtitulado)"
+    }
+}
+
+fn parse_vidhide_streams(html: &str, referer: &str) -> Result<Vec<VideoStream>> {
+    let script = unpack_player(html)?;
+    let regex = Regex::new(r#"\"hls[234]\"\s*:\s*\"(https://[^\"]+)\""#).map_err(regex_error)?;
+    let mut streams = Vec::new();
+    for capture in regex.captures_iter(&script) {
+        let url = capture[1].replace("\\/", "/");
+        let parsed = Url::parse(&url).map_err(url_error)?;
+        let host = parsed.host_str().unwrap_or_default();
+        if parsed.scheme() != "https"
+            || !(host.ends_with(".orchidcrestperformance.sbs")
+                || host.ends_with(".dramiyos-cdn.com"))
+        {
+            continue;
+        }
+        streams.push(VideoStream {
+            url,
+            name: Some("AnimeJL VidHide".into()),
+            format: Some("hls".into()),
+            is_hls: true,
+            requires_proxy: true,
+            initialized: true,
+            headers: [
+                ("Referer".into(), referer.into()),
+                ("User-Agent".into(), BROWSER_USER_AGENT.into()),
+            ]
+            .into_iter()
+            .collect(),
+            ..VideoStream::default()
+        });
+    }
+    if streams.is_empty() {
+        return Err(Error::new("VidHide did not publish supported HLS sources"));
+    }
+    Ok(streams)
 }
 
 fn parse_okru_stream(html: &str, embed_url: &str) -> Result<VideoStream> {
@@ -619,6 +733,7 @@ fn validate_player_url(value: &str) -> Result<()> {
                 | "mp4upload.com"
                 | "bysezoxexe.com"
                 | "vidhidepre.com"
+                | "callistanise.com"
                 | "strwish.com"
                 | "dhtpre.com"
                 | "iplayerhls.com"
@@ -650,14 +765,17 @@ fn player_priority(value: &str) -> u8 {
         .ok()
         .and_then(|url| url.host_str().map(ToString::to_string))
         .map(|host| match host.as_str() {
-            "ok.ru" | "www.ok.ru" => 0,
-            "mp4upload.com" | "www.mp4upload.com" => 1,
-            "sendvid.com" | "www.sendvid.com" => 2,
+            "voe.sx" => 0,
+            "ok.ru" | "www.ok.ru" => 1,
+            "bysezoxexe.com" => 2,
+            "vidhidepre.com" | "callistanise.com" => 3,
             "streamtape.com" => 3,
-            host if host.starts_with("uqload.") => 4,
-            "videovard.sx" | "www.videovard.sx" => 5,
-            "sbfull.com" | "www.sbfull.com" => 6,
-            _ => 7,
+            "sendvid.com" | "www.sendvid.com" => 4,
+            "mp4upload.com" | "www.mp4upload.com" => 5,
+            host if host.starts_with("uqload.") => 6,
+            "videovard.sx" | "www.videovard.sx" => 7,
+            "sbfull.com" | "www.sbfull.com" => 8,
+            _ => 9,
         })
         .unwrap_or(9)
 }
@@ -782,6 +900,57 @@ manatan_sdk::export_extension!(manatan_sdk::Extension::new().video("animejl", An
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn declares_media_origins_used_by_current_mirrors() {
+        let manifest: Value = serde_json::from_str(include_str!("../manifest.json")).unwrap();
+        let origins = manifest["permissions"]["network"]["allow"]
+            .as_array()
+            .unwrap();
+        for origin in [
+            "https://*.uqload.vc",
+            "https://n1mwq.org",
+            "https://*.owphbf24.com",
+            "https://derricknationtop.com",
+            "https://*.cloudwindow-route.com",
+        ] {
+            assert!(
+                origins.iter().any(|value| value.as_str() == Some(origin)),
+                "missing media permission: {origin}"
+            );
+        }
+        assert_eq!(manifest["sources"][0]["capabilities"]["filters"], true);
+    }
+
+    #[test]
+    fn preserves_distinct_mirrors_on_the_same_host() {
+        let html = r#"video[0] = '<iframe src="https://voe.sx/e/removed"></iframe>'; video[1] = '<iframe src="https://voe.sx/e/working"></iframe>';"#;
+        assert_eq!(parse_player_candidates(html).unwrap().len(), 2);
+    }
+
+    #[test]
+    fn extracts_vidhide_txt_playlists_and_labels_dub_editions() {
+        let packed = r#"eval(function(p,a,c,k,e,d){return p}('0={"1":"https://media.orchidcrestperformance.sbs/master.txt"};',2,2,'links|hls3'.split('|')))"#;
+        let streams =
+            parse_vidhide_streams(packed, "https://callistanise.com/embed/example").unwrap();
+        assert_eq!(
+            streams[0].url,
+            "https://media.orchidcrestperformance.sbs/master.txt"
+        );
+        assert!(streams[0].is_hls);
+        assert_eq!(
+            streams[0].headers["Referer"],
+            "https://callistanise.com/embed/example"
+        );
+        assert_eq!(
+            edition_label("Kanojo, Okarishimasu Temporada 5 Latino"),
+            "Español Latino"
+        );
+        assert_eq!(
+            edition_label("Dragon Ball Daima Castellano"),
+            "Español Castellano"
+        );
+    }
 
     #[test]
     fn parses_catalog_details_and_episodes() {

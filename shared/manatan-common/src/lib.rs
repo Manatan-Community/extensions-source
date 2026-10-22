@@ -7,6 +7,8 @@ use regex::Regex;
 use serde_json::Value;
 use url::Url;
 
+pub mod video;
+
 pub fn get_document(client: &Client, url: &str) -> Result<(Html, String)> {
     let response = client.get(url).send()?.error_for_status()?;
     let final_url = response.final_url().to_owned();
