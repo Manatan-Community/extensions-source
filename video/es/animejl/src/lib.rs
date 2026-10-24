@@ -28,7 +28,14 @@ impl AnimeJl {
     }
 
     fn remote_html(&self, url: &str, referer: &str) -> Result<String> {
-        Ok(Client::browser()
+        // The host requires an explicit cookie scope to recover browser
+        // challenges. Keep this confined to AnimeJL, not third-party players.
+        let client = if validate_site_url(url).is_ok() {
+            Client::browser().cookies_for(url)
+        } else {
+            Client::browser()
+        };
+        Ok(client
             .get(url)
             .header("Referer", referer)
             .header("User-Agent", BROWSER_USER_AGENT)
