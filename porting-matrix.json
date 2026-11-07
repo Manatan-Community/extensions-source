@@ -21025,14 +21025,22 @@
       "framework": "standalone",
       "requiredCapabilities": [
         "http",
+        "cookies",
+        "webview",
         "filters",
+        "preferences",
         "url-resolution",
         "page-processing"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
+      "status": "runtime-tested",
+      "tests": [
+        "16 parser, entitlement, origin-policy, login-state and tile-restoration regression tests",
+        "Clippy all-target checks with warnings denied; signed component and declared asset validation",
+        "Production Wasmtime runner: fixture catalog, details, newest-first chapters, free and preview page lists, locked-chapter errors and binary page transform",
+        "Live production Wasmtime runner: 50 ranking entries, latest, search pagination, login-state parsing and cover transfer"
+      ],
+      "packagePath": "packages/manga/ja/piccoma.manatan2",
+      "knownSiteFailure": "Piccoma product and reader endpoints return an explicit Japan-only region restriction from the test network. Live reading, purchased access and mobile rendering are not verified.",
       "license": "Apache-2.0",
       "attribution": "Ported from keiyoushi/extensions-source."
     },

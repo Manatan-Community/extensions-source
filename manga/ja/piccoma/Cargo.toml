@@ -1,0 +1,21 @@
+[package]
+name = "piccoma"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+manatan-sdk.workspace = true
+scraper.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+url.workspace = true
+regex.workspace = true
+json5 = "0.4"
+percent-encoding = "2"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
