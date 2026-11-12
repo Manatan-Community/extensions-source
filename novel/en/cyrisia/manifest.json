@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "cyrisia",
   "name": "Cyrisia",
-  "version": "1.0.1",
-  "versionCode": 2,
+  "version": "1.0.2",
+  "versionCode": 3,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -22,7 +22,8 @@
     "network": {
       "allow": [
         "https://cyrisia.com",
-        "https://files.cyrisia.com"
+        "https://files.cyrisia.com",
+        "https://b25ddadd1edd9b97f35f14f23eed4751.r2.cloudflarestorage.com"
       ]
     },
     "cookies": false,

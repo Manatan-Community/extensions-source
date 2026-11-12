@@ -1528,8 +1528,8 @@ mod tests {
         discover_extensions()
             .unwrap()
             .into_iter()
-            .find(|extension| extension.id == "bookracy")
-            .unwrap()
+            .next()
+            .expect("a source package with a bundled icon")
     }
 
     #[test]

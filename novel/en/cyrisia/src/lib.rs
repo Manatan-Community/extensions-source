@@ -50,11 +50,16 @@ impl Default for CyrisiaSource {
 
 impl CyrisiaSource {
     fn shelf(&self) -> Result<Vec<ShelfEntry>> {
-        self.client
+        let mut entries: Vec<ShelfEntry> = self
+            .client
             .get(format!("{BASE_URL}/api/bookshelf"))
             .send()?
             .error_for_status()?
-            .json()
+            .json()?;
+        // The same bookshelf also contains comics and other files this novel
+        // reader cannot open.
+        entries.retain(|entry| entry.epubs.iter().any(|file| readable_file(file)));
+        Ok(entries)
     }
 
     fn item(entry: &ShelfEntry) -> Result<CatalogItem> {
@@ -64,23 +69,25 @@ impl CyrisiaSource {
         item.language = Some("en".into());
         item.content_rating = Some("adult".into());
         item.extra.insert("epubs".into(), json!(entry.epubs));
-        if let Some(cover) = entry.cover.as_deref().filter(|value| !value.is_empty()) {
-            item.cover = Some(image(
-                &absolute_url(BASE_URL, cover)?,
-                &series_url(&entry.name)?,
-            ));
+        if let Some(cover) = shelf_cover(entry)? {
+            item.cover = Some(image(&cover, &series_url(&entry.name)?));
         }
         Ok(item)
     }
 
-    fn page(entries: Vec<CatalogItem>, page: u32) -> Paged<CatalogItem> {
+    fn page(entries: Vec<ShelfEntry>, page: u32) -> Result<Paged<CatalogItem>> {
         let page = page.max(1) as usize;
         let start = (page - 1) * PAGE_SIZE;
         let total = entries.len();
-        Paged::new(
-            entries.into_iter().skip(start).take(PAGE_SIZE).collect(),
+        Ok(Paged::new(
+            entries
+                .iter()
+                .skip(start)
+                .take(PAGE_SIZE)
+                .map(Self::item)
+                .collect::<Result<_>>()?,
             start + PAGE_SIZE < total,
-        )
+        ))
     }
 
     fn find_entry(&self, item: &CatalogItem) -> Result<ShelfEntry> {
@@ -125,18 +132,9 @@ impl CyrisiaSource {
         item.url = Some(page_url.into());
         item.description = description;
         item.tags = tags;
-        item.cover = cover.map(|value| image(&value, page_url)).or_else(|| {
-            entry
-                .cover
-                .as_deref()
-                .filter(|value| !value.is_empty())
-                .map(|cover| {
-                    image(
-                        &absolute_url(BASE_URL, cover).unwrap_or_else(|_| cover.to_owned()),
-                        page_url,
-                    )
-                })
-        });
+        item.cover = cover
+            .or(shelf_cover(entry)?)
+            .map(|value| image(&value, page_url));
         item.initialized = true;
         item.language = Some("en".into());
         item.content_rating = Some("adult".into());
@@ -146,12 +144,13 @@ impl CyrisiaSource {
 
     fn chapter(entry: &ShelfEntry, epub: &str, index: usize) -> Result<NovelChapter> {
         let epub_url = epub_url(&entry.name, epub)?;
+        let url = chapter_reader_url(&epub_url)?;
         Ok(NovelChapter {
             key: epub_url.clone(),
             title: Some(volume_title(epub)),
             chapter_number: Some((index + 1) as f32),
             volume_number: Some((index + 1) as f32),
-            url: Some(epub_url),
+            url: Some(url),
             language: Some("en".into()),
             ..NovelChapter::default()
         })
@@ -174,32 +173,23 @@ impl CyrisiaSource {
 
 impl NovelSource for CyrisiaSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        let entries = self
-            .shelf()?
-            .iter()
-            .map(Self::item)
-            .collect::<Result<Vec<_>>>()?;
-        Ok(Self::page(entries, page))
+        Self::page(self.shelf()?, page)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let mut entries = self.shelf()?;
         entries.reverse();
-        Ok(Self::page(
-            entries.iter().map(Self::item).collect::<Result<Vec<_>>>()?,
-            page,
-        ))
+        Self::page(entries, page)
     }
 
     fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
-        let query = query.trim().to_ascii_lowercase();
+        let query = normalize_space(query).to_lowercase();
         let entries = self
             .shelf()?
             .into_iter()
-            .filter(|entry| entry.name.to_ascii_lowercase().contains(&query))
-            .map(|entry| Self::item(&entry))
-            .collect::<Result<Vec<_>>>()?;
-        Ok(Self::page(entries, page))
+            .filter(|entry| normalize_space(&entry.name).to_lowercase().contains(&query))
+            .collect();
+        Self::page(entries, page)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -225,6 +215,7 @@ impl NovelSource for CyrisiaSource {
             .epubs
             .iter()
             .enumerate()
+            .filter(|(_, file)| readable_file(file))
             .map(|(index, epub)| Self::chapter(&entry, epub, index))
             .collect::<Result<Vec<_>>>()?;
         chapters.reverse();
@@ -232,13 +223,17 @@ impl NovelSource for CyrisiaSource {
     }
 
     fn text(&mut self, _item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
-        let url = chapter.url.as_deref().unwrap_or(&chapter.key);
-        let bytes = self.download_epub(url)?;
-        let rendered = render_epub(&bytes)?;
+        let url = chapter_reader_url(chapter.url.as_deref().unwrap_or(&chapter.key))?;
+        let rendered = if url.ends_with(".txt") {
+            let (document, _) = self.document(&url)?;
+            render_text_chapter(&document)?
+        } else {
+            render_epub(&self.download_epub(&url)?)?
+        };
         Ok(NovelText {
             html: Some(rendered.clone()),
             title: chapter.title,
-            base_url: Some(url.into()),
+            base_url: Some(url),
             blocks: vec![NovelContentBlock::Text {
                 text: rendered,
                 html: true,
@@ -249,7 +244,7 @@ impl NovelSource for CyrisiaSource {
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
         let url = Url::parse(candidate).map_err(|error| Error::new(error.to_string()))?;
-        if url.host_str() != Some("cyrisia.com") {
+        if url.scheme() != "https" || url.host_str() != Some("cyrisia.com") {
             return Ok(None);
         }
         if url.path().starts_with("/series/") {
@@ -262,12 +257,14 @@ impl NovelSource for CyrisiaSource {
                 ..UrlResolveResult::default()
             }));
         }
-        if url.path().starts_with("/read/") || url.path().starts_with("/bibi-bookshelf/") {
+        if (url.path().starts_with("/read/") || url.path().starts_with("/bibi-bookshelf/"))
+            && readable_file(url.path())
+        {
             let canonical = candidate.replace("/read/", "/bibi-bookshelf/");
             return Ok(Some(UrlResolveResult {
                 novel_chapter: Some(NovelChapter {
                     key: canonical.clone(),
-                    url: Some(canonical),
+                    url: Some(chapter_reader_url(&canonical)?),
                     language: Some("en".into()),
                     ..NovelChapter::default()
                 }),
@@ -276,6 +273,56 @@ impl NovelSource for CyrisiaSource {
         }
         Ok(None)
     }
+}
+
+fn readable_file(file: &str) -> bool {
+    file.ends_with(".epub") || file.ends_with(".txt")
+}
+
+fn chapter_reader_url(candidate: &str) -> Result<String> {
+    let mut url = Url::parse(candidate).map_err(|error| Error::new(error.to_string()))?;
+    let path = url.path().to_owned();
+    if url.scheme() != "https" || url.host_str() != Some("cyrisia.com") || !readable_file(&path) {
+        return Err(Error::new("Unsupported Cyrisia reader URL"));
+    }
+    let file = path
+        .strip_prefix("/bibi-bookshelf/")
+        .or_else(|| path.strip_prefix("/read/"))
+        .ok_or_else(|| Error::new("Not a Cyrisia chapter URL"))?;
+    let prefix = if file.ends_with(".txt") {
+        "/read/"
+    } else {
+        "/bibi-bookshelf/"
+    };
+    url.set_path(&format!("{prefix}{file}"));
+    url.set_query(None);
+    url.set_fragment(None);
+    Ok(url.into())
+}
+
+fn render_text_chapter(document: &Html) -> Result<String> {
+    let article = document
+        .select(&selector("article#ch-text")?)
+        .next()
+        .ok_or_else(|| Error::new("Cyrisia text chapter is unavailable"))?;
+    let mut rendered = String::new();
+    for paragraph in article.select(&selector("p")?) {
+        let text = html::text(paragraph);
+        if !text.trim().is_empty() {
+            rendered.push_str("<p>");
+            rendered.push_str(
+                &text
+                    .replace('&', "&amp;")
+                    .replace('<', "&lt;")
+                    .replace('>', "&gt;"),
+            );
+            rendered.push_str("</p>");
+        }
+    }
+    require(
+        (!rendered.is_empty()).then_some(rendered),
+        "Cyrisia chapter has no readable paragraphs",
+    )
 }
 
 fn render_epub(bytes: &[u8]) -> Result<String> {
@@ -551,6 +598,22 @@ fn path_url(prefix: &str, parts: &[&str]) -> Result<String> {
 fn series_url(name: &str) -> Result<String> {
     path_url("/series/", &[name])
 }
+fn shelf_cover(entry: &ShelfEntry) -> Result<Option<String>> {
+    if let Some(cover) = entry.cover.as_deref().filter(|value| !value.is_empty()) {
+        return absolute_url(BASE_URL, cover).map(Some);
+    }
+    let Some(volume) = entry.epubs.first().filter(|name| !name.is_empty()) else {
+        return Ok(None);
+    };
+    // The bookshelf lists file names, not cover URLs. Use the same cover
+    // endpoint as the website without fetching a details page per card.
+    let mut url = Url::parse(&format!("{BASE_URL}/api/cover"))
+        .map_err(|error| Error::new(error.to_string()))?;
+    url.query_pairs_mut()
+        .append_pair("series", &entry.name)
+        .append_pair("v", volume);
+    Ok(Some(url.into()))
+}
 fn epub_url(series: &str, epub: &str) -> Result<String> {
     path_url("/bibi-bookshelf/", &[series, epub])
 }
@@ -574,6 +637,48 @@ manatan_sdk::export_extension!(extension());
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bookshelf_file_supplies_cover_without_a_detail_request() {
+        let entry = ShelfEntry {
+            name: "雪 & Rain".into(),
+            epubs: vec!["Chapter #1.txt".into()],
+            cover: None,
+        };
+        let url = Url::parse(&shelf_cover(&entry).unwrap().unwrap()).unwrap();
+        assert_eq!(url.path(), "/api/cover");
+        assert_eq!(
+            url.query_pairs().into_owned().collect::<Vec<_>>(),
+            [
+                ("series".into(), "雪 & Rain".into()),
+                ("v".into(), "Chapter #1.txt".into())
+            ]
+        );
+    }
+
+    #[test]
+    fn text_reader_preserves_legacy_key_and_escapes_chapter_text() {
+        let entry = ShelfEntry {
+            name: "A Book".into(),
+            epubs: vec![],
+            cover: None,
+        };
+        let chapter = CyrisiaSource::chapter(&entry, "Chapter 1.txt", 0).unwrap();
+        assert!(chapter
+            .key
+            .ends_with("/bibi-bookshelf/A%20Book/Chapter%201.txt"));
+        assert!(chapter
+            .url
+            .unwrap()
+            .ends_with("/read/A%20Book/Chapter%201.txt"));
+        let document = html::document(
+            "<article id=ch-text><p>A &amp; B &lt;test&gt;</p></article><p>outside</p>",
+        );
+        assert_eq!(
+            render_text_chapter(&document).unwrap(),
+            "<p>A &amp; B &lt;test&gt;</p>"
+        );
+        assert!(render_text_chapter(&html::document("<p>Blocked</p>")).is_err());
+    }
     use std::io::Write;
     use zip::{write::SimpleFileOptions, ZipWriter};
 

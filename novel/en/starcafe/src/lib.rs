@@ -11,6 +11,82 @@ use url::Url;
 use wordpress_novel::{chapter_text, image, rating};
 
 const BASE: &str = "https://starcafe.me";
+const CATALOG_URL: &str = "https://firestore.googleapis.com/v1/projects/starcafe-167bb/databases/(default)/documents/indexes/cnovels";
+
+// Firestore REST wraps each field in a typed value. Decode the types in the
+// public catalog, retaining numbers and timestamps for sorting.
+fn firestore_value(field: &Value) -> Result<Value> {
+    for kind in [
+        "stringValue",
+        "timestampValue",
+        "booleanValue",
+        "doubleValue",
+        "nullValue",
+    ] {
+        if let Some(value) = field.get(kind) {
+            return Ok(value.clone());
+        }
+    }
+    if let Some(value) = field.get("integerValue") {
+        return value
+            .as_str()
+            .and_then(|value| value.parse::<i64>().ok())
+            .map(Value::from)
+            .ok_or_else(|| Error::new("Invalid StarCafe catalog integer"));
+    }
+    if let Some(array) = field.get("arrayValue") {
+        return array
+            .get("values")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .map(firestore_value)
+            .collect::<Result<Vec<_>>>()
+            .map(Value::Array);
+    }
+    if let Some(map) = field.get("mapValue") {
+        return map
+            .get("fields")
+            .and_then(Value::as_object)
+            .into_iter()
+            .flatten()
+            .map(|(key, value)| Ok((key.clone(), firestore_value(value)?)))
+            .collect::<Result<serde_json::Map<_, _>>>()
+            .map(Value::Object);
+    }
+    Err(Error::new("Unknown StarCafe catalog field type"))
+}
+
+fn catalog_rows(document: &Value) -> Result<Vec<Value>> {
+    let rows = document
+        .get("fields")
+        .and_then(Value::as_object)
+        .ok_or_else(|| Error::new("StarCafe catalog document has no fields"))?;
+    rows.values()
+        .map(|row| {
+            let fields = row
+                .pointer("/mapValue/fields")
+                .and_then(Value::as_object)
+                .ok_or_else(|| Error::new("Invalid StarCafe catalog entry"))?;
+            // Ignore fields added by the site that aren't part of our catalog.
+            [
+                "slug",
+                "title",
+                "favorites",
+                "meta_updated_at",
+                "novel_cover",
+                "status",
+                "tags",
+            ]
+            .into_iter()
+            .filter_map(|key| fields.get(key).map(|value| (key, value)))
+            .map(|(key, value)| Ok((key.to_owned(), firestore_value(value)?)))
+            .collect::<Result<serde_json::Map<_, _>>>()
+            .map(Value::Object)
+        })
+        .collect()
+}
+
 pub struct StarCafe {
     client: Client,
 }
@@ -137,7 +213,6 @@ fn item(row: &Value) -> Result<CatalogItem> {
     let mut item = CatalogItem::new(&url, required(row, "title")?);
     item.url = Some(url.clone());
     item.language = Some("en".into());
-    item.initialized = true;
     item.authors = row
         .get("author")
         .and_then(Value::as_str)
@@ -192,19 +267,23 @@ impl StarCafe {
         flight(&html::document(response.text()?))
     }
     fn browse(&self, query: &str, page: u32, latest: bool) -> Result<Paged<CatalogItem>> {
-        let payload = self.page(&format!("{BASE}/novels"))?;
-        let mut rows = data(&payload, "novels")?["novels"]
-            .as_array()
-            .ok_or_else(|| Error::new("StarCafe catalog is invalid"))?
-            .clone();
+        // The site loads this public index client-side. No site login or
+        // cookies are sent to the catalog host.
+        let document = Client::browser()
+            .get(CATALOG_URL)
+            .max_body_bytes(2_000_000)
+            .send()?
+            .error_for_status()?
+            .json()?;
+        let mut rows = catalog_rows(&document)?;
         if latest {
             rows.sort_by(|a, b| {
-                b["latest_update"]
+                b["meta_updated_at"]
                     .as_str()
-                    .cmp(&a["latest_update"].as_str())
+                    .cmp(&a["meta_updated_at"].as_str())
             });
         } else {
-            rows.sort_by_key(|v| std::cmp::Reverse(v["total_likes"].as_u64().unwrap_or(0)));
+            rows.sort_by_key(|v| std::cmp::Reverse(v["favorites"].as_u64().unwrap_or(0)));
         }
         let query = query.to_lowercase();
         let entries: Vec<_> = rows
@@ -226,19 +305,44 @@ impl StarCafe {
         ))
     }
     fn chapter_rows(rows: &[Value], url: &str) -> Result<Vec<NovelChapter>> {
-        let index = data(rows, "latest_public_chapter")?;
+        let index = data(rows, "toc").or_else(|_| data(rows, "latest_public_chapter"))?;
         let acronym = required(index, "acronym")?;
         let public = index["latest_public_chapter"]
             .as_f64()
             .ok_or_else(|| Error::new("StarCafe public chapter limit is missing"))?;
-        let chapters = index["chapters"]
-            .as_array()
-            .ok_or_else(|| Error::new("StarCafe chapter index is invalid"))?;
+        let mut chapters = if let Some(toc) = index["toc"].as_object() {
+            toc.iter()
+                .map(|(key, row)| {
+                    let number = key
+                        .parse::<f64>()
+                        .ok()
+                        .filter(|number| number.is_finite() && *number >= 0.0)
+                        .ok_or_else(|| Error::new("Invalid StarCafe chapter index key"))?;
+                    Ok((
+                        number,
+                        row,
+                        row["published_at"]
+                            .as_str()
+                            .is_some_and(|value| !value.is_empty()),
+                    ))
+                })
+                .collect::<Result<Vec<_>>>()?
+        } else {
+            index["chapters"]
+                .as_array()
+                .ok_or_else(|| Error::new("StarCafe chapter index is invalid"))?
+                .iter()
+                .map(|row| {
+                    let number = row["chapter_num"]
+                        .as_f64()
+                        .ok_or_else(|| Error::new("StarCafe chapter number is missing"))?;
+                    Ok((number, row, true))
+                })
+                .collect::<Result<Vec<_>>>()?
+        };
+        chapters.sort_by(|a, b| b.0.total_cmp(&a.0));
         let mut result = Vec::new();
-        for row in chapters.iter().rev() {
-            let num = row["chapter_num"]
-                .as_f64()
-                .ok_or_else(|| Error::new("StarCafe chapter number is missing"))?;
+        for (num, row, published) in chapters {
             let target = format!("{}/{acronym}-ch{}", url.trim_end_matches('/'), num);
             result.push(NovelChapter {
                 key: target.clone(),
@@ -249,7 +353,7 @@ impl StarCafe {
                 )),
                 chapter_number: Some(num as f32),
                 language: Some("en".into()),
-                is_locked: num > public,
+                is_locked: num > public || !published,
                 ..NovelChapter::default()
             });
         }
@@ -267,10 +371,12 @@ impl NovelSource for StarCafe {
         self.browse(q, page, false)
     }
     fn details(&mut self, i: CatalogItem) -> Result<CatalogItem> {
-        item(data(
+        let mut details = item(data(
             &self.page(i.url.as_deref().unwrap_or(&i.key))?,
             "novel_cover",
-        )?)
+        )?)?;
+        details.initialized = true;
+        Ok(details)
     }
     fn chapters(&mut self, i: CatalogItem) -> Result<Vec<NovelChapter>> {
         let url = i.url.as_deref().unwrap_or(&i.key);
@@ -329,6 +435,42 @@ manatan_sdk::export_extension!(extension());
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn decodes_the_public_catalog_document() {
+        let rows = catalog_rows(&json!({"fields":{"EXAMPLE":{"mapValue":{"fields":{
+            "slug":{"stringValue":"example"},
+            "title":{"stringValue":"Example"},
+            "favorites":{"integerValue":"12"},
+            "meta_updated_at":{"timestampValue":"2026-11-11T00:00:00Z"},
+            "tags":{"arrayValue":{"values":[{"stringValue":"Fantasy"}]}},
+            "unused":{"geoPointValue":{"latitude":0,"longitude":0}}
+        }}}}}))
+        .unwrap();
+        assert_eq!(rows[0]["favorites"], 12);
+        let summary = item(&rows[0]).unwrap();
+        assert_eq!(summary.tags, ["Fantasy"]);
+        assert!(!summary.initialized);
+        assert!(catalog_rows(&json!({"error":{"status":"PERMISSION_DENIED"}})).is_err());
+    }
+
+    #[test]
+    fn keyed_toc_is_sorted_numerically_and_unpublished_entries_stay_locked() {
+        let payload = vec![json!({"acronym":"TEST","latest_public_chapter":10,"toc":{
+            "1":{"chapter_title":"First","published_at":"2026-11-01T00:00:00Z"},
+            "2":{"chapter_title":"Unpublished"},
+            "10":{"chapter_title":"Tenth","published_at":"2026-11-10T00:00:00Z"},
+            "11":{"chapter_title":"Advance","published_at":"2026-11-11T00:00:00Z"}
+        }})];
+        let rows = StarCafe::chapter_rows(&payload, &format!("{BASE}/novels/test")).unwrap();
+        assert_eq!(
+            rows.iter()
+                .map(|row| row.chapter_number.unwrap())
+                .collect::<Vec<_>>(),
+            [11., 10., 2., 1.]
+        );
+        assert!(rows[0].is_locked && !rows[1].is_locked && rows[2].is_locked && !rows[3].is_locked);
+        assert!(rows[3].key.ends_with("/TEST-ch1"));
+    }
     #[test]
     fn flight_reassembles_chunks_and_utf8_multiline_text() {
         let text = "<p>雪\n1:{not a record}</p>";

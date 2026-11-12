@@ -45,7 +45,7 @@
         "url-resolution"
       ],
       "status": "live-verified",
-      "tests": ["5 parser and access-policy regression tests", "cargo clippy --all-targets -- -D warnings", "signed component and bundled icon validation", "production Wasmtime runner: filters export", "Wasmtime with public HTTP test bridge: catalog, latest, search, pagination, covers and all 7 novels' complete chapter indexes and first/middle public text"],
+      "tests": ["Firestore catalog decoding, keyed chapter index, and public-access regression tests", "signed component and bundled icon validation", "Manatan public catalog, latest, title search, cover proxy, details, chapter locks, and public chapter text"],
       "packagePath": "packages/novel/en/starcafe.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
@@ -41479,21 +41479,23 @@
       "status": "live-verified",
       "tests": [
         "fixture-epub-render-test",
+        "bookshelf-cover-url-and-text-reader-regressions",
         "archive-path-safety",
         "component-validated",
         "live-bookshelf-search-details-chapters",
         "live-epub-download-and-render",
         "live-139-inline-images",
-        "live-cover-image"
+        "live-cover-image",
+        "Manatan catalog and title search, text chapter, and redirected EPUB download"
       ],
       "packagePath": "packages/novel/en/cyrisia.manatan2",
       "knownSiteFailure": null,
       "license": "MIT",
-      "attribution": "Independent integration with Cyrisia's public bookshelf and EPUB endpoints."
+      "attribution": "Independent integration with Cyrisia's public bookshelf, cover, EPUB, and text reader endpoints."
     },
     {
       "upstreamRepository": "https://chikari.moe",
-      "upstreamPath": "api/novels, details, chapters, reader, and genres endpoints",
+      "upstreamPath": "api/series?type=novel, api/genres?novels=true, and novel-specific details, chapters, and reader endpoints",
       "sourceId": "lightnovelworld",
       "language": "en",
       "mediaKind": "novel",
@@ -41515,7 +41517,8 @@
         "production-runner-live-filters",
         "live-popular-filtered-search-details-chapter-pagination",
         "live-public-chapter-render",
-        "live-cover-image"
+        "live-cover-image",
+        "Manatan unified novel catalog pages 1/2, latest, search, genres, artwork, and public reader"
       ],
       "packagePath": "packages/novel/en/lightnovelworld.manatan2",
       "knownSiteFailure": null,
@@ -41523,7 +41526,7 @@
       "attribution": "Independent integration with Chikari's public JSON API."
     },
     {
-      "upstreamRepository": "https://novelarchive.cc",
+      "upstreamRepository": "https://novelarchive.st",
       "upstreamPath": "api/novels",
       "sourceId": "novelarchive",
       "language": "en",
@@ -41544,45 +41547,13 @@
         "production-runner-filters",
         "live-popular-latest-search-details-chapters",
         "live-first-middle-last-text",
-        "live-cover-image"
+        "live-cover-image",
+        "Manatan new-host catalog, latest, search, cover, and public chapter text; legacy URL resolution"
       ],
       "packagePath": "packages/novel/en/novelarchive.manatan2",
       "knownSiteFailure": null,
       "license": "MIT",
       "attribution": "Independent integration with Novel Archive's public catalog and chapter APIs."
-    },
-    {
-      "upstreamRepository": "https://bookracy.com",
-      "upstreamPath": "public trending, search, cover, and EPUB download APIs",
-      "sourceId": "bookracy",
-      "language": "en",
-      "mediaKind": "novel",
-      "framework": "standalone-epub-json-api",
-      "requiredCapabilities": [
-        "http",
-        "filters",
-        "url-resolution",
-        "epub-processing"
-      ],
-      "status": "live-verified",
-      "tests": [
-        "catalog-metadata-tests",
-        "unsupported-format-tests",
-        "url-resolution-tests",
-        "archive-path-safety",
-        "fixture-epub-render-test",
-        "strict-clippy",
-        "component-validated",
-        "signed-package-validated",
-        "production-runner-live-trending-and-filtered-search",
-        "production-runner-saved-item-details-and-chapters",
-        "live-epub-download-and-render",
-        "live-cover-image"
-      ],
-      "packagePath": "packages/novel/en/bookracy.manatan2",
-      "knownSiteFailure": null,
-      "license": "MIT",
-      "attribution": "Independent integration with BookRacy's public catalog and EPUB endpoints."
     },
     {
       "upstreamRepository": "https://silip.pages.dev",

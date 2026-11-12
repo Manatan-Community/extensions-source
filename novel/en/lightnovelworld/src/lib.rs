@@ -56,10 +56,14 @@ impl LightNovelWorldSource {
             .unwrap_or(usize::MAX)
             .saturating_sub(1))
         .saturating_mul(PAGE_SIZE);
-        let mut url = Url::parse(&format!("{BASE_URL}/api/novels"))
+        // The unified catalog serves multiple media types. Novel detail and
+        // reading still use /api/novels/{slug}; /api/series/{slug} can select
+        // a comic with the same slug.
+        let mut url = Url::parse(&format!("{BASE_URL}/api/series"))
             .map_err(|error| Error::new(error.to_string()))?;
         {
             let mut pairs = url.query_pairs_mut();
+            pairs.append_pair("type", "novel");
             pairs.append_pair("sort", sort);
             pairs.append_pair("limit", &PAGE_SIZE.to_string());
             pairs.append_pair("offset", &offset.to_string());
@@ -70,7 +74,6 @@ impl LightNovelWorldSource {
                 pairs.append_pair("adult", "true");
             }
             append_values(&mut pairs, filters, "genres", "genre");
-            append_values(&mut pairs, filters, "languages", "language");
             append_values(&mut pairs, filters, "statuses", "status");
             append_values(&mut pairs, filters, "years", "year");
             if let Some(value) = filter_string(filters, "min_chapters") {
@@ -94,13 +97,18 @@ impl LightNovelWorldSource {
         ))
     }
 
-    fn listing_page(&self, listing: &str, page: u32) -> Result<Paged<CatalogItem>> {
+    fn listing_page(
+        &self,
+        listing: &str,
+        page: u32,
+        filters: &Value,
+    ) -> Result<Paged<CatalogItem>> {
         let sort = match listing {
             "popular" => "popular",
             "latest" => "updated",
             other => return Err(Error::new(format!("unknown Chikari listing {other:?}"))),
         };
-        self.catalog_page(sort, "", page, &json!({}))
+        self.catalog_page(sort, "", page, filters)
     }
 
     fn item_url(item: &CatalogItem) -> Result<String> {
@@ -127,27 +135,22 @@ impl LightNovelWorldSource {
     }
 
     fn genres(&self) -> Result<Vec<OptionItem>> {
-        let value = self.get_json(&format!("{BASE_URL}/api/novels/genres"))?;
+        let value = self.get_json(&format!("{BASE_URL}/api/genres?novels=true"))?;
         parse_genres(&value)
     }
 }
 
 impl NovelSource for LightNovelWorldSource {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page("popular", page)
+        self.listing_page("popular", page, &Value::Null)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page("latest", page)
+        self.listing_page("latest", page, &Value::Null)
     }
 
-    fn listing(
-        &mut self,
-        listing: &str,
-        page: u32,
-        _filters: &Value,
-    ) -> Result<Paged<CatalogItem>> {
-        self.listing_page(listing, page)
+    fn listing(&mut self, listing: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        self.listing_page(listing, page, filters)
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -640,21 +643,6 @@ fn filter_definitions(genres: Vec<OptionItem>) -> Vec<FilterDefinition> {
             default: Vec::new(),
         },
         FilterDefinition::MultiSelect {
-            id: "languages".into(),
-            name: "Original language".into(),
-            options: [
-                ("Japanese", "ja"),
-                ("Korean", "ko"),
-                ("Chinese", "zh"),
-                ("English", "en"),
-                ("Other", "other"),
-            ]
-            .into_iter()
-            .map(|(label, value)| option(label, value))
-            .collect(),
-            default: Vec::new(),
-        },
-        FilterDefinition::MultiSelect {
             id: "genres".into(),
             name: "Genres".into(),
             options: genres,
@@ -737,9 +725,9 @@ fn required_string<'a>(value: &'a Value, key: &str, kind: &str) -> Result<&'a st
 }
 
 fn image(url: &str, referer: &str) -> ImageRequest {
-    ImageRequest::get(url)
-        .header("Referer", referer)
-        .cookies_for(BASE_URL)
+    // Covers are public CDN resources. The API's site cookies must not be
+    // attached to an artwork request on a different origin.
+    ImageRequest::get(url).header("Referer", referer)
 }
 
 fn normalize_status(value: &str) -> &'static str {
@@ -870,7 +858,8 @@ mod tests {
         assert_eq!(genres.len(), 3);
         assert_eq!(genres[0], option("Action", "action"));
         let filters = filter_definitions(genres);
-        assert_eq!(filters.len(), 7);
+        // The unified series API does not support the old original-language filter.
+        assert_eq!(filters.len(), 6);
     }
 
     #[test]
@@ -880,7 +869,7 @@ mod tests {
             "https://cdn.chikari.moe/novels/53/cover.webp",
             "https://chikari.moe/novels/shadow-slave",
         );
-        assert_eq!(request.cookie_url.as_deref(), Some(BASE_URL));
+        assert_eq!(request.cookie_url, None);
         assert_eq!(
             request.headers.get("Referer").map(String::as_str),
             Some("https://chikari.moe/novels/shadow-slave")

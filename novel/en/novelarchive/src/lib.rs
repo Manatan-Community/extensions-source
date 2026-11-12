@@ -12,8 +12,8 @@ use url::Url;
 
 #[cfg(target_arch = "wasm32")]
 const SOURCE_ID: &str = "novelarchive";
-const BASE_URL: &str = "https://novelarchive.cc";
-const API_URL: &str = "https://novelarchive.cc/api";
+const BASE_URL: &str = "https://novelarchive.st";
+const LEGACY_HOST: &str = "novelarchive.cc";
 const PAGE_SIZE: u32 = 24;
 const CHAPTER_PAGE_SIZE: usize = 200;
 
@@ -40,7 +40,7 @@ impl NovelArchiveSource {
         query: Option<&str>,
         filters: &Value,
     ) -> Result<Paged<CatalogItem>> {
-        let mut url = Url::parse(&format!("{API_URL}/novels"))
+        let mut url = Url::parse(&format!("{BASE_URL}/api/novels"))
             .map_err(|error| Error::new(error.to_string()))?;
         {
             let mut pairs = url.query_pairs_mut();
@@ -149,7 +149,7 @@ impl NovelArchiveSource {
     }
 
     fn details_value(&self, id: &str) -> Result<Value> {
-        let response = self.get_json(&format!("{API_URL}/novels/{id}"))?;
+        let response = self.get_json(&format!("{BASE_URL}/api/novels/{id}"))?;
         response
             .get("novel")
             .cloned()
@@ -275,7 +275,7 @@ impl NovelSource for NovelArchiveSource {
     fn text(&mut self, item: CatalogItem, chapter: NovelChapter) -> Result<NovelText> {
         let id = Self::id(&item)?;
         let number = Self::chapter_number(&chapter)?;
-        let response = self.get_json(&format!("{API_URL}/novels/{id}/chapters/{number}"))?;
+        let response = self.get_json(&format!("{BASE_URL}/api/novels/{id}/chapters/{number}"))?;
         let chapter_value = response
             .get("chapter")
             .ok_or_else(|| Error::new("Novel Archive response has no chapter"))?;
@@ -326,7 +326,9 @@ impl NovelSource for NovelArchiveSource {
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
         let url = Url::parse(candidate).map_err(|error| Error::new(error.to_string()))?;
-        if url.host_str() != Some("novelarchive.cc") {
+        if url.scheme() != "https"
+            || !matches!(url.host_str(), Some("novelarchive.st" | LEGACY_HOST))
+        {
             return Ok(None);
         }
         let id = url
@@ -346,7 +348,7 @@ impl NovelSource for NovelArchiveSource {
             .map(|number| NovelChapter {
                 key: format!("{}:{number}", item.key),
                 chapter_number: Some(number as f32),
-                url: Some(candidate.into()),
+                url: Some(format!("{BASE_URL}/reader?novel={id}&chapter={number}")),
                 language: Some("en".into()),
                 ..NovelChapter::default()
             });
@@ -482,6 +484,25 @@ manatan_sdk::export_extension!(extension());
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn old_and_new_reader_links_keep_the_same_keys() {
+        let mut source = NovelArchiveSource::default();
+        for host in [LEGACY_HOST, "novelarchive.st"] {
+            let target = format!("https://{host}/reader?novel=example&chapter=3");
+            let result = source.handle_url(&target).unwrap().unwrap();
+            assert_eq!(result.item.unwrap().key, "example");
+            let chapter = result.novel_chapter.unwrap();
+            assert_eq!(chapter.key, "example:3");
+            assert_eq!(
+                chapter.url.as_deref(),
+                Some("https://novelarchive.st/reader?novel=example&chapter=3")
+            );
+        }
+        assert!(source
+            .handle_url("https://novelarchive.st.example/reader?novel=example&chapter=3")
+            .unwrap()
+            .is_none());
+    }
 
     #[test]
     fn parses_item_and_preserves_restricted_genres_as_adult_metadata() {
