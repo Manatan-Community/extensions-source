@@ -915,6 +915,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-foxaholic"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
 name = "manatan-novel-en-fucknovelpia"
 version = "0.1.0"
 dependencies = [
@@ -952,6 +963,28 @@ dependencies = [
  "manatan-sdk",
  "serde_json",
  "url",
+]
+
+[[package]]
+name = "manatan-novel-en-novelhall"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
+name = "manatan-novel-en-novelping"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde_json",
+ "url",
+ "wordpress-novel",
 ]
 
 [[package]]

@@ -31121,24 +31121,26 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "LNReader/lnreader-plugins",
-      "upstreamPath": "plugins/multisrc/madara/sources.json#foxaholic",
+      "upstreamRepository": "https://www.foxaholic.com",
+      "upstreamPath": "public Madara catalog, chapter list, and reader",
       "sourceId": "foxaholic",
       "language": "en",
       "mediaKind": "novel",
-      "framework": "madara-lnreader",
+      "framework": "madara",
       "requiredCapabilities": [
         "http",
         "filters",
         "url-resolution",
         "chapter-pagination"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
-      "knownSiteFailure": null,
-      "license": "MIT",
-      "attribution": "Generated from the MIT-licensed third-party Madara descriptor."
+      "status": "runtime-tested",
+      "tests": [
+        "Signed package installation and Manatan popular, latest, pagination, search, artwork, details, chapter locks, public reader, and URL resolution with a pre-established verified browser session"
+      ],
+      "packagePath": "packages/novel/en/foxaholic.manatan2",
+      "knownSiteFailure": "2026-11-13: Fresh browser profiles did not consistently clear the site's challenge. The live catalog and reader passed with a pre-established verified browser session.",
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with Foxaholic's public Madara catalog and reader."
     },
     {
       "upstreamRepository": "IReaderorg/IReader-extensions",
@@ -32522,8 +32524,8 @@
       "attribution": "Ported from IReaderorg/IReader-extensions."
     },
     {
-      "upstreamRepository": "IReaderorg/IReader-extensions",
-      "upstreamPath": "sources/en/novelhall",
+      "upstreamRepository": "https://www.novelhall.com",
+      "upstreamPath": "public catalog, chapter list, and reader",
       "sourceId": "novelhall",
       "language": "en",
       "mediaKind": "novel",
@@ -32535,12 +32537,31 @@
         "chapter-pagination",
         "commands"
       ],
-      "status": "inventoried",
-      "tests": [],
-      "packagePath": null,
+      "status": "live-verified",
+      "tests": [
+        "Signed package installation and Manatan popular pagination, latest, search, details artwork, full chapter list, public reader, and URL resolution"
+      ],
+      "packagePath": "packages/novel/en/novelhall.manatan2",
       "knownSiteFailure": null,
-      "license": "MPL-2.0",
-      "attribution": "Ported from IReaderorg/IReader-extensions."
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with NovelHall's public catalog and reader."
+    },
+    {
+      "upstreamRepository": "https://novelping.com",
+      "upstreamPath": "public catalog, chapter archive, and reader",
+      "sourceId": "novelping",
+      "language": "en",
+      "mediaKind": "novel",
+      "framework": "standalone-html",
+      "requiredCapabilities": ["http", "url-resolution"],
+      "status": "live-verified",
+      "tests": [
+        "Signed package installation and Manatan popular pagination, latest, search, catalog and details artwork, full archive, public reader, and URL resolution"
+      ],
+      "packagePath": "packages/novel/en/novelping.manatan2",
+      "knownSiteFailure": null,
+      "license": "Apache-2.0",
+      "attribution": "Independent integration with NovelPing's public catalog and reader."
     },
     {
       "upstreamRepository": "LNReader/lnreader-plugins",
