@@ -1,8 +1,8 @@
 use manatan_common::{absolute_url, attr, normalize_space, require, selector};
 use manatan_sdk::{
     browser::{
-        self, WebViewRequest, WebViewRequestMethod, WebViewResponse, WebViewScript, WebViewSession,
-        WebViewWait, WebViewWaitUntil,
+        self, WebViewRequest, WebViewResponse, WebViewScript, WebViewSession, WebViewWait,
+        WebViewWaitUntil,
     },
     html::{self, Html},
     model::{
@@ -30,44 +30,66 @@ impl Default for Shuba69Source {
 
 impl Shuba69Source {
     fn document(&self, url: &str) -> Result<(Html, String)> {
-        self.document_request(url, WebViewRequestMethod::Get, None)
+        self.document_request(url, None)
     }
 
-    fn document_request(
-        &self,
-        url: &str,
-        method: WebViewRequestMethod,
-        body: Option<Vec<u8>>,
-    ) -> Result<(Html, String)> {
+    fn document_request(&self, url: &str, search: Option<&str>) -> Result<(Html, String)> {
         // 69书吧 challenges ordinary HTTP clients. The host-owned, source-scoped
         // browser handles that challenge on every platform and returns only a
         // sanitized DOM snapshot to the extension.
+        let headers = vec![
+            (
+                "Accept".to_owned(),
+                "text/html,application/xhtml+xml".to_owned(),
+            ),
+            ("Accept-Language".to_owned(), "zh-CN,zh;q=0.9".to_owned()),
+            ("Referer".to_owned(), format!("{BASE_URL}/")),
+        ];
+        // Submit the publisher's real form so its charset, successful controls,
+        // origin and navigation semantics stay browser-owned.
+        let wait_script = if let Some(query) = search {
+            let query = serde_json::to_string(query)?;
+            let nonce = serde_json::to_string(&format!(
+                "shuba-search-{}",
+                manatan_sdk::runtime::now_millis()
+            ))?;
+            format!(
+                r#"(() => {{
+                if (document.readyState !== 'complete') return false;
+                const marker = '__manatan_shuba_search';
+                const nonce = {nonce};
+                if (sessionStorage.getItem(marker) !== nonce) {{
+                    const form = document.forms.namedItem('articlesearch');
+                    const input = form?.querySelector('[name="searchkey"]');
+                    const submit = form?.querySelector('[name="submit"]');
+                    if (!input || !submit) return false;
+                    input.value = {query};
+                    sessionStorage.setItem(marker, nonce);
+                    form.requestSubmit(submit);
+                    return false;
+                }}
+                const summary = document.querySelector('.container')?.innerText.match(/共有\s*(\d+)\s*条结果/);
+                return !!summary && (Number(summary[1]) === 0 || !!document.querySelector('#article_list_content > li, .newbox li'));
+            }})()"#
+            )
+        } else {
+            r#"document.readyState === "complete" &&
+                document.title !== "Just a moment..." &&
+                !document.getElementById("challenge-error-title") &&
+                !document.querySelector('.cf-turnstile, [name="cf-turnstile-response"]') &&
+                !!document.querySelector(".container")"#
+                .to_owned()
+        };
         let response: WebViewResponse = browser::open(&WebViewRequest {
             url: url.to_owned(),
-            method,
-            body,
             cookie_url: Some(BASE_URL.to_owned()),
             session: Some(WebViewSession {
                 id: "69shuba-cloudflare".to_owned(),
                 ..WebViewSession::default()
             }),
-            wait_for: Some(WebViewWait::Script {
-                script: r#"document.readyState === "complete" &&
-                    document.title !== "Just a moment..." &&
-                    !document.getElementById("challenge-error-title") &&
-                    !document.querySelector('.cf-turnstile, [name="cf-turnstile-response"]') &&
-                    !!document.querySelector(".container")"#
-                    .to_owned(),
-            }),
+            wait_for: Some(WebViewWait::Script { script: wait_script }),
             wait_until: Some(WebViewWaitUntil::LoadFinished),
-            headers: vec![
-                (
-                    "Accept".to_owned(),
-                    "text/html,application/xhtml+xml".to_owned(),
-                ),
-                ("Accept-Language".to_owned(), "zh-CN,zh;q=0.9".to_owned()),
-                ("Referer".to_owned(), format!("{BASE_URL}/")),
-            ],
+            headers,
             timeout_ms: Some(CHALLENGE_TIMEOUT_MS),
             return_html: false,
             scripts: vec![WebViewScript {
@@ -115,15 +137,9 @@ impl Shuba69Source {
         if page > 1 || query.trim().is_empty() {
             return Ok(Paged::new(Vec::new(), false));
         }
-        let body = url::form_urlencoded::Serializer::new(String::new())
-            .append_pair("searchkey", query.trim())
-            .append_pair("searchtype", "all")
-            .finish()
-            .into_bytes();
         let (document, _) = self.document_request(
             &format!("{BASE_URL}/modules/article/search.php"),
-            WebViewRequestMethod::Post,
-            Some(body),
+            Some(query.trim()),
         )?;
         Self::parse_catalog(&document)
     }

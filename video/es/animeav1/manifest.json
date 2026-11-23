@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animeav1",
   "name": "AnimeAv1",
-  "version": "0.2.3",
-  "versionCode": 14,
+  "version": "0.2.5",
+  "versionCode": 16,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -27,6 +27,7 @@
         "https://*.tapecontent.net",
         "https://voe.sx",
         "https://derricknationtop.com",
+        "https://arianathankspecial.com",
         "https://*.cloudwindow-route.com",
         "https://byselapuix.com",
         "https://n1mwq.org",
@@ -64,6 +65,9 @@
       "baseUrl": "https://animeav1.com",
       "contentRating": "suggestive",
       "capabilities": {
+        "operations": [
+          "video.refresh-episodes"
+        ],
         "search": true,
         "latest": true,
         "filters": false,

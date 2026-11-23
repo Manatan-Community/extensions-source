@@ -95,12 +95,17 @@ pub fn byse_response(
 /// playback uses. A parsed URL alone does not prove that a mirror is playable.
 pub fn verify_stream(stream: &VideoStream) -> Result<()> {
     verify_stream_with(stream, |url, range| {
+        // Browser cookies belong to the host jar and must be selected for
+        // each manifest/segment origin, including cross-origin HLS children.
         let mut request = Client::browser()
+            .cookies_for(url)
             .get(url)
             .timeout_ms(12_000)
             .max_body_bytes(if range { 64 * 1024 } else { 2 * 1024 * 1024 });
         for (key, value) in &stream.headers {
-            request = request.header(key, value);
+            if !key.eq_ignore_ascii_case("cookie") {
+                request = request.header(key, value);
+            }
         }
         if range {
             request = request.header("Range", "bytes=0-2047");
@@ -196,12 +201,7 @@ pub fn voe_stream(embed_url: &str, referer: &str, user_agent: &str) -> Result<Vi
     let page = get(embed_url, referer)?;
     let redirect = parse_voe_redirect_url(&page)?;
     let url = Url::parse(&redirect).map_err(|e| Error::new(e.to_string()))?;
-    if url.scheme() != "https"
-        || url.host_str() != Some("derricknationtop.com")
-        || !url.path().starts_with("/e/")
-    {
-        return Err(Error::new("Voe returned an unexpected player redirect"));
-    }
+    validate_voe_redirect(embed_url, &url)?;
     let media = parse_voe_media_url(&get(&redirect, referer)?)?;
     let url = Url::parse(&media).map_err(|e| Error::new(e.to_string()))?;
     if url.scheme() != "https" || url.port_or_known_default() != Some(443) {
@@ -222,6 +222,24 @@ pub fn voe_stream(embed_url: &str, referer: &str, user_agent: &str) -> Result<Vi
         .collect(),
         ..VideoStream::default()
     })
+}
+
+fn validate_voe_redirect(embed_url: &str, redirect: &Url) -> Result<()> {
+    let embed = Url::parse(embed_url).map_err(|e| Error::new(e.to_string()))?;
+    if redirect.scheme() != "https"
+        || !matches!(
+            redirect.host_str(),
+            Some("derricknationtop.com" | "arianathankspecial.com")
+        )
+        || redirect.port_or_known_default() != Some(443)
+        || !redirect.username().is_empty()
+        || redirect.password().is_some()
+        || !redirect.path().starts_with("/e/")
+        || redirect.path() != embed.path()
+    {
+        return Err(Error::new("Voe returned an unexpected player redirect"));
+    }
+    Ok(())
 }
 
 pub fn parse_voe_redirect_url(html: &str) -> Result<String> {
@@ -309,6 +327,25 @@ pub fn unpack_player(html: &str) -> Result<String> {
 mod tests {
     use super::*;
     use manatan_sdk::net;
+
+    #[test]
+    fn voe_accepts_current_player_alias_and_preserves_video_identity() {
+        let embed = "https://voe.sx/e/etf4dkni7yaq";
+        for host in ["derricknationtop.com", "arianathankspecial.com"] {
+            assert!(validate_voe_redirect(
+                embed,
+                &Url::parse(&format!("https://{host}/e/etf4dkni7yaq")).unwrap()
+            )
+            .is_ok());
+        }
+        for url in [
+            "https://arianathankspecial.com/e/other",
+            "https://arianathankspecial.com.attacker.invalid/e/etf4dkni7yaq",
+            "http://arianathankspecial.com/e/etf4dkni7yaq",
+        ] {
+            assert!(validate_voe_redirect(embed, &Url::parse(url).unwrap()).is_err());
+        }
+    }
 
     fn response(url: &str, body: &[u8]) -> Response {
         Response(net::Response {

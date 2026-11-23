@@ -10,6 +10,12 @@ impl NatsuIdMangaConfig for RawkumaConfig {
     const BASE_URL: &'static str = "https://rawkuma.net";
     const LANG: &'static str = "ja";
     const CONTENT_RATING: Option<&'static str> = Some("adult");
+
+    fn search_query(&self, query: &str) -> String {
+        // The site renders title separators as en dashes, but its search index
+        // only matches the corresponding ASCII hyphen.
+        query.replace('–', "-")
+    }
 }
 
 pub type RawkumaSource = NatsuIdMangaSource<RawkumaConfig>;
@@ -31,6 +37,12 @@ mod tests {
     const MANIFEST: &str = include_str!("../manifest.json");
     const ICON: &[u8] = include_bytes!("../assets/icon.png");
     const ICON_SHA256: &str = "241f75509486150d6df210dde1b7bb58ebd90cdd30da05aadef7f1953645744a";
+
+    #[test]
+    fn searches_displayed_title_separators_without_changing_other_unicode() {
+        assert_eq!(RawkumaConfig.search_query("作品 – Isekai"), "作品 - Isekai");
+        assert_eq!(RawkumaConfig.search_query("作品の名前"), "作品の名前");
+    }
 
     #[test]
     fn preserves_upstream_source_metadata() {

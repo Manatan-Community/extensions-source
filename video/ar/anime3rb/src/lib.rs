@@ -25,56 +25,8 @@ pub struct Anime3rb {
 }
 
 impl Anime3rb {
-    fn browser_user_agent(&mut self) -> Result<String> {
-        if let Some(user_agent) = self.user_agent.as_ref() {
-            return Ok(user_agent.clone());
-        }
-
-        // A Cloudflare clearance is bound to the browser that solved the
-        // challenge, including its user agent. Discover the host WebView's
-        // real UA instead of pretending every platform is desktop Chrome.
-        // The vid3rb origin is a lightweight, non-challenged page already
-        // required for playback, so this works consistently on WKWebView,
-        // Android WebView, and desktop engines.
-        let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
-            url: "https://video.vid3rb.com/".to_string(),
-            cookie_url: None,
-            session: Some(WebViewSession {
-                id: "anime3rb-user-agent".to_string(),
-                persistence: WebViewSessionPersistence::Ephemeral,
-                ..WebViewSession::default()
-            }),
-            wait_until: Some(WebViewWaitUntil::DomReady),
-            script: "navigator.userAgent".to_string(),
-            timeout_ms: Some(15_000),
-            cookies: false,
-            headless: Some(true),
-            method: Default::default(),
-            body: None,
-            headers: Vec::new(),
-            user_agent: None,
-            wait_for_script: None,
-            wait_for_selector: None,
-            wait_for_event: None,
-            preload_scripts: Vec::new(),
-            capture_requests: Vec::new(),
-            capture_events: Vec::new(),
-        })?;
-        let user_agent = response
-            .value
-            .as_ref()
-            .and_then(Value::as_str)
-            .map(str::trim)
-            .filter(|value| !value.is_empty())
-            .ok_or_else(|| Error::new("Anime3rb could not read the host browser user agent"))?
-            .to_string();
-        self.user_agent = Some(user_agent.clone());
-        Ok(user_agent)
-    }
-
     fn html(&mut self, url: &str) -> Result<String> {
         validate_site_url(url)?;
-        let user_agent = self.browser_user_agent()?;
         let ready_script = page_ready_script(url)?;
         // Anime3rb binds its Cloudflare clearance to the browser's TLS
         // fingerprint as well as its cookie and user agent. Replaying the
@@ -92,26 +44,26 @@ impl Anime3rb {
             // snapshot of the navigation shell and mistaking `/titles/list`
             // for a real title.
             wait_for_script: Some(ready_script),
-            script: "document.documentElement.outerHTML".to_string(),
+            // Read identity from the same page that solved the challenge. A
+            // separate player-origin preflight can redirect or close its window
+            // before returning and must not gate access to the catalog.
+            script: "({html: document.documentElement.outerHTML, userAgent: navigator.userAgent})"
+                .to_string(),
             timeout_ms: Some(30_000),
             cookies: true,
             headless: Some(true),
             method: Default::default(),
             body: None,
             headers: vec![("Referer".to_string(), format!("{BASE}/"))],
-            user_agent: Some(user_agent),
+            user_agent: None,
             wait_for_selector: None,
             wait_for_event: None,
             preload_scripts: Vec::new(),
             capture_requests: Vec::new(),
             capture_events: Vec::new(),
         })?;
-        let html = response
-            .value
-            .as_ref()
-            .and_then(Value::as_str)
-            .ok_or_else(|| Error::new("Anime3rb did not return a readable page"))?
-            .to_string();
+        let (html, user_agent) = browser_page_snapshot(response.value.as_ref())?;
+        self.user_agent = Some(user_agent);
         if is_challenge(&html) {
             return Err(cloudflare_error());
         }
@@ -219,6 +171,21 @@ impl Anime3rb {
     }
 }
 
+fn browser_page_snapshot(value: Option<&Value>) -> Result<(String, String)> {
+    let value = value.ok_or_else(|| Error::new("Anime3rb browser returned no page snapshot"))?;
+    let html = value
+        .get("html")
+        .and_then(Value::as_str)
+        .filter(|v| !v.trim().is_empty())
+        .ok_or_else(|| Error::new("Anime3rb did not return a readable page"))?;
+    let user_agent = value
+        .get("userAgent")
+        .and_then(Value::as_str)
+        .filter(|v| !v.trim().is_empty())
+        .ok_or_else(|| Error::new("Anime3rb could not read the host browser user agent"))?;
+    Ok((html.to_owned(), user_agent.to_owned()))
+}
+
 fn page_ready_script(value: &str) -> Result<String> {
     let url = Url::parse(value).map_err(url_error)?;
     let path = url.path();
@@ -233,6 +200,30 @@ fn page_ready_script(value: &str) -> Result<String> {
 }
 
 impl VideoSource for Anime3rb {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let url = item_url_from_key(&request.item.key)?;
+        let body = self.html(&url)?;
+        let mut item = request
+            .fetch_details
+            .then(|| parse_details(&body, &request.item.key, &url, self.user_agent.as_deref()))
+            .transpose()?;
+        if let Some(details) = item.as_mut() {
+            self.enrich_covers(std::slice::from_mut(details));
+        }
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item,
+            entries: request
+                .fetch_entries
+                .then(|| parse_episodes(&body, &request.item.key, self.user_agent.as_deref()))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.listing_page(&paged_url("/titles/list", page, None)?)
     }
@@ -316,9 +307,7 @@ fn persistent_session() -> WebViewSession {
 
 fn is_challenge(html: &str) -> bool {
     let lower = html.to_ascii_lowercase();
-    lower.contains("just a moment")
-        || lower.contains("challenge-platform")
-        || lower.contains("cf-chl-")
+    lower.contains("just a moment") || lower.contains("_cf_chl_opt") || lower.contains("cf-chl-")
 }
 
 fn cloudflare_error() -> Error {
@@ -812,6 +801,20 @@ manatan_sdk::export_extension!(manatan_sdk::Extension::new().video("anime3rb", A
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn browser_snapshot_reads_identity_with_the_requested_document() {
+        let snapshot = json!({"html": "<html>catalog</html>", "userAgent": "WKWebView native UA"});
+        assert_eq!(
+            browser_page_snapshot(Some(&snapshot)).unwrap(),
+            (
+                "<html>catalog</html>".to_owned(),
+                "WKWebView native UA".to_owned()
+            )
+        );
+        assert!(browser_page_snapshot(Some(&json!({"html": "<html/>"}))).is_err());
+        assert!(browser_page_snapshot(Some(&json!({"userAgent": "UA"}))).is_err());
+    }
     use serde_json::json;
 
     #[test]
@@ -983,5 +986,15 @@ mod tests {
             items[0].cover.as_ref().unwrap().url,
             "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/example.jpg"
         );
+    }
+}
+
+#[cfg(test)]
+mod challenge_marker_tests {
+    use super::*;
+    #[test]
+    fn verified_pages_can_contain_cloudflare_detection_scripts() {
+        assert!(!is_challenge("<title>Catalog</title><script src='/cdn-cgi/challenge-platform/scripts/jsd/main.js'></script>"));
+        assert!(is_challenge("<script>window._cf_chl_opt={};</script>"));
     }
 }

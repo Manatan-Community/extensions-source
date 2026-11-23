@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "rainylotus",
   "name": "Rainy Lotus",
-  "version": "1.0.0",
-  "versionCode": 1,
+  "version": "1.0.2",
+  "versionCode": 3,
   "minimumManatanVersion": "0.3.1",
   "apiVersion": 2,
   "wasm": "extension.wasm",
@@ -27,7 +27,11 @@
     }
   ],
   "permissions": {
-    "network": { "allow": ["https://rainylotus.com"] },
+    "network": {
+      "allow": [
+        "https://rainylotus.com"
+      ]
+    },
     "cookies": true,
     "webview": true,
     "storage": false,
@@ -50,11 +54,20 @@
         "authentication": true
       },
       "listings": [
-        { "id": "popular", "name": "Most Viewed" },
-        { "id": "latest", "name": "Newly Added" }
+        {
+          "id": "popular",
+          "name": "Most Viewed"
+        },
+        {
+          "id": "latest",
+          "name": "Newly Added"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://rainylotus.com/novel/*", "kind": "item" }
+        {
+          "pattern": "https://rainylotus.com/novel/*",
+          "kind": "item"
+        }
       ]
     }
   ]

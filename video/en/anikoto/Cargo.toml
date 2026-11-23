@@ -13,3 +13,5 @@ crate-type = ["cdylib", "rlib"]
 anikoto-theme.workspace = true
 manatan-sdk.workspace = true
 
+[dev-dependencies]
+serde_json.workspace = true

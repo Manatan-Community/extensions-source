@@ -1,3 +1,4 @@
+mod cinesrc;
 use manatan_sdk::{
     browser::{
         self, WebViewExtractRequest, WebViewExtractResponse, WebViewRequestCapture, WebViewSession,
@@ -8,7 +9,7 @@ use manatan_sdk::{
     VideoStream,
 };
 use serde_json::Value;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use url::Url;
 
 const BASE_URL: &str = "https://shuttletv.su";
@@ -77,7 +78,9 @@ impl ShuttleTv {
             // an externally playable HLS/DASH resource is observable.
             wait_for_script: Some(WAIT_FOR_MEDIA_SCRIPT.to_string()),
             script: "(() => { const v = window.__cinesrcVideo || document.querySelector('video'); const h = window.__cinesrcHls; const resources = performance.getEntriesByType('resource').map(e => e.name); const levels = Array.from(h?.levels || []).flatMap(l => Array.isArray(l.url) ? l.url : [l.url]); return { url: v?.currentSrc || v?.src || '', urls: Array.from(new Set([...resources, ...levels].filter(u => typeof u === 'string' && (u.includes('.m3u8') || u.includes('.mpd') || u.includes('/stream/mpd'))))), textTracks: Array.from(v?.textTracks || []).map(t => ({ label: t.label, language: t.language })) }; })()".to_string(),
-            timeout_ms: Some(120_000),
+            // The host operation budget is 115 seconds. Reserve 20 seconds
+            // for the bounded, parallel manifest probes below.
+            timeout_ms: Some(90_000),
             capture_requests: vec![
                 capture(".m3u8"),
                 capture(".mpd"),
@@ -94,28 +97,45 @@ impl ShuttleTv {
         }
         let requests = streams
             .iter()
+            .take(3)
             .map(|stream| {
-                Client::browser()
+                let mut request = Client::browser()
                     .get(&stream.url)
                     .cookies_for(&stream.url)
-                    .header("Referer", embed_url)
-                    .header("Origin", "https://cinesrc.st")
                     .timeout_ms(20_000)
-                    .max_body_bytes(1024 * 1024)
+                    .max_body_bytes(1024 * 1024);
+                for (name, value) in &stream.headers {
+                    request = request.header(name, value);
+                }
+                request
             })
             .collect();
         let responses = Client::send_many(requests, 3);
+        let mut manifest_failures = Vec::new();
         let candidates = streams
             .into_iter()
             .zip(responses)
             .filter_map(|(stream, response)| {
-                let response = response.ok()?.error_for_status().ok()?;
+                let response = match response {
+                    Ok(response) => response,
+                    Err(_) => {
+                        manifest_failures.push("network request failed".to_string());
+                        return None;
+                    }
+                };
+                if !(200..300).contains(&response.status()) {
+                    manifest_failures.push(format!("HTTP {}", response.status()));
+                    return None;
+                }
                 let body = response.text().ok()?.to_string();
                 let valid = if stream.is_hls {
                     body.trim_start().starts_with("#EXTM3U")
                 } else {
                     body.contains("<MPD")
                 };
+                if !valid {
+                    manifest_failures.push("unexpected manifest body".to_string());
+                }
                 valid.then_some((stream, body))
             })
             .collect();
@@ -126,13 +146,29 @@ impl ShuttleTv {
             .and_then(Value::as_str);
         let streams = root_manifest_streams(candidates, direct_url);
         if streams.is_empty() {
-            return Err(Error::new("ShuttleTV player manifests are unavailable"));
+            return Err(Error::new(format!(
+                "ShuttleTV player manifests are unavailable ({})",
+                manifest_failures.join(", ")
+            )));
         }
         Ok(streams)
     }
 }
 
 impl VideoSource for ShuttleTv {
+    fn related(&mut self, item: &CatalogItem) -> Result<Vec<manatan_sdk::VideoRelation>> {
+        let (kind, id) = parse_key(&item.key)?;
+        let value = self.tmdb(&format!("/{kind}/{id}/recommendations"), &[])?;
+        let items = parse_tmdb_page(&value)?.entries;
+        Ok(if items.is_empty() {
+            Vec::new()
+        } else {
+            vec![manatan_sdk::VideoRelation {
+                name: "Recommendations".to_owned(),
+                items,
+            }]
+        })
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.page("/trending/all/week", page)
     }
@@ -244,7 +280,34 @@ impl VideoSource for ShuttleTv {
             }
             format!("https://cinesrc.st/embed/tv/{id}?s={season}&e={number}")
         };
-        self.capture_stream(&embed)
+        cinesrc::servers(&embed)
+    }
+
+    fn resolve_stream(
+        &mut self,
+        item: &CatalogItem,
+        episode: &VideoEpisode,
+        stream: VideoStream,
+    ) -> Result<Option<VideoStream>> {
+        if !stream.url.is_empty() {
+            return Ok(Some(stream));
+        }
+        let (kind, id) = parse_key(&item.key)?;
+        let embed = if kind == "movie" {
+            format!("https://cinesrc.st/embed/movie/{id}")
+        } else {
+            let (_, episode_id, season, number) = parse_episode_key(&episode.key)?;
+            if episode_id != id {
+                return Err(Error::new("episode does not belong to this ShuttleTV item"));
+            }
+            format!("https://cinesrc.st/embed/tv/{id}?s={season}&e={number}")
+        };
+        let provider = stream
+            .extra
+            .get("provider")
+            .and_then(Value::as_str)
+            .ok_or_else(|| Error::new("CineSrc server selection is missing"))?;
+        cinesrc::resolve(&embed, provider)
     }
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
@@ -393,6 +456,28 @@ fn streams_from_capture(
             let lower = url.to_ascii_lowercase();
             let is_hls = lower.contains(".m3u8");
             let is_dash = lower.contains(".mpd") || lower.contains("/stream/mpd");
+            let mut headers = BTreeMap::new();
+            if let Some(request) = response
+                .captured_requests
+                .iter()
+                .find(|request| request.url == url)
+            {
+                for (name, value) in &request.headers {
+                    let canonical = match name.to_ascii_lowercase().as_str() {
+                        "user-agent" => "User-Agent",
+                        "referer" => "Referer",
+                        "origin" => "Origin",
+                        _ => continue,
+                    };
+                    headers.insert(canonical.to_string(), value.clone());
+                }
+            }
+            headers
+                .entry("Referer".to_string())
+                .or_insert_with(|| referer.to_string());
+            headers
+                .entry("Origin".to_string())
+                .or_insert_with(|| "https://cinesrc.st".to_string());
             VideoStream {
                 url,
                 name: Some("CineSrc".to_string()),
@@ -401,12 +486,7 @@ fn streams_from_capture(
                 is_dash,
                 requires_proxy: true,
                 initialized: true,
-                headers: [
-                    ("Referer".to_string(), referer.to_string()),
-                    ("Origin".to_string(), "https://cinesrc.st".to_string()),
-                ]
-                .into_iter()
-                .collect(),
+                headers,
                 ..VideoStream::default()
             }
         })
@@ -667,6 +747,37 @@ mod tests {
         assert_eq!(streams[0].url, "https://media.example/master.m3u8");
         assert!(streams[0].is_hls);
         assert!(streams[0].requires_proxy);
+    }
+
+    #[test]
+    fn captured_manifest_keeps_the_browser_transport_identity() {
+        let response = WebViewExtractResponse {
+            captured_requests: vec![manatan_sdk::browser::WebViewCapturedRequest {
+                url: "https://media.example/master.m3u8".into(),
+                headers: vec![
+                    ("user-agent".into(), "CurrentBrowser/149".into()),
+                    ("referer".into(), "https://player.example/watch".into()),
+                    ("origin".into(), "https://player.example".into()),
+                    ("Cookie".into(), "secret=excluded".into()),
+                ],
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+        let streams =
+            streams_from_capture(&response, "https://cinesrc.st/embed/movie/550").unwrap();
+        assert_eq!(
+            streams[0].headers.get("User-Agent").map(String::as_str),
+            Some("CurrentBrowser/149")
+        );
+        assert_eq!(
+            streams[0].headers.get("Referer").map(String::as_str),
+            Some("https://player.example/watch")
+        );
+        assert!(!streams[0]
+            .headers
+            .keys()
+            .any(|name| name.eq_ignore_ascii_case("cookie")));
     }
 
     #[test]

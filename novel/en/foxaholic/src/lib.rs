@@ -13,7 +13,7 @@ use manatan_sdk::{
 };
 use serde_json::Value;
 use url::Url;
-use wordpress_novel::{chapter_text, first_text, image, number, rating};
+use wordpress_novel::{chapter_text, first_text, image_with_cookies as image, number, rating};
 
 const BASE: &str = "https://www.foxaholic.com";
 const BROWSER_PROFILE: &str = "foxaholic";

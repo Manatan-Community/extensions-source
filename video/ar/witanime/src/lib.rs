@@ -1,4 +1,8 @@
-use std::{cmp::Ordering, collections::BTreeSet};
+mod current;
+use std::{
+    cmp::Ordering,
+    collections::{BTreeMap, BTreeSet},
+};
 
 use base64::{
     engine::general_purpose::{STANDARD as BASE64, STANDARD_NO_PAD as BASE64_NO_PAD},
@@ -139,6 +143,68 @@ impl WitAnime {
         episode_url: &str,
     ) -> Result<Vec<VideoStream>> {
         validate_player_url(&candidate.url)?;
+        if matches!(
+            Url::parse(&candidate.url)
+                .ok()
+                .and_then(|url| url.host_str().map(str::to_owned))
+                .as_deref(),
+            Some("hgcloud.to" | "audinifer.com")
+        ) {
+            // Let Manatan's checked HTTP boundary follow the hoster's current
+            // redirect. This also records the advertised CDN origin for playback.
+            if let Ok(response) = Client::browser()
+                .get(&candidate.url)
+                .header(
+                    "Referer",
+                    candidate.referer.as_deref().unwrap_or(episode_url),
+                )
+                .timeout_ms(20_000)
+                .max_body_bytes(2 * 1024 * 1024)
+                .send()
+            {
+                let final_url = response.final_url().to_string();
+                if response.status() == 200 {
+                    if let Some(url) =
+                        hgcloud_config_manifest(response.text()?, &candidate.url, &final_url)?
+                    {
+                        let origin = Url::parse(&final_url)
+                            .map_err(url_error)?
+                            .origin()
+                            .ascii_serialization();
+                        return Ok(vec![VideoStream {
+                            url,
+                            name: Some(candidate.name.clone()),
+                            format: Some("hls".into()),
+                            is_hls: true,
+                            requires_proxy: true,
+                            initialized: true,
+                            headers: [
+                                ("Referer".into(), final_url),
+                                ("Origin".into(), origin),
+                                (
+                                    "User-Agent".into(),
+                                    manatan_sdk::client::BROWSER_USER_AGENT.into(),
+                                ),
+                            ]
+                            .into_iter()
+                            .collect(),
+                            segment_processing: Some(SegmentProcessing {
+                                rewrite_playlist: true,
+                                rules: vec![SegmentRule {
+                                    resource_types: vec![MediaResourceKind::Segment],
+                                    host_patterns: vec!["*.tiktokcdn.com".into()],
+                                    auto_detect_media_offset: true,
+                                    probe_bytes: Some(64 * 1024),
+                                    ..Default::default()
+                                }],
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        }]);
+                    }
+                }
+            }
+        }
         let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
             url: candidate.url.clone(),
             method: Default::default(),
@@ -157,7 +223,9 @@ impl WitAnime {
                     .unwrap_or_else(|| episode_url.to_string()),
             )],
             user_agent: None,
-            wait_until: Some(WebViewWaitUntil::DomReady),
+            // The hoster loads advertising resources independently of its
+            // player data. The predicate below establishes player readiness.
+            wait_until: Some(WebViewWaitUntil::LoadStarted),
             wait_for_selector: None,
             wait_for_event: None,
             wait_for_script: Some(
@@ -182,7 +250,8 @@ impl WitAnime {
                         } catch (_) {}
                         return false;
                     };
-                    return visit(window, 0) || performance.now() >= 30000;
+                    const packed = [...document.scripts].some(script => script.textContent.includes('eval(function(p,a,c,k,e,d)') && script.textContent.includes('hls4'));
+                    return packed || visit(window, 0) || performance.now() >= 30000;
                 })()"#
                     .to_string(),
             ),
@@ -209,7 +278,7 @@ impl WitAnime {
                     } catch (_) {}
                 };
                 visit(window, 0);
-                return { url: urls[0] || '', urls: [...new Set(urls)] };
+                return { url: urls[0] || '', urls: [...new Set(urls)], playerHtml: document.documentElement.outerHTML, userAgent: navigator.userAgent };
             })()"#
                     .to_string(),
             timeout_ms: Some(60_000),
@@ -248,128 +317,114 @@ impl WitAnime {
 
 impl VideoSource for WitAnime {
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page(&paged_archive_url("/قائمة-الانمي/", page))
+        self.current_page(page, None)
     }
-
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page(&paged_archive_url("/episode/", page))
+        self.current_latest(page)
     }
-
-    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+    fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
         if query.trim().is_empty() {
-            if let Some(genre) = filter_value(filters, "genre").filter(|value| !value.is_empty()) {
-                return self
-                    .listing_page(&paged_archive_url(&format!("/anime-genre/{genre}/"), page));
-            }
-            if let Some(kind) = filter_value(filters, "type").filter(|value| !value.is_empty()) {
-                return self
-                    .listing_page(&paged_archive_url(&format!("/anime-type/{kind}/"), page));
-            }
-            return self.popular(page);
+            self.popular(page)
+        } else {
+            self.current_page(page, Some(query))
         }
-        let mut url = Url::parse(BASE_URL).map_err(url_error)?;
-        url.query_pairs_mut()
-            .append_pair("search_param", "animes")
-            .append_pair("s", query.trim())
-            .append_pair("paged", &page.max(1).to_string());
-        self.listing_page(url.as_str())
     }
-
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(Default::default()));
+        }
+        let body = self.current_html(&current::url(&request.item.key)?)?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| current::details(&body, &request.item))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| current::episodes(&body))
+                .transpose()?,
+        }))
+    }
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
-        let item_url = site_url_from_key(&item.key)?;
-        let (html, canonical_url) = self.real_html(&item_url)?;
-        parse_details(&html, &item.key, &canonical_url)
+        current::details(&self.current_html(&current::url(&item.key)?)?, &item)
     }
-
     fn episodes(&mut self, item: CatalogItem) -> Result<Vec<VideoEpisode>> {
-        let item_url = site_url_from_key(&item.key)?;
-        let (html, _) = self.real_html(&item_url)?;
-        parse_episodes(&html)
+        current::episodes(&self.current_html(&current::url(&item.key)?)?)
     }
-
     fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
-        let episode_url = site_url_from_key(&episode.key)?;
-        if !episode.key.starts_with("/episode/") {
-            return Err(Error::new("WIT ANIME episode key is not an episode"));
-        }
-        let allowed = self
-            .episodes(item)?
-            .iter()
-            .any(|candidate| candidate.key == episode.key);
-        if !allowed {
+        let expected = current::url(&item.key)?;
+        let watch = current::url(&episode.key)?;
+        let slug = Url::parse(&expected)
+            .unwrap()
+            .path_segments()
+            .unwrap()
+            .nth(1)
+            .unwrap_or_default()
+            .to_string();
+        if !Url::parse(&watch)
+            .unwrap()
+            .path()
+            .starts_with(&format!("/watch/{slug}/"))
+        {
             return Err(Error::new(
                 "episode does not belong to this WIT ANIME title",
             ));
         }
-        let html = self.html(&episode_url)?;
-        let candidates = self.expanded_candidates(&html, &episode_url)?;
-        if candidates.is_empty() {
-            return Err(Error::new(
-                "WIT ANIME returned no supported playback servers",
-            ));
-        }
-        let mut errors = Vec::new();
-        for candidate in candidates.iter().take(4) {
-            let result = if is_dotplay(&candidate.url) {
-                self.resolve_dotplay(candidate)
-            } else {
-                self.capture_player(candidate, &episode_url)
-            };
-            match result {
-                Ok(streams) if !streams.is_empty() => return Ok(streams),
-                Ok(_) => errors.push(format!("{} returned no media", candidate.name)),
-                Err(error) => errors.push(format!("{}: {error}", candidate.name)),
-            }
-        }
-        Err(Error::new(format!(
-            "WIT ANIME playback failed: {}",
-            errors.join("; ")
-        )))
+        self.current_streams(&episode)
     }
-
-    fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
-        Ok(vec![
-            select(
-                "type",
-                "Type",
-                &[
-                    ("All", ""),
-                    ("TV", "tv"),
-                    ("Movie", "movie"),
-                    ("OVA", "ova"),
-                    ("ONA", "ona"),
-                    ("Special", "special"),
-                ],
-            ),
-            select(
-                "genre",
-                "Genre",
-                &[
-                    ("All", ""),
-                    ("Action", "أكشن"),
-                    ("Adventure", "مغامرات"),
-                    ("Comedy", "كوميدي"),
-                    ("Drama", "دراما"),
-                    ("Fantasy", "خيال"),
-                    ("Horror", "رعب"),
-                    ("Mystery", "غموض"),
-                    ("Romance", "رومانسي"),
-                    ("Sports", "رياضي"),
-                ],
-            ),
-        ])
+    fn resolve_stream(
+        &mut self,
+        _item: &CatalogItem,
+        episode: &VideoEpisode,
+        stream: VideoStream,
+    ) -> Result<Option<VideoStream>> {
+        if !stream.url.is_empty() {
+            return Ok(Some(stream));
+        }
+        let watch = current::url(&episode.key)?;
+        let result = self.current_browser(&watch, Some(&stream))?;
+        let value = result.value.unwrap_or(Value::Null);
+        let embed = select_player_embed(
+            &value,
+            result.captured_requests.iter().flat_map(|r| {
+                std::iter::once(r.url.as_str())
+                    .chain(std::iter::once(r.frame_url.as_str()))
+                    .chain(
+                        r.headers
+                            .iter()
+                            .filter(|(name, _)| name.eq_ignore_ascii_case("referer"))
+                            .map(|(_, value)| value.as_str()),
+                    )
+            }),
+        )
+        .ok_or_else(|| {
+            Error::new(
+                "WIT ANIME could not authorize this server; complete its verification in WebView",
+            )
+        })?;
+        let candidate = PlayerCandidate {
+            name: stream.name.unwrap_or_else(|| "WIT ANIME".into()),
+            url: canonical_player_url(embed),
+            referer: Some(watch.clone()),
+        };
+        self.capture_player(&candidate, &watch)?
+            .into_iter()
+            .next()
+            .map(Some)
+            .ok_or_else(|| Error::new("WIT ANIME server did not expose playable media"))
     }
-
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
-        Ok(Some(site_url_from_key(&item.key)?))
+        Ok(Some(current::url(&item.key)?))
     }
-
     fn episode_url(
         &mut self,
         _item: &CatalogItem,
         episode: &VideoEpisode,
     ) -> Result<Option<String>> {
-        Ok(Some(site_url_from_key(&episode.key)?))
+        Ok(Some(current::url(&episode.key)?))
     }
 }
 
@@ -693,6 +748,7 @@ fn streams_from_capture(
     response: &WebViewExtractResponse,
     candidate: &PlayerCandidate,
 ) -> Result<Vec<VideoStream>> {
+    let mut player_page = candidate.url.as_str();
     let mut urls: Vec<String> = response
         .captured_requests
         .iter()
@@ -720,6 +776,19 @@ fn streams_from_capture(
             .filter(|url| media_url(url))
             .map(ToString::to_string),
     );
+    if let Some(html) = response
+        .value
+        .as_ref()
+        .and_then(|value| value.get("playerHtml"))
+        .and_then(Value::as_str)
+    {
+        if let Some(url) = hgcloud_config_manifest(html, &candidate.url, &response.final_url)? {
+            urls.push(url);
+            // The parser above validates the final HTTPS video identity. Its
+            // relative manifest belongs to that document, not the redirector.
+            player_page = &response.final_url;
+        }
+    }
     urls.sort();
     urls.dedup();
     if urls.is_empty() {
@@ -728,13 +797,49 @@ fn streams_from_capture(
             candidate.name
         )));
     }
-    let origin = player_origin(&candidate.url)?;
+    validate_player_url(&candidate.url)?;
+    let origin = Url::parse(player_page)
+        .map_err(url_error)?
+        .origin()
+        .ascii_serialization();
     Ok(urls
         .into_iter()
         .map(|url| {
             let lower = url.to_ascii_lowercase();
             let is_hls = lower.contains(".m3u8");
             let is_dash = lower.contains(".mpd");
+            let mut headers = BTreeMap::new();
+            if let Some(request) = response
+                .captured_requests
+                .iter()
+                .find(|request| request.url == url)
+            {
+                for (name, value) in &request.headers {
+                    let name = match name.to_ascii_lowercase().as_str() {
+                        "user-agent" => "User-Agent",
+                        "referer" => "Referer",
+                        "origin" => "Origin",
+                        _ => continue,
+                    };
+                    headers.insert(name.to_string(), value.clone());
+                }
+            }
+            if let Some(agent) = response
+                .value
+                .as_ref()
+                .and_then(|value| value.get("userAgent"))
+                .and_then(Value::as_str)
+            {
+                headers
+                    .entry("User-Agent".into())
+                    .or_insert_with(|| agent.into());
+            }
+            headers
+                .entry("Referer".into())
+                .or_insert_with(|| player_page.to_owned());
+            headers
+                .entry("Origin".into())
+                .or_insert_with(|| origin.clone());
             VideoStream {
                 url,
                 name: Some(candidate.name.clone()),
@@ -752,12 +857,7 @@ fn streams_from_capture(
                 is_dash,
                 requires_proxy: true,
                 initialized: true,
-                headers: [
-                    ("Referer".to_string(), candidate.url.clone()),
-                    ("Origin".to_string(), origin.clone()),
-                ]
-                .into_iter()
-                .collect(),
+                headers,
                 segment_processing: Some(SegmentProcessing {
                     rewrite_playlist: true,
                     rules: vec![SegmentRule {
@@ -773,6 +873,58 @@ fn streams_from_capture(
             }
         })
         .collect())
+}
+
+// The hoster's player publishes a same-origin HLS entry before checking
+// browser codec support. Read that data without executing its packed script.
+fn hgcloud_config_manifest(
+    html: &str,
+    requested_url: &str,
+    final_url: &str,
+) -> Result<Option<String>> {
+    let requested = Url::parse(requested_url).map_err(url_error)?;
+    if !matches!(requested.host_str(), Some("hgcloud.to" | "audinifer.com")) {
+        return Ok(None);
+    }
+    let base = Url::parse(final_url).map_err(url_error)?;
+    if base.scheme() != "https"
+        || base.port_or_known_default() != Some(443)
+        || !base.username().is_empty()
+        || base.password().is_some()
+        || base.path() != requested.path()
+        || !base.path().starts_with("/e/")
+    {
+        return Err(Error::new(format!(
+            "HGCloud redirect must preserve its HTTPS video identity ({}{} -> {}{})",
+            requested.host_str().unwrap_or_default(),
+            requested.path(),
+            base.host_str().unwrap_or_default(),
+            base.path(),
+        )));
+    }
+    let Ok(unpacked) = manatan_common::video::unpack_player(html) else {
+        return Ok(None);
+    };
+    let regex =
+        Regex::new(r#"(?:var|let|const)\s+links\s*=\s*(\{[^;]*\})"#).map_err(regex_error)?;
+    let Some(capture) = regex.captures(&unpacked) else {
+        return Ok(None);
+    };
+    let links: Value = serde_json::from_str(&capture[1])?;
+    let Some(raw) = links.get("hls4").and_then(Value::as_str) else {
+        return Ok(None);
+    };
+    let url = base.join(raw).map_err(url_error)?;
+    if url.scheme() != "https"
+        || !url.username().is_empty()
+        || url.password().is_some()
+        || url.origin() != base.origin()
+    {
+        return Err(Error::new(
+            "HGCloud manifest must remain on its authorized player origin",
+        ));
+    }
+    Ok(Some(url.into()))
 }
 
 fn element_target_url(element: ElementRef<'_>) -> Option<String> {
@@ -899,6 +1051,47 @@ fn validate_site_url(value: &str) -> Result<()> {
         return Err(Error::new("unexpected WIT ANIME URL"));
     }
     Ok(())
+}
+
+// A request to a player host is not necessarily a player document. Script assets
+// are captured too, and opening one loses the selected video's identity.
+fn is_player_embed(value: &str) -> bool {
+    if validate_player_url(value).is_err() {
+        return false;
+    }
+    let Ok(url) = Url::parse(value) else {
+        return false;
+    };
+    if url.port().is_some() || !url.username().is_empty() || url.password().is_some() {
+        return false;
+    }
+    let path = url.path();
+    match url.host_str().unwrap_or_default() {
+        "hgcloud.to" | "audinifer.com" => {
+            let parts: Vec<_> = path.split('/').filter(|v| !v.is_empty()).collect();
+            matches!(parts.as_slice(), ["e", id] if !id.is_empty() && id.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_'))
+        }
+        "videa.hu" | "www.videa.hu" => {
+            path == "/player" || path == "/player/" || path.starts_with("/videok/")
+        }
+        "yonaplay.net" | "www.yonaplay.net" => path == "/embed.php",
+        "my.mail.ru" => path.contains("/video/embed/"),
+        _ => false,
+    }
+}
+
+fn select_player_embed<'a>(
+    value: &'a Value,
+    captured: impl Iterator<Item = &'a str>,
+) -> Option<&'a str> {
+    value["embeds"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .chain(value["embed"].as_str())
+        .chain(captured)
+        .find(|url| is_player_embed(url))
 }
 
 fn validate_player_url(value: &str) -> Result<()> {
@@ -1117,6 +1310,37 @@ mod tests {
     "#;
 
     #[test]
+    fn selected_embed_ignores_captured_player_assets() {
+        let value = serde_json::json!({"embeds": ["about:blank", "https://audinifer.com/e/clip"]});
+        assert_eq!(
+            select_player_embed(&value, ["https://hgcloud.to/main.js"].into_iter()),
+            Some("https://audinifer.com/e/clip")
+        );
+        assert_eq!(
+            select_player_embed(
+                &Value::Null,
+                ["https://hgcloud.to/main.js", "https://hgcloud.to/e/clip"].into_iter()
+            ),
+            Some("https://hgcloud.to/e/clip")
+        );
+        assert!(select_player_embed(
+            &Value::Null,
+            [
+                "https://hgcloud.to/main.js",
+                "https://audinifer.com/assets/player.css"
+            ]
+            .into_iter()
+        )
+        .is_none());
+        assert!(is_player_embed("https://videa.hu/player?v=clip"));
+        assert!(is_player_embed("https://yonaplay.net/embed.php?id=clip"));
+        assert!(!is_player_embed("https://videa.hu/player.js"));
+        assert!(!is_player_embed("https://user:secret@audinifer.com/e/clip"));
+        assert!(!is_player_embed("https://audinifer.com:8443/e/clip"));
+        assert!(!is_player_embed("https://audinifer.com/e/clip/main.js"));
+    }
+
+    #[test]
     fn redirected_blog_is_not_an_empty_anime_catalog() {
         assert!(parse_catalog_page(
             r#"<html><title>WIT ANIME</title><div class="blog-posts">Blogger</div></html>"#
@@ -1248,6 +1472,53 @@ mod tests {
     }
 
     #[test]
+    fn reads_hgcloud_manifest_before_browser_codec_selection() {
+        let html = "eval(function(p,a,c,k,e,d){return p}('0 1={\"2\":\"/stream/clip/master.m3u8\"};',3,3,'var|links|hls4'.split('|')))";
+        assert_eq!(
+            hgcloud_config_manifest(
+                html,
+                "https://hgcloud.to/e/clip",
+                "https://audinifer.com/e/clip"
+            )
+            .unwrap()
+            .as_deref(),
+            Some("https://audinifer.com/stream/clip/master.m3u8")
+        );
+        assert!(hgcloud_config_manifest(
+            &html.replace(
+                "/stream/clip/master.m3u8",
+                "https://unrelated.example/master.m3u8"
+            ),
+            "https://hgcloud.to/e/clip",
+            "https://audinifer.com/e/clip"
+        )
+        .is_err());
+        assert_eq!(
+            hgcloud_config_manifest(
+                html,
+                "https://hgcloud.to/e/clip",
+                "https://new-player.example/e/clip"
+            )
+            .unwrap()
+            .as_deref(),
+            Some("https://new-player.example/stream/clip/master.m3u8")
+        );
+        assert!(hgcloud_config_manifest(
+            html,
+            "https://hgcloud.to/e/clip",
+            "https://new-player.example/e/other"
+        )
+        .is_err());
+        assert!(hgcloud_config_manifest(
+            html,
+            "https://unrelated.example/e/clip",
+            "https://unrelated.example/e/clip"
+        )
+        .unwrap()
+        .is_none());
+    }
+
+    #[test]
     fn decodes_yonaplay_servers_and_rejects_unapproved_hosts() {
         let encoded = BASE64_NO_PAD.encode("https://hgcloud.to/e/abc123");
         let html = format!(
@@ -1280,6 +1551,31 @@ mod tests {
             video_url: Some(BASE64.encode("https://evil.example/video.mp4|1234")),
         })
         .is_err());
+    }
+
+    #[test]
+    fn packed_player_uses_the_verified_final_document_identity() {
+        let response = WebViewExtractResponse {
+            final_url: "https://rotated-player.example/e/clip".into(),
+            value: Some(json!({"userAgent":"Actual browser identity", "playerHtml":
+                "eval(function(p,a,c,k,e,d){return p}('0 1={\"2\":\"/stream/clip/master.m3u8\"};',3,3,'var|links|hls4'.split('|')))"})),
+            ..Default::default()
+        };
+        let candidate = PlayerCandidate {
+            name: "HGCloud".into(),
+            url: "https://hgcloud.to/e/clip".into(),
+            referer: None,
+        };
+        let stream = streams_from_capture(&response, &candidate)
+            .unwrap()
+            .remove(0);
+        assert_eq!(
+            stream.url,
+            "https://rotated-player.example/stream/clip/master.m3u8"
+        );
+        assert_eq!(stream.headers["Referer"], response.final_url);
+        assert_eq!(stream.headers["Origin"], "https://rotated-player.example");
+        assert_eq!(stream.headers["User-Agent"], "Actual browser identity");
     }
 
     #[test]

@@ -187,6 +187,26 @@ impl SoraRawSource {
 }
 
 impl MangaSource for SoraRawSource {
+    fn refresh(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<MangaChapter>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<MangaChapter>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let slug = item_slug(&request.item)?;
+        let data = self.next_data(&manga_url(&slug))?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| parse_details(&data, &slug))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| parse_chapters(&data, &slug))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.listing_page("popular", page)
     }
@@ -827,6 +847,22 @@ fn url_error(error: impl ToString) -> Error {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn refresh_without_requested_changes_preserves_host_state() {
+        let mut source = SoraRawSource::default();
+        let result = source
+            .refresh(manatan_sdk::CatalogRefreshRequest {
+                item: CatalogItem::default(),
+                entries: Vec::new(),
+                fetch_details: false,
+                fetch_entries: false,
+            })
+            .unwrap()
+            .unwrap();
+        assert!(result.item.is_none());
+        assert!(result.entries.is_none());
+    }
     use sha2::{Digest, Sha256};
 
     const LISTING: &str = include_str!("../fixtures/listing.html");

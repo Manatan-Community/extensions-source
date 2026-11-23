@@ -437,6 +437,32 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
 }
 
 impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let details = self.details(request.item)?;
+        let entries = if request.fetch_entries {
+            let (id, item_url) = self.anime_id(&details)?;
+            let endpoint = format!(
+                "{}/ajax/episode/list/{}?vrf={}",
+                self.base_url(),
+                encode(&id),
+                encode(&vrf_encrypt(&id))
+            );
+            let (body, _) = self.get_text(&endpoint, Some(&item_url), true)?;
+            Some(parse_episodes_json_for::<C>(&body, &item_url)?)
+        } else {
+            None
+        };
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request.fetch_details.then_some(details),
+            entries,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.fetch_listing("most-viewed", page)
     }

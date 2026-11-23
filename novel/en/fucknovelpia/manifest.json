@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "fucknovelpia",
   "name": "FuckNovelpia",
-  "version": "1.0.2",
-  "versionCode": 3,
+  "version": "1.0.4",
+  "versionCode": 5,
   "apiVersion": 2,
   "minimumManatanVersion": "0.3.1",
   "wasm": "extension.wasm",
@@ -22,13 +22,15 @@
   "permissions": {
     "network": {
       "allow": [
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com",
         "https://fucknovelpia.com",
         "https://img.kfcok.net",
         "https://*.kfcok.net"
       ]
     },
     "cookies": true,
-    "webview": false,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false
@@ -55,12 +57,24 @@
         "urlResolution": true
       },
       "listings": [
-        { "id": "popular", "name": "Popular" },
-        { "id": "latest", "name": "Latest" }
+        {
+          "id": "popular",
+          "name": "Popular"
+        },
+        {
+          "id": "latest",
+          "name": "Latest"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://fucknovelpia.com/novel/*", "kind": "item" },
-        { "pattern": "https://fucknovelpia.com/chapter.php?*", "kind": "chapter" }
+        {
+          "pattern": "https://fucknovelpia.com/novel/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://fucknovelpia.com/chapter.php?*",
+          "kind": "chapter"
+        }
       ]
     }
   ]

@@ -114,6 +114,30 @@ impl<C: LilianaConfig> LilianaMangaSource<C> {
 }
 
 impl<C: LilianaConfig> MangaSource for LilianaMangaSource<C> {
+    fn refresh(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<MangaChapter>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<MangaChapter>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let url = self.item_url_for(&request.item)?;
+        let (document, final_url) = self.get_document(&url)?;
+        let item = request
+            .fetch_details
+            .then(|| -> Result<CatalogItem> {
+                let mut parsed = parse_details_html(&document, &final_url)?;
+                parsed.key = request.item.key;
+                parsed.url = Some(final_url.clone());
+                Ok(self.classify_item(parsed))
+            })
+            .transpose()?;
+        let entries = request
+            .fetch_entries
+            .then(|| parse_chapters_html(&document, &final_url))
+            .transpose()?;
+        Ok(Some(manatan_sdk::CatalogRefresh { item, entries }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let url = popular_url::<C>(page)?;
         let (document, final_url) = self.get_document(&url)?;
@@ -534,6 +558,11 @@ fn parse_page_image_url(element: ElementRef<'_>, base: &str) -> Result<Option<St
     let Some(href) = attr(link, "href") else {
         return Ok(None);
     };
+    // Hidden loading placeholders link back to this chapter. Treating `#` as
+    // an image suppresses the AJAX page request and hands HTML to the reader.
+    if href.trim().is_empty() || href.trim().starts_with('#') {
+        return Ok(None);
+    }
     let url = absolute_url(base, &href)?;
     if !is_page_image_url(&url) {
         return Ok(None);
@@ -965,6 +994,21 @@ mod tests {
             }
             _ => panic!("expected URL page"),
         }
+    }
+
+    #[test]
+    fn loading_placeholders_do_not_suppress_ajax_reader_pages() {
+        let document = html::document(
+            r##"<div id="chapterContent">
+            <div class="separator" style="display:none"><a href="#"><img src="/themes/liliana/images/Loading/loading.gif"></a></div>
+            <div class="separator" style="display:none"><a href="#"><img src="/themes/liliana/images/Loading/loading.gif"></a></div>
+        </div>"##,
+        );
+        assert!(
+            parse_page_list_html(&document, "https://raw1001.net/manga/aoashi004/di49hua")
+                .unwrap()
+                .is_empty()
+        );
     }
 
     #[test]

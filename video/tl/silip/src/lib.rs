@@ -15,16 +15,155 @@ use manatan_sdk::{
 use serde_json::{json, Value};
 use url::Url;
 
+fn delegated_player_url(embed: &str, target: &str) -> Option<Url> {
+    let original = Url::parse(embed).ok()?;
+    let target = original.join(target).ok()?;
+    (target.scheme() == "https"
+        && target.host_str() == Some("vidspark.to")
+        && target.port_or_known_default() == Some(443)
+        && target.username().is_empty()
+        && target.password().is_none()
+        && target.fragment().is_none()
+        && original.path().strip_prefix("/embed") == Some(target.path()))
+    .then_some(target)
+}
+
+// Read the public player configuration instead of depending on browser codec
+// support to make an otherwise usable DASH manifest request.
+fn player_config(bundle: &str) -> Result<(String, Vec<String>)> {
+    let variable = regex::Regex::new(r#"["']x-player-key["']\s*:\s*([\w$]+)"#)
+        .unwrap()
+        .captures(bundle)
+        .and_then(|c| c.get(1))
+        .ok_or_else(|| Error::new("Silip player key binding changed"))?
+        .as_str();
+    let binding = regex::Regex::new(&format!(
+        r#"{}\s*=\s*[`"']([a-zA-Z0-9_-]{{16,128}})[`"']"#,
+        regex::escape(variable)
+    ))
+    .unwrap();
+    let key = binding
+        .captures(bundle)
+        .and_then(|c| c.get(1))
+        .ok_or_else(|| Error::new("Silip public player configuration changed"))?
+        .as_str()
+        .to_string();
+    let servers = regex::Regex::new(r#"\{key:[`"']([a-zA-Z0-9_-]{1,32})[`"'],label:"#)
+        .unwrap()
+        .captures_iter(bundle)
+        .filter_map(|c| c.get(1).map(|m| m.as_str().to_string()))
+        .take(4)
+        .collect::<Vec<_>>();
+    if servers.is_empty() {
+        return Err(Error::new("Silip player server configuration changed"));
+    }
+    Ok((key, servers))
+}
+
+fn vidspark_streams(player: &str) -> Result<Vec<VideoStream>> {
+    let player = Url::parse(player).map_err(url_error)?;
+    let path = player.path();
+    let player = format!("https://cdn.vidspark.to{path}");
+    let client = Client::browser();
+    let html = client
+        .get(&player)
+        .header("Referer", "https://vidspark.to/")
+        .timeout_ms(8_000)
+        .max_body_bytes(2 * 1024 * 1024)
+        .send()?
+        .error_for_status()?;
+    let document = manatan_sdk::html::Html::parse_document(html.text()?);
+    let selector = manatan_sdk::html::Selector::parse("script[src]").unwrap();
+    let script = document
+        .select(&selector)
+        .filter_map(|e| e.value().attr("src"))
+        .find(|src| src.starts_with("/assets/main-") && src.ends_with(".js"))
+        .ok_or_else(|| Error::new("Silip player bundle changed"))?;
+    let bundle = client
+        .get(format!("https://cdn.vidspark.to{script}"))
+        .header("Referer", &player)
+        .timeout_ms(8_000)
+        .max_body_bytes(3 * 1024 * 1024)
+        .send()?
+        .error_for_status()?;
+    let (key, servers) = player_config(bundle.text()?)?;
+    let requests = servers
+        .iter()
+        .map(|server| {
+            client
+                .get(format!(
+                    "https://cdn.vidspark.to/api/vidora/v1{path}?source={server}&hevc=0"
+                ))
+                .header("x-player-key", &key)
+                .header("Referer", &player)
+                .timeout_ms(12_000)
+                .max_body_bytes(1024 * 1024)
+        })
+        .collect();
+    let responses = Client::send_many(requests, 4);
+    let mut streams = Vec::new();
+    let mut errors = Vec::new();
+    for (server, response) in servers.iter().zip(responses) {
+        let response = match response.and_then(|r| r.error_for_status()) {
+            Ok(r) => r,
+            Err(e) => {
+                errors.push(e.to_string());
+                continue;
+            }
+        };
+        let data: Value = serde_json::from_str(response.text()?)
+            .map_err(|_| Error::new("Invalid Silip player response"))?;
+        for source in data["sources"].as_array().into_iter().flatten() {
+            let Some(url) = source["url"].as_str() else {
+                continue;
+            };
+            let parsed = Url::parse(url).map_err(url_error)?;
+            if parsed.scheme() != "https"
+                || !parsed.username().is_empty()
+                || parsed.password().is_some()
+            {
+                return Err(Error::new("Invalid Silip manifest URL"));
+            }
+            let dash = parsed.path().contains("dash-proxy") || url.contains(".mpd");
+            let hls = parsed.path().starts_with("/vx/playlist/") || url.contains(".m3u8");
+            if !dash && !hls {
+                continue;
+            }
+            // The host checks and scopes origins learned from this authorized
+            // API response. It also enforces public-address DNS and redirects.
+            streams.push(VideoStream {
+                url: url.to_string(),
+                name: Some(format!("Silip — {server}")),
+                format: Some(if dash { "dash" } else { "hls" }.into()),
+                is_dash: dash,
+                is_hls: hls,
+                headers: BTreeMap::from([
+                    ("Referer".into(), player.clone()),
+                    ("Origin".into(), "https://cdn.vidspark.to".into()),
+                ]),
+                requires_proxy: true,
+                initialized: true,
+                ..VideoStream::default()
+            });
+        }
+    }
+    if streams.is_empty() {
+        return Err(Error::new(format!(
+            "Silip player returned no compatible manifests ({})",
+            errors.join("; ")
+        )));
+    }
+    Ok(streams)
+}
+
 const BASE_URL: &str = "https://silip.pages.dev";
 const TMDB_URL: &str = "https://api.themoviedb.org/3";
 const IMAGE_URL: &str = "https://image.tmdb.org/t/p";
 const VIDCORE_URL: &str = "https://vidcore.org";
 // This is the browser key published by Silip's current client bundle.
 const TMDB_KEY: &str = "1ffd85b911c0187b3bbf2cb9a20c1e3e";
-// VidCore loads its player in a cross-origin child frame. The host captures
-// requests from every frame, but page JavaScript cannot inspect that frame's
-// performance entries, so keep a bounded capture window instead of polling an
-// inaccessible resource list.
+// Allow the delegated player a bounded window to request its media manifest.
+// Capture network requests as well as DOM performance entries.
 const WAIT_FOR_MEDIA_SCRIPT: &str = "(() => { const now = Date.now(); const started = window.__manatanSilipCaptureStarted ||= now; return now - started >= 15000; })()";
 
 #[derive(Default)]
@@ -130,7 +269,40 @@ impl Silip {
 
     fn capture_stream(&self, embed_url: &str) -> Result<Vec<VideoStream>> {
         validate_vidcore_url(embed_url)?;
-        let navigation_url = cache_busted_url(embed_url, runtime::now_millis())?;
+        // Let the checked HTTP boundary discover the publisher's current child
+        // player and its assets before native browser navigation needs them.
+        let response = Client::browser()
+            .get(embed_url)
+            .header("Referer", format!("{BASE_URL}/"))
+            .timeout_ms(5_000)
+            .max_body_bytes(2 * 1024 * 1024)
+            .send()?
+            .error_for_status()?;
+        let document = manatan_sdk::html::Html::parse_document(response.text()?);
+        let selector = manatan_sdk::html::Selector::parse("iframe[src]")
+            .map_err(|_| Error::new("Invalid player selector"))?;
+        let mut player_url = embed_url.to_string();
+        for frame in document.select(&selector).take(2) {
+            let Some(src) = frame.value().attr("src") else {
+                continue;
+            };
+            let Some(target) = delegated_player_url(embed_url, src) else {
+                continue;
+            };
+            Client::browser()
+                .get(target.as_str())
+                .header("Referer", response.final_url())
+                .timeout_ms(5_000)
+                .max_body_bytes(2 * 1024 * 1024)
+                .send()?
+                .error_for_status()?;
+            player_url = target.to_string();
+            break;
+        }
+        if player_url != embed_url {
+            return vidspark_streams(&player_url);
+        }
+        let navigation_url = cache_busted_url(&player_url, runtime::now_millis())?;
         let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
             url: navigation_url,
             method: Default::default(),
@@ -142,8 +314,8 @@ impl Silip {
                 ..WebViewSession::default()
             }),
             headers: vec![
-                ("Referer".to_string(), format!("{BASE_URL}/")),
-                ("Origin".to_string(), BASE_URL.to_string()),
+                ("Referer".to_string(), embed_url.to_string()),
+                ("Origin".to_string(), VIDCORE_URL.to_string()),
             ],
             user_agent: None,
             wait_until: Some(WebViewWaitUntil::DomReady),
@@ -151,16 +323,19 @@ impl Silip {
             wait_for_event: None,
             wait_for_script: Some(WAIT_FOR_MEDIA_SCRIPT.to_string()),
             script: "(() => { const video = document.querySelector('video'); const resources = performance.getEntriesByType('resource').map(entry => entry.name); return { url: video?.currentSrc || video?.src || '', urls: Array.from(new Set(resources.filter(url => typeof url === 'string' && (url.includes('.m3u8') || url.includes('.mpd') || url.includes('/stream/mpd'))))) }; })()".to_string(),
-            timeout_ms: Some(120_000),
+            // The host operation budget is 115 seconds. Reserve 20 seconds
+            // for the bounded, parallel manifest probes below.
+            timeout_ms: Some(75_000),
             capture_requests: vec![capture(".m3u8"), capture(".mpd"), capture("/stream/")],
             capture_events: Vec::new(),
             cookies: false,
             headless: Some(true),
             preload_scripts: Vec::new(),
         })?;
-        let streams = streams_from_capture(&response, embed_url)?;
+        let streams = streams_from_capture(&response, &player_url)?;
         let requests = streams
             .iter()
+            .take(3)
             .map(|stream| {
                 let request = Client::browser()
                     .get(&stream.url)
@@ -911,6 +1086,41 @@ manatan_sdk::export_extension!(manatan_sdk::Extension::new().video("silip", Sili
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reads_rotating_public_player_key_and_servers_from_bundle() {
+        let bundle = r#"var renamed=`public-browser-key-1234`;const request={"x-player-key":renamed};var servers=[{key:`one`,label:`First`},{key:`two`,label:`Second`}];"#;
+        let (key, servers) = player_config(bundle).unwrap();
+        assert_eq!(key, "public-browser-key-1234");
+        assert_eq!(servers, ["one", "two"]);
+        assert!(player_config("changed player layout").is_err());
+        assert!(
+            player_config(r#"var p=`public-browser-key-1234`;var h={"x-player-key":p};"#).is_err()
+        );
+    }
+
+    #[test]
+    fn delegated_player_preserves_content_identity_and_https_origin() {
+        let embed = "https://vidcore.org/embed/movie/593961";
+        assert!(delegated_player_url(embed, "https://vidspark.to/movie/593961").is_some());
+        assert!(delegated_player_url(
+            "https://vidcore.org/embed/tv/123/2/3",
+            "https://vidspark.to/tv/123/2/3"
+        )
+        .is_some());
+        for target in [
+            "https://vidspark.to/movie/1",
+            "https://vidspark.to/tv/593961",
+            "http://vidspark.to/movie/593961",
+            "https://vidspark.to:8443/movie/593961",
+            "https://other.example/movie/593961",
+            "https://vidspark.to.evil.example/movie/593961",
+            "https://user:pass@vidspark.to/movie/593961",
+            "https://vidspark.to/movie/593961#other",
+        ] {
+            assert!(delegated_player_url(embed, target).is_none(), "{target}");
+        }
+    }
 
     #[test]
     fn parses_and_filters_tmdb_results() {

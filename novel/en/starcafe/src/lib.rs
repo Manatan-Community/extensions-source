@@ -8,7 +8,7 @@ use manatan_sdk::{
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
 use url::Url;
-use wordpress_novel::{chapter_text, image, rating};
+use wordpress_novel::{chapter_text, image_with_cookies as image, rating};
 
 const BASE: &str = "https://starcafe.me";
 const CATALOG_URL: &str = "https://firestore.googleapis.com/v1/projects/starcafe-167bb/databases/(default)/documents/indexes/cnovels";

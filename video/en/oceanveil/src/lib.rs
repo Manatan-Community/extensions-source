@@ -301,6 +301,29 @@ impl OceanVeil {
     }
 }
 impl VideoSource for OceanVeil {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let data = self.catalog(false)?;
+        let row = rows(&data)?
+            .iter()
+            .find(|row| row["id"].as_str() == Some(&request.item.key))
+            .ok_or_else(|| Error::new("OceanVeil title not found in the public catalog"))?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| title(row, &data))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| Self::episode_rows(&data, &request.item.key))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, p: u32) -> Result<Paged<CatalogItem>> {
         self.browse("", p, false)
     }

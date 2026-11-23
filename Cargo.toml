@@ -18,7 +18,7 @@ repository = "https://github.com/Manatan-Community/extensions-source"
 aes = { version = "0.8", default-features = false }
 aes-gcm = { version = "0.10", default-features = false, features = ["aes", "alloc"] }
 anyhow = "1"
-manatan-sdk = "=2.0.0"
+manatan-sdk = { git = "https://github.com/KolbyML/Manatan-SDK", rev = "d13370a1abc220eda0a805ca9eef0a22d7cadf10" }
 manatan-common = { path = "shared/manatan-common" }
 anikoto-theme = { path = "shared/anikoto-theme" }
 fucknovelpia-novel = { path = "shared/fucknovelpia-novel" }

@@ -142,6 +142,26 @@ impl AnimeJl {
 }
 
 impl VideoSource for AnimeJl {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let url = item_url(&request.item.key)?;
+        let body = self.html(&url)?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| parse_details(&body, &request.item.key, &url))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| parse_episodes(&body, &request.item.key))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.browse(page, "rating", None, false)
     }

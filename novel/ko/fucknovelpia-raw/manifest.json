@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "fucknovelpia-raw",
   "name": "FuckNovelpia RAW",
-  "version": "1.2.2",
-  "versionCode": 5,
+  "version": "1.2.3",
+  "versionCode": 6,
   "apiVersion": 2,
   "minimumManatanVersion": "0.3.1",
   "wasm": "extension.wasm",
@@ -22,12 +22,14 @@
   "permissions": {
     "network": {
       "allow": [
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com",
         "https://raw-fucknovelpia.com",
         "https://assets.raw-fucknovelpia.com"
       ]
     },
     "cookies": true,
-    "webview": false,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false

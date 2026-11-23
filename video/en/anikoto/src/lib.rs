@@ -8,8 +8,9 @@ struct Anikoto;
 impl AnikotoConfig for Anikoto {
     const NAME: &'static str = "Anikoto";
     const LANG: &'static str = "en";
-    const BASE_URL: &'static str = "https://anikototv.to";
+    const BASE_URL: &'static str = "https://anikototv.bz";
     const DOMAINS: &'static [&'static str] = &[
+        "anikototv.bz",
         "anikototv.to",
         "anikoto.bz",
         "anikoto.cz",
@@ -38,9 +39,28 @@ mod tests {
     #[test]
     fn tracks_current_aniyomi_domains_and_hosters() {
         assert!(Anikoto::DOMAINS.contains(&"anikototv.to"));
+        assert!(Anikoto::DOMAINS.contains(&"anikototv.bz"));
         assert!(Anikoto::DOMAINS.contains(&"anikototv.se"));
         assert!(Anikoto::HOSTERS.contains(&"HD-1"));
         assert!(Anikoto::HOSTERS.contains(&"Vidstream-2"));
+    }
+
+    #[test]
+    fn every_site_alias_has_a_declared_origin() {
+        let manifest: serde_json::Value =
+            serde_json::from_str(include_str!("../manifest.json")).unwrap();
+        let allowed = manifest["permissions"]["network"]["allow"]
+            .as_array()
+            .unwrap();
+        assert_eq!(Anikoto::BASE_URL, "https://anikototv.bz");
+        for domain in Anikoto::DOMAINS {
+            assert!(
+                allowed
+                    .iter()
+                    .any(|v| v.as_str() == Some(&format!("https://{domain}"))),
+                "site alias lacks network permission: {domain}"
+            );
+        }
     }
 
     #[test]

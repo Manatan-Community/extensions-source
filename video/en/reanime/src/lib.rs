@@ -230,6 +230,22 @@ impl ReAnime {
 }
 
 impl VideoSource for ReAnime {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let anime = self.anime(&request.item.key)?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request.fetch_details.then(|| catalog_item(anime, true)),
+            entries: request
+                .fetch_entries
+                .then(|| self.episode_list(&request.item.key))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         if page > 1 {
             return Ok(Paged::default());

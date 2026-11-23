@@ -285,7 +285,7 @@ impl HamelnSource {
     }
 
     fn parse_chapters(document: &Html, work_url: &str) -> Result<Vec<NovelChapter>> {
-        let rows = selector("#maind table tr, ul.entry > li")?;
+        let rows = selector("#maind table tr, ul.entry > li, .episode-list__item")?;
         let link = selector("a[href$='.html']")?;
         let time = selector("time[datetime]")?;
         let mut chapters = Vec::new();
@@ -644,9 +644,19 @@ fn parse_datetime(value: &str) -> Option<i64> {
     DateTime::parse_from_rfc3339(value)
         .ok()
         .map(|value| value.timestamp_millis())
+        .or_else(|| {
+            chrono::NaiveDateTime::parse_from_str(value, "%Y-%m-%dT%H:%MZ")
+                .ok()
+                .map(|value| value.and_utc().timestamp_millis())
+        })
 }
 
 fn chapter_anchor_title(anchor: ElementRef<'_>) -> String {
+    if let Ok(query) = selector(".episode-list__title") {
+        if let Some(title) = anchor.select(&query).next() {
+            return normalize_space(&html::text(title));
+        }
+    }
     let inner = anchor.inner_html();
     let title_html = inner.split("<br").next().unwrap_or(&inner);
     let fragment = html::fragment(title_html);
@@ -742,6 +752,21 @@ mod tests {
         assert_eq!(chapters.len(), 2);
         assert_eq!(chapters[0].title.as_deref(), Some("Second chapter"));
         assert_eq!(chapters[0].chapter_number, Some(2.0));
+    }
+
+    #[test]
+    fn parses_current_episode_list_without_dates_or_revision_markers_in_titles() {
+        let document = html::document(include_str!("../tests/fixtures/work_current.html"));
+        let chapters =
+            HamelnSource::parse_chapters(&document, "https://syosetu.org/novel/12345/").unwrap();
+        assert_eq!(chapters.len(), 2);
+        assert_eq!(chapters[0].title.as_deref(), Some("Second current chapter"));
+        assert_eq!(chapters[0].chapter_number, Some(2.0));
+        assert_eq!(
+            chapters[0].url.as_deref(),
+            Some("https://syosetu.org/novel/12345/2.html")
+        );
+        assert!(chapters[0].date_uploaded.is_some());
     }
 
     #[test]

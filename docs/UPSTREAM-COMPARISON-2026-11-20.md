@@ -1,0 +1,39 @@
+> Latest follow-up: the former KuroNavi source now passes as MangaRaw. See [the migration report](MANGARAW-MIGRATION-2026-11-20.md). Earlier results below are historical.
+
+# Source follow-up and upstream comparison — 2026-11-20
+
+Four additional sources now pass representative reading/playback: **KolNovel, ShuttleTV, Silip and WITAnime**. Combined with the initial audit, **39 of 44 packages have a verified representative flow**. AniZone is intermittent; four other sources remain restricted or unresolved. This supersedes the nine outstanding rows in the initial audit without claiming every title or mirror works.
+
+## Test boundary
+
+Used normal signed repository installs into a dedicated Manatan instance, the production Wasmtime runner, checked HTTP/media routes, native desktop CEF where required, and Manatan's media_kit libmpv. No mock source, HTTP server, catalog, decoder, or alternate synthetic guest path replaced production behavior. Video success required actual decoded frames and advancing playback time. Tests ran on macOS; no Android-emulator, iOS-simulator, Flutter-UI or current Aniyomi-app execution is claimed for this follow-up. Reading reference source does not prove the reference app currently succeeds.
+
+## Results
+
+| Source | Result | Root cause, change, and evidence |
+| --- | --- | --- |
+| AniZone | Intermittent; partial repair | Unified catalog, details and Livewire requests under the same three-per-second site limiter, matching Aniyomi. One real playback run passed, but later search and episode requests still returned HTTP 429. The remaining rate-limit condition is not proven and is not classified as fixed. |
+| Anime3rb | Unresolved verification | The normal catalog route still fails to complete browser verification within its deadline. Native DOM evidence shows the challenge page; no completed clearance or independently working current extractor was established. This does not prove a temporary outage or a source parser bug. |
+| KolNovel | Verified sample | After the earlier 503 cleared, the old selectors returned an empty catalog on the current editorial theme. Updated catalog/details/cover/chapter selectors and canonical /series/page/N/ pagination. Catalog, page 2, latest, search, cover decoding and actual chapter reading pass. |
+| KuroNavi | Blocked: DNS | kuronavi.one still returns NXDOMAIN. No verified replacement was found. The investigated nekoraw.blog candidate is parked, so it was not substituted. |
+| OceanVeil | DRM restriction; non-DRM unresolved | The sampled protected title explicitly requires DRM. The current catalog advertises 20 DRM and 10 non-DRM entries among 30 records. A separate non-DRM Inuyashiki sample reached the playback browser operation but timed out. No authorized full-episode native playback was verified; DRM alone does not explain that second failure. Licensed player support and an authorized account/session remain unverified. |
+| Piccoma | Blocked: reader region/access | The checked Mihon implementation uses the same /web/viewer/{productId}/{episodeId} reader endpoint and explicitly requires login/purchase where applicable. It contains no verified Japan-region bypass. Reader access from the test connection remains restricted; no source-only repair or Japan-egress playback was verified. |
+| ShuttleTV | Verified sample | Replaced the generic capture path with the current public CineSrc protocol used by Aniyomi: challenge bootstrap/proof, rotating action IDs, provider selection, and stream decryption with consistent request identity. The shared host now learns checked media origins from successful authorized POST responses, retaining GET/HEAD-only discovered-origin access and private-address guards. Spirited Away: the first provider had no stream; the next decoded 3.09 seconds / 74 frames / 3840-pixel width. |
+| Silip | Verified sample | VidCore delegates to VidSpark, which falls back to a second player origin. Added the observed player origins, preserved the content identity when following the delegation, and parsed the public player bundle/API rather than relying on browser codec support and extension-based network matching. The API exposes DASH through an opaque /dash-proxy URL. Public browser configuration and provider IDs are read afresh, not copied from an account. Hello, Love, Goodbye decoded 3.04 seconds / 73 frames / 1280-pixel width through Manatan. |
+| WITAnime | Verified sample | The new deferred resolver skipped the existing hgcloud.to to audinifer.com normalization used by the legacy resolver. The same video ID returned a small bootstrap page on the first host and the packed player configuration on its canonical host. Restored normalization in the new path. The sampled first episode decoded 3.09 seconds / 74 frames / 1920-pixel width. This verifies a working server, not every mirror. |
+
+## Reference implementations checked
+
+- [Aniyomi AniZone](https://github.com/yuzono/anime-extensions/blob/7690eae6870c4d54aa1ee8b9a644f824ee75b776/src/all/anizone/src/eu/kanade/tachiyomi/animeextension/all/anizone/AniZone.kt): one client-wide three-per-second limiter; its retry helper handles HTTP 419, not evidence that 429 cannot occur.
+- [Aniyomi ShuttleTV extractor](https://github.com/yuzono/anime-extensions/blob/7690eae6870c4d54aa1ee8b9a644f824ee75b776/src/en/shuttletv/src/eu/kanade/tachiyomi/animeextension/en/shuttletv/ShuttleTvExtractor.kt) and [challenge implementation](https://github.com/yuzono/anime-extensions/blob/7690eae6870c4d54aa1ee8b9a644f824ee75b776/src/en/shuttletv/src/eu/kanade/tachiyomi/animeextension/en/shuttletv/CinesrcChallenge.kt): public CineSrc/EncDec protocol. It depends on those third-party services and provider availability.
+- [Aniyomi WITAnime](https://github.com/yuzono/anime-extensions/blob/7690eae6870c4d54aa1ee8b9a644f824ee75b776/src/ar/witanime/src/eu/kanade/tachiyomi/animeextension/ar/witanime/WitAnime.kt): older WordPress parser. Its old site now links to the current publisher site; it was not treated as a proven working parser for the new Laravel flow.
+- [Mihon Piccoma](https://github.com/keiyoushi/extensions-source/blob/ef952a64df831c33c29c276d9c283b4cd7633ce1/src/ja/piccoma/src/eu/kanade/tachiyomi/extension/ja/piccoma/Piccoma.kt): same viewer endpoint and purchase/login contract.
+- [LNReader KolNovel configuration](https://github.com/LNReader/lnreader-plugins/blob/13ac87519396/plugins/multisrc/lightnovelwp/sources.json): still points to kolnovel.com; no invented domain migration was used.
+
+No directly matching current implementation was identified in the checked reference trees for Anime3rb, KuroNavi, OceanVeil or Silip. Silip was diagnosed against its actual public player implementation instead.
+
+## Validation and delivery
+
+The source workspace passes **344 tests** (3 explicitly ignored live tests), formatting, manifest validation and validation of all **44 signed packages**. Installed archive hashes match the built packages. Added focused coverage for the CineSrc challenge/response parser, current KolNovel markup, and Silip's rotating public player configuration and content-preserving HTTPS delegation. The shared host POST-discovery regression and all 9 media-policy tests pass in the already compiled current Manatan test binary (which includes the new regression and is newer than the changed shared-host sources). Two explicitly ignored live media-policy tests remain recorded as passed in the initial audit. A redundant optimized rebuild was stopped after these focused checks passed.
+
+The earlier audit's browser, TLS, artwork and cache validation remains recorded in the initial report. Expiring media URLs, challenge state, cookies and raw diagnostics remain outside tracked source. The corresponding source and package changes are included in the repository release associated with this report.

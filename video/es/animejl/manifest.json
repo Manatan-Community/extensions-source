@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "animejl",
   "name": "AnimeJL",
-  "version": "0.1.8",
-  "versionCode": 9,
+  "version": "0.1.10",
+  "versionCode": 11,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -39,6 +39,7 @@
         "https://flaswish.com",
         "https://voe.sx",
         "https://derricknationtop.com",
+        "https://arianathankspecial.com",
         "https://*.cloudwindow-route.com",
         "https://callistanise.com",
         "https://*.orchidcrestperformance.sbs",
@@ -95,6 +96,9 @@
       "baseUrl": "https://www.anime-jl.net",
       "contentRating": "suggestive",
       "capabilities": {
+        "operations": [
+          "video.refresh-episodes"
+        ],
         "search": true,
         "latest": true,
         "filters": true,

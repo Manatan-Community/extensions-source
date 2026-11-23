@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 base64.workspace = true
 manatan-sdk.workspace = true
+manatan-common.workspace = true
 regex.workspace = true
 scraper.workspace = true
 serde.workspace = true

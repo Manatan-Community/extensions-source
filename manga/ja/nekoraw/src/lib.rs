@@ -9,17 +9,17 @@ use scraper::{ElementRef, Html, Selector};
 use serde_json::{json, Value};
 use url::Url;
 
-const BASE_URL: &str = "https://kuronavi.one";
-const REFERER: &str = "https://kuronavi.one/";
+const BASE_URL: &str = "https://mangaraw.ink";
+const REFERER: &str = "https://mangaraw.ink/";
 const REQUEST_LIMIT_MS: u32 = 250;
 const LANGUAGE: &str = "ja";
 const CONTENT_RATING: &str = "adult";
 
-pub struct KuronaviSource {
+pub struct MangaRawSource {
     client: Client,
 }
 
-impl Default for KuronaviSource {
+impl Default for MangaRawSource {
     fn default() -> Self {
         Self {
             client: Client::browser()
@@ -29,7 +29,7 @@ impl Default for KuronaviSource {
     }
 }
 
-impl KuronaviSource {
+impl MangaRawSource {
     fn document(&self, url: &str) -> Result<Html> {
         let response = self
             .client
@@ -46,7 +46,29 @@ impl KuronaviSource {
     }
 }
 
-impl MangaSource for KuronaviSource {
+impl MangaSource for MangaRawSource {
+    fn refresh(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<MangaChapter>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<MangaChapter>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let slug = manga_slug(request.item.url.as_deref().unwrap_or(&request.item.key))
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
+        let url = manga_url(&slug);
+        let document = self.document(&url)?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| parse_details(&document, &slug, &url))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| parse_chapters(&document, &slug))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         let mut url = Url::parse(&format!("{BASE_URL}/hot")).map_err(url_error)?;
         if page > 1 {
@@ -69,7 +91,7 @@ impl MangaSource for KuronaviSource {
             "popular" => self.popular(page),
             "latest" => self.latest(page),
             "top" => self.listing_page(page, Some("10")),
-            other => Err(Error::new(format!("unknown KuroNavi listing {other:?}"))),
+            other => Err(Error::new(format!("unknown MangaRaw listing {other:?}"))),
         }
     }
 
@@ -91,7 +113,7 @@ impl MangaSource for KuronaviSource {
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
         let url = manga_url(&slug);
         let parsed = parse_details(&self.document(&url)?, &slug, &url)?;
         Ok(parsed)
@@ -99,16 +121,16 @@ impl MangaSource for KuronaviSource {
 
     fn chapters(&mut self, item: CatalogItem) -> Result<Vec<MangaChapter>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
         parse_chapters(&self.document(&manga_url(&slug))?, &slug)
     }
 
     fn pages(&mut self, item: CatalogItem, chapter: MangaChapter) -> Result<Vec<MangaPage>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
         let chapter_url =
             canonical_chapter_url(&slug, chapter.url.as_deref().unwrap_or(&chapter.key))
-                .ok_or_else(|| Error::new("KuroNavi chapter has no chapter key"))?;
+                .ok_or_else(|| Error::new("MangaRaw chapter has no chapter key"))?;
         parse_pages(&self.document(&chapter_url)?, &chapter_url)
     }
 
@@ -118,7 +140,7 @@ impl MangaSource for KuronaviSource {
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
         Ok(Some(manga_url(&slug)))
     }
 
@@ -128,7 +150,7 @@ impl MangaSource for KuronaviSource {
         chapter: &MangaChapter,
     ) -> Result<Option<String>> {
         let slug = manga_slug(item.url.as_deref().unwrap_or(&item.key))
-            .ok_or_else(|| Error::new("KuroNavi item has no manga slug"))?;
+            .ok_or_else(|| Error::new("MangaRaw item has no manga slug"))?;
         Ok(canonical_chapter_url(
             &slug,
             chapter.url.as_deref().unwrap_or(&chapter.key),
@@ -137,9 +159,24 @@ impl MangaSource for KuronaviSource {
 
     fn handle_url(&mut self, candidate: &str) -> Result<Option<UrlResolveResult>> {
         let parsed = Url::parse(candidate).map_err(url_error)?;
+        if !matches!(parsed.scheme(), "http" | "https")
+            || !parsed.username().is_empty()
+            || parsed.password().is_some()
+            || parsed.port().is_some()
+        {
+            return Ok(None);
+        }
         if !matches!(
             parsed.host_str(),
-            Some("kuronavi.one" | "comiraw.net" | "nekoraw.blog")
+            Some(
+                "mangaraw.ink"
+                    | "www.mangaraw.ink"
+                    | "kuronavi.one"
+                    | "kuronavi.my"
+                    | "kuronavi.blog"
+                    | "comiraw.net"
+                    | "nekoraw.blog"
+            )
         ) {
             return Ok(None);
         }
@@ -178,12 +215,20 @@ impl MangaSource for KuronaviSource {
 #[cfg(target_arch = "wasm32")]
 manatan_sdk::export_extension!(
     // Keep the historical source ID so existing NekoRaw library entries migrate
-    // to the site's KuroNavi identity instead of becoming orphaned.
-    manatan_sdk::Extension::new().manga("nekoraw", KuronaviSource::default())
+    // to MangaRaw without changing their source association.
+    manatan_sdk::Extension::new().manga("nekoraw", MangaRawSource::default())
 );
 
 fn parse_catalog(document: &Html, current_page: u32) -> Result<Paged<CatalogItem>> {
-    let anchors = select("a[href*='/manga/']")?;
+    // The recommendation strip repeats on every page and must not become
+    // part of the paginated listing. Keep the old-layout fallback for imports.
+    let current = select(".list_grid_out a[href*='/manga/']")?;
+    let container = select(".list_grid_out")?;
+    let anchors = if document.select(&container).next().is_some() {
+        current
+    } else {
+        select("a[href*='/manga/']")?
+    };
     let image_selector = select("img")?;
     let title_selector = select("h3")?;
     let mut entries = Vec::new();
@@ -238,7 +283,7 @@ fn parse_catalog(document: &Html, current_page: u32) -> Result<Paged<CatalogItem
 
 fn parse_details(document: &Html, slug: &str, url: &str) -> Result<CatalogItem> {
     let title = first_text(document, "h1")?
-        .ok_or_else(|| Error::new("KuroNavi details page has no title"))?;
+        .ok_or_else(|| Error::new("MangaRaw details page has no title"))?;
     let cover = first_attr(document, "meta[itemprop='image']", "content")?
         .or(first_attr(
             document,
@@ -272,7 +317,7 @@ fn parse_details(document: &Html, slug: &str, url: &str) -> Result<CatalogItem> 
 }
 
 fn parse_detail_status(document: &Html) -> Result<&'static str> {
-    let selector = select("#main-content span")?;
+    let selector = select(".book_other .status .col-xs-9, #main-content span")?;
     Ok(document
         .select(&selector)
         .map(element_text)
@@ -319,7 +364,7 @@ fn parse_chapters(document: &Html, slug: &str) -> Result<Vec<MangaChapter>> {
         });
     }
     if chapters.is_empty() {
-        return Err(Error::new("KuroNavi details page has no chapters"));
+        return Err(Error::new("MangaRaw details page has no chapters"));
     }
     Ok(chapters)
 }
@@ -349,7 +394,7 @@ fn parse_pages(document: &Html, chapter_url: &str) -> Result<Vec<MangaPage>> {
         });
     }
     if pages.is_empty() {
-        return Err(Error::new("KuroNavi chapter page has no images"));
+        return Err(Error::new("MangaRaw chapter page has no images"));
     }
     Ok(pages)
 }
@@ -538,8 +583,8 @@ fn parse_status(text: &str) -> &'static str {
 }
 
 fn image_request(url: String) -> ImageRequest {
-    ImageRequest::get(url)
-        .cookies_for(BASE_URL)
+    ImageRequest::get(url.clone())
+        .cookies_for(url)
         .header("Referer", REFERER)
         .header("User-Agent", BROWSER_USER_AGENT)
 }
@@ -617,7 +662,7 @@ fn select(value: &str) -> Result<Selector> {
 }
 
 fn url_error(error: impl ToString) -> Error {
-    Error::new(format!("KuroNavi URL error: {}", error.to_string()))
+    Error::new(format!("MangaRaw URL error: {}", error.to_string()))
 }
 
 #[cfg(test)]
@@ -631,6 +676,86 @@ mod tests {
     const MANIFEST: &str = include_str!("../manifest.json");
     const ICON: &[u8] = include_bytes!("../assets/icon.png");
     const ICON_SHA256: &str = "6c77d7c74ea79ec76de647430e392cbeb8e3fea0cb4e8bfcbd528c64abd18c8f";
+
+    #[test]
+    fn empty_search_does_not_return_recommended_titles() {
+        let document = Html::parse_document(
+            r#"<ul id=list_suggest><li><a href=/manga/pinned title=Pinned>Recommended</a></li></ul><div class=list_grid_out><ul class=list_grid></ul></div>"#,
+        );
+        let page = parse_catalog(&document, 1).unwrap();
+        assert!(page.entries.is_empty());
+        assert!(!page.has_next_page);
+    }
+
+    #[test]
+    fn paginated_catalog_excludes_the_repeated_recommendation_strip() {
+        let document = Html::parse_document(
+            r#"<ul id=list_suggest><li><a href=/manga/pinned title=Pinned><img src=/pinned.jpg></a></li></ul><div class=list_grid_out><ul id=list_new><li><a href=/manga/page-two title=Second><img data-original=https://images.example.org/second.jpg src=/placeholder.jpg></a></li></ul></div><a href=/?page=3>Next</a>"#,
+        );
+        let page = parse_catalog(&document, 2).unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert_eq!(page.entries[0].key, "page-two");
+        assert!(page.has_next_page);
+        assert_eq!(
+            page.entries[0].cover.as_ref().unwrap().url,
+            "https://images.example.org/second.jpg"
+        );
+    }
+
+    #[test]
+    fn parses_mangaraw_status_cover_and_chapters_without_page_chrome() {
+        let document = Html::parse_document(include_str!("../fixtures/mangaraw-details.html"));
+        let item =
+            parse_details(&document, "example-series", &manga_url("example-series")).unwrap();
+        assert_eq!(item.title, "Example Series");
+        assert_eq!(item.status, Some(json!("ongoing")));
+        let cover = item.cover.unwrap();
+        assert_eq!(cover.url, "https://images.example.org/series/cover.jpg");
+        assert_eq!(
+            cover.cookie_url.as_deref(),
+            Some("https://images.example.org/series/cover.jpg")
+        );
+        let chapters = parse_chapters(&document, "example-series").unwrap();
+        assert_eq!(chapters.len(), 2);
+        assert_eq!(chapters[0].chapter_number, Some(2.5));
+    }
+
+    #[test]
+    fn old_and_new_domains_resolve_to_the_same_item_and_chapter_identity() {
+        let mut source = MangaRawSource::default();
+        for host in [
+            "mangaraw.ink",
+            "kuronavi.one",
+            "kuronavi.my",
+            "kuronavi.blog",
+            "comiraw.net",
+            "nekoraw.blog",
+        ] {
+            let result = source
+                .handle_url(&format!("https://{host}/manga/example-series/chapter-2.5"))
+                .unwrap()
+                .unwrap();
+            let item = result.item.unwrap();
+            assert_eq!(item.key, "example-series");
+            assert_eq!(
+                item.url.as_deref(),
+                Some("https://mangaraw.ink/manga/example-series")
+            );
+            assert_eq!(result.chapter_key.as_deref(), Some("chapter-2.5"));
+            assert_eq!(
+                result.manga_chapter.unwrap().url.as_deref(),
+                Some("https://mangaraw.ink/manga/example-series/chapter-2.5")
+            );
+        }
+        for candidate in [
+            "https://other.example/manga/example-series",
+            "https://mangaraw.ink.evil.example/manga/example-series",
+            "https://user:pass@mangaraw.ink/manga/example-series",
+            "https://mangaraw.ink:8443/manga/example-series",
+        ] {
+            assert!(source.handle_url(candidate).unwrap().is_none());
+        }
+    }
 
     #[test]
     fn parses_current_catalog_markup_and_pagination() {
@@ -721,7 +846,7 @@ mod tests {
         assert_eq!(query.get("sort").map(|value| value.as_ref()), Some("10"));
         assert_eq!(query.get("page").map(|value| value.as_ref()), Some("2"));
 
-        let mut source = KuronaviSource::default();
+        let mut source = MangaRawSource::default();
         let resolved = source
             .handle_url("https://nekoraw.blog/manga/wanpisu/chapter-1175")
             .expect("deep link parses")
@@ -773,8 +898,8 @@ mod tests {
     fn manifest_and_icon_metadata_are_consistent() {
         let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
         assert_eq!(manifest["id"], "nekoraw");
-        assert_eq!(manifest["name"], "KuroNavi");
-        assert_eq!(manifest["sources"][0]["name"], "KuroNavi");
+        assert_eq!(manifest["name"], "MangaRaw");
+        assert_eq!(manifest["sources"][0]["name"], "MangaRaw");
         assert_eq!(manifest["sources"][0]["baseUrl"], BASE_URL);
         assert_eq!(manifest["sources"][0]["contentRating"], CONTENT_RATING);
         assert_eq!(manifest["assets"][0]["sha256"], ICON_SHA256);
@@ -787,7 +912,7 @@ mod tests {
             .filter_map(Value::as_str)
             .collect::<BTreeSet<_>>();
         for host in [
-            "https://kuronavi.one",
+            "https://mangaraw.ink",
             "https://admin.mangarawad.beer",
             "https://admin.mangarawad.diy",
             "https://admin.raw18.world",

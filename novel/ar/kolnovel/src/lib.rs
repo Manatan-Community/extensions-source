@@ -44,11 +44,15 @@ impl KolNovelSource {
     }
 
     fn series_url(page: u32, order: &str, filters: &Value) -> Result<String> {
-        let mut url = Url::parse(&format!("{BASE_URL}/series/"))
+        let path = if page <= 1 {
+            "/series/".to_string()
+        } else {
+            format!("/series/page/{page}/")
+        };
+        let mut url = Url::parse(&format!("{BASE_URL}{path}"))
             .map_err(|error| Error::new(error.to_string()))?;
         {
             let mut query = url.query_pairs_mut();
-            query.append_pair("page", &page.max(1).to_string());
             query.append_pair(
                 "order",
                 filters
@@ -90,9 +94,9 @@ impl KolNovelSource {
     }
 
     fn parse_catalog(document: &Html, page: u32) -> Result<Paged<CatalogItem>> {
-        let cards = selector(".listupd article.maindet, article.maindet")?;
-        let links = selector("h2 a[href*=\"/series/\"]")?;
-        let covers = selector("img.ts-post-image")?;
+        let cards = selector("article")?;
+        let links = selector("h2 a[href*=\"/series/\"], h3 a[href*=\"/series/\"]")?;
+        let covers = selector("img.ts-post-image, .kol-series-archive__cover img")?;
         let descriptions = selector(".contexcerpt")?;
         let genres = selector(".mdgenre a")?;
         let mut items = Vec::new();
@@ -159,16 +163,20 @@ impl KolNovelSource {
     }
 
     fn parse_details(document: &Html, page_url: &str) -> Result<CatalogItem> {
-        let title = first_text(document, "h1.entry-title")?
+        let title = first_text(document, "h1.entry-title, h1.kol-series-editorial__title")?
             .ok_or_else(|| Error::new("KolNovel series has no title"))?;
-        let tags = texts(document, ".sertogenre a")?;
+        let tags = texts(document, ".sertogenre a, .kol-series-editorial__genres a")?;
         let mut item = CatalogItem::new(page_url, title);
         item.url = Some(page_url.into());
-        item.cover = first_attr(document, ".sertothumb img", "src")?
-            .map(|cover| absolute_url(BASE_URL, &cover))
-            .transpose()?
-            .map(|cover| image(&cover, page_url));
-        item.description = first_text(document, ".sersys.entry-content > p")?;
+        item.cover = first_attr(
+            document,
+            ".sertothumb img, .kol-series-editorial__cover img",
+            "src",
+        )?
+        .map(|cover| absolute_url(BASE_URL, &cover))
+        .transpose()?
+        .map(|cover| image(&cover, page_url));
+        item.description = first_text(document, ".sersys.entry-content, [itemprop=description]")?;
         item.authors = texts(document, ".sertoauth a[href*=\"/writer/\"]")?;
         item.tags = tags;
         item.status =
@@ -180,10 +188,10 @@ impl KolNovelSource {
     }
 
     fn parse_chapters(document: &Html) -> Result<Vec<NovelChapter>> {
-        let rows = selector(".eplister li")?;
+        let rows = selector(".eplister li, [data-kol-chapter-row]")?;
         let links = selector("a[href]")?;
-        let numbers = selector(".epl-num")?;
-        let titles = selector(".epl-title")?;
+        let numbers = selector(".epl-num, [data-kol-chapter-number]")?;
+        let titles = selector(".epl-title, [data-kol-chapter-title]")?;
         let prices = selector(".epl-price")?;
         let number_re =
             Regex::new(r"(\d+(?:\.\d+)?)").map_err(|error| Error::new(error.to_string()))?;
@@ -424,10 +432,13 @@ fn has_next_page(document: &Html, page: u32) -> Result<bool> {
         };
         if url
             .query_pairs()
-            .find_map(|(key, value)| (key == "page").then(|| value.into_owned()))
+            .find_map(|(key, value)| {
+                matches!(key.as_ref(), "page" | "paged").then(|| value.into_owned())
+            })
             .and_then(|value| value.parse::<u32>().ok())
             == Some(page + 1)
             || url.path() == format!("/page/{}/", page + 1)
+            || url.path() == format!("/series/page/{}/", page + 1)
         {
             return Ok(true);
         }
@@ -598,6 +609,39 @@ mod tests {
     use super::*;
 
     #[test]
+    fn reads_current_editorial_archive_and_chapter_markup() {
+        let document = html::document(
+            r#"<article class="kol-series-archive__item">
+            <a class="kol-series-archive__cover"><img src="/cover.jpg"></a>
+            <h3><a href="/series/current/">رواية جديدة</a></h3></article>"#,
+        );
+        let page = KolNovelSource::parse_catalog(&document, 1).unwrap();
+        assert_eq!(page.entries.len(), 1);
+        assert!(page.entries[0]
+            .cover
+            .as_ref()
+            .unwrap()
+            .url
+            .ends_with("/cover.jpg"));
+        let document = html::document(
+            r#"<h1 class="kol-series-editorial__title">رواية جديدة</h1>
+          <div itemprop="description"><p>قصة الرواية</p></div>
+          <li data-kol-chapter-row><a href="/chapter-one/">
+           <span data-kol-chapter-number="1">فصل 1</span><span data-kol-chapter-title>الفصل الأول</span>
+          </a></li>"#,
+        );
+        let details =
+            KolNovelSource::parse_details(&document, "https://kolnovel.com/series/current/")
+                .unwrap();
+        assert_eq!(details.title, "رواية جديدة");
+        assert!(details.description.unwrap().contains("قصة الرواية"));
+        let chapters = KolNovelSource::parse_chapters(&document).unwrap();
+        assert_eq!(chapters.len(), 1);
+        assert_eq!(chapters[0].chapter_number, Some(1.0));
+        assert_eq!(chapters[0].title.as_deref(), Some("الفصل الأول"));
+    }
+
+    #[test]
     fn parses_catalog_cover_tags_and_pagination() {
         let document = html::document(include_str!("../tests/fixtures/catalog.html"));
         let page = KolNovelSource::parse_catalog(&document, 1).unwrap();
@@ -667,9 +711,7 @@ mod tests {
         .unwrap();
         let parsed = Url::parse(&url).unwrap();
         let pairs = parsed.query_pairs().collect::<Vec<_>>();
-        assert!(pairs
-            .iter()
-            .any(|pair| pair == &("page".into(), "2".into())));
+        assert_eq!(parsed.path(), "/series/page/2/");
         assert!(pairs
             .iter()
             .any(|pair| pair == &("genre[]".into(), "action".into())));

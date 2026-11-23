@@ -214,7 +214,7 @@ impl AniZoneSource {
             .map(|entry| {
                 self.client()
                     .get(format!("{BASE_URL}/anime/{}", entry.slug))
-                    .rate_limit("anizone:details", RATE_LIMIT_MS)
+                    .rate_limit("anizone:site", RATE_LIMIT_MS)
                     .timeout_ms(30_000)
                     .max_body_bytes(MAX_HTML_BYTES)
             })
@@ -378,7 +378,7 @@ impl AniZoneSource {
             .header("Origin", BASE_URL)
             .header("Referer", referer)
             .json(&payload)?
-            .rate_limit("anizone:livewire", RATE_LIMIT_MS)
+            .rate_limit("anizone:site", RATE_LIMIT_MS)
             .timeout_ms(30_000)
             .max_body_bytes(MAX_HTML_BYTES)
             .send()?

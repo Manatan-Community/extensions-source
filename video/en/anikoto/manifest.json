@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "anikoto",
   "name": "Anikoto",
-  "version": "0.1.11",
-  "versionCode": 11,
+  "version": "0.1.13",
+  "versionCode": 13,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -14,13 +14,14 @@
   },
   "description": "English anime catalog and streams from Anikoto.",
   "author": "Manatan Community",
-  "homepage": "https://anikototv.to",
+  "homepage": "https://anikototv.bz",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
   "icon": "assets/icon.png",
   "permissions": {
     "network": {
       "allow": [
+        "https://anikototv.bz",
         "https://anikototv.to",
         "https://anikoto.bz",
         "https://anikoto.cz",
@@ -78,9 +79,12 @@
       "name": "Anikoto",
       "lang": "en",
       "contentType": "video",
-      "baseUrl": "https://anikototv.to",
+      "baseUrl": "https://anikototv.bz",
       "contentRating": "suggestive",
       "capabilities": {
+        "operations": [
+          "video.refresh-episodes"
+        ],
         "search": true,
         "latest": true,
         "filters": true,
@@ -102,6 +106,10 @@
       "urlPatterns": [
         {
           "pattern": "https://anikototv.to/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://anikototv.bz/watch/*",
           "kind": "item-or-episode"
         }
       ],

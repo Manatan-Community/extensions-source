@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "foxaholic",
   "name": "Foxaholic",
-  "version": "1.0.0",
-  "versionCode": 1,
+  "version": "1.0.2",
+  "versionCode": 3,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -28,6 +28,7 @@
   "permissions": {
     "network": {
       "allow": [
+        "https://*.challenges.cloudflare.com",
         "https://www.foxaholic.com",
         "https://foxaholic.com",
         "https://challenges.cloudflare.com"

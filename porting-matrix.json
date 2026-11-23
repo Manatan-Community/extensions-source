@@ -20914,7 +20914,7 @@
       "packagePath": "packages/manga/ja/nekoraw.manatan2",
       "knownSiteFailure": null,
       "license": "Apache-2.0",
-      "attribution": "First-party KuroNavi implementation, retaining the historical NekoRaw source ID for library compatibility."
+      "attribution": "First-party MangaRaw implementation, retaining the historical NekoRaw source ID and KuroNavi URL aliases for library compatibility."
     },
     {
       "upstreamRepository": "keiyoushi/extensions-source",

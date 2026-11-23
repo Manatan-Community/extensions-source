@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "novelarchive",
   "name": "Novel Archive",
-  "version": "1.0.2",
-  "versionCode": 3,
+  "version": "1.0.3",
+  "versionCode": 4,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -21,11 +21,13 @@
   "permissions": {
     "network": {
       "allow": [
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com",
         "https://novelarchive.st"
       ]
     },
-    "cookies": false,
-    "webview": false,
+    "cookies": true,
+    "webview": true,
     "storage": false,
     "assets": false,
     "javascript": false

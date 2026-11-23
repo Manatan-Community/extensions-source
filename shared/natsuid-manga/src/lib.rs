@@ -45,6 +45,10 @@ pub trait NatsuIdMangaConfig: Default + 'static {
     const LANG: &'static str;
     const CONTENT_RATING: Option<&'static str> = None;
 
+    fn search_query(&self, query: &str) -> String {
+        query.to_owned()
+    }
+
     fn referer(&self) -> String {
         format!("{}/", base_url(Self::BASE_URL))
     }
@@ -194,7 +198,8 @@ impl<C: NatsuIdMangaConfig> NatsuIdMangaSource<C> {
         }
 
         let parsed_filters = SearchFilters::from_value(filters);
-        let form = build_search_form(&self.nonce()?, query, page, &parsed_filters);
+        let query = self.config.search_query(query);
+        let form = build_search_form(&self.nonce()?, &query, page, &parsed_filters);
         let (body, _) = self.post_form_text(&advanced_search_url(&self.base_url())?, &form)?;
         self.parse_listing_payload(&body)
     }

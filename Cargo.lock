@@ -87,6 +87,7 @@ version = "0.1.0"
 dependencies = [
  "anikoto-theme",
  "manatan-sdk",
+ "serde_json",
 ]
 
 [[package]]
@@ -1113,8 +1114,7 @@ dependencies = [
 [[package]]
 name = "manatan-sdk"
 version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64fcc5f9fb08dfbfa755be07d2bc02f857b4e295addb031ed36a70146c497e23"
+source = "git+https://github.com/KolbyML/Manatan-SDK?rev=d13370a1abc220eda0a805ca9eef0a22d7cadf10#d13370a1abc220eda0a805ca9eef0a22d7cadf10"
 dependencies = [
  "base64",
  "scraper",
@@ -1759,8 +1759,10 @@ checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
 name = "shuttletv-video"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "manatan-sdk",
  "serde_json",
+ "sha2",
  "url",
 ]
 
@@ -1778,6 +1780,7 @@ name = "silip-video"
 version = "0.1.0"
 dependencies = [
  "manatan-sdk",
+ "regex",
  "serde_json",
  "url",
 ]
@@ -2270,6 +2273,7 @@ name = "witanime-video"
 version = "0.1.0"
 dependencies = [
  "base64",
+ "manatan-common",
  "manatan-sdk",
  "regex",
  "scraper",

@@ -7,7 +7,7 @@ use manatan_sdk::{
 };
 use serde_json::{json, Value};
 use url::Url;
-use wordpress_novel::{chapter_text, first_text, image, number, rating};
+use wordpress_novel::{chapter_text, first_text, image_with_cookies as image, number, rating};
 
 const BASE: &str = "https://shanghaifantasy.com";
 pub struct Shanghai {
@@ -210,7 +210,16 @@ impl NovelSource for Shanghai {
         self.browse("", page, true)
     }
     fn search(&mut self, query: &str, page: u32, _filters: &Value) -> Result<Paged<CatalogItem>> {
-        self.browse(query, page, false)
+        let result = self.browse(query, page, false)?;
+        if result.entries.is_empty() {
+            // The public catalog shortens long titles with a literal ellipsis.
+            // Keep a successful exact search unchanged, then retry the displayed
+            // title's text prefix when that presentation marker has no matches.
+            if let Some(prefix) = truncated_title_prefix(query) {
+                return self.browse(prefix, page, false);
+            }
+        }
+        Ok(result)
     }
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
         let url = item.url.as_deref().unwrap_or(&item.key);
@@ -260,6 +269,15 @@ impl NovelSource for Shanghai {
         }))
     }
 }
+
+fn truncated_title_prefix(query: &str) -> Option<&str> {
+    let query = query.trim();
+    let prefix = query
+        .strip_suffix("...")
+        .or_else(|| query.strip_suffix('…'))?
+        .trim_end();
+    (!prefix.is_empty()).then_some(prefix)
+}
 #[cfg(target_arch = "wasm32")]
 fn extension() -> manatan_sdk::Extension {
     manatan_sdk::Extension::new().novel("shanghaifantasy", Shanghai::default())
@@ -270,6 +288,20 @@ manatan_sdk::export_extension!(extension());
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn displayed_truncation_marker_does_not_become_a_search_term() {
+        assert_eq!(
+            truncated_title_prefix("A long catalog title ..."),
+            Some("A long catalog title")
+        );
+        assert_eq!(
+            truncated_title_prefix("A long catalog title…"),
+            Some("A long catalog title")
+        );
+        assert_eq!(truncated_title_prefix("..."), None);
+        assert_eq!(truncated_title_prefix("A...B & C"), None);
+        assert_eq!(truncated_title_prefix("A title!"), None);
+    }
     #[test]
     fn details_extract_public_category_without_parsing_url_slugs() {
         let doc = html::document(

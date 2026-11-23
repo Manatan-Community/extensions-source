@@ -6,6 +6,7 @@ use manatan_sdk::{
     Error, Result,
 };
 use regex::Regex;
+use std::sync::OnceLock;
 
 pub fn first_text(doc: &Html, css: &str) -> Result<Option<String>> {
     Ok(doc
@@ -16,15 +17,50 @@ pub fn first_text(doc: &Html, css: &str) -> Result<Option<String>> {
         .filter(|s| !s.is_empty()))
 }
 pub fn image(url: String, referer: &str) -> ImageRequest {
+    // Photon is an optional resize proxy. Use the same-site original rather
+    // than making readable covers depend on a separate CDN's DNS/TLS/access.
+    let url = original_wordpress_image(&url, referer).unwrap_or(url);
     ImageRequest {
         url,
         headers: [("Referer".into(), referer.into())].into(),
         ..ImageRequest::default()
     }
 }
+
+pub fn image_with_cookies(url: String, referer: &str) -> ImageRequest {
+    let request = image(url, referer);
+    let scope = request.url.clone();
+    request.cookies_for(scope)
+}
+
+fn original_wordpress_image(candidate: &str, referer: &str) -> Option<String> {
+    let proxy = url::Url::parse(candidate).ok()?;
+    if !matches!(
+        proxy.host_str(),
+        Some("i0.wp.com" | "i1.wp.com" | "i2.wp.com" | "i3.wp.com")
+    ) {
+        return None;
+    }
+    let original =
+        url::Url::parse(&format!("https://{}", proxy.path().trim_start_matches('/'))).ok()?;
+    let page = url::Url::parse(referer).ok()?;
+    if original.host_str() != page.host_str()
+        || !original.username().is_empty()
+        || original.password().is_some()
+    {
+        return None;
+    }
+    Some(original.to_string())
+}
 pub fn number(title: &str) -> Option<f32> {
-    Regex::new(r"(?i)\b(?:chapter|ch\.?|c)\s*(\d+(?:\.\d+)?)")
-        .ok()?
+    // A single archive may contain thousands of chapters. Compile the same
+    // Unicode-aware pattern once per guest instance, not once per chapter.
+    static NUMBER: OnceLock<Regex> = OnceLock::new();
+    NUMBER
+        .get_or_init(|| {
+            Regex::new(r"(?i)\b(?:chapter|ch\.?|c)\s*(\d+(?:\.\d+)?)")
+                .expect("chapter number regex is valid")
+        })
         .captures(title)?
         .get(1)?
         .as_str()
@@ -170,6 +206,17 @@ pub fn chapter_text(doc: &Html, css: &str, base: &str, title: Option<String>) ->
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cover_resizer_uses_only_the_same_site_original() {
+        assert_eq!(image("https://i1.wp.com/rainbow-reads.com/wp-content/uploads/2024/02/fv.jpg?resize=370,500".into(), "https://rainbow-reads.com/novel/").url,
+            "https://rainbow-reads.com/wp-content/uploads/2024/02/fv.jpg");
+        assert!(original_wordpress_image(
+            "https://i1.wp.com/another.example/image.jpg",
+            "https://rainbow-reads.com/"
+        )
+        .is_none());
+    }
     #[test]
     fn preserves_formatting_footnotes_images_without_ads_or_scripts() {
         let doc = html::document(
@@ -197,6 +244,20 @@ mod tests {
         )
         .is_err());
     }
+    #[test]
+    fn large_archive_preserves_chapter_numbers_and_special_labels() {
+        for index in 1..=1774 {
+            assert_eq!(
+                number(&format!("Chapter {index}: A title")),
+                Some(index as f32)
+            );
+        }
+        assert_eq!(number("CH. 12.5 - Extra"), Some(12.5));
+        assert_eq!(number("C42: End"), Some(42.0));
+        assert_eq!(number("Epilogue"), None);
+        assert_eq!(number("An unnumbered chapter"), None);
+    }
+
     #[test]
     fn only_explicit_adult_tags_are_adult() {
         assert_eq!(rating(&["Ecchi".into(), "Yaoi".into()]), "general");

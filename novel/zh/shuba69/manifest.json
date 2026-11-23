@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "shuba69",
   "name": "69书吧",
-  "version": "1.0.1",
-  "versionCode": 2,
+  "version": "1.0.2",
+  "versionCode": 3,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "novel",
@@ -21,6 +21,8 @@
   "permissions": {
     "network": {
       "allow": [
+        "https://challenges.cloudflare.com",
+        "https://*.challenges.cloudflare.com",
         "https://www.69shuba.com",
         "https://69shuba.com",
         "https://cdn.cdnshu.com"
@@ -54,13 +56,28 @@
         "urlResolution": true
       },
       "listings": [
-        { "id": "popular", "name": "排行榜" },
-        { "id": "latest", "name": "最近更新" }
+        {
+          "id": "popular",
+          "name": "排行榜"
+        },
+        {
+          "id": "latest",
+          "name": "最近更新"
+        }
       ],
       "urlPatterns": [
-        { "pattern": "https://www.69shuba.com/book/*.htm", "kind": "item" },
-        { "pattern": "https://www.69shuba.com/book/*/", "kind": "item" },
-        { "pattern": "https://www.69shuba.com/txt/*/*", "kind": "chapter" }
+        {
+          "pattern": "https://www.69shuba.com/book/*.htm",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://www.69shuba.com/book/*/",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://www.69shuba.com/txt/*/*",
+          "kind": "chapter"
+        }
       ]
     }
   ]

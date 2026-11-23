@@ -7,7 +7,7 @@ use manatan_sdk::{
 };
 use serde_json::{json, Value};
 use url::Url;
-use wordpress_novel::{chapter_text, first_text, image, number, rating};
+use wordpress_novel::{chapter_text, first_text, image_with_cookies as image, number, rating};
 const BASE: &str = "https://rainbow-reads.com";
 const READER_CONTENT: &str = ".epcontent.entry-content, .elementor[data-elementor-type='wp-page']";
 pub struct Rainbow {
@@ -36,11 +36,7 @@ impl Rainbow {
     fn catalog_url(query: &str, page: u32, latest: bool) -> Result<String> {
         let page = page.max(1);
         let path = if query.is_empty() {
-            if page == 1 {
-                "/series/".into()
-            } else {
-                format!("/series/page/{page}/")
-            }
+            "/series/".into()
         } else if page == 1 {
             "/".into()
         } else {
@@ -49,6 +45,9 @@ impl Rainbow {
         let mut url =
             Url::parse(&format!("{BASE}{path}")).map_err(|_| Error::new("Invalid catalog URL"))?;
         if query.is_empty() {
+            if page > 1 {
+                url.query_pairs_mut().append_pair("page", &page.to_string());
+            }
             url.query_pairs_mut()
                 .append_pair("order", if latest { "update" } else { "popular" });
         } else {
@@ -294,7 +293,7 @@ mod tests {
         assert!(url.contains("s=A+%26+B"));
         assert!(Rainbow::catalog_url("", 2, true)
             .unwrap()
-            .contains("/series/page/2/?order=update"));
+            .contains("/series/?page=2&order=update"));
     }
     #[test]
     fn pagination_and_boys_love_not_adult() {

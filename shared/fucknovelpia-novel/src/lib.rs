@@ -8,7 +8,8 @@ use std::{
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine as _};
 use manatan_common::{absolute_url, attr, normalize_space, require, selector};
 use manatan_sdk::{
-    client::Client,
+    browser::{self, WebViewExtractRequest, WebViewSession, WebViewWaitUntil},
+    client::{BrowserChallengePolicy, Client},
     html::{self, Html},
     model::{
         CatalogItem, FilterDefinition, ImageRequest, ImageRequestContext, NovelChapter,
@@ -75,7 +76,9 @@ impl<C: Config> Source<C> {
             .header("Referer", C::BASE_URL)
             .cookies_for(C::BASE_URL)
             .max_body_bytes(MAX_RAW_ARCHIVE_BYTES)
-            .send()?
+            .send_with_challenge(
+                &BrowserChallengePolicy::cloudflare(C::BASE_URL).profile("fucknovelpia"),
+            )?
             .error_for_status()
             .map(|response| response.into_bytes())
     }
@@ -86,7 +89,9 @@ impl<C: Config> Source<C> {
             .get(url)
             .header("Referer", C::BASE_URL)
             .cookies_for(C::BASE_URL)
-            .send()?
+            .send_with_challenge(
+                &BrowserChallengePolicy::cloudflare(C::BASE_URL).profile("fucknovelpia"),
+            )?
             .error_for_status()?;
         let final_url = response.final_url().to_owned();
         Ok((response.text()?.to_owned(), final_url))
@@ -95,6 +100,47 @@ impl<C: Config> Source<C> {
     fn document(&self, url: &str) -> Result<(Html, String)> {
         let (text, final_url) = self.response_text(url)?;
         Ok((html::document(&text), final_url))
+    }
+
+    fn chapter_document(&self, url: &str) -> Result<(Html, String)> {
+        // Reader pages bind verification to the browser transport and identity.
+        // Starting each chapter through native HTTP invokes a separate automatic
+        // challenge profile before falling back here, discarding up to 45 seconds
+        // on every read. Keep chapter navigation in this one persistent browser.
+        let response: browser::WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
+            url: url.to_owned(),
+            cookie_url: Some(C::BASE_URL.to_owned()),
+            cookies: true,
+            session: Some(WebViewSession {
+                id: "fucknovelpia-reader".into(),
+                ..Default::default()
+            }),
+            wait_until: Some(WebViewWaitUntil::DomReady),
+            wait_for_selector: Some(".reader".into()),
+            script: "document.documentElement.outerHTML".into(),
+            timeout_ms: Some(45_000),
+            headless: Some(true),
+            method: Default::default(),
+            body: None,
+            headers: vec![],
+            user_agent: None,
+            wait_for_script: None,
+            wait_for_event: None,
+            preload_scripts: vec![],
+            capture_requests: vec![],
+            capture_events: vec![],
+        })?;
+        let parse_url = |value: &str| Url::parse(value).map_err(|e| Error::new(e.to_string()));
+        let final_url = parse_url(&response.final_url)?;
+        require(
+            (final_url.origin() == parse_url(C::BASE_URL)?.origin()).then_some(()),
+            "FuckNovelpia reader left its authorized origin",
+        )?;
+        let text = require(
+            response.value.as_ref().and_then(Value::as_str),
+            "FuckNovelpia browser reader document is missing",
+        )?;
+        Ok((html::document(text), response.final_url))
     }
 
     fn catalog_document(&self, url: &str) -> Result<(Html, String)> {
@@ -580,7 +626,7 @@ impl<C: Config> NovelSource for Source<C> {
             return self.raw_text(&item, &chapter);
         }
         let page_url = absolute_url(C::BASE_URL, chapter.url.as_deref().unwrap_or(&chapter.key))?;
-        let (document, final_url) = self.document(&page_url)?;
+        let (document, final_url) = self.chapter_document(&page_url)?;
         Self::parse_text(&document, &final_url, &chapter)
     }
 

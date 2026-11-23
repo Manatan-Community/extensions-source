@@ -48,7 +48,7 @@ mod tests {
                 "contentType": "manga",
                 "baseUrl": "https://raw1001.net",
                 "contentRating": "adult",
-                "capabilities": { "search": true, "latest": true, "filters": true, "urlResolution": true },
+                "capabilities": { "search": true, "latest": true, "filters": true, "urlResolution": true, "operations": ["manga.refresh"] },
                 "listings": [
                     { "id": "popular", "name": "Popular" },
                     { "id": "latest", "name": "Latest" }

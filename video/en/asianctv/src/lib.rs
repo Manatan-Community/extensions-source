@@ -176,6 +176,26 @@ impl AsianCtv {
 }
 
 impl VideoSource for AsianCtv {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let slug = validate_slug(&request.item.key)?;
+        let body = self.html(&format!("{BASE_URL}/series/{slug}/"))?;
+        Ok(Some(manatan_sdk::CatalogRefresh {
+            item: request
+                .fetch_details
+                .then(|| parse_details(&body, slug))
+                .transpose()?,
+            entries: request
+                .fetch_entries
+                .then(|| parse_episodes(&body))
+                .transpose()?,
+        }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.listing_page(&paged_url("/most-popular-drama/", page))
     }

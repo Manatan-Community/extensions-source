@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "mangadex",
   "name": "MangaDex",
-  "version": "1.1.2",
-  "versionCode": 4,
+  "version": "1.1.3",
+  "versionCode": 5,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -49,7 +49,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -98,7 +98,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -147,7 +147,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -196,7 +196,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -245,7 +245,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -294,7 +294,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -343,7 +343,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -392,7 +392,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -441,7 +441,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -490,7 +490,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -539,7 +539,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -588,7 +588,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -637,7 +637,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -686,7 +686,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -735,7 +735,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -784,7 +784,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -833,7 +833,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -882,7 +882,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -931,7 +931,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -980,7 +980,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1029,7 +1029,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1078,7 +1078,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1127,7 +1127,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1176,7 +1176,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1225,7 +1225,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1274,7 +1274,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1323,7 +1323,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1372,7 +1372,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1421,7 +1421,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1470,7 +1470,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1519,7 +1519,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1568,7 +1568,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1617,7 +1617,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1666,7 +1666,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1715,7 +1715,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1764,7 +1764,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1813,7 +1813,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1862,7 +1862,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1911,7 +1911,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -1960,7 +1960,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2009,7 +2009,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2058,7 +2058,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2107,7 +2107,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2156,7 +2156,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2205,7 +2205,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2254,7 +2254,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2303,7 +2303,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2352,7 +2352,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2401,7 +2401,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2450,7 +2450,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2499,7 +2499,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2548,7 +2548,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2597,7 +2597,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2646,7 +2646,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2695,7 +2695,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2744,7 +2744,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2793,7 +2793,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2842,7 +2842,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2891,7 +2891,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2940,7 +2940,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,
@@ -2989,7 +2989,7 @@
       "contentType": "manga",
       "baseUrl": "https://mangadex.org",
       "contentRating": "suggestive",
-      "capabilities": {
+      "capabilities": { "operations": ["manga.resolve-page-request"],
         "search": true,
         "latest": true,
         "filters": true,

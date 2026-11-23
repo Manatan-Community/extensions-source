@@ -309,6 +309,21 @@ impl MangaSource for MangaDexSource {
         }
     }
 
+    fn resolve_page_request(
+        &mut self,
+        item: &CatalogItem,
+        chapter: &MangaChapter,
+        page: &MangaPage,
+    ) -> Result<Option<ImageRequest>> {
+        Ok(self
+            .resolve_page_image(item, chapter, page)?
+            .map(|image| ImageRequest {
+                url: image.url,
+                headers: image.headers,
+                ..ImageRequest::default()
+            }))
+    }
+
     fn resolve_page_image(
         &mut self,
         item: &CatalogItem,
@@ -1489,7 +1504,11 @@ mod tests {
         assert!(!manifest.permissions.webview);
         assert!(!manifest.permissions.javascript);
         assert!(!manifest.permissions.assets);
-        assert!(manifest.assets.is_empty());
+        // Bundled logos are signed package assets, not guest asset-read access.
+        assert!(manifest
+            .assets
+            .iter()
+            .all(|asset| asset.path == "assets/icon.png"));
         assert!(manifest
             .permissions
             .network

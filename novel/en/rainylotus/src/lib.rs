@@ -15,7 +15,7 @@ use manatan_sdk::{
 };
 use serde_json::{json, Value};
 use url::Url;
-use wordpress_novel::{chapter_text, first_text, image, number, rating};
+use wordpress_novel::{chapter_text, first_text, image_with_cookies as image, number, rating};
 
 const BASE: &str = "https://rainylotus.com";
 const PROFILE: &str = "rainylotus";

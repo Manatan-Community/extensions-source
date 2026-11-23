@@ -42,6 +42,7 @@ impl Default for WtrLabSource {
 impl WtrLabSource {
     fn document(&self, url: &str) -> Result<(Html, String)> {
         let response = self.client.get(url).send()?.error_for_status()?;
+        require_public_document(response.final_url())?;
         Ok((
             html::document(response.text()?),
             response.final_url().to_owned(),
@@ -136,7 +137,7 @@ impl WtrLabSource {
             .filter(|value| !value.is_empty())
             .unwrap_or(slug);
         let url = format!("{BASE_URL}/en/serie-{raw_id}/{slug}");
-        let mut item = CatalogItem::new(url.clone(), title);
+        let mut item = CatalogItem::new(url.clone(), display_title(title));
         item.url = Some(url.clone());
         item.cover = data
             .get("image")
@@ -375,6 +376,21 @@ impl WtrLabSource {
                 && value.get("error").is_none()
                 && value.get("success").and_then(Value::as_bool) != Some(false)
             {
+                // The current reader API returns a signed content location;
+                // older responses contained the body inline. Fetch that exact
+                // location with cookies scoped to its own origin, then keep
+                // using the existing glossary/decryption/rendering pipeline.
+                let value = if let Some(content_url) = reader_content_location(&value)? {
+                    self.client
+                        .get(&content_url)
+                        .header("Referer", url)
+                        .cookies_for(&content_url)
+                        .send()?
+                        .error_for_status()?
+                        .json()?
+                } else {
+                    value
+                };
                 return Ok((value, last_error));
             }
             last_error = value
@@ -728,6 +744,41 @@ fn decrypt(value: &str, key: &str) -> Result<Value> {
     }
 }
 
+fn require_public_document(final_url: &str) -> Result<()> {
+    if Url::parse(final_url).is_ok_and(|url| url.path().ends_with("/auth/login")) {
+        return Err(Error::new("WTR-LAB requires signing in to read this novel; the website redirected to its login page. Open WebView and sign in before retrying."));
+    }
+    Ok(())
+}
+
+fn reader_content_location(value: &Value) -> Result<Option<String>> {
+    let Some(location) = value.get("content_url").and_then(Value::as_str) else {
+        return Ok(None);
+    };
+    let absolute = absolute_url(BASE_URL, location)?;
+    let parsed =
+        Url::parse(&absolute).map_err(|_| Error::new("WTR-LAB returned an invalid content URL"))?;
+    if parsed.scheme() != "https" || !parsed.username().is_empty() || parsed.password().is_some() {
+        return Err(Error::new("WTR-LAB returned an unsupported content URL"));
+    }
+    Ok(Some(absolute))
+}
+
+fn display_title(title: &str) -> String {
+    Regex::new(r"%\{([^{}|]+)\|([A-Za-z0-9+/=]+)\}")
+        .unwrap()
+        .replace_all(title, |captures: &regex::Captures| {
+            BASE64
+                .decode(&captures[2])
+                .or_else(|_| base64::engine::general_purpose::STANDARD_NO_PAD.decode(&captures[2]))
+                .ok()
+                .and_then(|bytes| String::from_utf8(bytes).ok())
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or_else(|| captures[1].to_owned())
+        })
+        .into_owned()
+}
+
 fn tags_from_document(document: &Html) -> Result<Vec<String>> {
     let query = selector(".genre, .genres .genre, .tag, .tags .tag")?;
     let mut tags = Vec::new();
@@ -906,6 +957,32 @@ mod tests {
         let item = WtrLabSource::parse_series(&json!({"raw_id":7,"slug":"fixture","data":{"title":"Fixture Novel","image":"https://img.wtr-lab.com/a.jpg"}})).unwrap();
         assert_eq!(item.title, "Fixture Novel");
         assert!(item.key.ends_with("/serie-7/fixture"));
+    }
+
+    #[test]
+    fn distinguishes_required_login_from_a_changed_series_layout() {
+        let error = require_public_document("https://wtr-lab.com/en/auth/login?type=needs_login")
+            .unwrap_err();
+        assert!(error.to_string().contains("requires signing in"));
+        assert!(require_public_document("https://wtr-lab.com/en/novel/117970/title").is_ok());
+        assert_eq!(
+            display_title("%{Pocket Monsters|UG9rw6ltb24}: Agatha's Grandson"),
+            "Pokémon: Agatha's Grandson"
+        );
+    }
+
+    #[test]
+    fn reader_follows_the_current_signed_content_location_without_changing_legacy_bodies() {
+        assert_eq!(reader_content_location(&json!({"success":true,"chapter":{"order":1},"content_url":"/api/v2/reader/content/v1/ai/7/8/en/token"})).unwrap().unwrap(),
+            "https://wtr-lab.com/api/v2/reader/content/v1/ai/7/8/en/token");
+        assert!(
+            reader_content_location(&json!({"data":{"data":{"body":["Chapter text"]}}}))
+                .unwrap()
+                .is_none()
+        );
+        assert!(
+            reader_content_location(&json!({"content_url":"http://wtr-lab.com/content"})).is_err()
+        );
     }
 
     #[test]

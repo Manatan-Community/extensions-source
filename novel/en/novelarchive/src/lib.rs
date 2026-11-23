@@ -107,7 +107,11 @@ impl NovelArchiveSource {
             .find_map(|key| string_value(value, key))
             .map(|cover| absolute_url(BASE_URL, &cover))
             .transpose()?
-            .map(|cover| ImageRequest::get(cover).header("Referer", &page_url));
+            .map(|cover| {
+                ImageRequest::get(cover.clone())
+                    .cookies_for(cover)
+                    .header("Referer", &page_url)
+            });
         item.status = string_value(value, "release_status")
             .or_else(|| string_value(value, "ongoing"))
             .map(|status| json!(normalize_status(&status)));

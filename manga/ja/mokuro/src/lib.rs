@@ -98,6 +98,47 @@ impl MokuroSource {
 }
 
 impl MangaSource for MokuroSource {
+    fn refresh(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<MangaChapter>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<MangaChapter>>> {
+        if !request.fetch_details && !request.fetch_entries {
+            return Ok(Some(manatan_sdk::CatalogRefresh::default()));
+        }
+        let key = item_key(&request.item)?;
+        let series = self.series(&key)?;
+        let item = request
+            .fetch_details
+            .then(|| -> Result<CatalogItem> {
+                let summary = self
+                    .library()?
+                    .series
+                    .into_iter()
+                    .find(|summary| summary.series_title == key)
+                    .ok_or_else(|| Error::new(format!("Mokuro series not found: {key}")))?;
+                let mut details = summary.to_item(None, &title_language())?;
+                series.enrich_item(&mut details);
+                details.initialized = true;
+                Ok(details)
+            })
+            .transpose()?;
+        let entries = if request.fetch_entries {
+            if series.volumes.is_empty() {
+                return Err(Error::new("Mokuro series has no readable volumes"));
+            }
+            Some(
+                series
+                    .volumes
+                    .into_iter()
+                    .rev()
+                    .map(|volume| volume.to_chapter(&key))
+                    .collect(),
+            )
+        } else {
+            None
+        };
+        Ok(Some(manatan_sdk::CatalogRefresh { item, entries }))
+    }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.list(page, "", &Value::Null, Some(SelectedSort::title()))
     }
