@@ -131,6 +131,16 @@ impl AniZoneSource {
         sort: &str,
         page: u32,
     ) -> Result<LivewireItemsPage> {
+        with_fresh_session(|| self.load_livewire_items(url, component_name, sort, page))
+    }
+
+    fn load_livewire_items(
+        &self,
+        url: &str,
+        component_name: &str,
+        sort: &str,
+        page: u32,
+    ) -> Result<LivewireItemsPage> {
         let html = self.get_html(url)?;
         let (csrf, mut livewire_page) = parse_livewire_items_page(&html, component_name)?;
         if livewire_page.sort.as_deref() != Some(sort) {
@@ -244,6 +254,14 @@ impl AniZoneSource {
     }
 
     fn episode_list(
+        &self,
+        item: &CatalogItem,
+        requested_key: Option<&str>,
+    ) -> Result<Vec<VideoEpisode>> {
+        with_fresh_session(|| self.load_episode_list(item, requested_key))
+    }
+
+    fn load_episode_list(
         &self,
         item: &CatalogItem,
         requested_key: Option<&str>,
@@ -381,9 +399,11 @@ impl AniZoneSource {
             .rate_limit("anizone:site", RATE_LIMIT_MS)
             .timeout_ms(30_000)
             .max_body_bytes(MAX_HTML_BYTES)
-            .send()?
-            .error_for_status()?;
-        let response: LivewireResponse = response.json()?;
+            .send()?;
+        if response.status() == 419 {
+            return Err(Error::new(SESSION_EXPIRED));
+        }
+        let response: LivewireResponse = response.error_for_status()?.json()?;
         response
             .components
             .into_iter()
@@ -483,34 +503,9 @@ impl AniZoneSource {
     }
 }
 
-impl VideoSource for AniZoneSource {
-    fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.catalog_page("", "title-asc", page)
-    }
-
-    fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.latest_page(page)
-    }
-
-    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
-        let sort = filters
-            .get("sort")
-            .and_then(Value::as_str)
-            .filter(|sort| is_allowed_sort(sort))
-            .unwrap_or("title-asc");
-        self.catalog_page(query.trim(), sort, page)
-    }
-
-    fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
-        self.fetch_safe_details(&item.key).map(|(item, _)| item)
-    }
-
-    fn episodes(&mut self, item: CatalogItem) -> Result<Vec<VideoEpisode>> {
-        self.safe_episodes(&item)
-    }
-
-    fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
-        let episode = self.authorized_episode(&item, &episode)?;
+impl AniZoneSource {
+    fn load_streams(&self, item: &CatalogItem, episode: &VideoEpisode) -> Result<Vec<VideoStream>> {
+        let episode = self.authorized_episode(item, episode)?;
         let episode_url = episode
             .url
             .clone()
@@ -549,6 +544,71 @@ impl VideoSource for AniZoneSource {
             return Err(Error::new("AniZone returned no approved video streams"));
         }
         Ok(streams)
+    }
+}
+
+const SESSION_EXPIRED: &str = "AniZone Livewire session expired (HTTP 419)";
+
+// Reload the page and rebuild its token and snapshot together. Never replay
+// the rejected request as-is or retry unrelated network failures.
+fn with_fresh_session<T>(mut call: impl FnMut() -> Result<T>) -> Result<T> {
+    match call() {
+        Err(error) if error.message == SESSION_EXPIRED => call(),
+        result => result,
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn recovers_one_expired_session_without_retrying_rate_limits() {
+    let mut attempts = 0;
+    let result = with_fresh_session(|| {
+        attempts += 1;
+        if attempts == 1 {
+            Err(Error::new(SESSION_EXPIRED))
+        } else {
+            Ok(42)
+        }
+    });
+    assert_eq!(result.unwrap(), 42);
+    assert_eq!(attempts, 2);
+    attempts = 0;
+    let result = with_fresh_session(|| {
+        attempts += 1;
+        Err::<(), _>(Error::new("HTTP 429"))
+    });
+    assert!(result.is_err());
+    assert_eq!(attempts, 1);
+}
+
+impl VideoSource for AniZoneSource {
+    fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
+        self.catalog_page("", "title-asc", page)
+    }
+
+    fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
+        self.latest_page(page)
+    }
+
+    fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
+        let sort = filters
+            .get("sort")
+            .and_then(Value::as_str)
+            .filter(|sort| is_allowed_sort(sort))
+            .unwrap_or("title-asc");
+        self.catalog_page(query.trim(), sort, page)
+    }
+
+    fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
+        self.fetch_safe_details(&item.key).map(|(item, _)| item)
+    }
+
+    fn episodes(&mut self, item: CatalogItem) -> Result<Vec<VideoEpisode>> {
+        self.safe_episodes(&item)
+    }
+
+    fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
+        with_fresh_session(|| self.load_streams(&item, &episode))
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {

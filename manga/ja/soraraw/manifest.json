@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "soraraw",
   "name": "SoraRaw",
-  "version": "1.0.3",
-  "versionCode": 4,
+  "version": "1.0.4",
+  "versionCode": 5,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -55,6 +55,7 @@
         "search": true,
         "latest": true,
         "filters": true,
+        "preferences": true,
         "urlResolution": true
       },
       "listings": [

@@ -157,6 +157,46 @@ impl AnimeAv1 {
         stream.preferred = mirror.language == "SUB";
         Ok(vec![stream])
     }
+    fn resolve_mirror(&self, mirror: &PlayerMirror, episode_url: &str) -> Result<Vec<VideoStream>> {
+        let host = Url::parse(&mirror.url)
+            .map_err(url_error)?
+            .host_str()
+            .unwrap_or_default()
+            .to_string();
+        let streams = match host.as_str() {
+            "streamtape.com" => self.extract_streamtape(mirror),
+            "voe.sx" => self.extract_voe(mirror, episode_url),
+            "byselapuix.com" => byse_response(&mirror.url, episode_url, BROWSER_USER_AGENT)
+                .and_then(|response| {
+                    let frame = PlayerMirror {
+                        language: mirror.language.clone(),
+                        url: response.final_url.clone(),
+                    };
+                    captured_dynamic_streams(&response, &frame)
+                }),
+            "www.mp4upload.com" | "mp4upload.com" => self.extract_mp4upload(mirror, episode_url),
+            _ => self.capture_dynamic_player(mirror, episode_url),
+        }?;
+        let mut valid = Vec::new();
+        let mut errors = Vec::new();
+        for mut stream in streams {
+            match verify_stream(&stream) {
+                Ok(()) => {
+                    stream.name = Some(format!(
+                        "{} · {}",
+                        audio_label(&mirror.language),
+                        stream.name.as_deref().unwrap_or("AnimeAv1")
+                    ));
+                    valid.push(stream);
+                }
+                Err(error) => errors.push(error.to_string()),
+            }
+        }
+        if valid.is_empty() {
+            return Err(Error::new(errors.join("; ")));
+        }
+        Ok(valid)
+    }
 }
 
 fn parse_streamtape_media_url(html: &str) -> Result<String> {
@@ -246,48 +286,46 @@ impl VideoSource for AnimeAv1 {
         let mut candidates = parse_player_candidates(&html)?;
         candidates.extend(parse_dynamic_candidates(&html)?);
         candidates.extend(parse_mp4upload_candidates(&html)?);
-        collect_audio_streams(candidates, |mirror| {
-            let host = Url::parse(&mirror.url)
-                .map_err(url_error)?
-                .host_str()
-                .unwrap_or_default()
-                .to_string();
-            let streams = match host.as_str() {
-                "streamtape.com" => self.extract_streamtape(mirror),
-                "voe.sx" => self.extract_voe(mirror, &episode_url),
-                "byselapuix.com" => byse_response(&mirror.url, &episode_url, BROWSER_USER_AGENT)
-                    .and_then(|response| {
-                        let frame = PlayerMirror {
-                            language: mirror.language.clone(),
-                            url: response.final_url.clone(),
-                        };
-                        captured_dynamic_streams(&response, &frame)
-                    }),
-                "www.mp4upload.com" | "mp4upload.com" => {
-                    self.extract_mp4upload(mirror, &episode_url)
-                }
-                _ => self.capture_dynamic_player(mirror, &episode_url),
-            }?;
-            let mut valid = Vec::new();
-            let mut errors = Vec::new();
-            for mut stream in streams {
-                match verify_stream(&stream) {
-                    Ok(()) => {
-                        stream.name = Some(format!(
-                            "{} · {}",
-                            audio_label(&mirror.language),
-                            stream.name.as_deref().unwrap_or("AnimeAv1")
-                        ));
-                        valid.push(stream);
-                    }
-                    Err(error) => errors.push(error.to_string()),
-                }
-            }
-            if valid.is_empty() {
-                return Err(Error::new(errors.join("; ")));
-            }
-            Ok(valid)
-        })
+        let streams = deferred_mirrors(candidates);
+        if streams.is_empty() {
+            return Err(Error::new(
+                "AnimeAv1 returned no supported playback mirrors",
+            ));
+        }
+        Ok(streams)
+    }
+
+    fn resolve_stream(
+        &mut self,
+        item: &CatalogItem,
+        episode: &VideoEpisode,
+        stream: VideoStream,
+    ) -> Result<Option<VideoStream>> {
+        if !episode
+            .key
+            .starts_with(&format!("{}/", item.key.trim_end_matches('/')))
+        {
+            return Err(Error::new("episode does not belong to this AnimeAv1 title"));
+        }
+        let url = stream
+            .extra
+            .get("mirrorUrl")
+            .and_then(Value::as_str)
+            .ok_or_else(|| Error::new("AnimeAv1 mirror URL is missing"))?;
+        let language = stream
+            .extra
+            .get("audio")
+            .and_then(Value::as_str)
+            .filter(|language| matches!(*language, "SUB" | "DUB"))
+            .ok_or_else(|| Error::new("AnimeAv1 mirror audio is missing"))?;
+        let mirror = PlayerMirror {
+            language: language.into(),
+            url: url.into(),
+        };
+        Ok(self
+            .resolve_mirror(&mirror, &episode_url(&episode.key)?)?
+            .into_iter()
+            .next())
     }
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
@@ -429,35 +467,46 @@ fn audio_label(language: &str) -> &str {
     }
 }
 
-// Resolve each audio edition independently. A successful SUB must never hide DUB.
-fn collect_audio_streams(
-    candidates: Vec<PlayerMirror>,
-    mut extract: impl FnMut(&PlayerMirror) -> Result<Vec<VideoStream>>,
-) -> Result<Vec<VideoStream>> {
-    let mut streams = Vec::new();
-    let mut errors = Vec::new();
-    for language in ["SUB", "DUB"] {
-        for mirror in candidates
-            .iter()
-            .filter(|mirror| mirror.language == language)
-        {
-            match extract(mirror) {
-                Ok(found) if !found.is_empty() => {
-                    streams.extend(found);
-                    break;
-                }
-                Ok(_) => errors.push(format!("{language}: mirror returned no media")),
-                Err(error) => errors.push(format!("{language}: {error}")),
+fn deferred_mirrors(mut candidates: Vec<PlayerMirror>) -> Vec<VideoStream> {
+    candidates.sort_by_key(|mirror| {
+        let priority = Url::parse(&mirror.url)
+            .ok()
+            .map_or(5, |url| match url.host_str() {
+                Some("player.zilla-networks.com") => 0,
+                Some("mp4upload.com" | "www.mp4upload.com") if mirror.language == "DUB" => 1,
+                Some("byselapuix.com") if mirror.language == "SUB" => 1,
+                Some("byselapuix.com" | "mp4upload.com" | "www.mp4upload.com") => 2,
+                Some("voe.sx" | "animeav1.uns.bio") => 3,
+                Some("streamtape.com") => 4,
+                _ => 5,
+            });
+        (mirror.language != "SUB", priority)
+    });
+    let mut seen = BTreeSet::new();
+    candidates
+        .into_iter()
+        .filter_map(|mirror| {
+            if !seen.insert((mirror.language.clone(), mirror.url.clone())) {
+                return None;
             }
-        }
-    }
-    if streams.is_empty() {
-        return Err(Error::new(format!(
-            "AnimeAv1 playback mirrors failed: {}",
-            errors.join("; ")
-        )));
-    }
-    Ok(streams)
+            let url = Url::parse(&mirror.url).ok()?;
+            Some(VideoStream {
+                name: Some(format!(
+                    "{} · {}",
+                    audio_label(&mirror.language),
+                    url.host_str()?
+                )),
+                preferred: mirror.language == "SUB",
+                extra: [
+                    ("mirrorUrl".into(), Value::String(mirror.url)),
+                    ("audio".into(), Value::String(mirror.language)),
+                ]
+                .into_iter()
+                .collect(),
+                ..VideoStream::default()
+            })
+        })
+        .collect()
 }
 
 fn parse_player_candidates(html: &str) -> Result<Vec<PlayerMirror>> {
@@ -887,39 +936,30 @@ mod tests {
     use manatan_common::video::{parse_voe_media_url, parse_voe_redirect_url};
 
     #[test]
-    fn sub_success_preserves_dub_and_failed_mirrors_fall_through() {
-        let candidates = vec![
-            PlayerMirror {
-                language: "SUB".into(),
-                url: "sub".into(),
-            },
-            PlayerMirror {
-                language: "DUB".into(),
-                url: "dead-dub".into(),
-            },
-            PlayerMirror {
-                language: "DUB".into(),
-                url: "dub".into(),
-            },
-        ];
-        let streams = collect_audio_streams(candidates, |mirror| {
-            if mirror.url == "dead-dub" {
-                return Err(Error::new("media denied"));
-            }
-            Ok(vec![VideoStream {
-                url: mirror.url.clone(),
-                ..VideoStream::default()
-            }])
-        })
-        .unwrap();
+    fn deferred_mirrors_preserve_audio_and_prioritize_current_players() {
+        let mirror = |language: &str, url: &str| PlayerMirror {
+            language: language.into(),
+            url: url.into(),
+        };
+        let streams = deferred_mirrors(vec![
+            mirror("SUB", "https://streamtape.com/e/old"),
+            mirror("DUB", "https://byselapuix.com/e/current"),
+            mirror("DUB", "https://www.mp4upload.com/embed-current.html"),
+            mirror("SUB", "https://byselapuix.com/e/current"),
+            mirror("SUB", "https://byselapuix.com/e/current"),
+        ]);
+        assert_eq!(streams.len(), 4);
+        assert!(streams.iter().all(|stream| stream.url.is_empty()));
         assert_eq!(
-            streams
-                .iter()
-                .map(|stream| stream.url.as_str())
-                .collect::<Vec<_>>(),
-            ["sub", "dub"]
+            streams[0].extra["mirrorUrl"],
+            "https://byselapuix.com/e/current"
         );
-        assert_eq!(audio_label("DUB"), "Español Latino (Doblado)");
+        assert_eq!(streams[0].extra["audio"], "SUB");
+        assert_eq!(streams[2].extra["audio"], "DUB");
+        assert_eq!(
+            streams[2].extra["mirrorUrl"],
+            "https://www.mp4upload.com/embed-current.html"
+        );
     }
 
     #[test]

@@ -93,6 +93,48 @@ impl AnimeOnsenSource {
         response.error_for_status()?.json()
     }
 
+    fn api_batch(&mut self, urls: &[String]) -> Result<Vec<manatan_sdk::client::Response>> {
+        for url in urls {
+            validate_api_url(url)?;
+        }
+        if self.access_token.is_none() {
+            self.access_token = Some(self.fetch_access_token()?);
+        }
+        for attempt in 0..2 {
+            let authorization = format!(
+                "Bearer {}",
+                self.access_token.as_deref().unwrap_or_default()
+            );
+            let requests = urls
+                .iter()
+                .map(|url| {
+                    self.client()
+                        .get(url)
+                        .header("Authorization", &authorization)
+                        .rate_limit("animeonsen-api", 150)
+                        .timeout_ms(30_000)
+                        .max_body_bytes(8 * 1024 * 1024)
+                })
+                .collect();
+            let responses = Client::send_many(requests, 2);
+            if attempt == 0
+                && responses.iter().any(|response| {
+                    response
+                        .as_ref()
+                        .is_ok_and(|response| response.status() == 401)
+                })
+            {
+                self.access_token = Some(self.fetch_access_token()?);
+                continue;
+            }
+            return responses
+                .into_iter()
+                .map(|response| response?.error_for_status())
+                .collect();
+        }
+        Err(Error::new("AnimeOnsen authorization failed"))
+    }
+
     fn fetch_search_token(&self) -> Result<String> {
         let response = self
             .client()
@@ -169,7 +211,70 @@ impl AnimeOnsenSource {
     }
 }
 
+fn episode_entries(id: &str, episodes: BTreeMap<String, EpisodeDto>) -> Vec<VideoEpisode> {
+    let mut entries = episodes
+        .into_iter()
+        .map(|(number, episode)| VideoEpisode {
+            key: format!("{id}/video/{number}"),
+            title: Some(episode_title(&number, &episode)),
+            episode_number: number.parse::<f32>().ok(),
+            url: Some(format!("{SITE_URL}/watch/{id}/{number}")),
+            language: Some("all".to_string()),
+            ..VideoEpisode::default()
+        })
+        .collect::<Vec<_>>();
+    entries.sort_by(|left, right| {
+        right
+            .episode_number
+            .partial_cmp(&left.episode_number)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+    entries
+}
+
 impl VideoSource for AnimeOnsenSource {
+    fn refresh_episodes(
+        &mut self,
+        request: manatan_sdk::CatalogRefreshRequest<VideoEpisode>,
+    ) -> Result<Option<manatan_sdk::CatalogRefresh<VideoEpisode>>> {
+        use manatan_sdk::CatalogRefresh;
+        match (request.fetch_details, request.fetch_entries) {
+            (false, false) => Ok(Some(CatalogRefresh::default())),
+            (true, false) => Ok(Some(CatalogRefresh {
+                item: Some(self.details(request.item)?),
+                entries: None,
+            })),
+            (false, true) => Ok(Some(CatalogRefresh {
+                item: None,
+                entries: Some(self.episodes(request.item)?),
+            })),
+            (true, true) => {
+                let id = validate_content_id(&request.item.key)?;
+                let urls = [
+                    format!("{API_URL}/content/{id}/extensive"),
+                    format!("{API_URL}/content/{id}/episodes"),
+                ];
+                let mut responses = self.api_batch(&urls)?.into_iter();
+                let details: Details = responses
+                    .next()
+                    .ok_or_else(|| Error::new("AnimeOnsen did not return details"))?
+                    .json()?;
+                ensure_safe_details(&details)?;
+                if details.content_id != id {
+                    return Err(Error::new("AnimeOnsen returned a different title"));
+                }
+                let episodes = responses
+                    .next()
+                    .ok_or_else(|| Error::new("AnimeOnsen did not return episodes"))?
+                    .json()?;
+                Ok(Some(CatalogRefresh {
+                    item: Some(catalog_from_details(&details, None)),
+                    entries: Some(episode_entries(id, episodes)),
+                }))
+            }
+        }
+    }
+
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
         self.index(page.max(1))
     }
@@ -215,24 +320,7 @@ impl VideoSource for AnimeOnsenSource {
         let id = validate_content_id(&details.content_id)?;
         let episodes: BTreeMap<String, EpisodeDto> =
             self.api_json(&format!("{API_URL}/content/{id}/episodes"))?;
-        let mut entries = episodes
-            .into_iter()
-            .map(|(number, episode)| VideoEpisode {
-                key: format!("{id}/video/{number}"),
-                title: Some(episode_title(&number, &episode)),
-                episode_number: number.parse::<f32>().ok(),
-                url: Some(format!("{SITE_URL}/watch/{id}/{number}")),
-                language: Some("all".to_string()),
-                ..VideoEpisode::default()
-            })
-            .collect::<Vec<_>>();
-        entries.sort_by(|left, right| {
-            right
-                .episode_number
-                .partial_cmp(&left.episode_number)
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
-        Ok(entries)
+        Ok(episode_entries(id, episodes))
     }
 
     fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {

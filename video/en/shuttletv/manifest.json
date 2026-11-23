@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "shuttletv",
   "name": "ShuttleTV",
-  "version": "0.1.5",
-  "versionCode": 6,
+  "version": "0.1.6",
+  "versionCode": 7,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -14,7 +14,7 @@
   },
   "description": "Movies and television from ShuttleTV.",
   "author": "Manatan Community",
-  "homepage": "https://shuttletv.su",
+  "homepage": "https://shuttletv.pk",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
   "icon": "assets/icon.png",
@@ -28,7 +28,8 @@
         "https://a.cineflix.st",
         "https://*.bright67.online",
         "https://fembox.aether.bar",
-        "https://enc-dec.app"
+        "https://enc-dec.app",
+        "https://shuttletv.pk"
       ]
     },
     "cookies": false,
@@ -50,7 +51,7 @@
       "name": "ShuttleTV",
       "lang": "en",
       "contentType": "video",
-      "baseUrl": "https://shuttletv.su",
+      "baseUrl": "https://shuttletv.pk",
       "contentRating": "suggestive",
       "capabilities": {
         "operations": [
@@ -80,6 +81,14 @@
         },
         {
           "pattern": "https://shuttletv.su/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://shuttletv.pk/title/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://shuttletv.pk/watch/*",
           "kind": "item-or-episode"
         }
       ],

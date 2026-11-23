@@ -14,7 +14,8 @@ use serde::Deserialize;
 use serde_json::Value;
 use url::Url;
 
-const BASE_URL: &str = "https://reanime.to";
+const BASE_URL: &str = "https://reanime.cz";
+const SITE_HOSTS: &[&str] = &["reanime.cz", "reanime.to", "reanime.bz", "reanime.wtf"];
 const PAGE_SIZE: u32 = 36;
 const EPISODE_PAGE_SIZE: u32 = 500;
 
@@ -208,16 +209,22 @@ impl ReAnime {
             wait_until: Some(WebViewWaitUntil::DomReady),
             wait_for_selector: None,
             wait_for_event: None,
-            // FlixCloud can replace or move its video element after starting
-            // playback. Keep the extraction boundary on the stable network
-            // request instead of depending on that transient DOM shape.
-            wait_for_script: Some("performance.now() >= 12000".to_string()),
+            // Return as soon as the player has both the playlist and preview
+            // metadata, with the prior bounded wait for players without previews.
+            wait_for_script: Some(r#"(() => {
+                const resources = performance.getEntriesByType('resource');
+                return performance.now() >= 12000 || (Boolean(window.__pk)
+                    && resources.some(entry => entry.name.includes('.m3u8'))
+                    && resources.some(entry => entry.name.includes('/thumbnails_vtt/')
+                        || /thumbnail.*\.vtt/i.test(entry.name)));
+            })()"#.into()),
             script: "(() => ({ playlistKey: window.__pk || '', video: document.querySelector('video')?.currentSrc || '' }))()".to_string(),
             timeout_ms: Some(45_000),
             capture_requests: vec![
                 capture(".m3u8"),
                 capture(".ass"),
                 capture(".vtt"),
+                capture("/thumbnails_vtt/"),
                 capture(".srt"),
             ],
             capture_events: Vec::new(),
@@ -320,6 +327,41 @@ impl VideoSource for ReAnime {
                 .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?,
             language,
         )
+    }
+
+    fn seek_previews(
+        &mut self,
+        _item: &CatalogItem,
+        _episode: &VideoEpisode,
+        stream: &VideoStream,
+    ) -> Result<Option<manatan_sdk::SeekPreviewTrack>> {
+        let Some(url) = stream.extra.get("previewVtt").and_then(Value::as_str) else {
+            return Ok(None);
+        };
+        validate_stream_url(url)?;
+        let mut request = Client::browser()
+            .get(url)
+            .timeout_ms(8_000)
+            .max_body_bytes(2 * 1024 * 1024);
+        for (name, value) in &stream.headers {
+            request = request.header(name, value);
+        }
+        let response = request.send()?.error_for_status()?;
+        let mut base = Url::parse(response.final_url()).map_err(url_error)?;
+        if !base.path().ends_with('/') {
+            base.path_segments_mut()
+                .map_err(|_| Error::new("invalid ReAnime thumbnail base"))?
+                .push("");
+        }
+        let track = manatan_common::seek_preview::preview_track(
+            response.text()?,
+            base.as_str(),
+            &stream.headers,
+        )?;
+        for sprite in &track.sprites {
+            validate_stream_url(&sprite.url)?;
+        }
+        Ok(Some(track))
     }
 
     fn process_resource(
@@ -716,12 +758,20 @@ fn streams_from_capture(
         .ok_or_else(|| Error::new("ReAnime player did not expose its playlist key"))?;
     decode_base64(playlist_key, "ReAnime playlist key")?;
 
+    let preview_url = response
+        .captured_requests
+        .iter()
+        .map(|request| &request.url)
+        .find(|url| is_thumbnail_track(url) && validate_stream_url(url).is_ok());
     let mut subtitles = response
         .captured_requests
         .iter()
         .map(|request| request.url.clone())
         .filter(|url| {
-            is_media_url(url, ".ass") || is_media_url(url, ".vtt") || is_media_url(url, ".srt")
+            !is_thumbnail_track(url)
+                && (is_media_url(url, ".ass")
+                    || is_media_url(url, ".vtt")
+                    || is_media_url(url, ".srt"))
         })
         .collect::<Vec<_>>();
     subtitles.sort();
@@ -762,9 +812,20 @@ fn streams_from_capture(
         initialized: true,
         headers: media_headers(),
         subtitles: subtitle_tracks,
+        extra: preview_url
+            .into_iter()
+            .map(|url| ("previewVtt".into(), Value::String(url.clone())))
+            .collect(),
         segment_processing: Some(playlist_processing(playlist_key)),
         ..VideoStream::default()
     }])
+}
+
+fn is_thumbnail_track(url: &str) -> bool {
+    Url::parse(url).is_ok_and(|url| {
+        let path = url.path().to_ascii_lowercase();
+        path.contains("/thumbnails_vtt/") || (path.ends_with(".vtt") && path.contains("thumbnail"))
+    })
 }
 
 const PLAYLIST_KEY_HEADER: &str = "X-Manatan-ReAnime-Playlist-Key";
@@ -947,7 +1008,9 @@ fn validate_slug(value: &str) -> Result<&str> {
 fn validate_api_url(value: &str) -> Result<()> {
     let url = Url::parse(value).map_err(url_error)?;
     if url.scheme() != "https"
-        || url.host_str() != Some("reanime.to")
+        || url
+            .host_str()
+            .is_none_or(|host| !SITE_HOSTS.contains(&host))
         || !(url.path().starts_with("/api/v1/") || url.path().starts_with("/api/flix/"))
     {
         return Err(Error::new("unexpected ReAnime API URL"));
@@ -1045,7 +1108,7 @@ fn is_media_url(url: &str, extension: &str) -> bool {
 
 fn slug_from_url(candidate: &str) -> Option<String> {
     let url = Url::parse(candidate).ok()?;
-    if url.scheme() != "https" || url.host_str()? != "reanime.to" {
+    if url.scheme() != "https" || !SITE_HOSTS.contains(&url.host_str()?) {
         return None;
     }
     let mut parts = url.path_segments()?;
@@ -1196,12 +1259,24 @@ mod tests {
                     url: "https://vault-96.atomic4cdn.top/subtitle/english.ass".to_string(),
                     ..Default::default()
                 },
+                manatan_sdk::browser::WebViewCapturedRequest {
+                    url: "https://fetch8.flixcloud.cc/thumbnails_vtt/example".to_string(),
+                    ..Default::default()
+                },
+                manatan_sdk::browser::WebViewCapturedRequest {
+                    url: "https://fetch8.flixcloud.cc/thumbnail.vtt".to_string(),
+                    ..Default::default()
+                },
             ],
             ..Default::default()
         };
         let streams = streams_from_capture(&response, "sub").unwrap();
         assert!(streams[0].url.contains("/master.m3u8"));
         assert_eq!(streams[0].subtitles.len(), 1);
+        assert_eq!(
+            streams[0].extra["previewVtt"],
+            "https://fetch8.flixcloud.cc/thumbnails_vtt/example"
+        );
         assert!(streams[0].requires_proxy);
         assert!(streams[0]
             .segment_processing

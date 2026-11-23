@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "reanime",
   "name": "ReAnime",
-  "version": "0.1.2",
-  "versionCode": 3,
+  "version": "0.1.3",
+  "versionCode": 4,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -14,7 +14,7 @@
   },
   "description": "English-subbed and dubbed anime from ReAnime.",
   "author": "Manatan Community",
-  "homepage": "https://reanime.to/home",
+  "homepage": "https://reanime.cz/home",
   "repository": "https://github.com/Manatan-Community/extensions-source",
   "license": "Apache-2.0",
   "icon": "assets/icon.png",
@@ -30,7 +30,10 @@
         "https://flixcloud.cc",
         "https://*.flixcloud.cc",
         "https://*.atomic4cdn.top",
-        "https://*.rundowncdn.top"
+        "https://*.rundowncdn.top",
+        "https://reanime.cz",
+        "https://reanime.bz",
+        "https://reanime.wtf"
       ]
     },
     "cookies": true,
@@ -52,9 +55,13 @@
       "name": "ReAnime",
       "lang": "en",
       "contentType": "video",
-      "baseUrl": "https://reanime.to",
+      "baseUrl": "https://reanime.cz",
       "contentRating": "suggestive",
-      "capabilities": { "operations": ["video.refresh-episodes"],
+      "capabilities": {
+        "operations": [
+          "video.refresh-episodes",
+          "video.seek-previews"
+        ],
         "search": true,
         "latest": true,
         "filters": true,
@@ -80,6 +87,30 @@
         },
         {
           "pattern": "https://reanime.to/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://reanime.cz/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://reanime.cz/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://reanime.bz/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://reanime.bz/watch/*",
+          "kind": "item-or-episode"
+        },
+        {
+          "pattern": "https://reanime.wtf/anime/*",
+          "kind": "item"
+        },
+        {
+          "pattern": "https://reanime.wtf/watch/*",
           "kind": "item-or-episode"
         }
       ],

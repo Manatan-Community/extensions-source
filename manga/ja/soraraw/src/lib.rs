@@ -4,8 +4,8 @@ use base64::{engine::general_purpose, Engine};
 use chrono::DateTime;
 use manatan_sdk::{
     client::{Client, BROWSER_USER_AGENT},
-    CatalogItem, Error, FilterDefinition, ImageRequest, MangaChapter, MangaPage, MangaSource,
-    OptionItem, PageContent, Paged, Result, UrlResolveResult,
+    context, CatalogItem, Error, FilterDefinition, ImageRequest, MangaChapter, MangaPage,
+    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, Result, UrlResolveResult,
 };
 use scraper::{Html, Selector};
 use serde::Deserialize;
@@ -18,9 +18,9 @@ const IMAGE_API_URL: &str = "https://api.mangarawgo.site";
 const IMAGE_DOMAIN: &str = "rawcontent.top";
 const IMAGE_MANIFEST_KEY: &[u8] = b"/fuCkYou!!!";
 const LANGUAGE: &str = "ja";
-const SEARCH_PAGE_SIZE: usize = 48;
-const DATASET_BATCH_SIZE: u32 = 13;
+const DATASET_BATCH_SIZE: u32 = 6;
 const MAX_DATASET_PAGES: u32 = 52;
+const MAX_DATASET_PAGE_BYTES: u64 = 4 * 1024 * 1024;
 
 pub struct SoraRawSource {
     client: Client,
@@ -51,138 +51,96 @@ impl SoraRawSource {
         parse_next_data(&self.text(url, 3_000_000)?)
     }
 
-    fn listing_url(&self, kind: &str, page: u32) -> Result<String> {
-        let page = page.max(1);
-        match (kind, page) {
-            ("popular", _) => Ok(format!("{BASE_URL}/search")),
-            ("latest", 1) => Ok(format!("{BASE_URL}/newest")),
-            ("latest", page) => Ok(format!("{BASE_URL}/newest/page/{page}")),
-            _ => Err(Error::new(format!("unknown SoraRaw listing {kind:?}"))),
-        }
+    fn show_adult() -> bool {
+        context::preference::<bool>("show_adult")
+            .ok()
+            .flatten()
+            .unwrap_or(true)
     }
 
-    fn listing_page(&self, kind: &str, page: u32) -> Result<Paged<CatalogItem>> {
+    fn json(&self, path: &str) -> Result<Value> {
+        serde_json::from_str(&self.text(&format!("{BASE_URL}/{path}"), 2_000_000)?)
+            .map_err(Into::into)
+    }
+
+    fn listing_page(&self, path: &str, page: u32) -> Result<Paged<CatalogItem>> {
         let page = page.max(1);
-        let data = self.next_data(&self.listing_url(kind, page)?)?;
-        if kind == "popular" {
-            let values = data
-                .pointer("/props/pageProps/data")
-                .and_then(Value::as_array)
-                .ok_or_else(|| Error::new("SoraRaw popular page has no catalog data"))?;
-            return paginate_values(values, page);
+        if path.starts_with("top/") {
+            return parse_ranking(&self.json(path)?, Self::show_adult());
         }
-        parse_listing(&data, page)
+        let url = if page == 1 {
+            format!("{BASE_URL}/{path}")
+        } else {
+            format!("{BASE_URL}/{path}/page/{page}")
+        };
+        parse_listing(&self.next_data(&url)?, page)
+    }
+
+    fn genres(&self, show_adult: bool) -> Result<Vec<Genre>> {
+        let genres = serde_json::from_value(self.json("genres.json")?)?;
+        Ok(group_genres(genres, show_adult))
     }
 
     fn dataset(&mut self) -> Result<&[DatasetManga]> {
         if self.dataset.is_none() {
+            let pages = self.json("config.json")?["m"]
+                .as_u64()
+                .filter(|count| (1..=u64::from(MAX_DATASET_PAGES)).contains(count))
+                .ok_or_else(|| Error::new("SoraRaw returned an invalid catalog page count"))?
+                as u32;
             let mut entries = Vec::new();
-            let mut first_page = 1;
-            while first_page <= MAX_DATASET_PAGES {
-                let requests = (first_page..first_page + DATASET_BATCH_SIZE)
+            for first in (1..=pages).step_by(DATASET_BATCH_SIZE as usize) {
+                let requests = (first..=(first + DATASET_BATCH_SIZE - 1).min(pages))
                     .map(|page| {
                         self.client
                             .get(format!("{BASE_URL}/mangas_{page}.json"))
-                            .max_body_bytes(2_000_000)
+                            .max_body_bytes(MAX_DATASET_PAGE_BYTES)
                     })
                     .collect();
-                let responses = Client::send_many(requests, DATASET_BATCH_SIZE as u16);
-                let mut complete_batch = true;
-                for response in responses {
-                    let Ok(response) = response.and_then(|response| response.error_for_status())
-                    else {
-                        complete_batch = false;
-                        break;
-                    };
-                    let page: DatasetPage = response.json()?;
-                    if page.list.is_empty() {
-                        complete_batch = false;
-                        break;
-                    }
+                for response in Client::send_many(requests, DATASET_BATCH_SIZE as u16) {
+                    let page: DatasetPage = response?.error_for_status()?.json()?;
                     entries.extend(page.list);
                 }
-                if !complete_batch {
-                    break;
-                }
-                first_page += DATASET_BATCH_SIZE;
-            }
-            if entries.is_empty() {
-                return Err(Error::new("SoraRaw manga dataset is empty"));
             }
             self.dataset = Some(entries);
         }
         Ok(self.dataset.as_deref().unwrap_or_default())
     }
 
-    fn search_dataset(
+    fn search_catalog(
         &mut self,
         query: &str,
         page: u32,
         filters: &Value,
     ) -> Result<Paged<CatalogItem>> {
-        let query = query.trim().to_lowercase();
-        let genres = selected_values(filters, "genres")
-            .into_iter()
-            .filter_map(|value| value.parse::<u64>().ok())
-            .collect::<BTreeSet<_>>();
-        let mode = selected(filters, "mode");
-        let content = selected(filters, "content");
-        let status = selected(filters, "status");
-        let order = selected(filters, "order").unwrap_or("views");
-
-        let mut matches = self
-            .dataset()?
-            .iter()
-            .filter(|entry| entry.dcma.as_deref() != Some("yes"))
-            .filter(|entry| {
-                query.is_empty()
-                    || entry.name.to_lowercase().contains(&query)
-                    || entry
-                        .alt_names
-                        .as_deref()
-                        .unwrap_or_default()
-                        .to_lowercase()
-                        .contains(&query)
-                    || entry
-                        .author
-                        .as_deref()
-                        .unwrap_or_default()
-                        .to_lowercase()
-                        .contains(&query)
-            })
-            .filter(|entry| {
-                genres.is_empty() || entry.genres.iter().any(|genre| genres.contains(genre))
-            })
-            .filter(|entry| mode.is_none_or(|mode| entry.mode.as_deref() == Some(mode)))
-            .filter(|entry| match content {
-                Some("adult") => entry.is_adult.as_deref() == Some("yes"),
-                Some("general") => entry.is_adult.as_deref() != Some("yes"),
-                _ => true,
-            })
-            .filter(|entry| match status {
-                Some("ongoing") => entry.kind.as_deref() == Some("incomplete"),
-                Some("complete") => entry.kind.as_deref() == Some("complete"),
-                _ => true,
-            })
-            .cloned()
-            .collect::<Vec<_>>();
-
-        matches.sort_by(|left, right| match order {
-            "updated_at" => right.c_published.cmp(&left.c_published),
-            "bookmark" => right.number_bookmark.cmp(&left.number_bookmark),
-            _ => right.views.cmp(&left.views),
-        });
-
-        let page = page.max(1) as usize;
-        let start = (page - 1).saturating_mul(SEARCH_PAGE_SIZE);
-        let has_next_page = start + SEARCH_PAGE_SIZE < matches.len();
-        let entries = matches
-            .into_iter()
-            .skip(start)
-            .take(SEARCH_PAGE_SIZE)
-            .map(DatasetManga::into_catalog)
-            .collect();
-        Ok(Paged::new(entries, has_next_page))
+        let show_adult = Self::show_adult();
+        let genre = match selected(filters, "genre") {
+            Some(slug) => self
+                .genres(show_adult)?
+                .into_iter()
+                .find(|genre| genre.slug == slug),
+            None => None,
+        };
+        if query.is_empty() {
+            if let Some(genre) = genre {
+                return self.listing_page(&format!("genre/{}", genre.slug), page);
+            }
+            let path = LISTS
+                .iter()
+                .find(|(_, path)| Some(*path) == selected(filters, "list"))
+                .unwrap_or(&LISTS[0])
+                .1;
+            return self.listing_page(path, page);
+        }
+        if page > 1 {
+            return Ok(Paged::new(Vec::new(), false));
+        }
+        Ok(search_entries(
+            self.dataset()?,
+            query,
+            genre.as_ref(),
+            show_adult,
+        ))
     }
 }
 
@@ -208,11 +166,11 @@ impl MangaSource for SoraRawSource {
         }))
     }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page("popular", page)
+        self.listing_page(LISTS[0].1, page)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        self.listing_page("latest", page)
+        self.listing_page("newest", page)
     }
 
     fn listing(
@@ -221,7 +179,11 @@ impl MangaSource for SoraRawSource {
         page: u32,
         _filters: &Value,
     ) -> Result<Paged<CatalogItem>> {
-        self.listing_page(listing, page)
+        match listing {
+            "popular" => self.popular(page),
+            "latest" => self.latest(page),
+            _ => Err(Error::new("unknown SoraRaw listing")),
+        }
     }
 
     fn search(&mut self, query: &str, page: u32, filters: &Value) -> Result<Paged<CatalogItem>> {
@@ -231,7 +193,7 @@ impl MangaSource for SoraRawSource {
                 return Ok(Paged::new(resolved.item.into_iter().collect(), false));
             }
         }
-        self.search_dataset(query, page, filters)
+        self.search_catalog(query, page, filters)
     }
 
     fn details(&mut self, item: CatalogItem) -> Result<CatalogItem> {
@@ -270,7 +232,20 @@ impl MangaSource for SoraRawSource {
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
-        Ok(filter_definitions())
+        Ok(filter_definitions(
+            self.genres(Self::show_adult()).unwrap_or_default(),
+        ))
+    }
+
+    fn preferences(&mut self) -> Result<Vec<PreferenceDefinition>> {
+        Ok(vec![PreferenceDefinition::Switch {
+            key: "show_adult".into(),
+            title: "Show 18+ titles".into(),
+            default: true,
+            summary: Some(
+                "Includes 18+ titles in search and switches rankings to the 18+ list.".into(),
+            ),
+        }])
     }
 
     fn item_url(&mut self, item: &CatalogItem) -> Result<Option<String>> {
@@ -355,13 +330,7 @@ struct DatasetManga {
     #[serde(default)]
     is_adult: Option<String>,
     #[serde(default)]
-    dcma: Option<String>,
-    #[serde(default)]
     views: u64,
-    #[serde(default)]
-    number_bookmark: u64,
-    #[serde(default)]
-    c_published: Option<String>,
 }
 
 impl DatasetManga {
@@ -422,16 +391,48 @@ fn parse_listing(data: &Value, current_page: u32) -> Result<Paged<CatalogItem>> 
     Ok(Paged::new(entries, (current_page as u64) < total_pages))
 }
 
-fn paginate_values(values: &[Value], page: u32) -> Result<Paged<CatalogItem>> {
-    let page = page.max(1) as usize;
-    let start = (page - 1).saturating_mul(SEARCH_PAGE_SIZE);
-    let entries = values
+fn parse_ranking(value: &Value, show_adult: bool) -> Result<Paged<CatalogItem>> {
+    let key = if show_adult { "manga18s" } else { "mangas" };
+    let entries = value[key]
+        .as_array()
+        .ok_or_else(|| Error::new(format!("SoraRaw ranking has no {key} list")))?
         .iter()
-        .skip(start)
-        .take(SEARCH_PAGE_SIZE)
         .map(catalog_item)
         .collect::<Result<Vec<_>>>()?;
-    Ok(Paged::new(entries, start + SEARCH_PAGE_SIZE < values.len()))
+    Ok(Paged::new(entries, false))
+}
+
+fn search_entries(
+    dataset: &[DatasetManga],
+    query: &str,
+    genre: Option<&Genre>,
+    show_adult: bool,
+) -> Paged<CatalogItem> {
+    let query = query.to_lowercase();
+    let mut matches: Vec<_> = dataset
+        .iter()
+        .filter(|entry| {
+            let text = format!(
+                "{} {} {}",
+                entry.name,
+                entry.alt_names.as_deref().unwrap_or_default(),
+                entry.author.as_deref().unwrap_or_default()
+            )
+            .to_lowercase();
+            query.split_whitespace().all(|word| text.contains(word))
+                && genre.is_none_or(|genre| entry.genres.iter().any(|id| genre.ids.contains(id)))
+                && (show_adult || entry.is_adult.as_deref() != Some("yes"))
+        })
+        .collect();
+    matches.sort_by_key(|entry| std::cmp::Reverse(entry.views));
+    Paged::new(
+        matches
+            .into_iter()
+            .cloned()
+            .map(DatasetManga::into_catalog)
+            .collect(),
+        false,
+    )
 }
 
 fn catalog_item(value: &Value) -> Result<CatalogItem> {
@@ -596,105 +597,89 @@ fn clean_html(value: &str) -> String {
     clean_text(&fragment.root_element().text().collect::<Vec<_>>().join(" "))
 }
 
-fn filter_definitions() -> Vec<FilterDefinition> {
-    vec![
-        FilterDefinition::MultiSelect {
-            id: "genres".to_owned(),
-            name: "Genres".to_owned(),
-            options: genre_options(),
-            default: Vec::new(),
-        },
-        select_filter(
-            "mode",
-            "Reading mode",
-            &[
-                ("All", ""),
-                ("Horizontal", "horizontal"),
-                ("Vertical", "vertical"),
-            ],
-        ),
-        select_filter(
-            "content",
-            "Content",
-            &[("All", ""), ("General", "general"), ("18+", "adult")],
-        ),
-        select_filter(
-            "status",
-            "Status",
-            &[
-                ("All", ""),
-                ("Ongoing", "ongoing"),
-                ("Completed", "complete"),
-            ],
-        ),
-        select_filter(
-            "order",
-            "Sort by",
-            &[
-                ("Views", "views"),
-                ("Recently updated", "updated_at"),
-                ("Bookmarks", "bookmark"),
-            ],
-        ),
-    ]
+const LISTS: &[(&str, &str)] = &[
+    ("Weekly popular", "top/last7Days.json"),
+    ("Monthly popular", "top/last30Days.json"),
+    ("Trending", "top/rising.json"),
+    ("All time", "top/lifetime.json"),
+    ("Latest", "newest"),
+    ("Ongoing", "on-going"),
+    ("Completed", "complete"),
+];
+
+#[derive(Deserialize)]
+struct GenreEntry {
+    id: u64,
+    name: String,
+    slug: String,
+    total: u64,
+    is_adult: String,
 }
 
-fn genre_options() -> Vec<OptionItem> {
-    [
-        ("Action", "1"),
-        ("Fantasy", "4"),
-        ("Historical", "5"),
-        ("Psychological", "9"),
-        ("Sci-Fi", "10"),
-        ("Slice of Life", "12"),
-        ("Adult", "16"),
-        ("Comedy", "17"),
-        ("Drama", "18"),
-        ("Horror", "20"),
-        ("Mystery", "23"),
-        ("Romance", "24"),
-        ("Seinen", "25"),
-        ("Shounen", "26"),
-        ("Adventure", "31"),
-        ("Ecchi", "33"),
-        ("Harem", "34"),
-        ("Josei", "35"),
-        ("Mature", "37"),
-        ("School Life", "39"),
-        ("Shoujo", "40"),
-        ("Supernatural", "43"),
-        ("Isekai", "48"),
-        ("BL", "270"),
-        ("Original", "271"),
-        ("Manga adaptation", "334"),
-        ("Romantic comedy", "567"),
-        ("Doujinshi", "597"),
-        ("Full Color", "511"),
-        ("Reincarnation", "527"),
-        ("Japanese manga", "1085"),
-        ("Overseas manga", "1086"),
-    ]
-    .into_iter()
-    .map(|(label, value)| OptionItem {
-        label: label.to_owned(),
-        value: value.to_owned(),
-    })
-    .collect()
+struct Genre {
+    name: String,
+    slug: String,
+    ids: BTreeSet<u64>,
+    total: u64,
+    largest: u64,
 }
 
-fn select_filter(id: &str, name: &str, entries: &[(&str, &str)]) -> FilterDefinition {
-    FilterDefinition::Select {
-        id: id.to_owned(),
-        name: name.to_owned(),
-        options: entries
+fn group_genres(entries: Vec<GenreEntry>, show_adult: bool) -> Vec<Genre> {
+    let mut grouped = BTreeMap::new();
+    for entry in entries {
+        if entry.slug.is_empty() || (!show_adult && entry.is_adult == "yes") {
+            continue;
+        }
+        let genre = grouped.entry(entry.slug.clone()).or_insert_with(|| Genre {
+            name: entry.name.clone(),
+            slug: entry.slug,
+            ids: BTreeSet::new(),
+            total: 0,
+            largest: 0,
+        });
+        genre.ids.insert(entry.id);
+        genre.total += entry.total;
+        if entry.total > genre.largest {
+            genre.name = entry.name;
+            genre.largest = entry.total;
+        }
+    }
+    let mut genres: Vec<_> = grouped.into_values().collect();
+    genres.sort_by_key(|genre| std::cmp::Reverse(genre.total));
+    genres
+}
+
+fn filter_definitions(genres: Vec<Genre>) -> Vec<FilterDefinition> {
+    let mut filters = vec![FilterDefinition::Select {
+        id: "list".into(),
+        name: "List".into(),
+        default_index: 0,
+        options: LISTS
             .iter()
             .map(|(label, value)| OptionItem {
-                label: (*label).to_owned(),
-                value: (*value).to_owned(),
+                label: (*label).into(),
+                value: (*value).into(),
             })
             .collect(),
-        default_index: 0,
+    }];
+    if !genres.is_empty() {
+        let options = std::iter::once(OptionItem {
+            label: "All".into(),
+            value: "".into(),
+        })
+        .chain(genres.into_iter().map(|genre| OptionItem {
+            label: format!("{} ({})", genre.name, genre.total),
+            value: genre.slug,
+        }))
+        .collect();
+        filters.push(FilterDefinition::Select {
+            id: "genre".into(),
+            name: "Genre".into(),
+            default_index: 0,
+            options,
+        });
     }
+    filters
 }
 
 fn selected<'a>(filters: &'a Value, key: &str) -> Option<&'a str> {
@@ -702,19 +687,6 @@ fn selected<'a>(filters: &'a Value, key: &str) -> Option<&'a str> {
         .get(key)
         .and_then(Value::as_str)
         .filter(|value| !value.is_empty())
-}
-
-fn selected_values(filters: &Value, key: &str) -> Vec<String> {
-    match filters.get(key) {
-        Some(Value::Array(values)) => values
-            .iter()
-            .filter_map(Value::as_str)
-            .filter(|value| !value.is_empty())
-            .map(ToOwned::to_owned)
-            .collect(),
-        Some(Value::String(value)) if !value.is_empty() => vec![value.clone()],
-        _ => Vec::new(),
-    }
 }
 
 fn string(value: &Value, key: &str) -> Option<String> {
@@ -999,15 +971,37 @@ mod tests {
     }
 
     #[test]
-    fn exposes_site_search_filters() {
-        let filters = filter_definitions();
-        assert_eq!(filters.len(), 5);
-        let FilterDefinition::MultiSelect { options, .. } = &filters[0] else {
-            panic!("genres must be a multi-select");
+    fn matches_site_adult_ranking_and_keyword_search() {
+        let ranking = json!({"manga18s":[{"slug":"adult","name":"Adult list"}],
+            "mangas":[{"slug":"general","name":"General list"}]});
+        let mut source = SoraRawSource::default();
+        assert!(matches!(
+            &source.preferences().unwrap()[0],
+            PreferenceDefinition::Switch { default: true, .. }
+        ));
+        assert_eq!(
+            parse_ranking(&ranking, true).unwrap().entries[0].key,
+            "adult"
+        );
+        assert_eq!(
+            parse_ranking(&ranking, false).unwrap().entries[0].key,
+            "general"
+        );
+        assert!(!parse_ranking(&ranking, true).unwrap().has_next_page);
+        let dataset = serde_json::from_value::<Vec<DatasetManga>>(json!([
+            {"id":1,"name":"Alpha","alt_names":"Beta","slug":"alpha","is_adult":"yes","views":2},
+            {"id":2,"name":"Beta","author":"Alpha","slug":"beta","is_adult":"no","views":1}
+        ]))
+        .unwrap();
+        let keys = |adult| {
+            search_entries(&dataset, "beta alpha", None, adult)
+                .entries
+                .into_iter()
+                .map(|item| item.key)
+                .collect::<Vec<_>>()
         };
-        assert!(options.iter().any(|option| option.label == "Action"));
-        assert!(options.iter().any(|option| option.label == "BL"));
-        assert!(options.iter().any(|option| option.label == "Adult"));
+        assert_eq!(keys(true), ["alpha", "beta"]);
+        assert_eq!(keys(false), ["beta"]);
     }
 
     #[test]

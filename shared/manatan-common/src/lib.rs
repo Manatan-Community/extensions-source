@@ -7,6 +7,7 @@ use regex::Regex;
 use serde_json::Value;
 use url::Url;
 
+pub mod seek_preview;
 pub mod video;
 
 pub fn get_document(client: &Client, url: &str) -> Result<(Html, String)> {

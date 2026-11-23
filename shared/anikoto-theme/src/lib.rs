@@ -575,7 +575,12 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
             request = request.header(name, value);
         }
         let response = request.send()?.error_for_status()?;
-        delivery::preview_track(response.text()?, response.final_url(), &stream.headers).map(Some)
+        manatan_common::seek_preview::preview_track(
+            response.text()?,
+            response.final_url(),
+            &stream.headers,
+        )
+        .map(Some)
     }
 
     fn hoster_streams(

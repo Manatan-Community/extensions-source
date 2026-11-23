@@ -12,7 +12,7 @@ use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 use url::Url;
 
-const BASE_URL: &str = "https://shuttletv.su";
+const BASE_URL: &str = "https://shuttletv.pk";
 const TMDB_URL: &str = "https://api.themoviedb.org/3";
 const IMAGE_URL: &str = "https://image.tmdb.org/t/p";
 const WAIT_FOR_MEDIA_SCRIPT: &str =
