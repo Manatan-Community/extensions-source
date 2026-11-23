@@ -5,6 +5,8 @@
 
 use std::{collections::BTreeMap, marker::PhantomData};
 
+mod delivery;
+
 use aes::{
     cipher::{generic_array::GenericArray, BlockDecrypt, KeyInit},
     Aes256,
@@ -158,9 +160,18 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
             page,
             &json!({"sort": section, "rating": PLAY_ALLOWED_RATINGS}),
         )?;
+        if section != "latest-updated" {
+            if let Some(cached) = delivery::cached(&url) {
+                return Ok(cached);
+            }
+        }
         let (body, final_url) =
             self.get_text(&url, Some(&format!("{}/", self.base_url())), false)?;
-        parse_listing_html_for::<C>(&body, &final_url)
+        let result = parse_listing_html_for::<C>(&body, &final_url)?;
+        if section != "latest-updated" {
+            delivery::remember(&url, &result);
+        }
+        Ok(result)
     }
 
     fn anime_id(&self, item: &CatalogItem) -> Result<(String, String)> {
@@ -358,19 +369,14 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
         let embed = Url::parse(embed_url).map_err(url_error)?;
         let host = require(embed.host_str(), "player URL has no host")?;
         let origin = format!("{}://{}", embed.scheme(), host);
-        let stream_type = embed
-            .path_segments()
-            .and_then(Iterator::last)
-            .filter(|value| matches!(*value, "sub" | "dub" | "hsub"))
-            .unwrap_or_default();
-        let primary = source_api_url(&origin, "getSources", data_id, stream_type);
+        let primary = source_api_url(embed_url, "getSources", data_id)?;
         let response = self
             .get_text(&primary, Some(embed_url), true)
             .and_then(|(body, _)| parse_source_response(&body));
         let (response, mut url) = match response {
             Ok(response) => response,
             Err(_) => {
-                let fallback = source_api_url(&origin, "getSourcesNew", data_id, stream_type);
+                let fallback = source_api_url(embed_url, "getSourcesNew", data_id)?;
                 let (body, _) = self.get_text(&fallback, Some(embed_url), true)?;
                 parse_source_response(&body)?
             }
@@ -378,9 +384,13 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
         if response.tokenized == Some(1) {
             url = sign_megaplay_url(&url, runtime::now_millis())?;
         }
-        let tracks = response
-            .tracks
-            .unwrap_or_default()
+        let raw_tracks = response.tracks.unwrap_or_default();
+        let preview = raw_tracks
+            .iter()
+            .find(|track| track.kind == "thumbnails")
+            .map(|track| absolute_url(embed_url, &track.file))
+            .transpose()?;
+        let tracks = raw_tracks
             .into_iter()
             .filter(|track| track.kind == "captions")
             .map(|track| MediaTrack {
@@ -389,14 +399,34 @@ impl<C: AnikotoConfig> AnikotoSource<C> {
                 ..MediaTrack::default()
             })
             .collect();
-        Ok(vec![stream::<C>(
+        let mut base = stream::<C>(
             &url,
             data,
             Some(&format!("{origin}/")),
             tracks,
             intro,
             outro,
-        )?])
+        )?;
+        if let Some(preview) = preview {
+            base.extra.insert("previewVtt".into(), json!(preview));
+        }
+        let (playlist, final_url) = self.get_text(&url, Some(&format!("{origin}/")), false)?;
+        let variants = delivery::renditions(&playlist, &final_url)?;
+        let mut streams = Vec::new();
+        for (url, quality) in variants {
+            let mut variant = base.clone();
+            variant.url = url;
+            variant.quality = Some(quality.clone());
+            variant.resolution = Some(quality.clone());
+            variant.name = base
+                .name
+                .as_ref()
+                .map(|name| format!("{}{}", name.strip_suffix("Auto").unwrap_or(name), quality));
+            streams.push(variant);
+        }
+        base.url = final_url;
+        streams.push(base);
+        Ok(sort_streams(streams))
     }
 
     fn extract_mewcdn(
@@ -444,7 +474,11 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         if !request.fetch_details && !request.fetch_entries {
             return Ok(Some(manatan_sdk::CatalogRefresh::default()));
         }
-        let details = self.details(request.item)?;
+        let details = if request.fetch_details {
+            self.details(request.item)?
+        } else {
+            request.item
+        };
         let entries = if request.fetch_entries {
             let (id, item_url) = self.anime_id(&details)?;
             let endpoint = format!(
@@ -491,7 +525,6 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
     }
 
     fn episodes(&mut self, item: CatalogItem) -> Result<Vec<VideoEpisode>> {
-        let item = self.details(item)?;
         let (id, item_url) = self.anime_id(&item)?;
         let endpoint = format!(
             "{}/ajax/episode/list/{}?vrf={}",
@@ -504,7 +537,6 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
     }
 
     fn streams(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoStream>> {
-        let item = self.details(item)?;
         let hosters = self.server_hosters(&episode)?;
         let mut streams = Vec::new();
         let mut errors = Vec::new();
@@ -520,9 +552,30 @@ impl<C: AnikotoConfig> VideoSource for AnikotoSource<C> {
         Ok(sort_streams(streams))
     }
 
-    fn hosters(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
-        self.details(item)?;
+    fn hosters(&mut self, _item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
         self.server_hosters(&episode)
+    }
+
+    fn seek_previews(
+        &mut self,
+        _item: &CatalogItem,
+        _episode: &VideoEpisode,
+        stream: &VideoStream,
+    ) -> Result<Option<manatan_sdk::SeekPreviewTrack>> {
+        let Some(url) = stream.extra.get("previewVtt").and_then(Value::as_str) else {
+            return Ok(None);
+        };
+        let mut request = self
+            .client
+            .get(url)
+            .cookies_for(url)
+            .timeout_ms(8_000)
+            .max_body_bytes(2 * 1024 * 1024);
+        for (name, value) in &stream.headers {
+            request = request.header(name, value);
+        }
+        let response = request.send()?.error_for_status()?;
+        delivery::preview_track(response.text()?, response.final_url(), &stream.headers).map(Some)
     }
 
     fn hoster_streams(
@@ -684,6 +737,9 @@ pub fn parse_listing_html_for<C: AnikotoConfig>(
     source: &str,
     base: &str,
 ) -> Result<Paged<CatalogItem>> {
+    if let Some(result) = delivery::native_listing::<C>(source, base) {
+        return result;
+    }
     let document = html::document(source);
     let items = selector("div.ani.items > div.item")?;
     let link = selector("a.name")?;
@@ -986,7 +1042,15 @@ fn stream<C: AnikotoConfig>(
         referer_url.scheme(),
         require(referer_url.host_str(), "stream referer has no host")?
     );
-    let headers = BTreeMap::from([("Referer".into(), referer), ("Origin".into(), origin)]);
+    let headers = BTreeMap::from([
+        ("Referer".into(), referer),
+        ("Origin".into(), origin),
+        // Carry the resolver's browser identity into HLS and thumbnail fetches.
+        (
+            "User-Agent".into(),
+            manatan_sdk::client::BROWSER_USER_AGENT.into(),
+        ),
+    ]);
     let preferred_server = context::preference::<String>("server").ok().flatten();
     let preferred_type = context::preference::<String>("type").ok().flatten();
     Ok(VideoStream {
@@ -1462,12 +1526,22 @@ fn hmac_sha256(key: &[u8], message: &[u8]) -> [u8; 32] {
     outer.finalize().into()
 }
 
-fn source_api_url(origin: &str, endpoint: &str, data_id: &str, stream_type: &str) -> String {
-    format!(
-        "{origin}/stream/{endpoint}?id={id}&id={id}&type={stream_type}&type={stream_type}",
-        id = encode(data_id),
-        stream_type = encode(stream_type),
-    )
+fn source_api_url(embed_url: &str, endpoint: &str, data_id: &str) -> Result<String> {
+    let mut url = Url::parse(embed_url).map_err(url_error)?;
+    let session = url
+        .query_pairs()
+        .find(|(key, _)| key == "s")
+        .map(|(_, value)| value.into_owned());
+    url.set_path(&format!("/stream/{endpoint}"));
+    url.set_query(None);
+    url.set_fragment(None);
+    let mut query = url.query_pairs_mut();
+    query.append_pair("id", data_id).append_pair("st", "other");
+    if let Some(session) = session {
+        query.append_pair("s", &session);
+    }
+    drop(query);
+    Ok(url.into())
 }
 
 fn segment(values: &[f64]) -> Option<MediaSegment> {
@@ -1760,12 +1834,36 @@ mod tests {
     #[test]
     fn constructs_typed_source_api_urls() {
         assert_eq!(
-            source_api_url("https://megaplay.buzz", "getSources", "36396", "hsub"),
-            "https://megaplay.buzz/stream/getSources?id=36396&id=36396&type=hsub&type=hsub"
+            source_api_url(
+                "https://megaplay.buzz/stream/s-2/42/sub",
+                "getSources",
+                "42"
+            )
+            .unwrap(),
+            "https://megaplay.buzz/stream/getSources?id=42&st=other"
         );
+        let url = Url::parse(
+            &source_api_url(
+                "https://player.example:8443/stream/42/dub?s=a%2Bb%26c&ignored=1#fragment",
+                "getSourcesNew",
+                "42&43",
+            )
+            .unwrap(),
+        )
+        .unwrap();
         assert_eq!(
-            source_api_url("https://megaplay.buzz", "getSourcesNew", "36396", ""),
-            "https://megaplay.buzz/stream/getSourcesNew?id=36396&id=36396&type=&type="
+            url.origin().ascii_serialization(),
+            "https://player.example:8443"
+        );
+        assert_eq!(url.path(), "/stream/getSourcesNew");
+        assert_eq!(url.fragment(), None);
+        assert_eq!(
+            url.query_pairs().collect::<Vec<_>>(),
+            vec![
+                ("id".into(), "42&43".into()),
+                ("st".into(), "other".into()),
+                ("s".into(), "a+b&c".into()),
+            ]
         );
     }
 
@@ -1867,6 +1965,10 @@ mod tests {
         assert_eq!(
             video.headers.get("Origin").map(String::as_str),
             Some("https://megaplay.buzz")
+        );
+        assert_eq!(
+            video.headers.get("User-Agent").map(String::as_str),
+            Some(manatan_sdk::client::BROWSER_USER_AGENT)
         );
         assert_eq!(video.mpv_args[0].name, "demuxer-lavf-o");
         assert_eq!(video.mpv_args[0].value, "force_mpegts=1");

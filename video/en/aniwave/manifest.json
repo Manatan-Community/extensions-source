@@ -59,7 +59,8 @@
         "https://*.kryntal.top",
         "https://*.norami.top",
         "https://*.sugevideo.xyz",
-        "https://*.livedns.my"
+        "https://*.livedns.my",
+        "https://megap.shiora.top"
       ]
     },
     "cookies": true,

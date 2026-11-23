@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "anikoto",
   "name": "Anikoto",
-  "version": "0.1.13",
-  "versionCode": 13,
+  "version": "0.1.15",
+  "versionCode": 15,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "video",
@@ -61,10 +61,15 @@
         "https://*.kryntal.top",
         "https://*.norami.top",
         "https://*.sugevideo.xyz",
-        "https://*.livedns.my"
+        "https://*.livedns.my",
+        "https://megap.shiora.top"
       ]
     },
-    "cookies": true
+    "cookies": true,
+    "storage": true,
+    "services": [
+      "html.select.v1"
+    ]
   },
   "assets": [
     {
@@ -83,7 +88,8 @@
       "contentRating": "suggestive",
       "capabilities": {
         "operations": [
-          "video.refresh-episodes"
+          "video.refresh-episodes",
+          "video.seek-previews"
         ],
         "search": true,
         "latest": true,

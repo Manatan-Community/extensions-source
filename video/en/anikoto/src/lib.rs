@@ -72,6 +72,7 @@ mod tests {
             "https://*.sugevideo.xyz",
             "https://*.livedns.my",
             "https://*.nexabloom.top",
+            "https://megap.shiora.top",
             "https://*.qeltrix.top",
             "https://*.vyrnex.top",
             "https://*.tyrionx.top",
