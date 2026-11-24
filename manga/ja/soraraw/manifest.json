@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "id": "soraraw",
   "name": "SoraRaw",
-  "version": "1.0.5",
-  "versionCode": 6,
+  "version": "1.0.7",
+  "versionCode": 8,
   "apiVersion": 2,
   "wasm": "extension.wasm",
   "contentType": "manga",
@@ -34,6 +34,7 @@
     "webview": false,
     "storage": false,
     "assets": false,
+    "services": ["image.raster.v1"],
     "javascript": false
   },
   "assets": [

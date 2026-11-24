@@ -4,8 +4,12 @@ use std::{collections::BTreeMap, io::Cursor};
 
 use aes::cipher::{KeyIvInit, StreamCipher};
 use hmac::{Hmac, Mac};
-use image::{ImageFormat, ImageReader, RgbaImage};
-use manatan_sdk::{Error, MangaPage, ProcessedImage, Result};
+use image::{
+    codecs::png::{CompressionType, FilterType, PngEncoder},
+    DynamicImage, ExtendedColorType, ImageDecoder, ImageEncoder, ImageFormat, ImageReader,
+    RgbaImage,
+};
+use manatan_sdk::{services, Error, MangaPage, ProcessedImage, Result};
 use serde::Deserialize;
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -14,6 +18,8 @@ use url::Url;
 const PATH_MASK: &[u8] = b"202508055d0db38bae2e86cc41649f90";
 const CANVA2_SALT: &str = "6a0248ad1ca4208275aed64d336e81595ecb149422a8e621f70e23b9f01b9c1c";
 const TILE_LAYOUT: &str = "sorarawTileLayout";
+const RASTER_SERVICE: &str = "image.raster.v1";
+const MAX_NATIVE_RASTER_INPUT: usize = 32 * 1024 * 1024;
 
 #[derive(Deserialize)]
 pub(super) struct Chapter {
@@ -149,33 +155,84 @@ pub(super) fn process(page: &MangaPage, bytes: &[u8]) -> Result<Option<Processed
         return Ok(None);
     };
     let layout: Layout = serde_json::from_value(layout.clone())?;
-    let reader = || {
-        ImageReader::new(Cursor::new(bytes))
-            .with_guessed_format()
-            .map_err(err)
+    let reader = ImageReader::new(Cursor::new(bytes))
+        .with_guessed_format()
+        .map_err(err)?;
+    let jpeg = reader.format() == Some(ImageFormat::Jpeg);
+    let native =
+        jpeg && bytes.len() <= MAX_NATIVE_RASTER_INPUT && services::is_available(RASTER_SERVICE);
+    let source = if native {
+        let (dimensions, rgba): (RasterDimensions, Vec<u8>) =
+            services::invoke_binary(RASTER_SERVICE, &json!({ "operation": "decodeJpeg" }), bytes)?;
+        RgbaImage::from_raw(dimensions.width, dimensions.height, rgba)
+            .ok_or_else(|| Error::new("SoraRaw host returned an invalid raster"))?
+    } else {
+        decode_raster(reader)?
     };
-    let (width, height) = reader()?.into_dimensions().map_err(err)?;
-    if u64::from(width) * u64::from(height) > 8_388_608 {
-        return Err(Error::new("SoraRaw page exceeds the decoded pixel limit"));
-    }
-    let mut reader = reader()?;
-    let mut limits = image::Limits::default();
-    limits.max_image_width = Some(16_384);
-    limits.max_image_height = Some(16_384);
-    limits.max_alloc = Some(64 * 1024 * 1024);
-    reader.limits(limits);
-    let source = reader.decode().map_err(err)?.into_rgba8();
     let image = match layout {
         Layout::Canva2 { id, grid } if (1..=64).contains(&grid) => canva2(&source, id, grid),
         Layout::Canva2 { .. } => return Err(Error::new("SoraRaw tile grid is invalid")),
         Layout::Canva(seed) => canva(&source, &seed),
     };
-    let mut output = Cursor::new(Vec::new());
-    image.write_to(&mut output, ImageFormat::Png).map_err(err)?;
+    let output = if native {
+        let (_, png): ((), Vec<u8>) = services::invoke_binary(
+            RASTER_SERVICE,
+            &json!({
+                "operation": "encodeOpaquePng",
+                "width": image.width(),
+                "height": image.height(),
+            }),
+            image.as_raw(),
+        )?;
+        png
+    } else {
+        encode_raster(image, jpeg)?
+    };
     Ok(Some(ProcessedImage {
-        bytes: output.into_inner(),
+        bytes: output,
         mime_type: Some("image/png".into()),
     }))
+}
+
+#[derive(Deserialize)]
+struct RasterDimensions {
+    width: u32,
+    height: u32,
+}
+
+fn decode_raster(mut reader: ImageReader<Cursor<&[u8]>>) -> Result<RgbaImage> {
+    let mut limits = image::Limits::default();
+    limits.max_image_width = Some(16_384);
+    limits.max_image_height = Some(16_384);
+    limits.max_alloc = Some(64 * 1024 * 1024);
+    reader.limits(limits.clone());
+    let mut decoder = reader.into_decoder().map_err(err)?;
+    let (width, height) = decoder.dimensions();
+    if u64::from(width) * u64::from(height) > 8_388_608 {
+        return Err(Error::new("SoraRaw page exceeds the decoded pixel limit"));
+    }
+    limits.reserve(decoder.total_bytes()).map_err(err)?;
+    decoder.set_limits(limits).map_err(err)?;
+    Ok(DynamicImage::from_decoder(decoder)
+        .map_err(err)?
+        .into_rgba8())
+}
+
+fn encode_raster(image: RgbaImage, jpeg: bool) -> Result<Vec<u8>> {
+    let (width, height) = image.dimensions();
+    let mut output = Vec::new();
+    if jpeg {
+        // A fixed row filter keeps lossless encoding practical on older mobile hosts.
+        let rgb = DynamicImage::ImageRgba8(image).into_rgb8();
+        PngEncoder::new_with_quality(&mut output, CompressionType::Fast, FilterType::Up)
+            .write_image(rgb.as_raw(), width, height, ExtendedColorType::Rgb8)
+            .map_err(err)?;
+    } else {
+        PngEncoder::new(&mut output)
+            .write_image(image.as_raw(), width, height, ExtendedColorType::Rgba8)
+            .map_err(err)?;
+    }
+    Ok(output)
 }
 
 #[derive(Clone, Copy)]
@@ -236,7 +293,10 @@ fn canva2(source: &RgbaImage, id: u64, grid: u32) -> RgbaImage {
             } else {
                 2
             };
-            draw(source, &mut out, src, dst, rotation, false, false);
+            match rotation {
+                0 | 2 => draw_rows(source, &mut out, src, dst, rotation == 2),
+                _ => draw(source, &mut out, src, dst, rotation, false, false),
+            }
         }
     }
     out
@@ -251,6 +311,30 @@ fn split(total: u32, count: u32) -> Vec<u32> {
 fn shuffle<T>(values: &mut [T], next: &mut impl FnMut() -> f64) {
     for i in (1..values.len()).rev() {
         values.swap(i, (next() * (i + 1) as f64) as usize);
+    }
+}
+
+fn draw_rows(source: &RgbaImage, out: &mut RgbaImage, src: Tile, dst: Tile, reversed: bool) {
+    let stride = source.width() as usize * 4;
+    let row_len = src.w as usize * 4;
+    for y in 0..src.h {
+        let src_y = if reversed { src.h - 1 - y } else { y };
+        let from = (src.y + src_y) as usize * stride + src.x as usize * 4;
+        let to = (dst.y + y) as usize * stride + dst.x as usize * 4;
+        let src_row = &source.as_raw()[from..from + row_len];
+        let dst_row = &mut out.as_mut()[to..to + row_len];
+        if reversed {
+            for (dst, src) in dst_row
+                .as_chunks_mut::<4>()
+                .0
+                .iter_mut()
+                .zip(src_row.as_chunks::<4>().0.iter().rev())
+            {
+                *dst = *src;
+            }
+        } else {
+            dst_row.copy_from_slice(src_row);
+        }
     }
 }
 
