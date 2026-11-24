@@ -10,13 +10,17 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+aes.workspace = true
 base64.workspace = true
+hex.workspace = true
+hmac = "0.12"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
 chrono.workspace = true
+ctr = "0.9"
 manatan-sdk.workspace = true
 scraper.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 url.workspace = true
 
-[dev-dependencies]
 sha2.workspace = true

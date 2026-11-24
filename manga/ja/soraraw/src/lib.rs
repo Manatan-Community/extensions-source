@@ -5,7 +5,8 @@ use chrono::DateTime;
 use manatan_sdk::{
     client::{Client, BROWSER_USER_AGENT},
     context, CatalogItem, Error, FilterDefinition, ImageRequest, MangaChapter, MangaPage,
-    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, Result, UrlResolveResult,
+    MangaSource, OptionItem, PageContent, Paged, PreferenceDefinition, ProcessedImage, Result,
+    UrlResolveResult,
 };
 use scraper::{Html, Selector};
 use serde::Deserialize;
@@ -14,7 +15,7 @@ use url::Url;
 
 const BASE_URL: &str = "https://soraraw.com";
 const COVER_BASE_URL: &str = "https://i.mangaraw.lat";
-const IMAGE_API_URL: &str = "https://api.mangarawgo.site";
+mod reader;
 const IMAGE_DOMAIN: &str = "rawcontent.top";
 const IMAGE_MANIFEST_KEY: &[u8] = b"/fuCkYou!!!";
 const LANGUAGE: &str = "ja";
@@ -214,21 +215,32 @@ impl MangaSource for SoraRawSource {
             canonical_chapter_url(&slug, chapter.url.as_deref().unwrap_or(&chapter.key))
                 .ok_or_else(|| Error::new("SoraRaw chapter has no chapter key"))?;
         let data = self.next_data(&chapter_url)?;
-        let chapter_id = data
-            .pointer("/props/pageProps/data/chapter/id")
-            .and_then(Value::as_u64)
-            .ok_or_else(|| Error::new("SoraRaw chapter has no id"))?;
-        let manga_id = data
-            .pointer("/props/pageProps/data/chapter/manga/id")
-            .and_then(Value::as_u64)
-            .ok_or_else(|| Error::new("SoraRaw chapter has no manga id"))?;
+        let chapter_data = data
+            .pointer("/props/pageProps/data/chapter")
+            .ok_or_else(|| Error::new("SoraRaw chapter metadata is missing"))?;
+        let chapter: reader::Chapter = serde_json::from_value(chapter_data.clone())?;
+        let config = self.json("config.json")?;
+        let manifest_base = config["apiImage"]
+            .as_str()
+            .ok_or_else(|| Error::new("SoraRaw image API is missing"))?;
         let response = self
             .client
-            .get(format!("{IMAGE_API_URL}/{manga_id}/{chapter_id}.json"))
+            .get(chapter.manifest_url(manifest_base)?.as_str())
             .max_body_bytes(1_000_000)
             .send()?
             .error_for_status()?;
-        parse_pages(response.bytes(), chapter_id, &chapter_url)
+        parse_pages(response.bytes(), &chapter, &chapter_url)
+    }
+
+    fn process_page_image(
+        &mut self,
+        _item: &CatalogItem,
+        _chapter: &MangaChapter,
+        page: &MangaPage,
+        bytes: &[u8],
+        _mime: Option<&str>,
+    ) -> Result<Option<ProcessedImage>> {
+        reader::process(page, bytes)
     }
 
     fn filters(&mut self) -> Result<Vec<FilterDefinition>> {
@@ -356,8 +368,9 @@ struct EncryptedManifest {
 
 #[derive(Debug, Deserialize)]
 struct PageRecord {
-    id: u64,
-    order: u32,
+    id: Option<u64>,
+    order: f64,
+    b: Option<String>,
 }
 
 fn parse_next_data(html: &str) -> Result<Value> {
@@ -536,43 +549,67 @@ fn parse_chapters(data: &Value, slug: &str) -> Result<Vec<MangaChapter>> {
     Ok(parsed)
 }
 
-fn parse_pages(bytes: &[u8], chapter_id: u64, chapter_url: &str) -> Result<Vec<MangaPage>> {
+fn decode_base64(value: &str) -> Result<Vec<u8>> {
+    general_purpose::URL_SAFE_NO_PAD
+        .decode(value)
+        .or_else(|_| general_purpose::URL_SAFE.decode(value))
+        .or_else(|_| general_purpose::STANDARD_NO_PAD.decode(value))
+        .or_else(|_| general_purpose::STANDARD.decode(value))
+        .map_err(|error| Error::new(format!("SoraRaw image data is not base64: {error}")))
+}
+
+fn parse_pages(
+    bytes: &[u8],
+    chapter: &reader::Chapter,
+    chapter_url: &str,
+) -> Result<Vec<MangaPage>> {
     let manifest: EncryptedManifest = serde_json::from_slice(bytes)?;
-    let encrypted = general_purpose::URL_SAFE_NO_PAD
-        .decode(&manifest.d)
-        .or_else(|_| general_purpose::URL_SAFE.decode(&manifest.d))
-        .or_else(|_| general_purpose::STANDARD_NO_PAD.decode(&manifest.d))
-        .or_else(|_| general_purpose::STANDARD.decode(&manifest.d))
-        .map_err(|error| Error::new(format!("SoraRaw page manifest is not base64: {error}")))?;
-    let decrypted = encrypted
-        .iter()
-        .enumerate()
-        .map(|(index, byte)| byte ^ IMAGE_MANIFEST_KEY[index % IMAGE_MANIFEST_KEY.len()])
-        .collect::<Vec<_>>();
+    let mut decrypted = decode_base64(&manifest.d)?;
+    reader::xor(&mut decrypted, IMAGE_MANIFEST_KEY);
+    while decrypted.last() == Some(&0) {
+        decrypted.pop();
+    }
     let mut records: Vec<PageRecord> = serde_json::from_slice(&decrypted)?;
-    records.sort_by_key(|record| record.order);
-    records.dedup_by_key(|record| record.order);
+    records.sort_by(|left, right| left.order.total_cmp(&right.order));
+    records.dedup_by(|left, right| left.order == right.order);
     if records.is_empty() {
         return Err(Error::new("SoraRaw chapter image manifest is empty"));
     }
-    let server = chapter_id % 4 + 1;
-    let mut context = BTreeMap::new();
-    context.insert("Referer".to_owned(), chapter_url.to_owned());
-    context.insert("User-Agent".to_owned(), BROWSER_USER_AGENT.to_owned());
-    Ok(records
+    let context = BTreeMap::from([
+        ("Referer".to_owned(), chapter_url.to_owned()),
+        ("User-Agent".to_owned(), BROWSER_USER_AGENT.to_owned()),
+    ]);
+    let extra = chapter.image_metadata()?;
+    records
         .into_iter()
-        .map(|record| MangaPage {
-            content: PageContent::Url {
-                url: format!(
-                    "https://lh{server}.{IMAGE_DOMAIN}/c{chapter_id}/{:03}_{}.webp",
-                    record.order, record.id
-                ),
-                context: Some(context.clone()),
-            },
-            description: Some(format!("Page {}", record.order)),
-            ..MangaPage::default()
+        .enumerate()
+        .map(|(index, record)| {
+            let url = if let Some(path) = record.b {
+                chapter.decode_image_url(&path)?
+            } else {
+                let id = record
+                    .id
+                    .ok_or_else(|| Error::new("SoraRaw page has no image path"))?;
+                let server = chapter.id % 4 + 1;
+                if !extra.is_empty() {
+                    return Err(Error::new("SoraRaw tiled page has no image path"));
+                }
+                format!(
+                    "https://lh{server}.{IMAGE_DOMAIN}/c{}/{:03.0}_{id}.webp",
+                    chapter.id, record.order
+                )
+            };
+            Ok(MangaPage {
+                content: PageContent::Url {
+                    url,
+                    context: Some(context.clone()),
+                },
+                description: Some(format!("Page {}", index + 1)),
+                extra: extra.clone(),
+                ..MangaPage::default()
+            })
         })
-        .collect())
+        .collect()
 }
 
 fn description(manga: &Value) -> Option<String> {
@@ -901,10 +938,18 @@ mod tests {
         );
     }
 
+    fn legacy_chapter(id: u64) -> reader::Chapter {
+        serde_json::from_value(json!({"id": id, "manga_id": 1})).unwrap()
+    }
+
     #[test]
     fn decrypts_page_manifest_and_builds_sharded_urls() {
-        let pages = parse_pages(IMAGES, 785706, "https://soraraw.com/manga/example/ch-247")
-            .expect("pages parse");
+        let pages = parse_pages(
+            IMAGES,
+            &legacy_chapter(785706),
+            "https://soraraw.com/manga/example/ch-247",
+        )
+        .expect("pages parse");
         assert_eq!(pages.len(), 2);
         let PageContent::Url { url, context } = &pages[1].content else {
             panic!("expected URL page");
@@ -914,6 +959,68 @@ mod tests {
             context.as_ref().and_then(|headers| headers.get("Referer")),
             Some(&"https://soraraw.com/manga/example/ch-247".to_owned())
         );
+    }
+
+    #[test]
+    fn uses_published_paths_and_tile_layout_for_mixed_formats() {
+        let chapter: reader::Chapter = serde_json::from_value(json!({
+            "id": 42,
+            "manga_id": 7,
+            "mode": "canva2",
+            "n": "4",
+            "_b": "https://lh1.rawcontent.top",
+            "uuid": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+            "updated_at": "2026-01-02T00:00:00Z"
+        }))
+        .unwrap();
+        assert_eq!(
+            chapter
+                .manifest_url("https://api.mangarawgo.site/images/")
+                .unwrap()
+                .as_str(),
+            "https://api.mangarawgo.site/images/7/42.json?t=1767312000000"
+        );
+        let mut records = serde_json::to_vec(&json!([
+            {"order": 2, "b": "MjEwNjQ9NjI9bTpvbj42bVg_BB0A_SCq8S9SJ0zA_dI"},
+            {"order": 1, "b": "MjEwNjQ9NjI9bTpvbj42bVg_BB0A_SOq8S9QJ1HV-A"}
+        ]))
+        .unwrap();
+        records.push(0);
+        reader::xor(&mut records, IMAGE_MANIFEST_KEY);
+        let manifest = json!({"d": general_purpose::URL_SAFE_NO_PAD.encode(records)});
+        let pages = parse_pages(manifest.to_string().as_bytes(), &chapter, BASE_URL).unwrap();
+        let urls: Vec<_> = pages
+            .iter()
+            .map(|page| match &page.content {
+                PageContent::Url { url, .. } => url.as_str(),
+                _ => panic!("expected URL page"),
+            })
+            .collect();
+        assert_eq!(
+            urls,
+            [
+                "https://lh1.rawcontent.top/c42/001_503.jpg",
+                "https://lh1.rawcontent.top/c42/002_501.webp",
+            ]
+        );
+        let image =
+            image::RgbaImage::from_fn(17, 19, |x, y| image::Rgba([x as u8, y as u8, 0, 255]));
+        let mut input = std::io::Cursor::new(Vec::new());
+        image.write_to(&mut input, image::ImageFormat::Png).unwrap();
+        let processed = reader::process(&pages[0], input.get_ref())
+            .unwrap()
+            .unwrap();
+        let actual = image::load_from_memory(&processed.bytes)
+            .unwrap()
+            .into_rgba8();
+        assert_eq!(actual.dimensions(), (17, 19));
+        // Pixel digest from the site's WASM reader for this input and grid size.
+        use sha2::{Digest, Sha256};
+        assert_eq!(
+            hex::encode(Sha256::digest(actual.as_raw())),
+            "7f9b8a6eaf0a92116ecfa92452e937a59904b78a7443301a664e9f941de73f86"
+        );
+        assert_eq!(processed.mime_type.as_deref(), Some("image/png"));
     }
 
     #[test]
@@ -928,8 +1035,8 @@ mod tests {
         assert!(encoded.contains('+') || encoded.contains('/'));
         let manifest = format!(r#"{{"d":"{encoded}"}}"#);
 
-        let pages =
-            parse_pages(manifest.as_bytes(), 2, BASE_URL).expect("standard Base64 manifest parses");
+        let pages = parse_pages(manifest.as_bytes(), &legacy_chapter(2), BASE_URL)
+            .expect("standard Base64 manifest parses");
         assert_eq!(pages.len(), 1);
     }
 
@@ -946,8 +1053,8 @@ mod tests {
                 general_purpose::URL_SAFE_NO_PAD.encode(encrypted)
             )
         };
-        assert!(parse_pages(empty.as_bytes(), 1, BASE_URL).is_err());
-        assert!(parse_pages(br#"{"d":"not base64!"}"#, 1, BASE_URL).is_err());
+        assert!(parse_pages(empty.as_bytes(), &legacy_chapter(1), BASE_URL).is_err());
+        assert!(parse_pages(br#"{"d":"not base64!"}"#, &legacy_chapter(1), BASE_URL).is_err());
     }
 
     #[test]
