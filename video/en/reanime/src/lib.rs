@@ -14,6 +14,8 @@ use serde::Deserialize;
 use serde_json::Value;
 use url::Url;
 
+mod download;
+
 const BASE_URL: &str = "https://reanime.cz";
 const SITE_HOSTS: &[&str] = &["reanime.cz", "reanime.to", "reanime.bz", "reanime.wtf"];
 const PAGE_SIZE: u32 = 36;
@@ -192,6 +194,22 @@ impl ReAnime {
         ))
     }
 
+    fn resolve_hoster(&self, hoster: &VideoHoster, language: &str) -> Result<Vec<VideoStream>> {
+        let player_url = hoster
+            .url
+            .as_deref()
+            .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?;
+        match download::resolve(player_url, language, &hoster.name) {
+            Ok(stream) => Ok(vec![stream]),
+            Err(download_error) => self.capture_stream(player_url, language).map_err(|_| {
+                Error::new(format!(
+                    "ReAnime could not load {}: {download_error}",
+                    hoster.name
+                ))
+            }),
+        }
+    }
+
     fn capture_stream(&self, player_url: &str, language: &str) -> Result<Vec<VideoStream>> {
         validate_player_url(player_url)?;
         let response: WebViewExtractResponse = browser::extract(&WebViewExtractRequest {
@@ -209,17 +227,15 @@ impl ReAnime {
             wait_until: Some(WebViewWaitUntil::DomReady),
             wait_for_selector: None,
             wait_for_event: None,
-            // Return as soon as the player has both the playlist and preview
-            // metadata, with the prior bounded wait for players without previews.
+            // Legacy players may still expose a usable HLS playlist. Preview
+            // discovery must not hold up playback.
             wait_for_script: Some(r#"(() => {
                 const resources = performance.getEntriesByType('resource');
-                return performance.now() >= 12000 || (Boolean(window.__pk)
-                    && resources.some(entry => entry.name.includes('.m3u8'))
-                    && resources.some(entry => entry.name.includes('/thumbnails_vtt/')
-                        || /thumbnail.*\.vtt/i.test(entry.name)));
+                return performance.now() >= 7000 || (Boolean(window.__pk)
+                    && resources.some(entry => entry.name.includes('.m3u8')));
             })()"#.into()),
             script: "(() => ({ playlistKey: window.__pk || '', video: document.querySelector('video')?.currentSrc || '' }))()".to_string(),
-            timeout_ms: Some(45_000),
+            timeout_ms: Some(15_000),
             capture_requests: vec![
                 capture(".m3u8"),
                 capture(".ass"),
@@ -290,13 +306,7 @@ impl VideoSource for ReAnime {
             .next()
             .filter(|value| matches!(*value, "sub" | "dub"))
             .ok_or_else(|| Error::new("invalid ReAnime hoster"))?;
-        self.capture_stream(
-            hoster
-                .url
-                .as_deref()
-                .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?,
-            language,
-        )
+        self.resolve_hoster(hoster, language)
     }
 
     fn hosters(&mut self, item: CatalogItem, episode: VideoEpisode) -> Result<Vec<VideoHoster>> {
@@ -312,7 +322,7 @@ impl VideoSource for ReAnime {
         let expected = self
             .player_hosters(&item, &episode)?
             .into_iter()
-            .find(|candidate| candidate.key == hoster.key && candidate.url == hoster.url)
+            .find(|candidate| candidate.key == hoster.key)
             .ok_or_else(|| Error::new("ReAnime hoster is no longer available"))?;
         let language = hoster
             .key
@@ -320,13 +330,7 @@ impl VideoSource for ReAnime {
             .next()
             .filter(|value| matches!(*value, "sub" | "dub"))
             .ok_or_else(|| Error::new("invalid ReAnime hoster"))?;
-        self.capture_stream(
-            expected
-                .url
-                .as_deref()
-                .ok_or_else(|| Error::new("ReAnime hoster URL is missing"))?,
-            language,
-        )
+        self.resolve_hoster(&expected, language)
     }
 
     fn seek_previews(
@@ -1035,7 +1039,8 @@ fn validate_stream_url(value: &str) -> Result<()> {
     if url.scheme() != "https"
         || !(host == "flixcloud.cc"
             || host.ends_with(".flixcloud.cc")
-            || host.ends_with(".atomic4cdn.top"))
+            || host.ends_with(".atomic4cdn.top")
+            || host.ends_with(".rundowncdn.top"))
     {
         return Err(Error::new("unexpected ReAnime media URL"));
     }
