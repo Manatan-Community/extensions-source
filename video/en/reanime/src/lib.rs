@@ -46,17 +46,6 @@ impl ReAnime {
             .json()
     }
 
-    fn top(&self) -> Result<Paged<CatalogItem>> {
-        let response: TopResponse = self.api(
-            "/api/v1/top/anime",
-            &[
-                ("period", "month".to_string()),
-                ("limit", PAGE_SIZE.to_string()),
-            ],
-        )?;
-        Ok(Paged::new(safe_catalog(response.data, false), false))
-    }
-
     fn latest_page(&self, page: u32) -> Result<Paged<CatalogItem>> {
         let target = page.max(1);
         let mut cursor: Option<String> = None;
@@ -270,10 +259,7 @@ impl VideoSource for ReAnime {
         }))
     }
     fn popular(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
-        if page > 1 {
-            return Ok(Paged::default());
-        }
-        self.top()
+        self.search_page("", page, &Value::Null)
     }
 
     fn latest(&mut self, page: u32) -> Result<Paged<CatalogItem>> {
@@ -515,12 +501,6 @@ struct SearchResponse {
     limit: u32,
     #[serde(default)]
     offset: u32,
-}
-
-#[derive(Debug, Default, Deserialize)]
-struct TopResponse {
-    #[serde(default)]
-    data: Vec<AnimeSummary>,
 }
 
 #[derive(Debug, Default, Deserialize)]

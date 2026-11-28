@@ -42285,11 +42285,10 @@
         "url-resolution",
         "media-processing"
       ],
-      "status": "component-valid",
+      "status": "live-verified",
       "tests": [
-        "fixture-contract-tests",
-        "live-public-api-validation",
-        "live-browser-hls-playback"
+        "Parser and media resolver fixtures",
+        "iOS simulator signed install, Popular pagination, Latest, search, 1080p playback with embedded subtitles and Japanese and English audio tracks, and timeline previews on the One Piece episode 1 sample"
       ],
       "packagePath": "packages/video/en/reanime.manatan2",
       "knownSiteFailure": null,
