@@ -901,6 +901,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "manatan-novel-en-chrysanthemumgarden"
+version = "0.1.0"
+dependencies = [
+ "manatan-common",
+ "manatan-sdk",
+ "serde",
+ "serde_json",
+ "url",
+ "wordpress-novel",
+]
+
+[[package]]
 name = "manatan-novel-en-cyrisia"
 version = "0.1.0"
 dependencies = [
